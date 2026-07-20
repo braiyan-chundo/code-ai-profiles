@@ -1,0 +1,31 @@
+name: Pull request policy
+
+on:
+  pull_request_target:
+    types: [opened, reopened, edited]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  enforce-target:
+    name: Enforce target branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Accept contribution target
+        if: github.base_ref == 'develop'
+        run: echo "Contribution PR targets develop."
+
+      - name: Accept maintainer release PR
+        if: github.base_ref == 'main' && github.event.pull_request.user.login == 'braiyan-chundo' && github.head_ref == 'develop'
+        run: echo "Maintainer release PR targets main from develop."
+
+      - name: Close an unsupported pull request
+        if: github.base_ref != 'develop' && !(github.base_ref == 'main' && github.event.pull_request.user.login == 'braiyan-chundo' && github.head_ref == 'develop')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          gh pr comment "$PR_URL" --body "Este repositorio acepta contribuciones únicamente hacia \`develop\`. Los cambios a \`main\` solo se publican mediante un PR del mantenedor desde \`develop\`."
+          gh pr close "$PR_URL"
