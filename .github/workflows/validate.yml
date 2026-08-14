@@ -20,6 +20,18 @@ jobs:
           node-version: 24
           cache: npm
 
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: .graphify-version
+
+      - name: Install pinned Graphify
+        run: python -m pip install "graphifyy==$(cat .graphify-version)"
+
+      - name: Verify knowledge graph is current
+        run: npm run graph:check
+
       - uses: dtolnay/rust-toolchain@stable
 
       - name: Install Linux system dependencies

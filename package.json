@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 1420",
     "build": "tsc && vite build",
+    "graph:build": "node scripts/graphify.mjs build",
+    "graph:update": "node scripts/graphify.mjs update",
+    "graph:check": "node scripts/graphify.mjs check",
     "build:linux": "tauri build --bundles deb,appimage",
     "build:macos": "tauri build --bundles app,dmg",
     "build:windows": "tauri build --bundles msi,nsis",

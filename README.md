@@ -58,6 +58,25 @@ npm run build
 cargo test --manifest-path src-tauri/Cargo.toml
 ```
 
+## Desarrollo asistido por IA y Graphify
+
+El repositorio incluye cuatro agentes de desarrollo: `architect`, `backend`, `frontend` y `document`. Sus instrucciones neutrales viven en [`.agents/roles/`](.agents/roles/README.md) y Codex dispone de adaptadores con modelos independientes en [`.codex/agents/`](.codex/agents/). Toda feature o fix requiere una HU única en [`docs/hu/`](docs/hu/index.md).
+
+Graphify mantiene un grafo local del código que debe consultarse antes del análisis y actualizarse al cerrar cada iteración. Instala la versión fijada por el proyecto y genera o actualiza sus artefactos:
+
+```bash
+uv tool install graphifyy==0.9.32
+npm run graph:update
+```
+
+Antes de enviar cambios, comprueba que el grafo versionado coincide con el código:
+
+```bash
+npm run graph:check
+```
+
+El grafo se extrae localmente mediante AST y no requiere claves ni envía el código a un modelo externo. Consulta [la documentación del flujo de agentes](docs/agents.document.md) y [la integración de Graphify](docs/graphify.document.md).
+
 ## Crear cada versión
 
 Tauri recomienda compilar cada paquete en el sistema operativo de destino. El workflow de GitHub Actions contiene la matriz reproducible para las cuatro variantes publicadas.

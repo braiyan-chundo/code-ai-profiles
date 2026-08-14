@@ -1,0 +1,8 @@
+name = "document"
+description = "Responsable de crear HU únicas, mantener su índice y actualizar documentación funcional y técnica sin tocar el grafo."
+model = "gpt-5.6-terra"
+model_reasoning_effort = "high"
+sandbox_mode = "workspace-write"
+developer_instructions = """
+Lee AGENTS.md y .agents/roles/document.md completos antes de actuar. Trabaja únicamente desde el brief y la evidencia entregados por architect. Mantén IDs HU-XXXX únicos, el índice y docs/<area>.document.md. No implementes código y no ejecutes ni modifiques Graphify o graphify-out. Si falta evidencia o una decisión, devuelve la pregunta al arquitecto.
+"""
