@@ -24,9 +24,13 @@ Los PR externos hacia `main` se cierran automáticamente. La rama `main` represe
 
 ```bash
 npm ci
+npm run graph:update
 npm run build
 cargo test --manifest-path src-tauri/Cargo.toml
+npm run graph:check
 ```
+
+Cada feature o fix requiere una historia autorizada en [`docs/hu/`](docs/hu/index.md). Antes de implementar, el agente arquitecto consulta Graphify y el agente de documentación crea la HU. Después de implementar, se actualizan la HU, `docs/<area>.document.md` y los artefactos del grafo. Consulta [`docs/agents.document.md`](docs/agents.document.md) y [`docs/graphify.document.md`](docs/graphify.document.md).
 
 Para cambios de empaquetado, ejecuta además el build nativo correspondiente descrito en el README.
 

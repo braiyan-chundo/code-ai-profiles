@@ -6,8 +6,11 @@ import type {
   CreateInstanceRequest,
   DashboardState,
   InstanceStatus,
+  OriginalApplicationUpdateResult,
+  SourceUpdateInfo,
   UnlinkCodeSessionRequest,
   UpdateInstanceRequest,
+  UsageSnapshot,
 } from "../types";
 import { ORIGINAL_INSTANCE_ID } from "../types";
 
@@ -15,12 +18,14 @@ const isTauri = () => Boolean(window.__TAURI_INTERNALS__);
 
 const now = new Date().toISOString();
 const latestMockVersion = "1.22300.0";
+const mockAvailableVersion = "1.22400.0";
+const mockSourceName = "Claude Desktop";
 let mockOriginalStatus: InstanceStatus = "stopped";
 let mockOriginalSessions: CodeSession[] = [
-  { id: "local-original-1", title: "Qleo project context and corrections", model: "opus-4-8", effort: "high", completedTurns: 101, createdAt: Date.now() - 2_592_000_000, lastActivityAt: Date.now() - 1_800_000, isArchived: false, contextTokens: 45_521, contextWindowTokens: 1_000_000, contextPercent: 4.5521 },
+  { id: "local-original-1", title: "Qleo project context and corrections", model: "opus-4-8", effort: "high", completedTurns: 101, createdAt: Date.now() - 2_592_000_000, lastActivityAt: Date.now() - 1_800_000, isArchived: false, contextTokens: 45_521, contextWindowTokens: 1_000_000, contextPercent: 4.5521, publishedArtifactCount: 3, artifactMonitor: { monitorType: "artifact-comment-monitor", state: "armed", artifactCount: 3 } },
   { id: "local-original-2", title: "Moovimi Manager", model: "opus-4-8", effort: "high", completedTurns: 64, createdAt: Date.now() - 1_209_600_000, lastActivityAt: Date.now() - 86_400_000, isArchived: false, contextTokens: 647_000, contextWindowTokens: 1_000_000, contextPercent: 64.7 },
-  { id: "local-original-3", title: "Njord REST API", model: "opus-4-8", effort: "medium", completedTurns: 32, createdAt: Date.now() - 604_800_000, lastActivityAt: Date.now() - 172_800_000, isArchived: false, contextTokens: 836_000, contextWindowTokens: 1_000_000, contextPercent: 83.6 },
-  { id: "local-original-4", title: "Rutas de calendario no funcionan", model: "opus-4-8", effort: null, completedTurns: 5, createdAt: Date.now() - 259_200_000, lastActivityAt: Date.now() - 216_000_000, isArchived: true },
+  { id: "local-original-3", title: "Njord REST API", model: "sonnet-4-5", effort: "medium", completedTurns: 32, createdAt: Date.now() - 604_800_000, lastActivityAt: Date.now() - 172_800_000, isArchived: false, contextTokens: 167_200, contextWindowTokens: 200_000, contextPercent: 83.6 },
+  { id: "local-original-4", title: "Rutas de calendario no funcionan", model: "modelo-privado-acme", effort: null, completedTurns: 5, createdAt: Date.now() - 259_200_000, lastActivityAt: Date.now() - 216_000_000, isArchived: true, contextTokens: 32_400, contextWindowTokens: null, contextPercent: null },
 ];
 let mockInstances: ManagedInstance[] = [
   {
@@ -52,7 +57,7 @@ let mockInstances: ManagedInstance[] = [
     status: "stopped",
     usage: { sessionPercent: 42, weeklyPercent: 21, capturedAt: Date.now() },
     codeSessions: [
-      { id: "personal-1", title: "Prototipo de aplicación personal", model: "sonnet-4-6", effort: "medium", completedTurns: 12, createdAt: Date.now() - 259_200_000, lastActivityAt: Date.now() - 43_200_000, isArchived: false, contextTokens: 875_000, contextWindowTokens: 1_000_000, contextPercent: 87.5 },
+      { id: "personal-1", title: "Prototipo de aplicación personal", model: "sonnet-4-5", effort: "medium", completedTurns: 12, createdAt: Date.now() - 259_200_000, lastActivityAt: Date.now() - 43_200_000, isArchived: false, contextTokens: 175_000, contextWindowTokens: 200_000, contextPercent: 87.5 },
     ],
   },
   {
@@ -74,9 +79,17 @@ const mockState = (): DashboardState => ({
   instances: mockInstances,
   system: {
     platform: "macos",
-    sourcePath: "/Applications/Compatible App.app",
+    sourcePath: "/Applications/Claude.app",
+    sourceName: mockSourceName,
     sourceVersion: latestMockVersion,
-    originalProfilePath: "~/Library/Application Support/Compatible App",
+    sourceUpdate: {
+      status: "available",
+      latestVersion: mockAvailableVersion,
+      checkedAt: Date.now(),
+      stale: false,
+      source: "officialFeed",
+    },
+    originalProfilePath: "~/Library/Application Support/Claude",
     originalStatus: mockOriginalStatus,
     originalCodeSessions: mockOriginalSessions,
     freeBytes: 452_800_000_000,
@@ -87,7 +100,7 @@ const mockState = (): DashboardState => ({
 const mockProfiles = () => [
   {
     id: ORIGINAL_INSTANCE_ID,
-    name: "Aplicación original",
+    name: mockSourceName,
     status: mockOriginalStatus,
     codeSessions: mockOriginalSessions,
   },
@@ -168,6 +181,46 @@ export const bridge = {
     return mockState();
   },
 
+  async updateOriginalApplication(): Promise<OriginalApplicationUpdateResult> {
+    if (isTauri()) return call("update_original_application");
+    await new Promise((resolve) => window.setTimeout(resolve, 320));
+    return {
+      action: "download",
+      message: "Modo de demostración: se simuló la apertura de la descarga oficial; no se abrió ningún navegador.",
+    };
+  },
+
+  async checkSourceUpdate(): Promise<SourceUpdateInfo> {
+    if (isTauri()) return call("check_source_update");
+    await new Promise((resolve) => window.setTimeout(resolve, 120));
+    return {
+      status: "available",
+      latestVersion: mockAvailableVersion,
+      checkedAt: Date.now(),
+      stale: false,
+      source: "officialFeed",
+    };
+  },
+
+  async liveUsage(instanceIds: string[]): Promise<UsageSnapshot[]> {
+    if (isTauri()) return call("get_live_usage", { instanceIds });
+    const capturedAt = Date.now();
+    mockInstances = mockInstances.map((instance) => {
+      if (!instanceIds.includes(instance.id) || !instance.usage) return instance;
+      return {
+        ...instance,
+        usage: {
+          ...instance.usage,
+          sessionPercent: Math.min(100, (instance.usage.sessionPercent ?? 0) + 0.2),
+          capturedAt,
+        },
+      };
+    });
+    return mockInstances
+      .filter((instance) => instanceIds.includes(instance.id) && instance.usage)
+      .map((instance) => ({ instanceId: instance.id, usage: instance.usage! }));
+  },
+
   async copySession(request: CopyCodeSessionRequest): Promise<DashboardState> {
     if (isTauri()) return call("copy_code_session", { request });
     const profiles = mockProfiles();
@@ -190,7 +243,12 @@ export const bridge = {
     if (request.mode === "move") {
       updateMockProfileSessions(source.id, (sessions) => sessions.filter((existing) => existing.id !== session.id));
     }
-    const transferred = { ...session, transfer: targetTransfer };
+    const existingTarget = target.codeSessions.find((existing) => existing.id === session.id);
+    const transferred = {
+      ...session,
+      publishedArtifactCount: existingTarget?.publishedArtifactCount ?? 0,
+      transfer: targetTransfer,
+    };
     updateMockProfileSessions(target.id, (sessions) => {
       const alreadyExists = sessions.some((existing) => existing.id === session.id);
       return alreadyExists

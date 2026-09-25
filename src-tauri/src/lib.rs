@@ -14,6 +14,10 @@ use uuid::Uuid;
 
 const REGISTRY_VERSION: u32 = 1;
 const ORIGINAL_INSTANCE_ID: &str = "__claude_original__";
+const UPDATE_CACHE_FRESH_MS: i64 = 6 * 60 * 60 * 1_000;
+const UPDATE_CACHE_STALE_MS: i64 = 7 * 24 * 60 * 60 * 1_000;
+const UPDATE_FEED_MAX_BYTES: u64 = 256 * 1_024;
+const NULL_DEVICE_ID: &str = "00000000-0000-0000-0000-000000000000";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -105,9 +109,21 @@ struct CodeSession {
     context_window_tokens: Option<u64>,
     context_percent: Option<f64>,
     #[serde(default)]
+    published_artifact_count: u64,
+    #[serde(default)]
+    artifact_monitor: Option<ArtifactMonitorSummary>,
+    #[serde(default)]
     transfer: Option<SessionTransferInfo>,
     #[serde(skip)]
     cli_session_id: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+struct ArtifactMonitorSummary {
+    monitor_type: String,
+    state: Option<String>,
+    artifact_count: u64,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Default, PartialEq, Eq)]
@@ -138,6 +154,8 @@ struct CodeSessionDocument {
     last_activity_at: Option<i64>,
     #[serde(default)]
     is_archived: bool,
+    #[serde(default, deserialize_with = "deserialize_collection_count")]
+    published_artifacts: u64,
 }
 
 #[derive(Debug, Deserialize)]
@@ -149,6 +167,12 @@ struct TranscriptEntry {
     entry_type: Option<String>,
     subtype: Option<String>,
     message: Option<TranscriptMessage>,
+    artifacts: Option<HashMap<String, ArtifactMonitorEntry>>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ArtifactMonitorEntry {
+    state: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -179,6 +203,56 @@ struct TranscriptUsageIteration {
     cache_read_input_tokens: u64,
 }
 
+fn deserialize_collection_count<'de, D>(deserializer: D) -> Result<u64, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    struct CollectionCountVisitor;
+
+    impl<'de> serde::de::Visitor<'de> for CollectionCountVisitor {
+        type Value = u64;
+
+        fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            formatter.write_str("an artifact array or object")
+        }
+
+        fn visit_none<E>(self) -> Result<Self::Value, E> {
+            Ok(0)
+        }
+
+        fn visit_unit<E>(self) -> Result<Self::Value, E> {
+            Ok(0)
+        }
+
+        fn visit_seq<A>(self, mut sequence: A) -> Result<Self::Value, A::Error>
+        where
+            A: serde::de::SeqAccess<'de>,
+        {
+            let mut count = 0_u64;
+            while sequence.next_element::<serde::de::IgnoredAny>()?.is_some() {
+                count = count.saturating_add(1);
+            }
+            Ok(count)
+        }
+
+        fn visit_map<A>(self, mut map: A) -> Result<Self::Value, A::Error>
+        where
+            A: serde::de::MapAccess<'de>,
+        {
+            let mut count = 0_u64;
+            while map
+                .next_entry::<serde::de::IgnoredAny, serde::de::IgnoredAny>()?
+                .is_some()
+            {
+                count = count.saturating_add(1);
+            }
+            Ok(count)
+        }
+    }
+
+    deserializer.deserialize_any(CollectionCountVisitor)
+}
+
 #[derive(Debug, PartialEq)]
 struct SessionContextSnapshot {
     model: Option<String>,
@@ -191,12 +265,86 @@ struct SessionContextSnapshot {
 struct SystemInfo {
     platform: String,
     source_path: Option<String>,
+    source_name: Option<String>,
     source_version: Option<String>,
+    source_update: SourceUpdateInfo,
     original_profile_path: Option<String>,
     original_status: InstanceStatus,
     original_code_sessions: Vec<CodeSession>,
     free_bytes: Option<u64>,
     managed_bytes: u64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+struct SourceUpdateInfo {
+    status: SourceUpdateStatus,
+    latest_version: Option<String>,
+    checked_at: Option<i64>,
+    stale: bool,
+    source: Option<SourceUpdateSource>,
+}
+
+impl Default for SourceUpdateInfo {
+    fn default() -> Self {
+        Self {
+            status: SourceUpdateStatus::Unavailable,
+            latest_version: None,
+            checked_at: None,
+            stale: false,
+            source: None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+enum SourceUpdateStatus {
+    Current,
+    Available,
+    Unavailable,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+enum SourceUpdateSource {
+    OfficialFeed,
+    AptCache,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct SourceUpdateCache {
+    platform: String,
+    installed_version: String,
+    result: SourceUpdateInfo,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct UsageSnapshot {
+    instance_id: String,
+    usage: UsageStats,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+enum OriginalApplicationUpdateAction {
+    Download,
+    Instructions,
+}
+
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+struct OriginalApplicationUpdateResult {
+    action: OriginalApplicationUpdateAction,
+    message: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct OriginalApplicationUpdateTarget {
+    action: OriginalApplicationUpdateAction,
+    url: &'static str,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -307,6 +455,7 @@ struct ManagedPaths {
     registry: PathBuf,
     session_backups: PathBuf,
     session_links: PathBuf,
+    source_update_cache: PathBuf,
 }
 
 impl ManagedPaths {
@@ -322,6 +471,7 @@ impl ManagedPaths {
             registry: app_data.join("instances.json"),
             session_backups: app_data.join("session-transfer-backups"),
             session_links: app_data.join("session-links.json"),
+            source_update_cache: app_data.join("source-update-cache.json"),
             app_data,
             instances,
         })
@@ -477,6 +627,151 @@ fn platform_name() -> String {
         "unknown"
     }
     .to_string()
+}
+
+fn sanitize_source_name(value: &str) -> Option<String> {
+    let value = value.trim();
+    (!value.is_empty() && value.chars().count() <= 80 && !value.chars().any(char::is_control))
+        .then(|| value.to_string())
+}
+
+fn readable_source_stem(source: &Path) -> Option<String> {
+    let stem = source.file_stem()?.to_str()?;
+    let words = stem
+        .split(['-', '_'])
+        .filter(|word| !word.is_empty())
+        .map(|word| {
+            let mut characters = word.chars();
+            characters
+                .next()
+                .map(|first| first.to_uppercase().collect::<String>() + characters.as_str())
+                .unwrap_or_default()
+        })
+        .collect::<Vec<_>>()
+        .join(" ");
+    sanitize_source_name(&words)
+}
+
+fn source_name_from_metadata(
+    preferred: Option<&str>,
+    alternate: Option<&str>,
+    source: &Path,
+) -> Option<String> {
+    preferred
+        .and_then(sanitize_source_name)
+        .or_else(|| alternate.and_then(sanitize_source_name))
+        .or_else(|| readable_source_stem(source))
+}
+
+#[cfg(target_os = "macos")]
+fn macos_bundle_value(source: &Path, key: &str) -> Option<String> {
+    let output = Command::new("/usr/bin/plutil")
+        .args(["-extract", key, "raw", "-o", "-"])
+        .arg(source.join("Contents/Info.plist"))
+        .output()
+        .ok()?;
+    output
+        .status
+        .success()
+        .then(|| String::from_utf8_lossy(&output.stdout).into_owned())
+        .and_then(|value| sanitize_source_name(&value))
+}
+
+#[cfg(any(test, target_os = "linux"))]
+fn linux_desktop_name(contents: &str) -> Option<String> {
+    let mut in_desktop_entry = false;
+    for line in contents.lines() {
+        let line = line.trim();
+        if line.starts_with('[') {
+            in_desktop_entry = line == "[Desktop Entry]";
+            continue;
+        }
+        if in_desktop_entry {
+            if let Some(value) = line.strip_prefix("Name=") {
+                return sanitize_source_name(value);
+            }
+        }
+    }
+    None
+}
+
+fn source_display_name(source: &Path) -> Option<String> {
+    #[cfg(target_os = "macos")]
+    {
+        let display_name = macos_bundle_value(source, "CFBundleDisplayName");
+        let bundle_name = macos_bundle_value(source, "CFBundleName");
+        return source_name_from_metadata(display_name.as_deref(), bundle_name.as_deref(), source);
+    }
+
+    #[cfg(target_os = "windows")]
+    {
+        let product_name = Command::new("powershell.exe")
+            .args([
+                "-NoProfile",
+                "-NonInteractive",
+                "-Command",
+                "(Get-Item -LiteralPath $args[0]).VersionInfo.ProductName",
+            ])
+            .arg(source)
+            .output()
+            .ok()
+            .filter(|output| output.status.success())
+            .and_then(|output| sanitize_source_name(&String::from_utf8_lossy(&output.stdout)));
+        return source_name_from_metadata(product_name.as_deref(), None, source);
+    }
+
+    #[cfg(target_os = "linux")]
+    {
+        let mut desktop_files = vec![
+            PathBuf::from("/usr/share/applications/claude-desktop.desktop"),
+            PathBuf::from("/usr/local/share/applications/claude-desktop.desktop"),
+        ];
+        if let Some(home) = dirs::home_dir() {
+            desktop_files.push(home.join(".local/share/applications/claude-desktop.desktop"));
+        }
+        let desktop_name = desktop_files.into_iter().find_map(|path| {
+            fs::read_to_string(path)
+                .ok()
+                .and_then(|contents| linux_desktop_name(&contents))
+        });
+        return source_name_from_metadata(desktop_name.as_deref(), None, source);
+    }
+
+    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
+    {
+        source_name_from_metadata(None, None, source)
+    }
+}
+
+fn original_application_update_target(
+    platform: &str,
+    arch: &str,
+) -> Option<OriginalApplicationUpdateTarget> {
+    match (platform, arch) {
+        ("macos", "x86_64" | "aarch64") => Some(OriginalApplicationUpdateTarget {
+            action: OriginalApplicationUpdateAction::Download,
+            url: "https://claude.ai/api/desktop/darwin/universal/dmg/latest/redirect",
+        }),
+        ("windows", "x86_64") => Some(OriginalApplicationUpdateTarget {
+            action: OriginalApplicationUpdateAction::Download,
+            url: "https://claude.ai/api/desktop/win32/x64/setup/latest/redirect",
+        }),
+        ("windows", "aarch64") => Some(OriginalApplicationUpdateTarget {
+            action: OriginalApplicationUpdateAction::Download,
+            url: "https://claude.ai/api/desktop/win32/arm64/setup/latest/redirect",
+        }),
+        ("linux", _) => Some(OriginalApplicationUpdateTarget {
+            action: OriginalApplicationUpdateAction::Instructions,
+            url: "https://support.claude.com/en/articles/10065433-install-claude-desktop",
+        }),
+        _ => None,
+    }
+}
+
+fn require_provider_source(source: Option<PathBuf>) -> Result<PathBuf, String> {
+    source.ok_or_else(|| {
+        "No se encontró la instalación original de la aplicación compatible.".to_string()
+    })
 }
 
 fn detect_provider_source() -> Option<PathBuf> {
@@ -866,6 +1161,208 @@ fn version_is_newer(candidate: &str, current: Option<&str>) -> bool {
         .unwrap_or(false)
 }
 
+fn valid_release_version(version: &str) -> bool {
+    !version.is_empty()
+        && version.len() <= 64
+        && version.chars().any(|character| character.is_ascii_digit())
+        && version.chars().all(|character| {
+            character.is_ascii_alphanumeric() || matches!(character, '.' | '-' | '+' | '~' | ':')
+        })
+}
+
+fn update_feed_target(platform: &str, arch: &str) -> Option<(&'static str, &'static str)> {
+    match platform {
+        "macos" => Some(("darwin", "universal")),
+        "windows" => match arch {
+            "x86_64" => Some(("win32", "x64")),
+            "aarch64" => Some(("win32", "arm64")),
+            _ => None,
+        },
+        _ => None,
+    }
+}
+
+fn update_status(installed_version: &str, latest_version: &str) -> SourceUpdateStatus {
+    if version_is_newer(latest_version, Some(installed_version)) {
+        SourceUpdateStatus::Available
+    } else {
+        SourceUpdateStatus::Current
+    }
+}
+
+fn read_source_update_cache(
+    paths: &ManagedPaths,
+    platform: &str,
+    installed_version: &str,
+    max_age_ms: i64,
+) -> Option<SourceUpdateInfo> {
+    let metadata = fs::symlink_metadata(&paths.source_update_cache).ok()?;
+    if !metadata.is_file() || metadata.file_type().is_symlink() || metadata.len() > 64 * 1024 {
+        return None;
+    }
+    let cache: SourceUpdateCache =
+        serde_json::from_slice(&fs::read(&paths.source_update_cache).ok()?).ok()?;
+    if cache.platform != platform || cache.installed_version != installed_version {
+        return None;
+    }
+    let checked_at = cache.result.checked_at?;
+    let age = Utc::now().timestamp_millis().saturating_sub(checked_at);
+    if age < 0 || age > max_age_ms || cache.result.status == SourceUpdateStatus::Unavailable {
+        return None;
+    }
+    let mut result = cache.result;
+    result.stale = age > UPDATE_CACHE_FRESH_MS;
+    Some(result)
+}
+
+fn save_source_update_cache(
+    paths: &ManagedPaths,
+    platform: &str,
+    installed_version: &str,
+    result: &SourceUpdateInfo,
+) -> Result<(), String> {
+    let cache = SourceUpdateCache {
+        platform: platform.to_string(),
+        installed_version: installed_version.to_string(),
+        result: result.clone(),
+    };
+    let contents = serde_json::to_vec_pretty(&cache)
+        .map_err(|error| format!("No se pudo serializar la caché de actualización: {error}"))?;
+    atomic_replace_file(&paths.source_update_cache, &contents)
+}
+
+fn check_official_update_feed(
+    platform: &str,
+    arch: &str,
+    installed_version: &str,
+) -> Result<SourceUpdateInfo, String> {
+    let (feed_platform, feed_arch) = update_feed_target(platform, arch)
+        .ok_or_else(|| "No existe un feed oficial para esta plataforma.".to_string())?;
+    let url = format!(
+        "https://releases.claude.com/api/desktop/{feed_platform}/{feed_arch}/squirrel/update"
+    );
+    let client = reqwest::blocking::Client::builder()
+        .timeout(std::time::Duration::from_secs(5))
+        .redirect(reqwest::redirect::Policy::none())
+        .build()
+        .map_err(|error| format!("No se pudo preparar la consulta de actualización: {error}"))?;
+    let response = client
+        .get(url)
+        .query(&[
+            ("version", installed_version),
+            ("device_id", NULL_DEVICE_ID),
+        ])
+        .header(reqwest::header::USER_AGENT, "Code-AI-Profiles/0.1")
+        .send()
+        .map_err(|error| format!("No se pudo consultar el feed oficial: {error}"))?;
+    if !response.status().is_success() {
+        return Err(format!(
+            "El feed oficial respondió con estado {}.",
+            response.status()
+        ));
+    }
+    if response.content_length().unwrap_or(0) > UPDATE_FEED_MAX_BYTES {
+        return Err("La respuesta del feed oficial excede el límite permitido.".to_string());
+    }
+    let mut body = Vec::new();
+    response
+        .take(UPDATE_FEED_MAX_BYTES + 1)
+        .read_to_end(&mut body)
+        .map_err(|error| format!("No se pudo leer el feed oficial: {error}"))?;
+    if body.len() as u64 > UPDATE_FEED_MAX_BYTES {
+        return Err("La respuesta del feed oficial excede el límite permitido.".to_string());
+    }
+    let document: Value = serde_json::from_slice(&body)
+        .map_err(|_| "El feed oficial devolvió metadata inválida.".to_string())?;
+    let latest_version = document
+        .get("currentRelease")
+        .and_then(Value::as_str)
+        .filter(|version| valid_release_version(version))
+        .map(str::to_string)
+        .ok_or_else(|| "El feed oficial no incluyó una versión válida.".to_string())?;
+    Ok(SourceUpdateInfo {
+        status: update_status(installed_version, &latest_version),
+        latest_version: Some(latest_version),
+        checked_at: Some(Utc::now().timestamp_millis()),
+        stale: false,
+        source: Some(SourceUpdateSource::OfficialFeed),
+    })
+}
+
+fn parse_apt_policy(contents: &str) -> (Option<String>, Option<String>) {
+    let value = |label: &str| {
+        contents.lines().find_map(|line| {
+            let (key, value) = line.trim().split_once(':')?;
+            (key == label && value.trim() != "(none)")
+                .then(|| value.trim().to_string())
+                .filter(|value| valid_release_version(value))
+        })
+    };
+    (value("Installed"), value("Candidate"))
+}
+
+fn check_apt_update(installed_version: &str) -> Result<SourceUpdateInfo, String> {
+    let output = Command::new("apt-cache")
+        .args(["policy", "claude-desktop"])
+        .env("LC_ALL", "C")
+        .output()
+        .map_err(|error| format!("No se pudo consultar la caché local de APT: {error}"))?;
+    if !output.status.success() {
+        return Err("APT no pudo consultar el paquete claude-desktop.".to_string());
+    }
+    let (_, candidate) = parse_apt_policy(&String::from_utf8_lossy(&output.stdout));
+    let candidate = candidate.ok_or_else(|| "APT no tiene un candidato disponible.".to_string())?;
+    let comparison = Command::new("dpkg")
+        .args(["--compare-versions", &candidate, "gt", installed_version])
+        .status()
+        .map_err(|error| format!("No se pudieron comparar las versiones de APT: {error}"))?;
+    Ok(SourceUpdateInfo {
+        status: if comparison.success() {
+            SourceUpdateStatus::Available
+        } else {
+            SourceUpdateStatus::Current
+        },
+        latest_version: Some(candidate),
+        checked_at: Some(Utc::now().timestamp_millis()),
+        stale: false,
+        source: Some(SourceUpdateSource::AptCache),
+    })
+}
+
+fn check_source_update_sync(app: &AppHandle) -> Result<SourceUpdateInfo, String> {
+    let paths = ManagedPaths::resolve(app)?;
+    let source = require_provider_source(detect_provider_source())?;
+    let installed_version = source_version(&source)
+        .filter(|version| valid_release_version(version))
+        .ok_or_else(|| "No se pudo identificar la versión instalada.".to_string())?;
+    let platform = platform_name();
+    if let Some(cached) =
+        read_source_update_cache(&paths, &platform, &installed_version, UPDATE_CACHE_FRESH_MS)
+    {
+        return Ok(cached);
+    }
+    let checked = match platform.as_str() {
+        "macos" | "windows" => {
+            check_official_update_feed(&platform, std::env::consts::ARCH, &installed_version)
+        }
+        "linux" => check_apt_update(&installed_version),
+        _ => Err("La comprobación de actualización no está soportada.".to_string()),
+    };
+    match checked {
+        Ok(result) => {
+            let _ = save_source_update_cache(&paths, &platform, &installed_version, &result);
+            Ok(result)
+        }
+        Err(_) => Ok(read_source_update_cache(
+            &paths,
+            &platform,
+            &installed_version,
+            UPDATE_CACHE_STALE_MS,
+        )
+        .unwrap_or_default()),
+    }
+}
+
 fn copy_provider_application(source: &Path, instance_root: &Path) -> Result<PathBuf, String> {
     let application_root = instance_root.join("application");
     fs::create_dir_all(&application_root)
@@ -1117,12 +1614,71 @@ fn parse_code_session(contents: &[u8], fallback_id: &str) -> Option<CodeSession>
         context_tokens: None,
         context_window_tokens: None,
         context_percent: None,
+        published_artifact_count: document.published_artifacts,
+        artifact_monitor: None,
         transfer: None,
         cli_session_id: document
             .cli_session_id
             .and_then(|value| Uuid::parse_str(value.trim()).ok())
             .map(|value| value.to_string()),
     })
+}
+
+fn clean_monitor_state(value: Option<String>) -> Option<String> {
+    value.and_then(|value| {
+        let normalized = value.trim().to_ascii_lowercase();
+        matches!(
+            normalized.as_str(),
+            "armed" | "active" | "paused" | "stopped" | "error"
+        )
+        .then_some(normalized)
+    })
+}
+
+fn latest_artifact_monitor(path: &Path) -> Option<ArtifactMonitorSummary> {
+    const MAX_TAIL_BYTES: u64 = 16 * 1024 * 1024;
+    const MAX_LINE_BYTES: usize = 4 * 1024 * 1024;
+
+    let mut file = File::open(path).ok()?;
+    let length = file.metadata().ok()?.len();
+    let start = length.saturating_sub(MAX_TAIL_BYTES);
+    file.seek(SeekFrom::Start(start)).ok()?;
+    let mut contents = Vec::with_capacity((length - start).min(MAX_TAIL_BYTES) as usize);
+    file.read_to_end(&mut contents).ok()?;
+    if start > 0 {
+        let first_line_end = contents.iter().position(|byte| *byte == b'\n')?;
+        contents.drain(..=first_line_end);
+    }
+
+    for line in contents.split(|byte| *byte == b'\n').rev() {
+        if line.is_empty() || line.len() > MAX_LINE_BYTES {
+            continue;
+        }
+        let Ok(entry) = serde_json::from_slice::<TranscriptEntry>(line) else {
+            continue;
+        };
+        if entry.is_sidechain || entry.entry_type.as_deref() != Some("artifact-comment-monitor") {
+            continue;
+        }
+        let artifacts = entry.artifacts.unwrap_or_default();
+        let mut states = artifacts
+            .values()
+            .filter_map(|artifact| clean_monitor_state(artifact.state.clone()))
+            .collect::<HashSet<_>>();
+        let state = if states.len() == 1 {
+            states.drain().next()
+        } else if states.len() > 1 {
+            Some("mixed".to_string())
+        } else {
+            None
+        };
+        return Some(ArtifactMonitorSummary {
+            monitor_type: "artifact-comment-monitor".to_string(),
+            state,
+            artifact_count: artifacts.len() as u64,
+        });
+    }
+    None
 }
 
 fn collect_code_session_files(directory: &Path, depth: usize, files: &mut Vec<PathBuf>) {
@@ -1200,24 +1756,70 @@ fn code_transcript_catalog() -> HashMap<String, PathBuf> {
     transcripts
 }
 
+fn contains_model_alias(model: &str, alias: &str) -> bool {
+    model.match_indices(alias).any(|(start, _)| {
+        let end = start + alias.len();
+        (start == 0 || model.as_bytes()[start - 1] == b'-')
+            && (end == model.len() || model.as_bytes()[end] == b'-')
+    })
+}
+
 fn context_window_for_model(model: &str) -> Option<u64> {
-    let model = model.to_ascii_lowercase();
+    let model = model
+        .to_ascii_lowercase()
+        .chars()
+        .map(|character| {
+            if character.is_ascii_alphanumeric() {
+                character
+            } else {
+                '-'
+            }
+        })
+        .collect::<String>();
     let extended_context = [
-        "claude-fable-5",
-        "claude-mythos-5",
-        "claude-mythos-preview",
-        "claude-opus-4-8",
-        "claude-opus-4-7",
-        "claude-sonnet-5",
-        "claude-sonnet-4-6",
+        "fable-5",
+        "mythos-5",
+        "mythos-preview",
+        "opus-5",
+        "opus-4-8",
+        "opus-4-7",
+        "opus-4-6",
+        "sonnet-5",
+        "sonnet-4-6",
     ];
     if extended_context
         .iter()
-        .any(|candidate| model.contains(candidate))
+        .any(|candidate| contains_model_alias(&model, candidate))
     {
         return Some(1_000_000);
     }
-    model.starts_with("claude-").then_some(200_000)
+    let standard_context = [
+        "opus-4-5",
+        "opus-4-1",
+        "opus-4-0",
+        "opus-4-20250514",
+        "3-opus",
+        "claude-2-1",
+        "claude-2-0",
+        "claude-2",
+        "claude-1-3",
+        "claude-1-2",
+        "claude-1-0",
+        "claude-instant-1",
+        "sonnet-4-5",
+        "sonnet-4-0",
+        "sonnet-4-20250514",
+        "3-7-sonnet",
+        "3-5-sonnet",
+        "3-sonnet",
+        "haiku-4-5",
+        "3-5-haiku",
+        "3-haiku",
+    ];
+    standard_context
+        .iter()
+        .any(|candidate| contains_model_alias(&model, candidate))
+        .then_some(200_000)
 }
 
 fn latest_transcript_context(path: &Path) -> Option<SessionContextSnapshot> {
@@ -1286,6 +1888,11 @@ fn latest_transcript_context(path: &Path) -> Option<SessionContextSnapshot> {
 
 fn apply_session_context(sessions: &mut [CodeSession], transcripts: &HashMap<String, PathBuf>) {
     for session in sessions {
+        session.artifact_monitor = session
+            .cli_session_id
+            .as_ref()
+            .and_then(|id| transcripts.get(id))
+            .and_then(|path| latest_artifact_monitor(path));
         let Some(snapshot) = session
             .cli_session_id
             .as_ref()
@@ -1531,6 +2138,75 @@ fn rollback_transfer_target(
     }
 }
 
+fn published_artifacts(document: &Value) -> Option<Value> {
+    document
+        .get("publishedArtifacts")
+        .filter(|value| value.is_array() || value.is_object())
+        .cloned()
+}
+
+fn session_index_for_target(
+    mut source_document: Value,
+    target_artifacts: Option<Value>,
+) -> Result<Vec<u8>, String> {
+    let object = source_document
+        .as_object_mut()
+        .ok_or_else(|| "El índice de la sesión no tiene un formato válido.".to_string())?;
+    object.remove("publishedArtifacts");
+    if let Some(artifacts) = target_artifacts {
+        object.insert("publishedArtifacts".to_string(), artifacts);
+    }
+    serde_json::to_vec_pretty(&source_document)
+        .map_err(|error| format!("No se pudo preparar el índice sanitizado: {error}"))
+}
+
+fn restored_origin_artifacts(
+    backup_root: &Path,
+    session_id: &str,
+    origin_instance_id: &str,
+) -> Option<Value> {
+    let mut directories = fs::read_dir(backup_root)
+        .ok()?
+        .flatten()
+        .filter_map(|entry| {
+            let path = entry.path();
+            let metadata = fs::symlink_metadata(&path).ok()?;
+            (metadata.is_dir() && !metadata.file_type().is_symlink()).then_some(path)
+        })
+        .collect::<Vec<_>>();
+    directories.sort_by(|left, right| right.file_name().cmp(&left.file_name()));
+
+    for directory in directories {
+        let manifest_path = directory.join("manifest.json");
+        let index_path = directory.join("source-index.json");
+        let valid_file = |path: &Path| {
+            fs::symlink_metadata(path)
+                .ok()
+                .filter(|metadata| metadata.is_file() && !metadata.file_type().is_symlink())
+                .map(|metadata| metadata.len() <= 1024 * 1024)
+                .unwrap_or(false)
+        };
+        if !valid_file(&manifest_path) || !valid_file(&index_path) {
+            continue;
+        }
+        let Ok(manifest) =
+            serde_json::from_slice::<SessionTransferManifest>(&fs::read(&manifest_path).ok()?)
+        else {
+            continue;
+        };
+        if manifest.session_id != session_id || manifest.source_instance_id != origin_instance_id {
+            continue;
+        }
+        let Ok(document) = serde_json::from_slice::<Value>(&fs::read(index_path).ok()?) else {
+            continue;
+        };
+        if let Some(artifacts) = published_artifacts(&document) {
+            return Some(artifacts);
+        }
+    }
+    None
+}
+
 fn copy_code_session_sync(app: &AppHandle, request: CopyCodeSessionRequest) -> Result<(), String> {
     if request.source_instance_id == request.target_instance_id {
         return Err("El origen y el destino deben ser perfiles diferentes.".to_string());
@@ -1554,7 +2230,7 @@ fn copy_code_session_sync(app: &AppHandle, request: CopyCodeSessionRequest) -> R
 
     let source_profile = source.profile_path.clone();
     let target_profile = target.profile_path.clone();
-    let (source_index, index_contents, document) =
+    let (source_index, _index_contents, document) =
         find_code_session_index(&source_profile, &request.session_id)?;
     let session_id = document
         .get("sessionId")
@@ -1628,6 +2304,29 @@ fn copy_code_session_sync(app: &AppHandle, request: CopyCodeSessionRequest) -> R
         }
     };
 
+    let origin_instance_id = session_links
+        .links
+        .iter()
+        .find(|link| {
+            link.session_id == session_id
+                && (link.origin_instance_id == source.id
+                    || link.linked_instance_id == source.id
+                    || link.origin_instance_id == target.id
+                    || link.linked_instance_id == target.id)
+        })
+        .map(|link| link.origin_instance_id.clone())
+        .unwrap_or_else(|| source.id.clone());
+    let existing_target_artifacts = fs::read(&target_index)
+        .ok()
+        .and_then(|contents| serde_json::from_slice::<Value>(&contents).ok())
+        .and_then(|document| published_artifacts(&document));
+    let target_owned_artifacts = existing_target_artifacts.or_else(|| {
+        (target.id == origin_instance_id).then(|| {
+            restored_origin_artifacts(&paths.session_backups, &session_id, &origin_instance_id)
+        })?
+    });
+    let sanitized_index = session_index_for_target(document.clone(), target_owned_artifacts)?;
+
     let transfer_id = Uuid::new_v4().to_string();
     let backup_root = paths.session_backups.join(format!(
         "{}-{}",
@@ -1669,7 +2368,7 @@ fn copy_code_session_sync(app: &AppHandle, request: CopyCodeSessionRequest) -> R
     fs::write(backup_root.join("manifest.json"), manifest_contents)
         .map_err(|error| format!("No se pudo guardar el manifiesto de respaldo: {error}"))?;
 
-    atomic_replace_file(&target_index, &index_contents)?;
+    atomic_replace_file(&target_index, &sanitized_index)?;
 
     let detached_source = backup_root.join("source-index.detached.json");
     if request.mode == SessionTransferMode::Move {
@@ -1889,7 +2588,9 @@ fn refresh_instance_versions(registry: &mut Registry) {
 
 fn refresh_instance_usage(registry: &mut Registry) {
     for instance in &mut registry.instances {
-        instance.usage = read_usage(Path::new(&instance.profile_path));
+        if let Some(usage) = read_usage(Path::new(&instance.profile_path)) {
+            instance.usage = Some(usage);
+        }
     }
 }
 
@@ -1905,6 +2606,14 @@ fn system_info(
     transcripts: &HashMap<String, PathBuf>,
 ) -> SystemInfo {
     let source = detect_provider_source();
+    let platform = platform_name();
+    let source_version_value = source.as_deref().and_then(source_version);
+    let source_update = source_version_value
+        .as_deref()
+        .and_then(|installed| {
+            read_source_update_cache(paths, &platform, installed, UPDATE_CACHE_STALE_MS)
+        })
+        .unwrap_or_default();
     let original_profile = detect_original_profile();
     let mut original_code_sessions = original_profile
         .as_deref()
@@ -1917,8 +2626,10 @@ fn system_info(
     );
     let free_bytes = fs2::available_space(&paths.app_data).ok();
     SystemInfo {
-        platform: platform_name(),
-        source_version: source.as_deref().and_then(source_version),
+        platform,
+        source_version: source_version_value,
+        source_update,
+        source_name: source.as_deref().and_then(source_display_name),
         source_path: source.map(|path| path.to_string_lossy().to_string()),
         original_profile_path: original_profile.map(|path| path.to_string_lossy().to_string()),
         original_status: original_instance_status(),
@@ -1944,6 +2655,36 @@ fn dashboard_from(app: &AppHandle) -> Result<DashboardState, String> {
 #[tauri::command]
 fn get_dashboard_state(app: AppHandle) -> Result<DashboardState, String> {
     dashboard_from(&app)
+}
+
+#[tauri::command]
+async fn check_source_update(app: AppHandle) -> Result<SourceUpdateInfo, String> {
+    tauri::async_runtime::spawn_blocking(move || check_source_update_sync(&app))
+        .await
+        .map_err(|error| {
+            format!("La comprobación de actualización terminó inesperadamente: {error}")
+        })?
+}
+
+#[tauri::command]
+fn get_live_usage(app: AppHandle, instance_ids: Vec<String>) -> Result<Vec<UsageSnapshot>, String> {
+    let paths = ManagedPaths::resolve(&app)?;
+    let registry = load_registry(&paths)?;
+    let requested = instance_ids
+        .into_iter()
+        .filter(|id| Uuid::parse_str(id).is_ok())
+        .collect::<HashSet<_>>();
+    Ok(registry
+        .instances
+        .iter()
+        .filter(|instance| requested.contains(&instance.id))
+        .filter_map(|instance| {
+            read_usage(Path::new(&instance.profile_path)).map(|usage| UsageSnapshot {
+                instance_id: instance.id.clone(),
+                usage,
+            })
+        })
+        .collect())
 }
 
 #[tauri::command]
@@ -2374,6 +3115,50 @@ fn open_instance_folder(app: AppHandle, id: String) -> Result<(), String> {
 }
 
 #[tauri::command]
+fn update_original_application() -> Result<OriginalApplicationUpdateResult, String> {
+    require_provider_source(detect_provider_source())?;
+
+    let platform = platform_name();
+    let target =
+        original_application_update_target(&platform, std::env::consts::ARCH).ok_or_else(|| {
+            "La actualización oficial no está soportada en esta plataforma.".to_string()
+        })?;
+
+    #[cfg(target_os = "macos")]
+    let status = Command::new("/usr/bin/open").arg(target.url).status();
+    #[cfg(target_os = "windows")]
+    let status = Command::new("rundll32.exe")
+        .args(["url.dll,FileProtocolHandler", target.url])
+        .status();
+    #[cfg(target_os = "linux")]
+    let status = Command::new("xdg-open").arg(target.url).status();
+    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
+    let status: Result<std::process::ExitStatus, std::io::Error> = unreachable!();
+
+    let status = status
+        .map_err(|error| format!("No se pudo abrir el canal oficial de actualización: {error}"))?;
+    if !status.success() {
+        return Err(format!(
+            "El sistema no pudo abrir el canal oficial de actualización (código {}).",
+            status
+        ));
+    }
+
+    let message = match target.action {
+        OriginalApplicationUpdateAction::Download => {
+            "Se abrió la descarga oficial. Ejecuta el instalador para actualizar la aplicación original; las instancias permanecen intactas."
+        }
+        OriginalApplicationUpdateAction::Instructions => {
+            "Se abrieron las instrucciones oficiales para actualizar Claude Desktop en Linux; las instancias permanecen intactas."
+        }
+    };
+    Ok(OriginalApplicationUpdateResult {
+        action: target.action,
+        message: message.to_string(),
+    })
+}
+
+#[tauri::command]
 fn delete_instance(app: AppHandle, id: String) -> Result<DashboardState, String> {
     let paths = ManagedPaths::resolve(&app)?;
     let root = paths.root_for(&id)?;
@@ -2418,6 +3203,8 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             get_dashboard_state,
+            check_source_update,
+            get_live_usage,
             scan_system,
             create_instance,
             update_instance,
@@ -2427,6 +3214,7 @@ pub fn run() {
             launch_instance,
             stop_instance,
             open_instance_folder,
+            update_original_application,
             delete_instance
         ])
         .run(tauri::generate_context!())
@@ -2446,9 +3234,88 @@ mod tests {
     }
 
     #[test]
+    fn sanitizes_source_names_and_uses_readable_fallbacks() {
+        let bundle = Path::new("/Applications/claude-desktop.app");
+        assert_eq!(
+            source_name_from_metadata(Some("  Claude Desktop  "), Some("Claude"), bundle)
+                .as_deref(),
+            Some("Claude Desktop")
+        );
+        assert_eq!(
+            source_name_from_metadata(Some("bad\nname"), Some("Claude"), bundle).as_deref(),
+            Some("Claude")
+        );
+        assert_eq!(
+            source_name_from_metadata(None, None, bundle).as_deref(),
+            Some("Claude Desktop")
+        );
+        assert!(sanitize_source_name(&"x".repeat(81)).is_none());
+    }
+
+    #[test]
+    fn parses_only_the_main_linux_desktop_name() {
+        assert_eq!(
+            linux_desktop_name(
+                "[Desktop Entry]\nName[es]=Claude Escritorio\nName=Claude Desktop\n"
+            )
+            .as_deref(),
+            Some("Claude Desktop")
+        );
+        assert_eq!(linux_desktop_name("[Other]\nName=Ignore\n"), None);
+    }
+
+    #[test]
+    fn selects_official_update_targets_by_platform_and_architecture() {
+        for arch in ["x86_64", "aarch64"] {
+            let target = original_application_update_target("macos", arch).unwrap();
+            assert_eq!(target.action, OriginalApplicationUpdateAction::Download);
+            assert_eq!(
+                target.url,
+                "https://claude.ai/api/desktop/darwin/universal/dmg/latest/redirect"
+            );
+        }
+
+        assert_eq!(
+            original_application_update_target("windows", "x86_64"),
+            Some(OriginalApplicationUpdateTarget {
+                action: OriginalApplicationUpdateAction::Download,
+                url: "https://claude.ai/api/desktop/win32/x64/setup/latest/redirect",
+            })
+        );
+        assert_eq!(
+            original_application_update_target("windows", "aarch64"),
+            Some(OriginalApplicationUpdateTarget {
+                action: OriginalApplicationUpdateAction::Download,
+                url: "https://claude.ai/api/desktop/win32/arm64/setup/latest/redirect",
+            })
+        );
+        assert_eq!(
+            original_application_update_target("linux", "x86_64"),
+            Some(OriginalApplicationUpdateTarget {
+                action: OriginalApplicationUpdateAction::Instructions,
+                url: "https://support.claude.com/en/articles/10065433-install-claude-desktop",
+            })
+        );
+        assert_eq!(
+            original_application_update_target("unknown", "x86_64"),
+            None
+        );
+    }
+
+    #[test]
+    fn requires_a_detected_source_before_updating_the_original_application() {
+        let source = PathBuf::from("/Applications/Claude.app");
+        assert_eq!(require_provider_source(Some(source.clone())), Ok(source));
+        assert_eq!(
+            require_provider_source(None),
+            Err("No se encontró la instalación original de la aplicación compatible.".to_string())
+        );
+    }
+
+    #[test]
     fn parses_only_safe_code_session_fields() {
         let session = parse_code_session(
-            br#"{"sessionId":"session-1","title":"  Dashboard refactor  ","model":"claude-sonnet","effort":"high","completedTurns":12,"createdAt":1000,"lastActivityAt":2000,"isArchived":false,"promptSuggestion":"sensitive","remoteMcpServersConfig":{"secret":"ignored"}}"#,
+            br#"{"sessionId":"session-1","title":"  Dashboard refactor  ","model":"claude-sonnet","effort":"high","completedTurns":12,"createdAt":1000,"lastActivityAt":2000,"isArchived":false,"publishedArtifacts":{"remote-secret-id":{"title":"private","url":"https://private"}},"promptSuggestion":"sensitive","remoteMcpServersConfig":{"secret":"ignored"}}"#,
             "fallback",
         )
         .expect("session should parse");
@@ -2456,7 +3323,95 @@ mod tests {
         assert_eq!(session.title, "Dashboard refactor");
         assert_eq!(session.completed_turns, 12);
         assert_eq!(session.last_activity_at, Some(2000));
+        assert_eq!(session.published_artifact_count, 1);
         assert!(!session.is_archived);
+    }
+
+    #[test]
+    fn sanitizes_artifacts_using_only_the_target_profile_ownership() {
+        let source = serde_json::json!({
+            "sessionId": "local_96812ba4-6864-40d5-a70a-0470f244022c",
+            "publishedArtifacts": {"source-id": {"title": "private source"}},
+            "scheduledTasks": {"must": "remain ordinary session metadata"}
+        });
+        let target_artifacts = serde_json::json!({
+            "target-id": {"title": "private target"}
+        });
+        let sanitized: Value = serde_json::from_slice(
+            &session_index_for_target(source.clone(), Some(target_artifacts.clone())).unwrap(),
+        )
+        .unwrap();
+        assert_eq!(sanitized.get("publishedArtifacts"), Some(&target_artifacts));
+        assert_ne!(
+            sanitized.get("publishedArtifacts"),
+            source.get("publishedArtifacts")
+        );
+        assert!(sanitized.get("scheduledTasks").is_some());
+
+        let without_target: Value =
+            serde_json::from_slice(&session_index_for_target(source, None).unwrap()).unwrap();
+        assert!(without_target.get("publishedArtifacts").is_none());
+    }
+
+    #[test]
+    fn restores_origin_artifacts_from_the_transaction_backup() {
+        let root = env::temp_dir().join(format!("code-ai-artifact-backup-{}", Uuid::new_v4()));
+        let transfer = root.join("20260922-transfer");
+        fs::create_dir_all(&transfer).unwrap();
+        let session_id = "local_96812ba4-6864-40d5-a70a-0470f244022c";
+        let manifest = SessionTransferManifest {
+            transfer_id: "transfer".to_string(),
+            created_at: "2026-09-22T10:00:00Z".to_string(),
+            session_id: session_id.to_string(),
+            session_title: "Session".to_string(),
+            source_instance_id: "origin".to_string(),
+            source_instance_name: "Origin".to_string(),
+            target_instance_id: "target".to_string(),
+            target_instance_name: "Target".to_string(),
+            source_index: String::new(),
+            target_index: String::new(),
+            transcript: String::new(),
+            replaced_existing_target: false,
+            mode: SessionTransferMode::Move,
+        };
+        fs::write(
+            transfer.join("manifest.json"),
+            serde_json::to_vec(&manifest).unwrap(),
+        )
+        .unwrap();
+        fs::write(
+            transfer.join("source-index.json"),
+            br#"{"publishedArtifacts":{"owned-by-origin":{"payload":"not exposed"}}}"#,
+        )
+        .unwrap();
+
+        let artifacts = restored_origin_artifacts(&root, session_id, "origin").unwrap();
+        assert!(artifacts.get("owned-by-origin").is_some());
+        assert!(restored_origin_artifacts(&root, session_id, "other").is_none());
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn summarizes_artifact_monitors_without_exposing_identifiers_or_content() {
+        let root = env::temp_dir().join(format!("code-ai-monitor-test-{}", Uuid::new_v4()));
+        let transcript = root.join("session.jsonl");
+        fs::create_dir_all(&root).unwrap();
+        fs::write(
+            &transcript,
+            concat!(
+                "{\"type\":\"artifact-comment-monitor\",\"artifacts\":{\"secret-a\":{\"state\":\"armed\",\"title\":\"private\"},\"secret-b\":{\"state\":\"paused\",\"url\":\"private\"}}}\n",
+                "{\"type\":\"user\",\"message\":{\"content\":\"private prompt\"}}\n"
+            ),
+        )
+        .unwrap();
+        let summary = latest_artifact_monitor(&transcript).unwrap();
+        assert_eq!(summary.monitor_type, "artifact-comment-monitor");
+        assert_eq!(summary.state.as_deref(), Some("mixed"));
+        assert_eq!(summary.artifact_count, 2);
+        let public = serde_json::to_string(&summary).unwrap();
+        assert!(!public.contains("secret-a"));
+        assert!(!public.contains("private"));
+        fs::remove_dir_all(root).unwrap();
     }
 
     #[test]
@@ -2484,16 +3439,77 @@ mod tests {
 
     #[test]
     fn maps_known_model_context_windows() {
-        assert_eq!(context_window_for_model("claude-opus-4-8"), Some(1_000_000));
-        assert_eq!(
-            context_window_for_model("claude-sonnet-4-6"),
-            Some(1_000_000)
-        );
-        assert_eq!(
-            context_window_for_model("claude-haiku-4-5-20251001"),
-            Some(200_000)
-        );
+        for model in [
+            "claude-opus-5",
+            "claude-opus-4-8",
+            "claude-opus-4-7",
+            "claude-opus-4-6",
+            "claude-sonnet-5",
+            "claude-sonnet-4-6",
+            "claude-fable-5",
+            "claude-mythos-5",
+            "claude-mythos-preview",
+            "bedrock/anthropic.claude-opus-4-6-20260801-v1:0",
+            "vendor/OPUS 5 preview",
+        ] {
+            assert_eq!(context_window_for_model(model), Some(1_000_000), "{model}");
+        }
+        for model in [
+            "claude-sonnet-4-5-20250929",
+            "claude-haiku-4-5-20251001",
+            "claude-3-7-sonnet-20250219",
+            "vertex/claude-3-opus@20240229",
+        ] {
+            assert_eq!(context_window_for_model(model), Some(200_000), "{model}");
+        }
+        assert_eq!(context_window_for_model("claude-unknown-model"), None);
+        assert_eq!(context_window_for_model("claude-opus-50"), None);
         assert_eq!(context_window_for_model("custom-model"), None);
+    }
+
+    #[test]
+    fn applies_the_latest_model_context_and_clamps_percentage() {
+        let root = env::temp_dir().join(format!("code-ai-model-change-test-{}", Uuid::new_v4()));
+        let transcript = root.join("session.jsonl");
+        fs::create_dir_all(&root).unwrap();
+        fs::write(
+            &transcript,
+            concat!(
+                "{\"isSidechain\":false,\"message\":{\"model\":\"claude-sonnet-4-5\",\"usage\":{\"cache_read_input_tokens\":100000}}}\n",
+                "{\"isSidechain\":false,\"message\":{\"model\":\"claude-opus-4-6-20260801\",\"usage\":{\"cache_read_input_tokens\":1200000}}}\n"
+            ),
+        )
+        .unwrap();
+        let mut sessions = vec![CodeSession {
+            id: "session-id".to_string(),
+            title: "Session".to_string(),
+            model: Some("claude-sonnet-4-5".to_string()),
+            effort: None,
+            completed_turns: 0,
+            created_at: None,
+            last_activity_at: None,
+            is_archived: false,
+            context_tokens: None,
+            context_window_tokens: None,
+            context_percent: None,
+            published_artifact_count: 0,
+            artifact_monitor: None,
+            transfer: None,
+            cli_session_id: Some("cli-id".to_string()),
+        }];
+        let transcripts = HashMap::from([("cli-id".to_string(), transcript)]);
+
+        apply_session_context(&mut sessions, &transcripts);
+
+        assert_eq!(
+            sessions[0].model.as_deref(),
+            Some("claude-opus-4-6-20260801")
+        );
+        assert_eq!(sessions[0].context_tokens, Some(1_200_000));
+        assert_eq!(sessions[0].context_window_tokens, Some(1_000_000));
+        assert_eq!(sessions[0].context_percent, Some(100.0));
+
+        fs::remove_dir_all(root).unwrap();
     }
 
     #[test]
@@ -2585,6 +3601,104 @@ mod tests {
     }
 
     #[test]
+    fn validates_update_feed_targets_versions_and_null_device_identifier() {
+        assert_eq!(
+            update_feed_target("macos", "aarch64"),
+            Some(("darwin", "universal"))
+        );
+        assert_eq!(
+            update_feed_target("windows", "x86_64"),
+            Some(("win32", "x64"))
+        );
+        assert_eq!(
+            update_feed_target("windows", "aarch64"),
+            Some(("win32", "arm64"))
+        );
+        assert_eq!(update_feed_target("linux", "x86_64"), None);
+        assert_eq!(NULL_DEVICE_ID, "00000000-0000-0000-0000-000000000000");
+        assert!(valid_release_version("1.22300.0"));
+        assert!(valid_release_version("1:1.22300.0-1~stable"));
+        assert!(!valid_release_version("https://invalid.example/version"));
+        assert!(!valid_release_version(""));
+    }
+
+    #[test]
+    fn parses_apt_policy_without_treating_missing_candidates_as_updates() {
+        assert_eq!(
+            parse_apt_policy(
+                "claude-desktop:\n  Installed: 1.22209.0-1\n  Candidate: 1.22300.0-1\n"
+            ),
+            (
+                Some("1.22209.0-1".to_string()),
+                Some("1.22300.0-1".to_string())
+            )
+        );
+        assert_eq!(
+            parse_apt_policy("Installed: (none)\nCandidate: (none)\n"),
+            (None, None)
+        );
+    }
+
+    #[test]
+    fn reads_complete_usage_samples_and_rejects_partial_files() {
+        let root = env::temp_dir().join(format!("code-ai-usage-test-{}", Uuid::new_v4()));
+        fs::create_dir_all(&root).unwrap();
+        let usage_path = root.join("plan-usage-history.json");
+        fs::write(
+            &usage_path,
+            br#"{"samples":[{"t":1720000000000,"u":{"fh":42.5,"sd":77.25}}]}"#,
+        )
+        .unwrap();
+        let usage = read_usage(&root).unwrap();
+        assert_eq!(usage.session_percent, Some(42.5));
+        assert_eq!(usage.weekly_percent, Some(77.25));
+        assert_eq!(usage.captured_at, Some(1_720_000_000_000));
+
+        fs::write(&usage_path, br#"{"samples":[{"t":1720,"u":"#).unwrap();
+        assert!(read_usage(&root).is_none());
+        fs::remove_file(&usage_path).unwrap();
+        assert!(read_usage(&root).is_none());
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn refresh_usage_keeps_the_last_good_snapshot_on_partial_data() {
+        let root = env::temp_dir().join(format!("code-ai-usage-merge-{}", Uuid::new_v4()));
+        fs::create_dir_all(&root).unwrap();
+        fs::write(root.join("plan-usage-history.json"), b"{partial").unwrap();
+        let last_good = UsageStats {
+            session_percent: Some(12.0),
+            weekly_percent: Some(34.0),
+            captured_at: Some(56),
+        };
+        let mut registry = Registry {
+            version: REGISTRY_VERSION,
+            instances: vec![ManagedInstance {
+                id: Uuid::new_v4().to_string(),
+                name: "Running".to_string(),
+                account_label: None,
+                avatar_url: None,
+                plan: AccountPlan::Unknown,
+                source_version: None,
+                app_path: root.join("app").to_string_lossy().to_string(),
+                profile_path: root.to_string_lossy().to_string(),
+                created_at: String::new(),
+                last_launched_at: None,
+                pid: None,
+                status: InstanceStatus::Running,
+                usage: Some(last_good.clone()),
+                code_sessions: Vec::new(),
+            }],
+        };
+        refresh_instance_usage(&mut registry);
+        assert_eq!(
+            registry.instances[0].usage.as_ref().unwrap().captured_at,
+            Some(56)
+        );
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
     fn accepts_uuid_and_local_prefixed_session_ids() {
         let uuid = "96812ba4-6864-40d5-a70a-0470f244022c";
         assert_eq!(canonical_code_session_id(uuid).as_deref(), Some(uuid));
@@ -2669,6 +3783,7 @@ mod tests {
             registry: root.join("instances.json"),
             session_backups: backups.clone(),
             session_links: root.join("session-links.json"),
+            source_update_cache: root.join("source-update-cache.json"),
         };
         let session_id = "local_96812ba4-6864-40d5-a70a-0470f244022c";
         let manifest = |transfer_id: &str, created_at: &str, source_id: &str, target_id: &str| {
@@ -2739,6 +3854,8 @@ mod tests {
             context_tokens: None,
             context_window_tokens: None,
             context_percent: None,
+            published_artifact_count: 0,
+            artifact_monitor: None,
             transfer: None,
             cli_session_id: None,
         }];

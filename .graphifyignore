@@ -1,0 +1,16 @@
+# Dependencies, build outputs and Graphify's own generated data.
+.git/
+node_modules/
+dist/
+graphify-out/
+src-tauri/target/
+
+# Generated assets and schemas do not describe product behavior.
+src-tauri/gen/
+src-tauri/icons/
+docs/screenshots/
+.github/rulesets/
+
+# Avoid indexing the same third-party Graphify skill twice.
+.agents/skills/graphify/
+.codex/skills/graphify/
