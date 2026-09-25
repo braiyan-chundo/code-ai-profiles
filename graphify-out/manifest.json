@@ -20,9 +20,9 @@
     "semantic_hash": "dca85abae9a1b384a67b37f98b2f05ea"
   },
   "src-tauri/src/lib.rs": {
-    "mtime": 1784576352.2139418,
-    "ast_hash": "4d2ef41e1a385c183d94f65216717f27",
-    "semantic_hash": "4d2ef41e1a385c183d94f65216717f27"
+    "mtime": 1790139564.9572804,
+    "ast_hash": "f62c5ad4df8e110f1567897d3a1451f1",
+    "semantic_hash": ""
   },
   "src-tauri/src/main.rs": {
     "mtime": 1784574604.233991,
@@ -45,9 +45,9 @@
     "semantic_hash": "4ef37201944f5f99cbc3aba02a781215"
   },
   "src/App.tsx": {
-    "mtime": 1784576271.3098433,
-    "ast_hash": "a79b57eb996fc1d93b54ade0c0e076e5",
-    "semantic_hash": "a79b57eb996fc1d93b54ade0c0e076e5"
+    "mtime": 1790139131.3294063,
+    "ast_hash": "71414bc69ad7ed3303c23d327e4a23ed",
+    "semantic_hash": ""
   },
   "src/components/Icons.tsx": {
     "mtime": 1784516056.9907844,
@@ -55,9 +55,9 @@
     "semantic_hash": "51f16f9089a695e79d1d57e1428a0e13"
   },
   "src/lib/bridge.ts": {
-    "mtime": 1784576271.200003,
-    "ast_hash": "65ef174835cabdccea627fcad593f750",
-    "semantic_hash": "65ef174835cabdccea627fcad593f750"
+    "mtime": 1790139236.5964139,
+    "ast_hash": "7b3584490e96f2bfb1a927892102a067",
+    "semantic_hash": ""
   },
   "src/main.tsx": {
     "mtime": 1784433949.908604,
@@ -65,9 +65,9 @@
     "semantic_hash": "6fbf89872396bfa844c1c92ae437a7a5"
   },
   "src/types.ts": {
-    "mtime": 1784574582.6925209,
-    "ast_hash": "0f532de8d3a8914838e3783668be8525",
-    "semantic_hash": "0f532de8d3a8914838e3783668be8525"
+    "mtime": 1790139236.54441,
+    "ast_hash": "8e2fa03c5668d59cc1a442be1a9c468f",
+    "semantic_hash": ""
   },
   "src/vite-env.d.ts": {
     "mtime": 1784564730.9157422,
@@ -150,8 +150,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1786673651.504006,
-    "ast_hash": "5d6aba82ddb70ea861c2dbfa1500ed39",
+    "mtime": 1786677043.0712588,
+    "ast_hash": "a5175d69a7a424421104e92caa28175a",
     "semantic_hash": ""
   },
   "code.html": {
@@ -175,13 +175,33 @@
     "semantic_hash": ""
   },
   "docs/hu/index.md": {
-    "mtime": 1786673651.1867025,
-    "ast_hash": "835deb1b385869182d6cdadd71b32474",
+    "mtime": 1790350279.7127912,
+    "ast_hash": "f3bbafa5a4b1391f0d785b63e9da5a79",
     "semantic_hash": ""
   },
   "index.html": {
     "mtime": 1784574604.7848508,
     "ast_hash": "751a087dfa5e2b54b4c7e9ac32dd5100",
+    "semantic_hash": ""
+  },
+  "docs/actualizaciones.document.md": {
+    "mtime": 1790139571.6985471,
+    "ast_hash": "fad0df90b6d292032d5ea065ebd8bbe6",
+    "semantic_hash": ""
+  },
+  "docs/hu/HU-0002-actualizar-aplicacion-original-y-metadatos-por-modelo-y-proveedor.md": {
+    "mtime": 1786678102.350435,
+    "ast_hash": "dea1942f65948e0e41f6a6116af7b936",
+    "semantic_hash": ""
+  },
+  "docs/sesiones.document.md": {
+    "mtime": 1790139571.6425967,
+    "ast_hash": "24daa494bb8bbaaa38a5549c02754fd4",
+    "semantic_hash": ""
+  },
+  "docs/hu/HU-0003-transferencias-conscientes-de-artefactos-actualizacion-disponible-y-uso-en-vivo.md": {
+    "mtime": 1790350279.6532426,
+    "ast_hash": "688ad6051199a21420f76f5faedd1fde",
     "semantic_hash": ""
   }
 }

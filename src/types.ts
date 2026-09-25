@@ -6,6 +6,17 @@ export interface UsageStats {
   capturedAt: number | null;
 }
 
+export interface UsageSnapshot {
+  instanceId: string;
+  usage: UsageStats;
+}
+
+export interface ArtifactMonitorSummary {
+  monitorType: "artifact-comment-monitor" | string;
+  state: string | null;
+  artifactCount: number;
+}
+
 export type SessionTransferMode = "copy" | "move";
 
 export interface SessionTransferInfo {
@@ -25,7 +36,20 @@ export interface CodeSession {
   contextTokens?: number | null;
   contextWindowTokens?: number | null;
   contextPercent?: number | null;
+  publishedArtifactCount?: number;
+  artifactMonitor?: ArtifactMonitorSummary | null;
   transfer?: SessionTransferInfo | null;
+}
+
+export type SourceUpdateStatus = "current" | "available" | "unavailable";
+export type SourceUpdateSource = "officialFeed" | "aptCache";
+
+export interface SourceUpdateInfo {
+  status: SourceUpdateStatus;
+  latestVersion: string | null;
+  checkedAt: number | null;
+  stale: boolean;
+  source: SourceUpdateSource | null;
 }
 
 export interface ManagedInstance {
@@ -53,12 +77,21 @@ export interface SessionProfile {
 export interface SystemInfo {
   platform: "macos" | "windows" | "linux" | "unknown";
   sourcePath: string | null;
+  sourceName: string | null;
   sourceVersion: string | null;
+  sourceUpdate: SourceUpdateInfo;
   originalProfilePath: string | null;
   originalStatus: InstanceStatus;
   originalCodeSessions: CodeSession[];
   freeBytes: number | null;
   managedBytes: number;
+}
+
+export type OriginalApplicationUpdateAction = "download" | "instructions";
+
+export interface OriginalApplicationUpdateResult {
+  action: OriginalApplicationUpdateAction;
+  message: string;
 }
 
 export interface DashboardState {
