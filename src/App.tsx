@@ -37,7 +37,15 @@ const EMPTY_STATE: DashboardState = {
   system: {
     platform: "unknown",
     sourcePath: null,
+    sourceName: null,
     sourceVersion: null,
+    sourceUpdate: {
+      status: "unavailable",
+      latestVersion: null,
+      checkedAt: null,
+      stale: false,
+      source: null,
+    },
     originalProfilePath: null,
     originalStatus: "missing",
     originalCodeSessions: [],
@@ -129,12 +137,22 @@ function formatSessionTime(value: number | null): string {
   return new Intl.DateTimeFormat("es", { day: "numeric", month: "short" }).format(timestamp);
 }
 
+function formatCaptureTime(value: number | null | undefined): string {
+  if (value == null) return "Sin captura reciente";
+  const timestamp = value < 10_000_000_000 ? value * 1000 : value;
+  return `Última captura ${new Intl.DateTimeFormat("es", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).format(timestamp)}`;
+}
+
 type SessionContextLevel = "normal" | "elevated" | "critical" | "unknown";
 
 function sessionContextLevel(value: number | null | undefined): SessionContextLevel {
   if (value == null) return "unknown";
-  if (value >= 80) return "critical";
-  if (value >= 60) return "elevated";
+  if (value >= 90) return "critical";
+  if (value >= 70) return "elevated";
   return "normal";
 }
 
@@ -202,6 +220,7 @@ function App() {
   const [unlinkTarget, setUnlinkTarget] = useState<SessionUnlinkSelection | null>(null);
   const [updateTargets, setUpdateTargets] = useState<ManagedInstance[] | null>(null);
   const [updateProgress, setUpdateProgress] = useState<ApplicationUpdateProgress | null>(null);
+  const [originalUpdateOpen, setOriginalUpdateOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [appearanceOpen, setAppearanceOpen] = useState(false);
   const [appearance, setAppearance] = useState<AppearancePreferences>(loadAppearancePreferences);
@@ -249,7 +268,79 @@ function App() {
   };
 
   useEffect(() => {
-    void refresh();
+    let active = true;
+    const load = async () => {
+      await refresh();
+      try {
+        const sourceUpdate = await bridge.checkSourceUpdate();
+        if (active) {
+          setState((current) => ({
+            ...current,
+            system: { ...current.system, sourceUpdate },
+          }));
+        }
+      } catch {
+        // La detección remota nunca bloquea la carga del dashboard.
+      }
+    };
+    void load();
+    return () => { active = false; };
+  }, []);
+
+  const runningInstanceIds = useMemo(
+    () => state.instances.filter((instance) => instance.status === "running").map((instance) => instance.id),
+    [state.instances],
+  );
+  const runningInstanceKey = runningInstanceIds.join(":");
+
+  useEffect(() => {
+    if (!runningInstanceIds.length) return;
+    let active = true;
+    const refreshLiveUsage = async () => {
+      if (!active || document.hidden) return;
+      try {
+        const snapshots = await bridge.liveUsage(runningInstanceIds);
+        if (!active || !snapshots.length) return;
+        const byId = new Map(snapshots.map((snapshot) => [snapshot.instanceId, snapshot.usage]));
+        setState((current) => ({
+          ...current,
+          instances: current.instances.map((instance) => {
+            const usage = byId.get(instance.id);
+            return usage ? { ...instance, usage } : instance;
+          }),
+        }));
+      } catch {
+        // Una lectura parcial conserva la última captura válida.
+      }
+    };
+    void refreshLiveUsage();
+    const timer = window.setInterval(() => void refreshLiveUsage(), 15_000);
+    window.addEventListener("focus", refreshLiveUsage);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+      window.removeEventListener("focus", refreshLiveUsage);
+    };
+  }, [runningInstanceKey]);
+
+  useEffect(() => {
+    let active = true;
+    const refreshSourceUpdate = async () => {
+      if (!active || document.hidden) return;
+      try {
+        const sourceUpdate = await bridge.checkSourceUpdate();
+        if (active) setState((current) => ({ ...current, system: { ...current.system, sourceUpdate } }));
+      } catch {
+        // La última metadata válida permanece visible desde la caché backend.
+      }
+    };
+    const timer = window.setInterval(() => void refreshSourceUpdate(), 6 * 60 * 60 * 1_000);
+    window.addEventListener("focus", refreshSourceUpdate);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+      window.removeEventListener("focus", refreshSourceUpdate);
+    };
   }, []);
 
   useEffect(() => {
@@ -305,6 +396,7 @@ function App() {
         if (!busyRef.current?.startsWith("transfer:")) setTransfer(null);
         if (!busyRef.current?.startsWith("unlink:")) setUnlinkTarget(null);
         if (busyRef.current !== "update-applications") setUpdateTargets(null);
+        if (busyRef.current !== "update-original") setOriginalUpdateOpen(false);
       }
     };
     window.addEventListener("keydown", handleShortcut);
@@ -321,6 +413,7 @@ function App() {
     );
   }, [query, state.instances]);
 
+  const originalAppName = state.system.sourceName ?? "Aplicación compatible";
   const showOriginal = useMemo(() => {
     if (!state.system.sourcePath) return false;
     const term = query.trim().toLocaleLowerCase();
@@ -328,13 +421,14 @@ function App() {
     return [
       "Aplicación original",
       "Instalación principal",
+      originalAppName,
       state.system.sourcePath,
       state.system.originalProfilePath,
       ...state.system.originalCodeSessions.map((session) => session.title),
     ]
       .filter(Boolean)
       .some((value) => value!.toLocaleLowerCase().includes(term));
-  }, [query, state.system.originalCodeSessions, state.system.originalProfilePath, state.system.sourcePath]);
+  }, [originalAppName, query, state.system.originalCodeSessions, state.system.originalProfilePath, state.system.sourcePath]);
 
   const running = state.instances.filter((instance) => instance.status === "running").length;
   const codeSessionCount = state.instances.reduce((total, instance) => total + instance.codeSessions.length, 0)
@@ -347,13 +441,13 @@ function App() {
   const transferProfiles = useMemo<SessionProfile[]>(() => [
     {
       id: ORIGINAL_INSTANCE_ID,
-      name: "Aplicación original",
+      name: originalAppName,
       status: state.system.originalStatus,
       codeSessions: state.system.originalCodeSessions,
       isOriginal: true,
     },
     ...state.instances,
-  ], [state.instances, state.system.originalCodeSessions, state.system.originalStatus]);
+  ], [originalAppName, state.instances, state.system.originalCodeSessions, state.system.originalStatus]);
 
   const runAction = async (key: string, action: () => Promise<DashboardState>) => {
     setBusy(key);
@@ -471,6 +565,28 @@ function App() {
 
         <section className={`content ${scanProgress ? "is-scanning" : ""}`} aria-live="polite">
           {scanProgress && <ScanProgressPanel {...scanProgress} />}
+          {state.system.sourceUpdate.status === "available" && state.system.sourceUpdate.latestVersion && (
+            <div className="source-update-banner">
+              <span className="update-banner-icon"><SparklesIcon size={17} /></span>
+              <div>
+                <strong>Nueva versión de {originalAppName}</strong>
+                <span>
+                  Versión {state.system.sourceUpdate.latestVersion} disponible
+                  {state.system.sourceUpdate.stale ? " · última comprobación guardada" : ""}
+                </span>
+              </div>
+              <button
+                onClick={() => {
+                  setError(null);
+                  setNotice(null);
+                  setOriginalUpdateOpen(true);
+                }}
+                disabled={busy !== null || !state.system.sourcePath}
+              >
+                Ver actualización
+              </button>
+            </div>
+          )}
           {outdatedInstances.length > 0 && (
             <div className="update-banner">
               <span className="update-banner-icon"><RefreshIcon size={17} /></span>
@@ -515,12 +631,20 @@ function App() {
             <div className="dashboard-sections">
               {showOriginal && (
                 <OriginalAppSection
+                  appName={originalAppName}
                   appPath={state.system.sourcePath!}
+                  platform={runtimePlatform}
                   profilePath={state.system.originalProfilePath}
                   version={state.system.sourceVersion}
                   status={state.system.originalStatus}
                   sessions={state.system.originalCodeSessions}
                   autoExpand={Boolean(query)}
+                  busy={busy !== null}
+                  onUpdate={() => {
+                    setError(null);
+                    setNotice(null);
+                    setOriginalUpdateOpen(true);
+                  }}
                   onTransfer={(session) => {
                     setError(null);
                     setNotice(null);
@@ -583,7 +707,7 @@ function App() {
           <div className="footer-group">
             <span className={`footer-health ${state.system.sourcePath ? "healthy" : "warning"}`}>
               <span className="mini-dot" />
-              {state.system.sourcePath ? "APLICACIÓN COMPATIBLE DETECTADA" : "APLICACIÓN COMPATIBLE NO DETECTADA"}
+              {state.system.sourcePath ? `${originalAppName.toLocaleUpperCase()} DETECTADA` : "APLICACIÓN COMPATIBLE NO DETECTADA"}
             </span>
             <span className="footer-divider" />
             <span><HardDriveIcon size={14} /> {formatBytes(state.system.freeBytes)} libres</span>
@@ -667,9 +791,10 @@ function App() {
               });
               setState(nextState);
               setNotice(
-                mode === "move"
+                (mode === "move"
                   ? `“${transfer.session.title}” se movió de ${transfer.source.name} a ${target.name}.`
-                  : `“${transfer.session.title}” se copió de ${transfer.source.name} a ${target.name}.`,
+                  : `“${transfer.session.title}” se copió de ${transfer.source.name} a ${target.name}.`)
+                + " Los artefactos publicados y sus monitores no se reasignan; publícalos y activa su vigilancia desde el perfil destino si los necesitas.",
               );
               setTransfer(null);
             } catch (reason) {
@@ -755,6 +880,31 @@ function App() {
           }}
         />
       )}
+
+      {originalUpdateOpen && state.system.sourcePath && (
+        <OriginalApplicationUpdateDialog
+          appName={originalAppName}
+          platform={runtimePlatform}
+          version={state.system.sourceVersion}
+          busy={busy === "update-original"}
+          onClose={() => setOriginalUpdateOpen(false)}
+          onConfirm={async () => {
+            setBusy("update-original");
+            setError(null);
+            setNotice(null);
+            try {
+              const result = await bridge.updateOriginalApplication();
+              setNotice(result.message);
+              setOriginalUpdateOpen(false);
+            } catch (reason) {
+              setError(friendlyError(reason));
+              setOriginalUpdateOpen(false);
+            } finally {
+              setBusy(null);
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -789,21 +939,29 @@ function Metric({ label, value, accent = false }: { label: string; value: string
 }
 
 function OriginalAppSection({
+  appName,
   appPath,
+  platform,
   profilePath,
   version,
   status,
   sessions,
   autoExpand,
+  busy,
+  onUpdate,
   onTransfer,
   onUnlink,
 }: {
+  appName: string;
   appPath: string;
+  platform: DashboardState["system"]["platform"];
   profilePath: string | null;
   version: string | null;
   status: SessionProfile["status"];
   sessions: CodeSession[];
   autoExpand: boolean;
+  busy: boolean;
+  onUpdate: () => void;
   onTransfer: (session: CodeSession) => void;
   onUnlink: (session: CodeSession) => void;
 }) {
@@ -824,13 +982,23 @@ function OriginalAppSection({
         <div className="original-app-main">
           <div className="original-symbol"><CloudIcon size={31} /><span className={status === "running" ? "online" : ""} /></div>
           <div className="original-identity">
-            <div><h2>Aplicación compatible</h2><span>Instalación original</span></div>
+            <div><h2>{appName}</h2><span>Instalación original</span></div>
             <span className="path" title={appPath}>{appPath}</span>
             <span className="version">Versión {version ?? "—"}</span>
           </div>
           <div className="original-summary-metrics">
             <div><small>PERFIL LOCAL</small><strong>{profilePath ? "Detectado" : "Sin detectar"}</strong></div>
             <div><small>SESIONES CODE</small><strong>{sessions.length}</strong></div>
+            <button
+              type="button"
+              className="original-update-button"
+              onClick={onUpdate}
+              disabled={busy}
+              aria-label={`Actualizar ${appName} mediante su canal oficial`}
+              title={`Abrir confirmación para el canal oficial de ${platform === "linux" ? "Linux" : platform === "windows" ? "Windows" : "macOS"}`}
+            >
+              <RefreshIcon size={14} /> Actualizar original
+            </button>
           </div>
         </div>
 
@@ -954,6 +1122,7 @@ function InstanceCard({ instance, busy, updateAvailable, autoExpand, onLaunch, o
         <div className="usage-overview">
           <UsageMeter label="Uso de sesión" value={sessionUsage} />
           <UsageMeter label="Límite semanal" value={weeklyUsage} />
+          <span className="usage-captured-at">{formatCaptureTime(instance.usage?.capturedAt)}</span>
         </div>
 
         <div className="card-actions">
@@ -1067,41 +1236,54 @@ function SessionContextMeter({ session }: { session: CodeSession }) {
   const tokens = session.contextTokens ?? null;
   const windowTokens = session.contextWindowTokens ?? null;
   const percent = session.contextPercent ?? null;
-  const level = sessionContextLevel(percent);
+  const hasKnownLimit = windowTokens != null && percent != null;
+  const level = sessionContextLevel(hasKnownLimit ? percent : null);
   const progress = Math.min(100, Math.max(0, percent ?? 0));
   const description = level === "critical"
     ? "Considera compactar o crear otra sesión"
     : level === "elevated"
       ? "Contexto elevado"
-      : level === "normal"
+        : level === "normal"
         ? "Contexto saludable"
-        : "Disponible tras la próxima respuesta";
+        : tokens != null
+          ? "Límite no identificado para este modelo"
+          : "Disponible tras la próxima respuesta";
+  const accessibleLabel = tokens == null
+    ? "Contexto sin datos"
+    : hasKnownLimit
+      ? `Contexto usado: ${Math.round(percent)}%, ${tokens} de ${windowTokens} tokens`
+      : `${tokens} tokens usados. Límite no identificado para este modelo`;
 
   return (
     <div
       className={`session-context context-${level}`}
       title={tokens == null
         ? "La aplicación aún no registra uso de contexto para esta sesión"
-        : `${new Intl.NumberFormat("es-CO").format(tokens)}${windowTokens ? ` de ${new Intl.NumberFormat("es-CO").format(windowTokens)}` : ""} tokens de contexto`}
+        : hasKnownLimit
+          ? `${new Intl.NumberFormat("es-CO").format(tokens)} de ${new Intl.NumberFormat("es-CO").format(windowTokens)} tokens de contexto`
+          : `${new Intl.NumberFormat("es-CO").format(tokens)} tokens usados. Límite no identificado para este modelo`}
+      aria-label={accessibleLabel}
     >
       <div className="session-context-heading">
         <span>
           {tokens == null
             ? "Contexto sin datos"
-            : `${formatTokenCount(tokens)}${windowTokens ? ` de ${formatTokenCount(windowTokens)}` : " tokens"}`}
+            : `${formatTokenCount(tokens)}${hasKnownLimit ? ` de ${formatTokenCount(windowTokens)}` : " tokens"}`}
         </span>
-        {percent != null && <strong>{Math.round(percent)}%</strong>}
+        {hasKnownLimit && <strong>{Math.round(percent)}%</strong>}
       </div>
-      <div
-        className="session-context-track"
-        role="meter"
-        aria-label={tokens == null ? "Contexto sin datos" : `Contexto usado: ${Math.round(percent ?? 0)}%`}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={percent == null ? undefined : Math.round(progress)}
-      >
-        <span style={{ width: percent == null ? "0%" : `${progress}%` }} />
-      </div>
+      {hasKnownLimit && (
+        <div
+          className="session-context-track"
+          role="meter"
+          aria-label={`Contexto usado: ${Math.round(percent)}%`}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(progress)}
+        >
+          <span style={{ width: `${progress}%` }} />
+        </div>
+      )}
       <small>{description}</small>
     </div>
   );
@@ -1247,13 +1429,102 @@ function AppearanceDialog({
   );
 }
 
-function ModalFrame({ title, subtitle, onClose, children }: { title: string; subtitle?: string; onClose: () => void; children: ReactNode }) {
+function OriginalApplicationUpdateDialog({
+  appName,
+  platform,
+  version,
+  busy,
+  onClose,
+  onConfirm,
+}: {
+  appName: string;
+  platform: DashboardState["system"]["platform"];
+  version: string | null;
+  busy: boolean;
+  onClose: () => void;
+  onConfirm: () => Promise<void>;
+}) {
+  const platformDetails = platform === "linux"
+    ? {
+        label: "Linux",
+        channel: "Instrucciones oficiales del repositorio apt",
+        handoff: "Se abrirán las instrucciones oficiales de apt. Revisa y completa los pasos en tu sistema; Code AI Profiles no ejecutará comandos ni solicitará permisos.",
+        action: "Ver instrucciones oficiales",
+      }
+    : platform === "windows"
+      ? {
+          label: "Windows",
+          channel: "Descarga oficial para Windows",
+          handoff: "Se abrirá la descarga oficial. Después debes ejecutar y completar el instalador de Windows; Code AI Profiles no instalará ni cerrará la aplicación por ti.",
+          action: "Abrir descarga oficial",
+        }
+      : {
+          label: "macOS",
+          channel: "Descarga oficial para macOS",
+          handoff: "Se abrirá la descarga oficial. Después debes abrir y completar el instalador de macOS; Code AI Profiles no reemplazará ni cerrará la aplicación por ti.",
+          action: "Abrir descarga oficial",
+        };
+
+  return (
+    <ModalFrame
+      title={`Actualizar ${appName}`}
+      subtitle={`Versión actual ${version ?? "no disponible"} · ${platformDetails.label}`}
+      onClose={busy ? () => undefined : onClose}
+      closeDisabled={busy}
+    >
+      <div className="original-update-summary">
+        <span><RefreshIcon size={21} /></span>
+        <div>
+          <small>CANAL OFICIAL</small>
+          <strong>{platformDetails.channel}</strong>
+          <p>{platformDetails.handoff}</p>
+        </div>
+      </div>
+
+      <div className="original-update-boundary">
+        <HardDriveIcon size={19} />
+        <div>
+          <strong>Tus perfiles y sesiones no se tocan</strong>
+          <p>Esta acción tampoco actualiza las instancias administradas. Solo entrega el proceso a la descarga o documentación oficial.</p>
+        </div>
+      </div>
+
+      <div className="original-update-next-step">
+        <SparklesIcon size={18} />
+        <p>Cuando termines la instalación, vuelve a esta ventana. El escaneo al recuperar el foco detectará la nueva versión y entonces podrás usar <strong>Actualizar instancias</strong> para sincronizarlas.</p>
+      </div>
+
+      <div className="modal-actions original-update-actions">
+        <button className="secondary-button" onClick={onClose} disabled={busy}>Cancelar</button>
+        <button className="primary-action modal-primary" onClick={() => void onConfirm()} disabled={busy}>
+          {busy
+            ? <><RefreshIcon className="spin" size={17} /> Abriendo canal oficial…</>
+            : <><RefreshIcon size={17} /> {platformDetails.action}</>}
+        </button>
+      </div>
+    </ModalFrame>
+  );
+}
+
+function ModalFrame({
+  title,
+  subtitle,
+  onClose,
+  closeDisabled = false,
+  children,
+}: {
+  title: string;
+  subtitle?: string;
+  onClose: () => void;
+  closeDisabled?: boolean;
+  children: ReactNode;
+}) {
   return (
     <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
       <section className="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div className="modal-header">
           <div><h2 id="modal-title">{title}</h2>{subtitle && <p>{subtitle}</p>}</div>
-          <button className="modal-close" onClick={onClose} aria-label="Cerrar"><XIcon size={20} /></button>
+          <button className="modal-close" onClick={onClose} disabled={closeDisabled} aria-label="Cerrar"><XIcon size={20} /></button>
         </div>
         {children}
       </section>
@@ -1531,11 +1802,23 @@ function SessionTransferDialog({
 
       <div className="transfer-warning">
         <AlertIcon size={18} />
-        <p>
-          {mode === "move"
-            ? "La sesión se retira del origen después de confirmar la copia en el destino. Se crea un respaldo y podrás devolverla a su origen desde el botón de desvincular."
-            : "La sesión aparecerá en ambos perfiles, pero su transcript sigue siendo global y compartido. No la abras simultáneamente en los dos perfiles."}
-        </p>
+        <div>
+          <p>
+            {mode === "move"
+              ? "La sesión se retira del origen después de confirmar la copia en el destino. Se crea un respaldo y podrás devolverla a su origen desde el botón de desvincular."
+              : "La sesión aparecerá en ambos perfiles, pero su transcript sigue siendo global y compartido. No la abras simultáneamente en los dos perfiles."}
+          </p>
+          {(session.publishedArtifactCount ?? 0) > 0 || session.artifactMonitor ? (
+            <p className="artifact-transfer-note">
+              Esta sesión registra {Math.max(session.publishedArtifactCount ?? 0, session.artifactMonitor?.artifactCount ?? 0)} artefacto(s).
+              Se transferirá la conversación, no la propiedad remota ni sus monitores: en {target?.name ?? "el destino"} deberás publicar y activar la vigilancia de nuevo.
+            </p>
+          ) : (
+            <p className="artifact-transfer-note">
+              Los artefactos publicados y sus monitores pertenecen a cada perfil y no se reasignan durante la transferencia.
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="modal-actions transfer-actions">

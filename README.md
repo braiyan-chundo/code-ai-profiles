@@ -14,11 +14,12 @@ Aplicación de escritorio open source creada con Tauri, React y Rust para admini
 
 ## Funciones principales
 
-- Detecta automáticamente la aplicación compatible instalada.
+- Detecta automáticamente la aplicación compatible instalada y muestra su nombre real cuando los metadatos locales están disponibles.
 - Crea perfiles independientes y los inicia de forma simultánea.
 - Muestra el estado ejecutándose/detenido, la versión y el uso de sesión y semanal disponible.
 - Escanea automáticamente cada 60 segundos y permite un escaneo manual con progreso visible.
 - Alerta cuando una copia administrada necesita actualizarse desde la aplicación original.
+- Permite abrir el canal oficial para actualizar la aplicación original sin modificar perfiles ni actualizar instancias automáticamente.
 - Incluye la instalación original en el mismo dashboard que las instancias administradas.
 - Lista sesiones locales con título, modelo, turnos, actividad, estado archivado y contexto estimado.
 - Permite desplegar o contraer las sesiones de cada perfil.
@@ -57,6 +58,25 @@ Verifica el frontend y las pruebas de Rust:
 npm run build
 cargo test --manifest-path src-tauri/Cargo.toml
 ```
+
+## Desarrollo asistido por IA y Graphify
+
+El repositorio incluye cuatro agentes de desarrollo: `architect`, `backend`, `frontend` y `document`. Sus instrucciones neutrales viven en [`.agents/roles/`](.agents/roles/README.md) y Codex dispone de adaptadores con modelos independientes en [`.codex/agents/`](.codex/agents/). Toda feature o fix requiere una HU única en [`docs/hu/`](docs/hu/index.md).
+
+Graphify mantiene un grafo local del código que debe consultarse antes del análisis y actualizarse al cerrar cada iteración. Instala la versión fijada por el proyecto y genera o actualiza sus artefactos:
+
+```bash
+uv tool install graphifyy==0.9.32
+npm run graph:update
+```
+
+Antes de enviar cambios, comprueba que el grafo versionado coincide con el código:
+
+```bash
+npm run graph:check
+```
+
+El grafo se extrae localmente mediante AST y no requiere claves ni envía el código a un modelo externo. Consulta [la documentación del flujo de agentes](docs/agents.document.md) y [la integración de Graphify](docs/graphify.document.md).
 
 ## Crear cada versión
 
@@ -141,19 +161,21 @@ Code AI Profiles/
 - En Windows se copia el directorio de la aplicación y cada proceso recibe su propio directorio de datos.
 - En Linux se crea un lanzador hacia el binario instalado para conservar su sandbox y permitir que el gestor de paquetes actualice el ejecutable compartido.
 
-Cuando la aplicación original cambia de versión, macOS y Windows pueden reemplazar únicamente la copia administrada sin tocar el perfil. En Linux, las instancias siguen el binario actualizado por el gestor de paquetes.
+La actualización de la aplicación original y la sincronización de instancias son operaciones separadas. Code AI Profiles abre la descarga oficial en macOS/Windows o las instrucciones apt en Linux para que el usuario complete la actualización; después, al detectar la nueva versión, macOS y Windows pueden reemplazar únicamente la copia administrada sin tocar el perfil. En Linux, las instancias siguen el binario actualizado por el gestor de paquetes. Consulta [la guía de actualizaciones](docs/actualizaciones.document.md).
 
 ## Sesiones y contexto
 
 El dashboard deserializa solamente una lista permitida de metadatos visuales. Para estimar el contexto, lee el uso de la respuesta principal más reciente y suma los tokens de entrada, creación de caché y lectura de caché; no carga ni muestra prompts, respuestas, razonamientos ni resultados de herramientas.
 
+La ventana se elige según el modelo de esa respuesta: los modelos conocidos usan el límite documentado de 1 000 000 o 200 000 tokens. Para un modelo desconocido se conserva el conteo estimado, pero no se muestra un denominador, porcentaje o barra inventados.
+
 Los umbrales son recomendaciones del proyecto:
 
-- Menos de 60%: contexto saludable.
-- Desde 60%: contexto elevado.
-- Desde 80%: conviene compactar o iniciar una sesión nueva.
+- Menos de 70%: contexto saludable.
+- Desde 70%: contexto elevado.
+- Desde 90%: conviene compactar o iniciar una sesión nueva.
 
-Después de una compactación, el valor se oculta hasta que exista una respuesta nueva. Estas señales ayudan a tomar decisiones, pero no representan límites oficiales del proveedor.
+Después de una compactación, el valor se oculta hasta que exista una respuesta nueva. El conteo sigue siendo una estimación local y las tablas de modelos pueden evolucionar; consulta [la guía de sesiones y contexto](docs/sesiones.document.md) para ver el cálculo, las ventanas reconocidas y sus fuentes oficiales.
 
 Las operaciones de sesión requieren que el origen y el destino estén detenidos:
 

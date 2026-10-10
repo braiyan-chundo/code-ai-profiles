@@ -1,0 +1,207 @@
+{
+  "package.json": {
+    "mtime": 1786673650.3607156,
+    "ast_hash": "c6137f98d3e363d6d223189a0932140c",
+    "semantic_hash": "c6137f98d3e363d6d223189a0932140c"
+  },
+  "scripts/graphify.mjs": {
+    "mtime": 1786674898.1491435,
+    "ast_hash": "b25e54fbfbfab6b4a23a6cd6d6e546b5",
+    "semantic_hash": ""
+  },
+  "src-tauri/build.rs": {
+    "mtime": 1784433109.6357908,
+    "ast_hash": "1be34a5c61c2c35365de3dab14298f0b",
+    "semantic_hash": "1be34a5c61c2c35365de3dab14298f0b"
+  },
+  "src-tauri/capabilities/default.json": {
+    "mtime": 1784574604.6735594,
+    "ast_hash": "dca85abae9a1b384a67b37f98b2f05ea",
+    "semantic_hash": "dca85abae9a1b384a67b37f98b2f05ea"
+  },
+  "src-tauri/src/lib.rs": {
+    "mtime": 1790139564.9572804,
+    "ast_hash": "f62c5ad4df8e110f1567897d3a1451f1",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/main.rs": {
+    "mtime": 1784574604.233991,
+    "ast_hash": "a85314b3cde4f5d5b64d48e0c7b18194",
+    "semantic_hash": "a85314b3cde4f5d5b64d48e0c7b18194"
+  },
+  "src-tauri/tauri.conf.json": {
+    "mtime": 1784574701.830296,
+    "ast_hash": "92675bd048b346acbce51809ef3aa4fb",
+    "semantic_hash": "92675bd048b346acbce51809ef3aa4fb"
+  },
+  "src-tauri/tauri.linux.conf.json": {
+    "mtime": 1784574604.455413,
+    "ast_hash": "6ed3ab5f4c46ca506148bbef8ba309c6",
+    "semantic_hash": "6ed3ab5f4c46ca506148bbef8ba309c6"
+  },
+  "src-tauri/tauri.macos.conf.json": {
+    "mtime": 1784574604.5644083,
+    "ast_hash": "4ef37201944f5f99cbc3aba02a781215",
+    "semantic_hash": "4ef37201944f5f99cbc3aba02a781215"
+  },
+  "src/App.tsx": {
+    "mtime": 1790139131.3294063,
+    "ast_hash": "71414bc69ad7ed3303c23d327e4a23ed",
+    "semantic_hash": ""
+  },
+  "src/components/Icons.tsx": {
+    "mtime": 1784516056.9907844,
+    "ast_hash": "51f16f9089a695e79d1d57e1428a0e13",
+    "semantic_hash": "51f16f9089a695e79d1d57e1428a0e13"
+  },
+  "src/lib/bridge.ts": {
+    "mtime": 1790139236.5964139,
+    "ast_hash": "7b3584490e96f2bfb1a927892102a067",
+    "semantic_hash": ""
+  },
+  "src/main.tsx": {
+    "mtime": 1784433949.908604,
+    "ast_hash": "6fbf89872396bfa844c1c92ae437a7a5",
+    "semantic_hash": "6fbf89872396bfa844c1c92ae437a7a5"
+  },
+  "src/types.ts": {
+    "mtime": 1790139236.54441,
+    "ast_hash": "8e2fa03c5668d59cc1a442be1a9c468f",
+    "semantic_hash": ""
+  },
+  "src/vite-env.d.ts": {
+    "mtime": 1784564730.9157422,
+    "ast_hash": "53f57deecfd2c6eddc4bb52ebb52ba34",
+    "semantic_hash": "53f57deecfd2c6eddc4bb52ebb52ba34"
+  },
+  "tsconfig.json": {
+    "mtime": 1784564731.0111187,
+    "ast_hash": "ab23d2d7e19687fa044b28c2677ecb79",
+    "semantic_hash": "ab23d2d7e19687fa044b28c2677ecb79"
+  },
+  "tsconfig.node.json": {
+    "mtime": 1784564731.1059828,
+    "ast_hash": "514d68045032e2a7f6d1ca3bd90db121",
+    "semantic_hash": "514d68045032e2a7f6d1ca3bd90db121"
+  },
+  "vite.config.ts": {
+    "mtime": 1784564731.2006059,
+    "ast_hash": "86dd5498e8f4f9ab1c0c393c72433eeb",
+    "semantic_hash": "86dd5498e8f4f9ab1c0c393c72433eeb"
+  },
+  ".agents/roles/README.md": {
+    "mtime": 1786673650.491681,
+    "ast_hash": "6d56d0f469233c31499d1cc9474a2394",
+    "semantic_hash": ""
+  },
+  ".agents/roles/architect.md": {
+    "mtime": 1786673650.537973,
+    "ast_hash": "60be7cb0a5e8e3d64e7cba9dadfefed5",
+    "semantic_hash": ""
+  },
+  ".agents/roles/backend.md": {
+    "mtime": 1786673650.5828393,
+    "ast_hash": "477c32700a802fb8201a05d6a9477607",
+    "semantic_hash": ""
+  },
+  ".agents/roles/document.md": {
+    "mtime": 1786673650.6732814,
+    "ast_hash": "2ac158659e07825706ea454f2b7c5c85",
+    "semantic_hash": ""
+  },
+  ".agents/roles/frontend.md": {
+    "mtime": 1786673650.628953,
+    "ast_hash": "a07849344907b700b6ab71cf8bc95303",
+    "semantic_hash": ""
+  },
+  ".github/PULL_REQUEST_TEMPLATE.md": {
+    "mtime": 1786673651.4129186,
+    "ast_hash": "05877f2af8c267ad8ffb4b03d6d0e6d0",
+    "semantic_hash": ""
+  },
+  ".github/workflows/build-desktop.yml": {
+    "mtime": 1784574604.9013014,
+    "ast_hash": "249fc6318ccdbb16bf57156f36e1aa9c",
+    "semantic_hash": ""
+  },
+  ".github/workflows/pr-policy.yml": {
+    "mtime": 1784576342.4903507,
+    "ast_hash": "b20da2faf79e2d69f010c796472ef1ee",
+    "semantic_hash": ""
+  },
+  ".github/workflows/validate.yml": {
+    "mtime": 1786674023.818143,
+    "ast_hash": "8d97a1bdb709c0c74c09a54ba7063eb9",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1786673722.8031092,
+    "ast_hash": "9ec980089436abc29e0a9dfcdc351e69",
+    "semantic_hash": ""
+  },
+  "CONTRIBUTING.md": {
+    "mtime": 1786673651.4583342,
+    "ast_hash": "18a88193b5881f6306bdfbbee7fec3ea",
+    "semantic_hash": ""
+  },
+  "DESIGN.md": {
+    "mtime": 1784564730.4393954,
+    "ast_hash": "bb7311bf54b2100dffd4dec39e592702",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1786677043.0712588,
+    "ast_hash": "a5175d69a7a424421104e92caa28175a",
+    "semantic_hash": ""
+  },
+  "code.html": {
+    "mtime": 1784574764.5153239,
+    "ast_hash": "e182799e936eb620a9a9650f37de258c",
+    "semantic_hash": ""
+  },
+  "docs/agents.document.md": {
+    "mtime": 1786673651.2766523,
+    "ast_hash": "ae58b3ee1a392aa4196a6c3424a5d630",
+    "semantic_hash": ""
+  },
+  "docs/graphify.document.md": {
+    "mtime": 1786674898.1972291,
+    "ast_hash": "0e7e94a8cca389905051951f308f3986",
+    "semantic_hash": ""
+  },
+  "docs/hu/HU-0001-integracion-graphify-y-agentes.md": {
+    "mtime": 1786674898.24192,
+    "ast_hash": "066c9dc0f88b3e5d98a151b78c1caf73",
+    "semantic_hash": ""
+  },
+  "docs/hu/index.md": {
+    "mtime": 1790350279.7127912,
+    "ast_hash": "f3bbafa5a4b1391f0d785b63e9da5a79",
+    "semantic_hash": ""
+  },
+  "index.html": {
+    "mtime": 1784574604.7848508,
+    "ast_hash": "751a087dfa5e2b54b4c7e9ac32dd5100",
+    "semantic_hash": ""
+  },
+  "docs/actualizaciones.document.md": {
+    "mtime": 1790139571.6985471,
+    "ast_hash": "fad0df90b6d292032d5ea065ebd8bbe6",
+    "semantic_hash": ""
+  },
+  "docs/hu/HU-0002-actualizar-aplicacion-original-y-metadatos-por-modelo-y-proveedor.md": {
+    "mtime": 1786678102.350435,
+    "ast_hash": "dea1942f65948e0e41f6a6116af7b936",
+    "semantic_hash": ""
+  },
+  "docs/sesiones.document.md": {
+    "mtime": 1790139571.6425967,
+    "ast_hash": "24daa494bb8bbaaa38a5549c02754fd4",
+    "semantic_hash": ""
+  },
+  "docs/hu/HU-0003-transferencias-conscientes-de-artefactos-actualizacion-disponible-y-uso-en-vivo.md": {
+    "mtime": 1790350279.6532426,
+    "ast_hash": "688ad6051199a21420f76f5faedd1fde",
+    "semantic_hash": ""
+  }
+}
