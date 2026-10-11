@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { convertFileSrc } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { bridge } from "./lib/bridge";
 import type {
+  ArtifactTransferOutcome,
   CodeSession,
   ManagedInstance,
   CreateInstanceRequest,
@@ -46,6 +48,14 @@ const EMPTY_STATE: DashboardState = {
       stale: false,
       source: null,
     },
+    versionTopology: {
+      latestInstalledVersion: null,
+      latestSource: null,
+      staleInstanceIds: [],
+      originalBehind: false,
+      canSynchronizeManaged: false,
+      reason: null,
+    },
     originalProfilePath: null,
     originalStatus: "missing",
     originalCodeSessions: [],
@@ -69,10 +79,10 @@ interface SessionUnlinkSelection {
   session: CodeSession;
 }
 
-interface ApplicationUpdateProgress {
-  current: number;
-  total: number;
-  instanceName: string;
+interface InstanceIconChange {
+  bytes: Uint8Array | null;
+  previewUrl: string | null;
+  remove: boolean;
 }
 
 type AppTheme = "system" | "dark" | "light";
@@ -190,21 +200,24 @@ function friendlyError(reason: unknown): string {
   return "Ocurrió un error inesperado.";
 }
 
-function versionParts(version: string): number[] {
-  return version.split(/\D+/).filter(Boolean).map((part) => Number.parseInt(part, 10));
+function managedIconSource(instance: ManagedInstance, previewUrl?: string | null) {
+  if (previewUrl) return previewUrl;
+  const path = instance.customIcon?.path;
+  if (!path || path.startsWith("mock://")) return null;
+  return bridge.isDesktop() ? convertFileSrc(path) : path;
 }
 
-function versionIsNewer(candidate: string, current: string | null): boolean {
-  if (!current) return true;
-  const candidateParts = versionParts(candidate);
-  const currentParts = versionParts(current);
-  const length = Math.max(candidateParts.length, currentParts.length);
-  for (let index = 0; index < length; index += 1) {
-    const candidatePart = candidateParts[index] ?? 0;
-    const currentPart = currentParts[index] ?? 0;
-    if (candidatePart !== currentPart) return candidatePart > currentPart;
+function describeArtifactOutcome(outcome: ArtifactTransferOutcome) {
+  const details: string[] = [];
+  if (outcome.copied > 0 || outcome.registered > 0) {
+    details.push(`${outcome.copied} copia(s) local(es) preservada(s)${outcome.registered > 0 ? `, ${outcome.registered} registrada(s)` : ""}`);
   }
-  return false;
+  if (outcome.preservedForManualImport > 0) details.push(`${outcome.preservedForManualImport} lista(s) para importar o publicar de nuevo`);
+  if (outcome.remoteReferencesOmitted > 0 || outcome.monitorsOmitted > 0) details.push("las referencias y monitores cloud no se reasignaron");
+  if (outcome.exportPath) details.push("hay una exportación local disponible en la carpeta administrada");
+  if (outcome.warnings.length) details.push(outcome.warnings.join(" · "));
+  if (!details.length) details.push("no se detectaron copias locales transferibles");
+  return details.join("; ");
 }
 
 function App() {
@@ -219,9 +232,9 @@ function App() {
   const [transfer, setTransfer] = useState<SessionTransferSelection | null>(null);
   const [unlinkTarget, setUnlinkTarget] = useState<SessionUnlinkSelection | null>(null);
   const [updateTargets, setUpdateTargets] = useState<ManagedInstance[] | null>(null);
-  const [updateProgress, setUpdateProgress] = useState<ApplicationUpdateProgress | null>(null);
   const [originalUpdateOpen, setOriginalUpdateOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [iconPreviews, setIconPreviews] = useState<Record<string, string>>({});
   const [appearanceOpen, setAppearanceOpen] = useState(false);
   const [appearance, setAppearance] = useState<AppearancePreferences>(loadAppearancePreferences);
   const [systemDark, setSystemDark] = useState(() => window.matchMedia("(prefers-color-scheme: dark)").matches);
@@ -434,10 +447,14 @@ function App() {
   const codeSessionCount = state.instances.reduce((total, instance) => total + instance.codeSessions.length, 0)
     + state.system.originalCodeSessions.length;
   const outdatedInstances = useMemo(() => {
-    const latestVersion = state.system.sourceVersion;
-    if (!latestVersion) return [];
-    return state.instances.filter((instance) => versionIsNewer(latestVersion, instance.sourceVersion));
-  }, [state.instances, state.system.sourceVersion]);
+    const staleIds = new Set(state.system.versionTopology.staleInstanceIds);
+    return state.instances.filter((instance) => staleIds.has(instance.id));
+  }, [state.instances, state.system.versionTopology.staleInstanceIds]);
+  const latestSource = state.system.versionTopology.latestSource;
+  const latestVersion = state.system.versionTopology.latestInstalledVersion;
+  const synchronizeLabel = latestSource && latestVersion
+    ? `Sincronizar instancias desde ${latestSource.name} v${latestVersion}`
+    : "Sincronizar instancias";
   const transferProfiles = useMemo<SessionProfile[]>(() => [
     {
       id: ORIGINAL_INSTANCE_ID,
@@ -587,15 +604,36 @@ function App() {
               </button>
             </div>
           )}
+          {state.system.versionTopology.originalBehind && latestVersion && (
+            <div className="source-update-banner original-behind-banner">
+              <span className="update-banner-icon"><AlertIcon size={17} /></span>
+              <div>
+                <strong>La aplicación original está desactualizada</strong>
+                <span>La versión {latestVersion} ya existe en una instancia. La original solo puede actualizarse mediante su canal oficial.</span>
+              </div>
+              <button
+                onClick={() => {
+                  setError(null);
+                  setNotice(null);
+                  setOriginalUpdateOpen(true);
+                }}
+                disabled={busy !== null || !state.system.sourcePath}
+              >
+                Actualizar original
+              </button>
+            </div>
+          )}
           {outdatedInstances.length > 0 && (
             <div className="update-banner">
               <span className="update-banner-icon"><RefreshIcon size={17} /></span>
               <div>
-                <strong>Actualización de la aplicación disponible</strong>
+                <strong>{synchronizeLabel}</strong>
                 <span>
-                  {outdatedInstances.length === 1
-                    ? `${outdatedInstances[0].name} usa una versión anterior.`
-                    : `${outdatedInstances.length} instancias usan una versión anterior.`}
+                  {state.system.versionTopology.canSynchronizeManaged
+                    ? outdatedInstances.length === 1
+                      ? `${outdatedInstances[0].name} usa una versión anterior.`
+                      : `${outdatedInstances.length} instancias usan una versión anterior.`
+                    : state.system.versionTopology.reason ?? "No hay una fuente local válida para sincronizar."}
                 </span>
               </div>
               <button
@@ -604,9 +642,9 @@ function App() {
                   setNotice(null);
                   setUpdateTargets(outdatedInstances);
                 }}
-                disabled={busy !== null}
+                disabled={busy !== null || !state.system.versionTopology.canSynchronizeManaged}
               >
-                Actualizar instancias
+                Sincronizar
               </button>
             </div>
           )}
@@ -670,6 +708,7 @@ function App() {
                         instance={instance}
                         busy={busy}
                         updateAvailable={outdatedInstances.some((outdated) => outdated.id === instance.id)}
+                        iconPreviewUrl={iconPreviews[instance.id] ?? null}
                         autoExpand={Boolean(query)}
                         onLaunch={() => void runAction(`launch:${instance.id}`, () => bridge.launch(instance.id))}
                         onStop={() => void runAction(`stop:${instance.id}`, () => bridge.stop(instance.id))}
@@ -732,16 +771,35 @@ function App() {
         <InstanceEditor
           instance={editor === "new" ? null : editor}
           sourcePath={state.system.sourcePath}
+          platform={runtimePlatform}
           busy={busy === "create" || busy === "update"}
           onClose={() => setEditor(null)}
-          onSave={async (form) => {
+          onSave={async (form, iconChange) => {
             const isNew = editor === "new";
             setBusy(isNew ? "create" : "update");
             setError(null);
             try {
-              const next = isNew
+              let next = isNew
                 ? await bridge.create(form)
                 : await bridge.update({ ...form, id: editor.id });
+              const previousIds = new Set(state.instances.map((instance) => instance.id));
+              const changedInstance = isNew
+                ? next.instances.find((instance) => !previousIds.has(instance.id))
+                : next.instances.find((instance) => instance.id === editor.id);
+              if (changedInstance && iconChange.remove && changedInstance.customIcon) {
+                next = await bridge.clearInstanceIcon(changedInstance.id);
+                setIconPreviews((current) => {
+                  const updated = { ...current };
+                  delete updated[changedInstance.id];
+                  return updated;
+                });
+              }
+              if (changedInstance && iconChange.bytes) {
+                next = await bridge.setInstanceIcon(changedInstance.id, iconChange.bytes);
+                if (iconChange.previewUrl) {
+                  setIconPreviews((current) => ({ ...current, [changedInstance.id]: iconChange.previewUrl! }));
+                }
+              }
               setState(next);
               setEditor(null);
             } catch (reason) {
@@ -776,25 +834,26 @@ function App() {
           instances={transferProfiles}
           busy={busy === `transfer:${transfer.session.id}`}
           onClose={() => setTransfer(null)}
-          onTransfer={async (targetId, mode) => {
+          onTransfer={async (targetId, mode, includeLocalArtifacts) => {
             const target = transferProfiles.find((instance) => instance.id === targetId);
             if (!target) return;
             setBusy(`transfer:${transfer.session.id}`);
             setError(null);
             setNotice(null);
             try {
-              const nextState = await bridge.copySession({
+              const result = await bridge.copySession({
                 sourceInstanceId: transfer.source.id,
                 targetInstanceId: targetId,
                 sessionId: transfer.session.id,
                 mode,
+                includeLocalArtifacts,
               });
-              setState(nextState);
+              setState(result.dashboard);
               setNotice(
                 (mode === "move"
                   ? `“${transfer.session.title}” se movió de ${transfer.source.name} a ${target.name}.`
                   : `“${transfer.session.title}” se copió de ${transfer.source.name} a ${target.name}.`)
-                + " Los artefactos publicados y sus monitores no se reasignan; publícalos y activa su vigilancia desde el perfil destino si los necesitas.",
+                + ` Artefactos: ${describeArtifactOutcome(result.artifacts)}.`,
               );
               setTransfer(null);
             } catch (reason) {
@@ -848,33 +907,40 @@ function App() {
         );
       })()}
 
-      {updateTargets && state.system.sourceVersion && (
+      {updateTargets && latestSource && latestVersion && (
         <ApplicationUpdateDialog
           instances={updateTargets}
-          targetVersion={state.system.sourceVersion}
+          sourceName={latestSource.name}
+          targetVersion={latestVersion}
+          canSynchronize={state.system.versionTopology.canSynchronizeManaged}
+          unavailableReason={state.system.versionTopology.reason}
           busy={busy === "update-applications"}
-          progress={updateProgress}
           onClose={() => setUpdateTargets(null)}
           onConfirm={async () => {
-            const targets = [...updateTargets];
+            const targets = updateTargets.filter((instance) => instance.status === "stopped");
             setBusy("update-applications");
             setError(null);
             setNotice(null);
             try {
-              for (let index = 0; index < targets.length; index += 1) {
-                const instance = targets[index];
-                setUpdateProgress({ current: index + 1, total: targets.length, instanceName: instance.name });
-                setState(await bridge.updateApplication(instance.id));
+              const result = await bridge.synchronizeApplications({
+                source: latestSource,
+                targetInstanceIds: targets.map((instance) => instance.id),
+              });
+              setState(result.dashboard);
+              const updated = result.results.filter((item) => item.status === "updated");
+              const skipped = result.results.filter((item) => item.status === "skipped");
+              const failed = result.results.filter((item) => item.status === "failed");
+              if (updated.length || skipped.length) {
+                setNotice(`Sincronización finalizada: ${updated.length} actualizada(s), ${skipped.length} omitida(s), ${failed.length} con error.`);
               }
-              setNotice(
-                `${targets.length === 1 ? targets[0].name : `${targets.length} instancias`} ${targets.length === 1 ? "se actualizó" : "se actualizaron"} a la versión ${state.system.sourceVersion}.`,
-              );
+              if (failed.length) {
+                setError(`No se completó en ${failed.length} instancia(s): ${failed.map((item) => item.message).join(" · ")}`);
+              }
               setUpdateTargets(null);
             } catch (reason) {
               setError(friendlyError(reason));
               setUpdateTargets(null);
             } finally {
-              setUpdateProgress(null);
               setBusy(null);
             }
           }}
@@ -1077,6 +1143,7 @@ interface InstanceCardProps {
   instance: ManagedInstance;
   busy: string | null;
   updateAvailable: boolean;
+  iconPreviewUrl: string | null;
   autoExpand: boolean;
   onLaunch: () => void;
   onStop: () => void;
@@ -1087,13 +1154,16 @@ interface InstanceCardProps {
   onUnlink: (session: CodeSession) => void;
 }
 
-function InstanceCard({ instance, busy, updateAvailable, autoExpand, onLaunch, onStop, onOpen, onEdit, onDelete, onTransfer, onUnlink }: InstanceCardProps) {
+function InstanceCard({ instance, busy, updateAvailable, iconPreviewUrl, autoExpand, onLaunch, onStop, onOpen, onEdit, onDelete, onTransfer, onUnlink }: InstanceCardProps) {
   const [sessionsExpanded, setSessionsExpanded] = useState(false);
   const isRunning = instance.status === "running";
   const sessionUsage = instance.usage?.sessionPercent ?? null;
   const weeklyUsage = instance.usage?.weeklyPercent ?? null;
   const isBusy = busy?.endsWith(instance.id) ?? false;
-  const stateLabel = instance.status === "running"
+  const isStopping = busy === `stop:${instance.id}`;
+  const stateLabel = isStopping
+    ? "Deteniendo…"
+    : instance.status === "running"
     ? "Ejecutándose"
     : instance.status === "missing" ? "No disponible" : "Detenido";
   useEffect(() => {
@@ -1101,22 +1171,24 @@ function InstanceCard({ instance, busy, updateAvailable, autoExpand, onLaunch, o
   }, [autoExpand]);
 
   return (
-    <article className={`instance-card ${isRunning ? "is-running" : ""} ${instance.status === "missing" ? "is-missing" : ""}`}>
+    <article className={`instance-card ${isRunning ? "is-running" : ""} ${isStopping ? "is-stopping" : ""} ${instance.status === "missing" ? "is-missing" : ""}`} aria-busy={isStopping}>
       <div className="instance-card-main">
-        <div className="instance-symbol" aria-hidden="true">
+        <div className={`instance-symbol ${instance.customIcon || iconPreviewUrl ? "has-custom-icon" : ""}`} aria-hidden="true" title={instance.customIcon?.systemMessage}>
           <CloudIcon size={34} />
+          {managedIconSource(instance, iconPreviewUrl) && <img src={managedIconSource(instance, iconPreviewUrl)!} alt="" />}
           <span className={`symbol-status ${isRunning ? "online" : ""}`} />
         </div>
 
         <div className="instance-identity">
           <div className="name-line">
             <h2>{instance.name}</h2>
-            <span className={`instance-state state-${instance.status}`}><span />{stateLabel}</span>
+            <span className={`instance-state state-${isStopping ? "stopping" : instance.status}`}><span />{stateLabel}</span>
           </div>
           <span className="path" title={instance.appPath}>{instance.appPath}</span>
           <span className="version">
             Versión {instance.sourceVersion ?? "—"}
             {updateAvailable && <small className="version-update-badge">Actualización disponible</small>}
+            {instance.customIcon && <small className="custom-icon-badge">Icono personalizado · {instance.customIcon.systemApplied ? "sistema aplicado" : "solo en la app"}</small>}
           </span>
         </div>
         <div className="usage-overview">
@@ -1126,11 +1198,11 @@ function InstanceCard({ instance, busy, updateAvailable, autoExpand, onLaunch, o
         </div>
 
         <div className="card-actions">
-          <button className="icon-button" onClick={onOpen} title="Abrir carpeta del perfil"><FolderIcon size={20} /></button>
-          <button className="icon-button" onClick={onEdit} title="Editar nombre"><EditIcon size={19} /></button>
+          <button className="icon-button" disabled={isBusy} onClick={onOpen} title="Abrir carpeta del perfil"><FolderIcon size={20} /></button>
+          <button className="icon-button" disabled={isBusy} onClick={onEdit} title="Editar nombre e icono"><EditIcon size={19} /></button>
           {isRunning ? (
             <button className="launch-button stop" disabled={isBusy} onClick={onStop}>
-              <StopIcon size={20} /> {isBusy ? "Deteniendo…" : "Detener"}
+              <StopIcon size={20} /> {isStopping ? "Deteniendo…" : "Detener"}
             </button>
           ) : (
             <button className="launch-button" disabled={isBusy || instance.status === "missing"} onClick={onLaunch}>
@@ -1138,7 +1210,7 @@ function InstanceCard({ instance, busy, updateAvailable, autoExpand, onLaunch, o
             </button>
           )}
           {!isRunning && (
-            <button className="icon-button danger-button" onClick={onDelete} title="Eliminar instancia"><TrashIcon size={19} /></button>
+            <button className="icon-button danger-button" disabled={isBusy} onClick={onDelete} title="Eliminar instancia"><TrashIcon size={19} /></button>
           )}
         </div>
       </div>
@@ -1183,6 +1255,7 @@ function InstanceCard({ instance, busy, updateAvailable, autoExpand, onLaunch, o
                   )}
                   <button
                     className="session-transfer-button"
+                    disabled={isBusy}
                     onClick={() => onTransfer(session)}
                     title="Transferir sesión a otro perfil"
                     aria-label={`Transferir “${session.title}” a otro perfil`}
@@ -1192,6 +1265,7 @@ function InstanceCard({ instance, busy, updateAvailable, autoExpand, onLaunch, o
                   {session.transfer && (
                     <button
                       className="session-unlink-button"
+                      disabled={isBusy}
                       onClick={() => onUnlink(session)}
                       title={session.transfer.mode === "move" ? "Devolver a la instancia de origen" : "Desvincular esta copia"}
                       aria-label={session.transfer.mode === "move" ? `Devolver “${session.title}” a su origen` : `Desvincular copia de “${session.title}”`}
@@ -1485,13 +1559,13 @@ function OriginalApplicationUpdateDialog({
         <HardDriveIcon size={19} />
         <div>
           <strong>Tus perfiles y sesiones no se tocan</strong>
-          <p>Esta acción tampoco actualiza las instancias administradas. Solo entrega el proceso a la descarga o documentación oficial.</p>
+        <p>Esta acción no escribe ni sustituye instancias administradas. Solo entrega la original a la descarga o documentación oficial.</p>
         </div>
       </div>
 
       <div className="original-update-next-step">
         <SparklesIcon size={18} />
-        <p>Cuando termines la instalación, vuelve a esta ventana. El escaneo al recuperar el foco detectará la nueva versión y entonces podrás usar <strong>Actualizar instancias</strong> para sincronizarlas.</p>
+        <p>Cuando termines la instalación, vuelve a esta ventana. El escaneo al recuperar el foco recalculará qué instalación válida es la más reciente y ofrecerá <strong>Sincronizar instancias</strong> si hace falta.</p>
       </div>
 
       <div className="modal-actions original-update-actions">
@@ -1535,27 +1609,67 @@ function ModalFrame({
 function InstanceEditor({
   instance,
   sourcePath,
+  platform,
   busy,
   onClose,
   onSave,
 }: {
   instance: ManagedInstance | null;
   sourcePath: string | null;
+  platform: DashboardState["system"]["platform"];
   busy: boolean;
   onClose: () => void;
-  onSave: (request: CreateInstanceRequest) => Promise<void>;
+  onSave: (request: CreateInstanceRequest, iconChange: InstanceIconChange) => Promise<void>;
 }) {
   const [name, setName] = useState(instance?.name ?? "");
   const [customSource, setCustomSource] = useState(sourcePath ?? "");
   const [advanced, setAdvanced] = useState(false);
+  const [iconBytes, setIconBytes] = useState<Uint8Array | null>(null);
+  const [iconPreviewUrl, setIconPreviewUrl] = useState<string | null>(null);
+  const [removeIcon, setRemoveIcon] = useState(false);
+  const [iconError, setIconError] = useState<string | null>(null);
   const isNew = !instance;
+  const currentIconUrl = instance ? managedIconSource(instance) : null;
+
+  const selectIcon = async (file: File | null) => {
+    setIconError(null);
+    if (!file) return;
+    if (!["image/png", "image/jpeg"].includes(file.type)) {
+      setIconError("Selecciona una imagen PNG o JPEG válida.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setIconError("La imagen supera el límite de 5 MiB.");
+      return;
+    }
+    try {
+      const bitmap = await createImageBitmap(file);
+      const dimensionsValid = bitmap.width >= 32 && bitmap.height >= 32 && bitmap.width <= 8192 && bitmap.height <= 8192;
+      bitmap.close();
+      if (!dimensionsValid) {
+        setIconError("Usa una imagen entre 32×32 y 8192×8192 píxeles.");
+        return;
+      }
+      const reader = new FileReader();
+      const preview = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => typeof reader.result === "string" ? resolve(reader.result) : reject(new Error("Vista previa no disponible"));
+        reader.onerror = () => reject(reader.error ?? new Error("No se pudo leer la imagen"));
+        reader.readAsDataURL(file);
+      });
+      setIconBytes(new Uint8Array(await file.arrayBuffer()));
+      setIconPreviewUrl(preview);
+      setRemoveIcon(false);
+    } catch {
+      setIconError("No se pudo decodificar la imagen seleccionada.");
+    }
+  };
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     await onSave({
       name: name.trim(),
       sourcePath: isNew ? customSource.trim() || null : undefined,
-    });
+    }, { bytes: iconBytes, previewUrl: iconPreviewUrl, remove: removeIcon });
   };
 
   return (
@@ -1569,6 +1683,65 @@ function InstanceEditor({
           <span>Nombre del perfil</span>
           <input autoFocus value={name} onChange={(event) => setName(event.target.value)} maxLength={64} required placeholder="Ej. Trabajo, Personal, Cliente A" />
         </label>
+
+        <section className="instance-icon-editor" aria-labelledby="instance-icon-heading">
+          <div className="instance-icon-preview">
+            {iconPreviewUrl || (!removeIcon && currentIconUrl)
+              ? <img src={iconPreviewUrl ?? currentIconUrl!} alt="Vista previa del icono de la instancia" />
+              : <CloudIcon size={30} />}
+          </div>
+          <div className="instance-icon-copy">
+            <strong id="instance-icon-heading">Icono de la instancia</strong>
+            <span>Se guarda fuera de la aplicación compatible para sobrevivir a futuras sincronizaciones.</span>
+            <div className="instance-icon-actions">
+              <label className="secondary-button file-picker-button">
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg"
+                  onChange={(event) => {
+                    const file = event.currentTarget.files?.[0] ?? null;
+                    event.currentTarget.value = "";
+                    void selectIcon(file);
+                  }}
+                  disabled={busy}
+                />
+                {iconPreviewUrl || instance?.customIcon ? "Reemplazar imagen" : "Seleccionar imagen"}
+              </label>
+              {(iconPreviewUrl || instance?.customIcon) && !removeIcon && (
+                <button
+                  type="button"
+                  className="text-danger-button"
+                  disabled={busy}
+                  onClick={() => {
+                    setIconBytes(null);
+                    setIconPreviewUrl(null);
+                    setRemoveIcon(true);
+                    setIconError(null);
+                  }}
+                >
+                  Quitar
+                </button>
+              )}
+            </div>
+            {iconError && <span className="field-error" role="alert">{iconError}</span>}
+          </div>
+        </section>
+
+        <div className="icon-platform-note">
+          <AlertIcon size={17} />
+          <p>
+            {platform === "macos"
+              ? "En macOS el icono siempre identifica la instancia dentro de Code AI Profiles. El Dock puede conservar el icono oficial para no alterar la firma ni el actualizador; el resultado del sistema es best-effort."
+              : platform === "windows"
+                ? "En Windows se intenta aplicar el icono al launcher y la barra de tareas sin modificar el ejecutable; algunas ventanas pueden conservar el icono oficial."
+                : "En Linux se intenta aplicar el icono al launcher; Wayland o el compositor pueden conservar el icono oficial."}
+          </p>
+        </div>
+        {instance?.customIcon && !removeIcon && (
+          <p className={`icon-application-result ${instance.customIcon.systemApplied ? "is-applied" : "is-limited"}`}>
+            {instance.customIcon.systemMessage}
+          </p>
+        )}
 
         {isNew && (
           <>
@@ -1604,37 +1777,42 @@ function InstanceEditor({
 
 function ApplicationUpdateDialog({
   instances,
+  sourceName,
   targetVersion,
+  canSynchronize,
+  unavailableReason,
   busy,
-  progress,
   onClose,
   onConfirm,
 }: {
   instances: ManagedInstance[];
+  sourceName: string;
   targetVersion: string;
+  canSynchronize: boolean;
+  unavailableReason: string | null;
   busy: boolean;
-  progress: ApplicationUpdateProgress | null;
   onClose: () => void;
   onConfirm: () => Promise<void>;
 }) {
   const runningInstances = instances.filter((instance) => instance.status === "running");
-  const ready = runningInstances.length === 0;
+  const eligibleInstances = instances.filter((instance) => instance.status === "stopped");
+  const ready = eligibleInstances.length > 0 && canSynchronize;
   const statusLabel = (instance: ManagedInstance) => instance.status === "running"
     ? "Ejecutándose"
-    : instance.status === "missing" ? "Se reparará" : "Detenido";
+    : instance.status === "missing" ? "No disponible" : "Detenido";
 
   return (
     <ModalFrame
-      title="Actualizar instancias"
-      subtitle={`Usar la versión ${targetVersion} desde la instalación original`}
+      title={`Sincronizar instancias desde ${sourceName} v${targetVersion}`}
+      subtitle="La fuente local más reciente fue validada antes de mostrar esta acción"
       onClose={busy ? () => undefined : onClose}
     >
       <div className="app-update-summary">
         <span><RefreshIcon size={21} /></span>
         <div>
-          <small>NUEVA VERSIÓN DETECTADA</small>
-          <strong>Versión {targetVersion}</strong>
-          <p>Se reemplazará únicamente la aplicación de cada instancia.</p>
+          <small>FUENTE LOCAL VALIDADA</small>
+          <strong>{sourceName} · versión {targetVersion}</strong>
+          <p>Se reemplazará únicamente la aplicación de cada instancia; cada perfil permanece separado.</p>
         </div>
       </div>
 
@@ -1651,11 +1829,15 @@ function ApplicationUpdateDialog({
         ))}
       </div>
 
-      {!ready && (
+      {(runningInstances.length > 0 || !canSynchronize || eligibleInstances.length === 0) && (
         <div className="transfer-requirement">
           <StopIcon size={18} />
           <span>
-            Detén {runningInstances.map((instance) => `“${instance.name}”`).join(" y ")} antes de actualizar. La app no cerrará ninguna instancia automáticamente.
+            {!canSynchronize
+              ? unavailableReason ?? "La fuente local ya no es elegible. Vuelve a escanear el sistema."
+              : runningInstances.length
+              ? `${runningInstances.map((instance) => `“${instance.name}”`).join(" y ")} ${runningInstances.length === 1 ? "se omitirá" : "se omitirán"} porque ${runningInstances.length === 1 ? "está ejecutándose" : "están ejecutándose"}. Detén las instancias para incluirlas en otro intento.`
+              : "No hay objetivos detenidos disponibles para sincronizar."}
           </span>
         </div>
       )}
@@ -1668,12 +1850,12 @@ function ApplicationUpdateDialog({
       <div className="modal-actions app-update-actions">
         <button className="secondary-button" onClick={onClose} disabled={busy}>Cancelar</button>
         <button className="primary-action modal-primary" onClick={() => void onConfirm()} disabled={busy || !ready}>
-          {busy && progress
-            ? <><RefreshIcon className="spin" size={17} /> Actualizando {progress.current} de {progress.total}…</>
-            : <><RefreshIcon size={17} /> Actualizar {instances.length === 1 ? "instancia" : `${instances.length} instancias`}</>}
+          {busy
+            ? <><RefreshIcon className="spin" size={17} /> Sincronizando y verificando…</>
+            : <><RefreshIcon size={17} /> Sincronizar {eligibleInstances.length === 1 ? "instancia" : `${eligibleInstances.length} instancias`}</>}
         </button>
       </div>
-      {busy && progress && <span className="update-current-instance">Preparando {progress.instanceName}</span>}
+      {busy && <span className="update-current-instance">Cada instancia devuelve un resultado independiente</span>}
     </ModalFrame>
   );
 }
@@ -1691,7 +1873,7 @@ function SessionTransferDialog({
   instances: SessionProfile[];
   busy: boolean;
   onClose: () => void;
-  onTransfer: (targetId: string, mode: SessionTransferMode) => Promise<void>;
+  onTransfer: (targetId: string, mode: SessionTransferMode, includeLocalArtifacts: boolean) => Promise<void>;
 }) {
   const candidates = instances.filter((instance) => instance.id !== source.id);
   const preferredTarget = candidates.find((instance) => !instance.isOriginal && instance.status === "stopped")
@@ -1699,6 +1881,7 @@ function SessionTransferDialog({
     ?? candidates[0];
   const [targetId, setTargetId] = useState(preferredTarget?.id ?? "");
   const [mode, setMode] = useState<SessionTransferMode>("move");
+  const [includeLocalArtifacts, setIncludeLocalArtifacts] = useState(true);
   const target = candidates.find((instance) => instance.id === targetId) ?? null;
   const registeredOrigin = session.transfer
     ? instances.find((instance) => instance.id === session.transfer?.originInstanceId)
@@ -1800,6 +1983,19 @@ function SessionTransferDialog({
         </div>
       )}
 
+      <label className="artifact-copy-option">
+        <input
+          type="checkbox"
+          checked={includeLocalArtifacts}
+          onChange={(event) => setIncludeLocalArtifacts(event.target.checked)}
+          disabled={busy}
+        />
+        <span>
+          <strong>Incluir copias locales de artefactos si están disponibles</strong>
+          <small>Los archivos se copian como bytes opacos. Si el esquema no es verificable, quedan en una exportación administrada para importarlos o publicarlos de nuevo.</small>
+        </span>
+      </label>
+
       <div className="transfer-warning">
         <AlertIcon size={18} />
         <div>
@@ -1823,7 +2019,7 @@ function SessionTransferDialog({
 
       <div className="modal-actions transfer-actions">
         <button className="secondary-button" onClick={onClose} disabled={busy}>Cancelar</button>
-        <button className="primary-action modal-primary" onClick={() => target && void onTransfer(target.id, mode)} disabled={busy || !ready}>
+        <button className="primary-action modal-primary" onClick={() => target && void onTransfer(target.id, mode, includeLocalArtifacts)} disabled={busy || !ready}>
           {busy
             ? <><RefreshIcon className="spin" size={17} /> Transfiriendo y respaldando…</>
             : <><TransferIcon size={17} /> {

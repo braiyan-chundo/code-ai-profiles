@@ -1,6 +1,6 @@
 # Sesiones y estimación de contexto
 
-Documento funcional relacionado con [HU-0002](hu/HU-0002-actualizar-aplicacion-original-y-metadatos-por-modelo-y-proveedor.md) y [HU-0003](hu/HU-0003-transferencias-conscientes-de-artefactos-actualizacion-disponible-y-uso-en-vivo.md).
+Documento funcional relacionado con [HU-0002](hu/HU-0002-actualizar-aplicacion-original-y-metadatos-por-modelo-y-proveedor.md), [HU-0003](hu/HU-0003-transferencias-conscientes-de-artefactos-actualizacion-disponible-y-uso-en-vivo.md) y [HU-0004](hu/HU-0004-sincronizacion-desde-la-instancia-mas-reciente-cierre-robusto-artefactos-locales-e-identidad-visual.md).
 
 ## Origen y alcance del dato
 
@@ -62,7 +62,10 @@ Una transferencia mueve o copia la conversación local entre perfiles detenidos;
 - Al copiar, el índice y las referencias de origen permanecen intactos.
 - Al mover, el sistema respalda el estado de origen. Si la sesión vuelve directamente al origen o se desvincula, intenta restaurar y fusionar sus referencias desde los manifests/backups disponibles.
 - Si ese material no existe o está dañado, la aplicación no inventa referencias. La conversación sigue recuperable, pero el usuario deberá publicar otra vez el artefacto y volver a configurar su vigilancia en el perfil destino.
-- No se transfieren tareas programadas, backlog, manifiestos globales ni payloads de artefactos.
+- Las copias locales de artefactos se pueden incluir de manera explícita y vienen activadas por defecto. Solo se buscan dentro de roots locales permitidos y se copian como bytes opacos, sin leer ni indexar su contenido.
+- En esta versión no hay un adaptador de schema local confirmado para registrar esos payloads en el perfil de destino. Por eso las copias detectadas se preservan bajo la exportación administrada y el resultado indica la ruta relativa; el usuario puede abrirlas, importarlas con el mecanismo compatible o publicarlas de nuevo.
+- Al copiar, el material local del origen no se altera. Al mover, el material local del origen también se conserva cuando el destino solo recibe una exportación; no se elimina nada hasta contar con un registro de destino confirmado y rollback.
+- Se rechazan symlinks, escapes fuera de los roots permitidos, archivos especiales y árboles excesivamente profundos. Si un recurso no supera la validación, se omite sin exponer su nombre o contenido.
 
 Cada sesión puede mostrar solo un resumen seguro: número de artefactos publicados y el último estado conocido de un monitor `artifact-comment-monitor`. No muestra URLs, IDs, títulos, contenido, prompts, respuestas, resultados, cookies, credenciales ni tokens. Un aviso del proveedor que indique que un monitor no pudo reanudarse puede continuar apareciendo: es una restricción del recurso remoto, no una promesa que Code AI Profiles pueda resolver localmente.
 

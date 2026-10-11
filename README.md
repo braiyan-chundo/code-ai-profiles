@@ -18,12 +18,14 @@ Aplicación de escritorio open source creada con Tauri, React y Rust para admini
 - Crea perfiles independientes y los inicia de forma simultánea.
 - Muestra el estado ejecutándose/detenido, la versión y el uso de sesión y semanal disponible.
 - Escanea automáticamente cada 60 segundos y permite un escaneo manual con progreso visible.
-- Alerta cuando una copia administrada necesita actualizarse desde la aplicación original.
+- Detecta la instalación local válida más reciente y sincroniza las instancias administradas detenidas que estén detrás, incluso si la más reciente es otra instancia.
 - Permite abrir el canal oficial para actualizar la aplicación original sin modificar perfiles ni actualizar instancias automáticamente.
 - Incluye la instalación original en el mismo dashboard que las instancias administradas.
 - Lista sesiones locales con título, modelo, turnos, actividad, estado archivado y contexto estimado.
 - Permite desplegar o contraer las sesiones de cada perfil.
-- Permite copiar, mover, devolver y desvincular sesiones entre perfiles detenidos.
+- Permite copiar, mover, devolver y desvincular sesiones entre perfiles detenidos; las copias locales de artefactos se exportan de forma segura cuando el schema de destino no está confirmado.
+- Cierra instancias mediante una identidad de proceso verificada, con espera y escalación controlada si no terminan.
+- Permite asignar un icono PNG o JPEG a cada instancia dentro de Code AI Profiles, sin alterar los binarios firmados del proveedor.
 - Incluye temas claro, oscuro y del sistema, además de tres tamaños de texto para las sesiones.
 - Usa controles de ventana apropiados para macOS y decoraciones compatibles en Windows y Linux.
 
@@ -161,7 +163,7 @@ Code AI Profiles/
 - En Windows se copia el directorio de la aplicación y cada proceso recibe su propio directorio de datos.
 - En Linux se crea un lanzador hacia el binario instalado para conservar su sandbox y permitir que el gestor de paquetes actualice el ejecutable compartido.
 
-La actualización de la aplicación original y la sincronización de instancias son operaciones separadas. Code AI Profiles abre la descarga oficial en macOS/Windows o las instrucciones apt en Linux para que el usuario complete la actualización; después, al detectar la nueva versión, macOS y Windows pueden reemplazar únicamente la copia administrada sin tocar el perfil. En Linux, las instancias siguen el binario actualizado por el gestor de paquetes. Consulta [la guía de actualizaciones](docs/actualizaciones.document.md).
+La actualización de la aplicación original y la sincronización de instancias son operaciones separadas. Code AI Profiles abre la descarga oficial en macOS/Windows o las instrucciones apt en Linux para que el usuario complete la actualización; nunca sobrescribe la original. Después del escaneo, una instalación gestionada válida que tenga la mayor versión puede sincronizar otras instancias detenidas sin tocar sus perfiles. En Linux, las instancias siguen el binario actualizado por el gestor de paquetes. Consulta [la guía de actualizaciones](docs/actualizaciones.document.md).
 
 ## Sesiones y contexto
 
@@ -185,6 +187,14 @@ Las operaciones de sesión requieren que el origen y el destino estén detenidos
 - **Desvincular** quita una copia del perfil secundario sin borrar su origen.
 
 Las transferencias son experimentales. Conserva un respaldo y no abras simultáneamente una misma sesión copiada desde dos perfiles.
+
+Las referencias cloud, la propiedad remota y los monitores de artefactos no se transfieren. Si se detectan archivos locales de artefactos, se preservan como una exportación administrada porque su schema de destino no se reconstruye de forma heurística. En un movimiento el material de origen permanece hasta que exista un registro de destino validado. Consulta [la guía de sesiones](docs/sesiones.document.md).
+
+## Cierre e identidad visual de instancias
+
+El botón **Detener** verifica que el proceso pertenezca a la aplicación y perfil de la instancia antes de cerrarlo, intenta un cierre normal y solo después escala dentro del árbol o grupo verificado. Si aún quedan procesos, conserva el estado ejecutándose y explica el error en vez de informar un cierre falso.
+
+Puedes asignar un icono PNG o JPEG de hasta 5 MiB a cada instancia. El icono se muestra dentro de Code AI Profiles y sobrevive a la sincronización de su aplicación. Para conservar firma y actualizador, macOS mantiene el icono oficial en el Dock; Windows conserva el icono del ejecutable firmado; Linux crea un launcher opcional cuyo resultado depende del compositor. Consulta [la guía de instancias](docs/instancias.document.md).
 
 ## Privacidad y seguridad
 
