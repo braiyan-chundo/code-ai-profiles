@@ -5,10 +5,14 @@ use std::{
     collections::{HashMap, HashSet},
     env, fs,
     fs::File,
-    io::{Read, Seek, SeekFrom},
+    hash::{DefaultHasher, Hash, Hasher},
+    io::{Cursor, Read, Seek, SeekFrom},
     path::{Path, PathBuf},
-    process::Command,
+    process::{Child, Command},
+    thread,
+    time::{Duration, Instant},
 };
+use sysinfo::{Pid, System};
 use tauri::{AppHandle, Emitter, Manager, WebviewWindow};
 use uuid::Uuid;
 
@@ -18,6 +22,10 @@ const UPDATE_CACHE_FRESH_MS: i64 = 6 * 60 * 60 * 1_000;
 const UPDATE_CACHE_STALE_MS: i64 = 7 * 24 * 60 * 60 * 1_000;
 const UPDATE_FEED_MAX_BYTES: u64 = 256 * 1_024;
 const NULL_DEVICE_ID: &str = "00000000-0000-0000-0000-000000000000";
+const ICON_MAX_BYTES: usize = 5 * 1024 * 1024;
+const ICON_MAX_DIMENSION: u32 = 4096;
+const ARTIFACT_EXPORT_MAX_FILES: usize = 256;
+const ARTIFACT_EXPORT_MAX_BYTES: u64 = 256 * 1024 * 1024;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -58,11 +66,36 @@ struct ManagedInstance {
     #[serde(default)]
     pid: Option<u32>,
     #[serde(default)]
+    process_identity: Option<ManagedProcessIdentity>,
+    #[serde(default)]
+    launch_generation: u64,
+    #[serde(default)]
+    custom_icon: Option<CustomIcon>,
+    #[serde(default)]
     status: InstanceStatus,
     #[serde(default)]
     usage: Option<UsageStats>,
     #[serde(default)]
     code_sessions: Vec<CodeSession>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+struct ManagedProcessIdentity {
+    root_pid: u32,
+    process_group_id: Option<u32>,
+    start_time: Option<u64>,
+    fingerprint: String,
+    profile_argument: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+struct CustomIcon {
+    path: String,
+    revision: u64,
+    system_applied: bool,
+    system_message: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq)]
@@ -268,11 +301,38 @@ struct SystemInfo {
     source_name: Option<String>,
     source_version: Option<String>,
     source_update: SourceUpdateInfo,
+    version_topology: VersionTopology,
     original_profile_path: Option<String>,
     original_status: InstanceStatus,
     original_code_sessions: Vec<CodeSession>,
     free_bytes: Option<u64>,
     managed_bytes: u64,
+}
+
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+struct VersionTopology {
+    latest_installed_version: Option<String>,
+    latest_source: Option<VersionSource>,
+    stale_instance_ids: Vec<String>,
+    original_behind: bool,
+    can_synchronize_managed: bool,
+    reason: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+struct VersionSource {
+    kind: VersionSourceKind,
+    instance_id: Option<String>,
+    name: String,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+enum VersionSourceKind {
+    Original,
+    Managed,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -361,6 +421,13 @@ struct ScanProgress {
     label: &'static str,
 }
 
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct ProcessExitEvent {
+    instance_id: String,
+    generation: u64,
+}
+
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct CreateInstanceRequest {
@@ -383,6 +450,71 @@ struct CopyCodeSessionRequest {
     session_id: String,
     #[serde(default)]
     mode: SessionTransferMode,
+    #[serde(default = "default_include_local_artifacts")]
+    include_local_artifacts: bool,
+}
+
+fn default_include_local_artifacts() -> bool {
+    true
+}
+
+#[derive(Debug, Clone, Serialize, Default, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+struct ArtifactTransferOutcome {
+    local_candidates: u64,
+    copied: u64,
+    registered: u64,
+    preserved_for_manual_import: u64,
+    remote_references_omitted: u64,
+    monitors_omitted: u64,
+    export_path: Option<String>,
+    warnings: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct SessionTransferResult {
+    dashboard: DashboardState,
+    artifacts: ArtifactTransferOutcome,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct SynchronizeManagedApplicationsRequest {
+    source: VersionSource,
+    target_instance_ids: Vec<String>,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+enum SynchronizationStatus {
+    Updated,
+    Skipped,
+    Failed,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct SynchronizationItemResult {
+    instance_id: String,
+    status: SynchronizationStatus,
+    from_version: Option<String>,
+    to_version: Option<String>,
+    message: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct SynchronizeManagedApplicationsResult {
+    dashboard: DashboardState,
+    results: Vec<SynchronizationItemResult>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct SetInstanceIconRequest {
+    id: String,
+    bytes: Vec<u8>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -456,6 +588,7 @@ struct ManagedPaths {
     session_backups: PathBuf,
     session_links: PathBuf,
     source_update_cache: PathBuf,
+    artifact_exports: PathBuf,
 }
 
 impl ManagedPaths {
@@ -472,6 +605,7 @@ impl ManagedPaths {
             session_backups: app_data.join("session-transfer-backups"),
             session_links: app_data.join("session-links.json"),
             source_update_cache: app_data.join("source-update-cache.json"),
+            artifact_exports: app_data.join("artifact-exports"),
             app_data,
             instances,
         })
@@ -1159,6 +1293,229 @@ fn version_is_newer(candidate: &str, current: Option<&str>) -> bool {
             (candidate != current).then_some(candidate > current)
         })
         .unwrap_or(false)
+}
+
+fn versions_equal(left: &str, right: &str) -> bool {
+    !version_is_newer(left, Some(right)) && !version_is_newer(right, Some(left))
+}
+
+fn path_is_within(path: &Path, root: &Path) -> bool {
+    let Ok(path) = fs::canonicalize(path) else {
+        return false;
+    };
+    let Ok(root) = fs::canonicalize(root) else {
+        return false;
+    };
+    path.starts_with(root)
+}
+
+#[cfg(target_os = "macos")]
+fn macos_team_identifier(path: &Path) -> Option<String> {
+    let output = Command::new("/usr/bin/codesign")
+        .args(["-dv", "--verbose=4"])
+        .arg(path)
+        .output()
+        .ok()?;
+    let details = String::from_utf8_lossy(&output.stderr);
+    details.lines().find_map(|line| {
+        line.strip_prefix("TeamIdentifier=")
+            .map(str::trim)
+            .filter(|value| !value.is_empty() && *value != "not set")
+            .map(str::to_string)
+    })
+}
+
+#[cfg(target_os = "macos")]
+fn validate_provider_identity(candidate: &Path, original: &Path) -> Result<(), String> {
+    for path in [candidate, original] {
+        let status = Command::new("/usr/bin/codesign")
+            .args(["--verify", "--deep", "--strict"])
+            .arg(path)
+            .status()
+            .map_err(|error| format!("No se pudo validar la firma de la aplicación: {error}"))?;
+        if !status.success() {
+            return Err("La firma de la aplicación compatible no es válida.".to_string());
+        }
+    }
+    let candidate_bundle = macos_bundle_value(candidate, "CFBundleIdentifier");
+    let original_bundle = macos_bundle_value(original, "CFBundleIdentifier");
+    if candidate_bundle.is_none() || candidate_bundle != original_bundle {
+        return Err("La identidad del bundle no coincide con la aplicación original.".to_string());
+    }
+    let candidate_team = macos_team_identifier(candidate);
+    let original_team = macos_team_identifier(original);
+    if original_team.is_some() && candidate_team != original_team {
+        return Err("El firmante de la aplicación no coincide con la original.".to_string());
+    }
+    Ok(())
+}
+
+#[cfg(target_os = "windows")]
+fn windows_signer_subject(path: &Path) -> Option<String> {
+    let output = Command::new("powershell.exe")
+        .args([
+            "-NoProfile",
+            "-NonInteractive",
+            "-Command",
+            "$s=Get-AuthenticodeSignature -LiteralPath $args[0]; if($s.Status -eq 'Valid' -and $s.SignerCertificate){$s.SignerCertificate.Subject}",
+        ])
+        .arg(path)
+        .output()
+        .ok()?;
+    output
+        .status
+        .success()
+        .then(|| String::from_utf8_lossy(&output.stdout).trim().to_string())
+        .filter(|value| !value.is_empty())
+}
+
+#[cfg(target_os = "windows")]
+fn validate_provider_identity(candidate: &Path, original: &Path) -> Result<(), String> {
+    let candidate = windows_signer_subject(candidate)
+        .ok_or_else(|| "La firma Authenticode de la instancia no es válida.".to_string())?;
+    let original = windows_signer_subject(original)
+        .ok_or_else(|| "La firma Authenticode de la original no es válida.".to_string())?;
+    if candidate != original {
+        return Err("El editor de la instancia no coincide con la original.".to_string());
+    }
+    Ok(())
+}
+
+#[cfg(target_os = "linux")]
+fn validate_provider_identity(_candidate: &Path, _original: &Path) -> Result<(), String> {
+    Err("Linux usa la instalación compartida y no sincroniza copias de aplicación.".to_string())
+}
+
+#[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
+fn validate_provider_identity(_candidate: &Path, _original: &Path) -> Result<(), String> {
+    Err("La sincronización no está soportada en esta plataforma.".to_string())
+}
+
+fn validate_managed_application_source(
+    paths: &ManagedPaths,
+    instance: &ManagedInstance,
+    original: &Path,
+) -> Result<String, String> {
+    if instance.status != InstanceStatus::Stopped {
+        return Err("La instancia fuente debe estar detenida.".to_string());
+    }
+    validate_managed_application(paths, instance, original)
+}
+
+fn validate_managed_application(
+    paths: &ManagedPaths,
+    instance: &ManagedInstance,
+    original: &Path,
+) -> Result<String, String> {
+    let root = paths.root_for(&instance.id)?;
+    let app_path = Path::new(&instance.app_path);
+    if !path_is_within(app_path, &root) {
+        return Err("La aplicación fuente quedó fuera de su root administrado.".to_string());
+    }
+    validate_source(app_path)?;
+    validate_provider_identity(app_path, original)?;
+    source_version(app_path)
+        .filter(|version| valid_release_version(version))
+        .ok_or_else(|| "No se pudo identificar la versión de la instancia fuente.".to_string())
+}
+
+fn build_version_topology(paths: &ManagedPaths, registry: &Registry) -> VersionTopology {
+    let Some(original) = detect_provider_source() else {
+        return VersionTopology {
+            latest_installed_version: None,
+            latest_source: None,
+            stale_instance_ids: Vec::new(),
+            original_behind: false,
+            can_synchronize_managed: false,
+            reason: Some("No se encontró la aplicación original compatible.".to_string()),
+        };
+    };
+    let original_valid = original_instance_status() == InstanceStatus::Stopped
+        && validate_source(&original).is_ok()
+        && (cfg!(target_os = "linux") || validate_provider_identity(&original, &original).is_ok());
+    let original_version = original_valid
+        .then(|| source_version(&original))
+        .flatten()
+        .filter(|version| valid_release_version(version));
+    let original_name =
+        source_display_name(&original).unwrap_or_else(|| "Aplicación original".to_string());
+    let mut latest = original_version.clone().map(|version| {
+        (
+            version,
+            VersionSource {
+                kind: VersionSourceKind::Original,
+                instance_id: None,
+                name: original_name,
+            },
+        )
+    });
+
+    if !cfg!(target_os = "linux") {
+        for instance in &registry.instances {
+            let Ok(version) = validate_managed_application_source(paths, instance, &original)
+            else {
+                continue;
+            };
+            if latest
+                .as_ref()
+                .map(|(current, _)| version_is_newer(&version, Some(current)))
+                .unwrap_or(true)
+            {
+                latest = Some((
+                    version,
+                    VersionSource {
+                        kind: VersionSourceKind::Managed,
+                        instance_id: Some(instance.id.clone()),
+                        name: instance.name.clone(),
+                    },
+                ));
+            }
+        }
+    }
+
+    let stale_instance_ids = latest
+        .as_ref()
+        .map(|(latest_version, _)| {
+            registry
+                .instances
+                .iter()
+                .filter(|instance| {
+                    validate_managed_application(paths, instance, &original).is_ok()
+                        && instance
+                            .source_version
+                            .as_deref()
+                            .map(|version| version_is_newer(latest_version, Some(version)))
+                            .unwrap_or(true)
+                })
+                .map(|instance| instance.id.clone())
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    let original_behind = latest.as_ref().is_some_and(|(latest, _)| {
+        original_version
+            .as_deref()
+            .is_some_and(|version| version_is_newer(latest, Some(version)))
+    });
+    let can_synchronize_managed =
+        !cfg!(target_os = "linux") && latest.is_some() && !stale_instance_ids.is_empty();
+    let has_latest = latest.is_some();
+    VersionTopology {
+        latest_installed_version: latest.as_ref().map(|(version, _)| version.clone()),
+        latest_source: latest.map(|(_, source)| source),
+        stale_instance_ids,
+        original_behind,
+        can_synchronize_managed,
+        reason: if cfg!(target_os = "linux") {
+            Some(
+                "Linux usa el paquete compartido; no hay copias de bytes que sincronizar."
+                    .to_string(),
+            )
+        } else if !has_latest {
+            Some("No hay una instalación detenida y validada disponible como fuente.".to_string())
+        } else {
+            None
+        },
+    }
 }
 
 fn valid_release_version(version: &str) -> bool {
@@ -2207,7 +2564,206 @@ fn restored_origin_artifacts(
     None
 }
 
-fn copy_code_session_sync(app: &AppHandle, request: CopyCodeSessionRequest) -> Result<(), String> {
+fn artifact_export_roots(profile_path: &Path, session_id: &str) -> Vec<PathBuf> {
+    [
+        profile_path.join("artifacts").join(session_id),
+        profile_path.join("claude-code-artifacts").join(session_id),
+        profile_path
+            .join("claude-code-sessions")
+            .join("artifacts")
+            .join(session_id),
+    ]
+    .into_iter()
+    .filter(|path| path.exists())
+    .collect()
+}
+
+fn artifact_reference_count(value: Option<&Value>) -> u64 {
+    match value {
+        Some(Value::Array(items)) => items.len() as u64,
+        Some(Value::Object(items)) => items.len() as u64,
+        _ => 0,
+    }
+}
+
+fn collect_opaque_artifact_files(
+    root: &Path,
+    directory: &Path,
+    depth: usize,
+    entries_seen: &mut usize,
+    files: &mut Vec<PathBuf>,
+    total_bytes: &mut u64,
+) -> Result<(), String> {
+    if depth > 12 {
+        return Err("La exportación local supera el límite de profundidad.".to_string());
+    }
+    *entries_seen = entries_seen.saturating_add(1);
+    if *entries_seen > ARTIFACT_EXPORT_MAX_FILES * 2 {
+        return Err("La exportación local supera el límite de entradas.".to_string());
+    }
+    let canonical_root = fs::canonicalize(root)
+        .map_err(|_| "No se pudo validar el root local de artefactos.".to_string())?;
+    let metadata = fs::symlink_metadata(directory)
+        .map_err(|error| format!("No se pudo validar un artefacto local: {error}"))?;
+    if metadata.file_type().is_symlink() {
+        return Err(
+            "Se omitió un artefacto local porque contiene un enlace simbólico.".to_string(),
+        );
+    }
+    if metadata.is_file() {
+        let canonical = fs::canonicalize(directory)
+            .map_err(|_| "No se pudo canonicalizar un artefacto local.".to_string())?;
+        if !canonical.starts_with(&canonical_root) {
+            return Err("Se rechazó un artefacto local fuera del root permitido.".to_string());
+        }
+        if files.len() >= ARTIFACT_EXPORT_MAX_FILES {
+            return Err("La exportación local supera el límite de archivos.".to_string());
+        }
+        *total_bytes = total_bytes.saturating_add(metadata.len());
+        if *total_bytes > ARTIFACT_EXPORT_MAX_BYTES {
+            return Err("La exportación local supera el límite de tamaño.".to_string());
+        }
+        files.push(directory.to_path_buf());
+        return Ok(());
+    }
+    if !metadata.is_dir() {
+        return Err("Se rechazó un artefacto local de tipo especial.".to_string());
+    }
+    for entry in fs::read_dir(directory)
+        .map_err(|error| format!("No se pudo enumerar un artefacto local: {error}"))?
+    {
+        let entry =
+            entry.map_err(|error| format!("No se pudo leer un artefacto local: {error}"))?;
+        collect_opaque_artifact_files(
+            root,
+            &entry.path(),
+            depth + 1,
+            entries_seen,
+            files,
+            total_bytes,
+        )?;
+    }
+    Ok(())
+}
+
+fn export_local_artifacts(
+    paths: &ManagedPaths,
+    profile_path: &Path,
+    session_id: &str,
+    transfer_id: &str,
+    include: bool,
+    remote_references_omitted: u64,
+    monitors_omitted: u64,
+) -> ArtifactTransferOutcome {
+    let mut outcome = ArtifactTransferOutcome {
+        remote_references_omitted,
+        monitors_omitted,
+        ..ArtifactTransferOutcome::default()
+    };
+    if !include {
+        outcome
+            .warnings
+            .push("No se solicitaron copias locales de artefactos.".to_string());
+        return outcome;
+    }
+    let roots = artifact_export_roots(profile_path, session_id);
+    let mut files = Vec::new();
+    let mut total_bytes = 0_u64;
+    let mut entries_seen = 0_usize;
+    for root in &roots {
+        if let Err(error) = collect_opaque_artifact_files(
+            root,
+            root,
+            0,
+            &mut entries_seen,
+            &mut files,
+            &mut total_bytes,
+        ) {
+            outcome.warnings.push(error);
+            return outcome;
+        }
+    }
+    outcome.local_candidates = files.len() as u64;
+    if files.is_empty() {
+        if remote_references_omitted > 0 {
+            outcome.warnings.push(
+                "Solo se detectaron referencias remotas; deben publicarse de nuevo en el destino."
+                    .to_string(),
+            );
+        }
+        return outcome;
+    }
+
+    let staging = paths
+        .artifact_exports
+        .join(format!(".{transfer_id}.staging"));
+    let destination = paths.artifact_exports.join(transfer_id);
+    if let Err(error) = fs::create_dir_all(&staging) {
+        outcome
+            .warnings
+            .push(format!("No se pudo preparar la exportación local: {error}"));
+        return outcome;
+    }
+    for (root_index, root) in roots.iter().enumerate() {
+        for file in files.iter().filter(|file| file.starts_with(root)) {
+            let safe_to_copy = fs::symlink_metadata(file)
+                .ok()
+                .filter(|metadata| metadata.is_file() && !metadata.file_type().is_symlink())
+                .and_then(|_| fs::canonicalize(file).ok())
+                .zip(fs::canonicalize(root).ok())
+                .is_some_and(|(file, root)| file.starts_with(root));
+            if !safe_to_copy {
+                outcome.warnings.push(
+                    "Una copia local cambió durante la transferencia y fue omitida.".to_string(),
+                );
+                continue;
+            }
+            let Ok(relative) = file.strip_prefix(root) else {
+                continue;
+            };
+            let target = staging.join(root_index.to_string()).join(relative);
+            let copied = target
+                .parent()
+                .and_then(|parent| fs::create_dir_all(parent).ok().map(|_| ()))
+                .and_then(|_| fs::copy(file, &target).ok());
+            if copied.is_some() {
+                outcome.copied = outcome.copied.saturating_add(1);
+            } else {
+                outcome.warnings.push(
+                    "Una copia local no pudo preservarse; el origen no fue modificado.".to_string(),
+                );
+            }
+        }
+    }
+    if outcome.copied == outcome.local_candidates {
+        if let Some(parent) = destination.parent() {
+            let _ = fs::create_dir_all(parent);
+        }
+        if fs::rename(&staging, &destination).is_ok() {
+            outcome.preserved_for_manual_import = outcome.copied;
+            outcome.export_path = Some(format!("artifact-exports/{transfer_id}"));
+            outcome.warnings.push(
+                "El schema local no está confirmado: se creó una exportación opaca para importar o publicar manualmente."
+                    .to_string(),
+            );
+        } else {
+            let _ = fs::remove_dir_all(&staging);
+            outcome.copied = 0;
+            outcome.warnings.push(
+                "No se pudo activar la exportación local; el origen quedó intacto.".to_string(),
+            );
+        }
+    } else {
+        let _ = fs::remove_dir_all(&staging);
+        outcome.copied = 0;
+    }
+    outcome
+}
+
+fn copy_code_session_sync(
+    app: &AppHandle,
+    request: CopyCodeSessionRequest,
+) -> Result<ArtifactTransferOutcome, String> {
     if request.source_instance_id == request.target_instance_id {
         return Err("El origen y el destino deben ser perfiles diferentes.".to_string());
     }
@@ -2328,6 +2884,11 @@ fn copy_code_session_sync(app: &AppHandle, request: CopyCodeSessionRequest) -> R
     let sanitized_index = session_index_for_target(document.clone(), target_owned_artifacts)?;
 
     let transfer_id = Uuid::new_v4().to_string();
+    let remote_artifacts = published_artifacts(&document);
+    let remote_references_omitted = artifact_reference_count(remote_artifacts.as_ref());
+    let monitors_omitted = latest_artifact_monitor(&transcript)
+        .map(|summary| summary.artifact_count)
+        .unwrap_or(0);
     let backup_root = paths.session_backups.join(format!(
         "{}-{}",
         Utc::now().format("%Y%m%d-%H%M%S"),
@@ -2349,7 +2910,7 @@ fn copy_code_session_sync(app: &AppHandle, request: CopyCodeSessionRequest) -> R
     }
 
     let manifest = SessionTransferManifest {
-        transfer_id,
+        transfer_id: transfer_id.clone(),
         created_at: Utc::now().to_rfc3339(),
         session_id: session_id.clone(),
         session_title,
@@ -2394,7 +2955,15 @@ fn copy_code_session_sync(app: &AppHandle, request: CopyCodeSessionRequest) -> R
         rollback_transfer_target(&target_index, &backup_root, replaced_existing_target);
         return Err(error);
     }
-    Ok(())
+    Ok(export_local_artifacts(
+        &paths,
+        &source_profile,
+        &session_id,
+        &transfer_id,
+        request.include_local_artifacts,
+        remote_references_omitted,
+        monitors_omitted,
+    ))
 }
 
 fn unlink_code_session_sync(
@@ -2422,8 +2991,10 @@ fn unlink_code_session_sync(
                 target_instance_id: link.origin_instance_id,
                 session_id,
                 mode: SessionTransferMode::Move,
+                include_local_artifacts: true,
             },
-        );
+        )
+        .map(|_| ());
     }
 
     let mut registry = load_registry(&paths)?;
@@ -2503,31 +3074,95 @@ fn path_size(path: &Path) -> u64 {
         .unwrap_or(0)
 }
 
+#[cfg(target_os = "windows")]
 fn process_is_alive(pid: u32) -> bool {
-    #[cfg(unix)]
-    {
-        let result = unsafe { libc::kill(pid as i32, 0) };
-        result == 0 || std::io::Error::last_os_error().raw_os_error() == Some(libc::EPERM)
-    }
+    let filter = format!("PID eq {pid}");
+    Command::new("tasklist")
+        .args(["/FI", &filter, "/FO", "CSV", "/NH"])
+        .output()
+        .map(|output| {
+            output.status.success()
+                && String::from_utf8_lossy(&output.stdout).contains(&format!("\",\"{pid}\","))
+        })
+        .unwrap_or(false)
+}
 
-    #[cfg(target_os = "windows")]
-    {
-        let filter = format!("PID eq {pid}");
-        Command::new("tasklist")
-            .args(["/FI", &filter, "/FO", "CSV", "/NH"])
-            .output()
-            .map(|output| {
-                output.status.success()
-                    && String::from_utf8_lossy(&output.stdout).contains(&format!("\",\"{pid}\","))
-            })
-            .unwrap_or(false)
-    }
+fn process_fingerprint(app_path: &Path, profile_argument: &str) -> String {
+    let executable = provider_executable(app_path);
+    let canonical = fs::canonicalize(&executable).unwrap_or(executable);
+    let mut hasher = DefaultHasher::new();
+    canonical.hash(&mut hasher);
+    profile_argument.hash(&mut hasher);
+    format!("{:016x}", hasher.finish())
+}
 
-    #[cfg(not(any(unix, target_os = "windows")))]
-    {
-        let _ = pid;
-        false
+fn process_snapshot(instance: &ManagedInstance) -> Vec<(u32, u64)> {
+    let app_path = PathBuf::from(&instance.app_path);
+    let app_root = fs::canonicalize(&app_path).unwrap_or_else(|_| app_path.clone());
+    let executable = provider_executable(&app_path);
+    let executable = fs::canonicalize(&executable).unwrap_or(executable);
+    let profile_argument = format!("--user-data-dir={}", instance.profile_path);
+    let mut system = System::new_all();
+    system.refresh_all();
+    system
+        .processes()
+        .iter()
+        .filter_map(|(pid, process)| {
+            let process_executable = process.exe()?;
+            let process_executable = fs::canonicalize(process_executable)
+                .unwrap_or_else(|_| process_executable.to_path_buf());
+            let executable_matches =
+                process_executable == executable || process_executable.starts_with(&app_root);
+            let profile_matches = process
+                .cmd()
+                .iter()
+                .any(|argument| argument.to_string_lossy() == profile_argument);
+            (executable_matches && profile_matches).then_some((pid.as_u32(), process.start_time()))
+        })
+        .collect()
+}
+
+fn identity_matches_instance(
+    instance: &ManagedInstance,
+    identity: &ManagedProcessIdentity,
+) -> bool {
+    let expected_argument = format!("--user-data-dir={}", instance.profile_path);
+    identity.profile_argument == expected_argument
+        && identity.fingerprint
+            == process_fingerprint(Path::new(&instance.app_path), &expected_argument)
+        && process_snapshot(instance).iter().any(|(pid, start_time)| {
+            *pid == identity.root_pid
+                && identity
+                    .start_time
+                    .map(|expected| expected == *start_time)
+                    .unwrap_or(true)
+        })
+}
+
+fn refresh_process_identity(instance: &mut ManagedInstance) -> bool {
+    let snapshots = process_snapshot(instance);
+    if snapshots.is_empty() {
+        instance.pid = None;
+        instance.process_identity = None;
+        return false;
     }
+    if let Some(identity) = instance.process_identity.as_ref() {
+        if identity_matches_instance(instance, identity) {
+            instance.pid = Some(identity.root_pid);
+            return true;
+        }
+    }
+    let (root_pid, start_time) = snapshots[0];
+    let profile_argument = format!("--user-data-dir={}", instance.profile_path);
+    instance.pid = Some(root_pid);
+    instance.process_identity = Some(ManagedProcessIdentity {
+        root_pid,
+        process_group_id: None,
+        start_time: Some(start_time),
+        fingerprint: process_fingerprint(Path::new(&instance.app_path), &profile_argument),
+        profile_argument,
+    });
+    true
 }
 
 fn refresh_registry(registry: &mut Registry) -> HashMap<String, PathBuf> {
@@ -2565,11 +3200,13 @@ fn refresh_instance_statuses(registry: &mut Registry) {
         let app_exists = Path::new(&instance.app_path).exists();
         instance.status = if !app_exists {
             instance.pid = None;
+            instance.process_identity = None;
             InstanceStatus::Missing
-        } else if instance.pid.map(process_is_alive).unwrap_or(false) {
+        } else if refresh_process_identity(instance) {
             InstanceStatus::Running
         } else {
             instance.pid = None;
+            instance.process_identity = None;
             InstanceStatus::Stopped
         };
     }
@@ -2602,6 +3239,7 @@ fn refresh_instance_code_sessions(registry: &mut Registry, transcripts: &HashMap
 
 fn system_info(
     paths: &ManagedPaths,
+    registry: &Registry,
     session_links: &SessionLinkRegistry,
     transcripts: &HashMap<String, PathBuf>,
 ) -> SystemInfo {
@@ -2629,6 +3267,7 @@ fn system_info(
         platform,
         source_version: source_version_value,
         source_update,
+        version_topology: build_version_topology(paths, registry),
         source_name: source.as_deref().and_then(source_display_name),
         source_path: source.map(|path| path.to_string_lossy().to_string()),
         original_profile_path: original_profile.map(|path| path.to_string_lossy().to_string()),
@@ -2646,9 +3285,10 @@ fn dashboard_from(app: &AppHandle) -> Result<DashboardState, String> {
     let session_links = load_session_links(&paths)?;
     apply_session_links(&mut registry, &session_links);
     save_registry(&paths, &registry)?;
+    let system = system_info(&paths, &registry, &session_links, &transcripts);
     Ok(DashboardState {
         instances: registry.instances,
-        system: system_info(&paths, &session_links, &transcripts),
+        system,
     })
 }
 
@@ -2714,7 +3354,7 @@ fn scan_system(app: AppHandle, window: WebviewWindow) -> Result<DashboardState, 
     apply_session_links(&mut registry, &session_links);
 
     emit_progress(88, "Buscando la aplicación compatible y su versión…");
-    let system = system_info(&paths, &session_links, &transcripts);
+    let system = system_info(&paths, &registry, &session_links, &transcripts);
 
     emit_progress(92, "Actualizando el registro local…");
     save_registry(&paths, &registry)?;
@@ -2750,11 +3390,19 @@ async fn update_instance_application(app: AppHandle, id: String) -> Result<Dashb
 }
 
 fn update_instance_application_sync(app: &AppHandle, id: &str) -> Result<(), String> {
-    let paths = ManagedPaths::resolve(app)?;
-    let instance_root = paths.root_for(id)?;
     let source = detect_provider_source().ok_or_else(|| {
         "No se encontró la instalación original de la aplicación compatible.".to_string()
     })?;
+    update_instance_application_from_source_sync(app, id, &source)
+}
+
+fn update_instance_application_from_source_sync(
+    app: &AppHandle,
+    id: &str,
+    source: &Path,
+) -> Result<(), String> {
+    let paths = ManagedPaths::resolve(app)?;
+    let instance_root = paths.root_for(id)?;
     validate_source(&source)?;
     let latest_version = source_version(&source).ok_or_else(|| {
         "No se pudo identificar la versión original de la aplicación.".to_string()
@@ -2799,6 +3447,16 @@ fn update_instance_application_sync(app: &AppHandle, id: &str) -> Result<(), Str
         let _ = fs::remove_dir_all(&staging_root);
         return Err(format!("La copia de actualización no es válida: {error}"));
     }
+    let staged_version = source_version(&staged_app).ok_or_else(|| {
+        let _ = fs::remove_dir_all(&staging_root);
+        "No se pudo verificar la versión de la copia preparada.".to_string()
+    })?;
+    if !versions_equal(&staged_version, &latest_version) {
+        let _ = fs::remove_dir_all(&staging_root);
+        return Err(
+            "La fuente cambió durante la copia; no se aplicó la actualización.".to_string(),
+        );
+    }
     let staged_application = staging_root.join("application");
     let relative_app_path = match staged_app.strip_prefix(&staged_application) {
         Ok(path) => path.to_path_buf(),
@@ -2826,6 +3484,7 @@ fn update_instance_application_sync(app: &AppHandle, id: &str) -> Result<(), Str
     registry.instances[position].app_path = updated_app_path.to_string_lossy().to_string();
     registry.instances[position].source_version = Some(latest_version);
     registry.instances[position].pid = None;
+    registry.instances[position].process_identity = None;
     registry.instances[position].status = InstanceStatus::Stopped;
 
     if let Err(save_error) = save_registry(&paths, &registry) {
@@ -2856,15 +3515,183 @@ fn update_instance_application_sync(app: &AppHandle, id: &str) -> Result<(), Str
 }
 
 #[tauri::command]
+async fn synchronize_managed_applications(
+    app: AppHandle,
+    request: SynchronizeManagedApplicationsRequest,
+) -> Result<SynchronizeManagedApplicationsResult, String> {
+    let worker_app = app.clone();
+    let results = tauri::async_runtime::spawn_blocking(move || {
+        synchronize_managed_applications_sync(&worker_app, request)
+    })
+    .await
+    .map_err(|error| format!("La sincronización terminó inesperadamente: {error}"))??;
+    Ok(SynchronizeManagedApplicationsResult {
+        dashboard: dashboard_from(&app)?,
+        results,
+    })
+}
+
+fn synchronize_managed_applications_sync(
+    app: &AppHandle,
+    request: SynchronizeManagedApplicationsRequest,
+) -> Result<Vec<SynchronizationItemResult>, String> {
+    if cfg!(target_os = "linux") {
+        return Err(
+            "Linux usa una instalación compartida y no requiere sincronización de copias."
+                .to_string(),
+        );
+    }
+    let paths = ManagedPaths::resolve(app)?;
+    let mut registry = load_registry(&paths)?;
+    refresh_instance_statuses(&mut registry);
+    refresh_instance_versions(&mut registry);
+    let topology = build_version_topology(&paths, &registry);
+    if topology.latest_source.as_ref() != Some(&request.source) {
+        return Err(
+            "La fuente seleccionada ya no coincide con la topología validada. Vuelve a escanear."
+                .to_string(),
+        );
+    }
+    let latest_version = topology.latest_installed_version.clone().ok_or_else(|| {
+        topology
+            .reason
+            .clone()
+            .unwrap_or_else(|| "No hay una fuente válida para sincronizar.".to_string())
+    })?;
+    let source_path = match request.source.kind {
+        VersionSourceKind::Original => detect_provider_source()
+            .ok_or_else(|| "La aplicación original ya no está disponible.".to_string())?,
+        VersionSourceKind::Managed => {
+            let source_id = request.source.instance_id.as_deref().ok_or_else(|| {
+                "La fuente administrada no incluye un identificador válido.".to_string()
+            })?;
+            let source = registry
+                .instances
+                .iter()
+                .find(|instance| instance.id == source_id)
+                .ok_or_else(|| "La instancia fuente ya no existe.".to_string())?;
+            let original = detect_provider_source().ok_or_else(|| {
+                "La aplicación original no está disponible para validar identidad.".to_string()
+            })?;
+            let validated = validate_managed_application_source(&paths, source, &original)?;
+            if !versions_equal(&validated, &latest_version) {
+                return Err("La versión de la fuente cambió durante el preflight.".to_string());
+            }
+            PathBuf::from(&source.app_path)
+        }
+    };
+    let original_for_identity = detect_provider_source().ok_or_else(|| {
+        "La aplicación original no está disponible para validar identidad.".to_string()
+    })?;
+
+    let mut seen = HashSet::new();
+    let mut results = Vec::new();
+    for target_id in request.target_instance_ids {
+        if !seen.insert(target_id.clone()) {
+            continue;
+        }
+        let Some(target) = registry
+            .instances
+            .iter()
+            .find(|instance| instance.id == target_id)
+            .cloned()
+        else {
+            results.push(SynchronizationItemResult {
+                instance_id: target_id,
+                status: SynchronizationStatus::Failed,
+                from_version: None,
+                to_version: Some(latest_version.clone()),
+                message: "La instancia ya no existe.".to_string(),
+            });
+            continue;
+        };
+        if request.source.instance_id.as_deref() == Some(target.id.as_str()) {
+            results.push(SynchronizationItemResult {
+                instance_id: target.id,
+                status: SynchronizationStatus::Skipped,
+                from_version: target.source_version,
+                to_version: Some(latest_version.clone()),
+                message: "La instancia es la fuente validada.".to_string(),
+            });
+            continue;
+        }
+        if target.status != InstanceStatus::Stopped {
+            results.push(SynchronizationItemResult {
+                instance_id: target.id,
+                status: SynchronizationStatus::Failed,
+                from_version: target.source_version,
+                to_version: Some(latest_version.clone()),
+                message: "La instancia debe estar detenida.".to_string(),
+            });
+            continue;
+        }
+        let target_root = paths.root_for(&target.id)?;
+        let target_path = Path::new(&target.app_path);
+        if !target_path.exists()
+            || !path_is_within(target_path, &target_root)
+            || validate_source(target_path).is_err()
+            || validate_provider_identity(target_path, &original_for_identity).is_err()
+        {
+            results.push(SynchronizationItemResult {
+                instance_id: target.id,
+                status: SynchronizationStatus::Failed,
+                from_version: target.source_version,
+                to_version: Some(latest_version.clone()),
+                message:
+                    "La ruta, firma o identidad de la instancia destino no superó el preflight."
+                        .to_string(),
+            });
+            continue;
+        }
+        if target
+            .source_version
+            .as_deref()
+            .is_some_and(|current| !version_is_newer(&latest_version, Some(current)))
+        {
+            results.push(SynchronizationItemResult {
+                instance_id: target.id,
+                status: SynchronizationStatus::Skipped,
+                from_version: target.source_version,
+                to_version: Some(latest_version.clone()),
+                message: "La instancia ya tiene esta versión o una superior.".to_string(),
+            });
+            continue;
+        }
+        let from_version = target.source_version.clone();
+        match update_instance_application_from_source_sync(app, &target.id, &source_path) {
+            Ok(()) => results.push(SynchronizationItemResult {
+                instance_id: target.id,
+                status: SynchronizationStatus::Updated,
+                from_version,
+                to_version: Some(latest_version.clone()),
+                message: "Aplicación sincronizada y perfil preservado.".to_string(),
+            }),
+            Err(error) => results.push(SynchronizationItemResult {
+                instance_id: target.id,
+                status: SynchronizationStatus::Failed,
+                from_version,
+                to_version: Some(latest_version.clone()),
+                message: error,
+            }),
+        }
+    }
+    Ok(results)
+}
+
+#[tauri::command]
 async fn copy_code_session(
     app: AppHandle,
     request: CopyCodeSessionRequest,
-) -> Result<DashboardState, String> {
+) -> Result<SessionTransferResult, String> {
     let worker_app = app.clone();
-    tauri::async_runtime::spawn_blocking(move || copy_code_session_sync(&worker_app, request))
-        .await
-        .map_err(|error| format!("La transferencia terminó inesperadamente: {error}"))??;
-    dashboard_from(&app)
+    let artifacts =
+        tauri::async_runtime::spawn_blocking(move || copy_code_session_sync(&worker_app, request))
+            .await
+            .map_err(|error| format!("La transferencia terminó inesperadamente: {error}"))??;
+    Ok(SessionTransferResult {
+        dashboard: dashboard_from(&app)?,
+        artifacts,
+    })
 }
 
 #[tauri::command]
@@ -2931,6 +3758,9 @@ fn create_instance_sync(app: &AppHandle, request: CreateInstanceRequest) -> Resu
         created_at: Utc::now().to_rfc3339(),
         last_launched_at: None,
         pid: None,
+        process_identity: None,
+        launch_generation: 0,
+        custom_icon: None,
         status: InstanceStatus::Stopped,
         usage: None,
         code_sessions: Vec::new(),
@@ -2995,95 +3825,387 @@ fn launch_instance(app: AppHandle, id: String) -> Result<DashboardState, String>
             profile_path.to_string_lossy()
         ))
         .env("CODE_AI_PROFILES_INSTANCE_ID", &instance.id);
-    #[cfg(target_os = "linux")]
+    #[cfg(unix)]
     {
         use std::os::unix::process::CommandExt;
         command.process_group(0);
     }
-    let child = command
+    let mut child = command
         .spawn()
         .map_err(|error| format!("No se pudo iniciar la aplicación: {error}"))?;
 
-    instance.pid = Some(child.id());
+    let root_pid = child.id();
+    instance.launch_generation = instance.launch_generation.saturating_add(1);
+    let generation = instance.launch_generation;
+    let profile_argument = format!("--user-data-dir={}", profile_path.to_string_lossy());
+    let start_time = process_start_time(root_pid);
+    instance.pid = Some(root_pid);
+    instance.process_identity = Some(ManagedProcessIdentity {
+        root_pid,
+        process_group_id: cfg!(unix).then_some(root_pid),
+        start_time,
+        fingerprint: process_fingerprint(&app_path, &profile_argument),
+        profile_argument,
+    });
     instance.status = InstanceStatus::Running;
     instance.last_launched_at = Some(Utc::now().to_rfc3339());
+    let launched_instance = instance.clone();
+    if let Err(error) = save_registry(&paths, &registry) {
+        if let Some(identity) = launched_instance.process_identity.as_ref() {
+            let _ = signal_instance_processes(&launched_instance, identity, true);
+        }
+        let _ = child.kill();
+        let _ = child.wait();
+        return Err(format!(
+            "La aplicación se inició, pero no se pudo registrar; el proceso fue cerrado: {error}"
+        ));
+    }
+    spawn_process_reaper(app.clone(), id, generation, child);
+    dashboard_from(&app)
+}
+
+#[tauri::command]
+async fn stop_instance(app: AppHandle, id: String) -> Result<DashboardState, String> {
+    let worker_app = app.clone();
+    tauri::async_runtime::spawn_blocking(move || stop_instance_sync(&worker_app, &id))
+        .await
+        .map_err(|error| format!("El cierre terminó inesperadamente: {error}"))??;
+    dashboard_from(&app)
+}
+
+fn process_start_time(pid: u32) -> Option<u64> {
+    let mut system = System::new_all();
+    system.refresh_all();
+    system
+        .process(Pid::from_u32(pid))
+        .map(|process| process.start_time())
+}
+
+fn spawn_process_reaper(app: AppHandle, instance_id: String, generation: u64, mut child: Child) {
+    thread::spawn(move || {
+        let _ = child.wait();
+        let _ = app.emit(
+            "instance-process-exited",
+            ProcessExitEvent {
+                instance_id,
+                generation,
+            },
+        );
+    });
+}
+
+fn wait_until_instance_stops(instance: &ManagedInstance, timeout: Duration) -> bool {
+    let deadline = Instant::now() + timeout;
+    loop {
+        if process_snapshot(instance).is_empty() {
+            return true;
+        }
+        if Instant::now() >= deadline {
+            return false;
+        }
+        thread::sleep(Duration::from_millis(100));
+    }
+}
+
+fn signal_instance_processes(
+    instance: &ManagedInstance,
+    identity: &ManagedProcessIdentity,
+    force: bool,
+) -> Result<(), String> {
+    let processes = process_snapshot(instance);
+    if processes.is_empty() {
+        return Ok(());
+    }
+    let expected_argument = format!("--user-data-dir={}", instance.profile_path);
+    if identity.profile_argument != expected_argument
+        || identity.fingerprint
+            != process_fingerprint(Path::new(&instance.app_path), &expected_argument)
+    {
+        return Err("La identidad del proceso cambió; no se envió ninguna señal.".to_string());
+    }
+    if let Some((_, root_start_time)) = processes.iter().find(|(pid, _)| *pid == identity.root_pid)
+    {
+        if identity
+            .start_time
+            .is_some_and(|expected| expected != *root_start_time)
+        {
+            return Err("El PID raíz fue reutilizado; no se envió ninguna señal.".to_string());
+        }
+    }
+
+    #[cfg(unix)]
+    {
+        let signal = if force { libc::SIGKILL } else { libc::SIGTERM };
+        let mut signaled = HashSet::new();
+        if let Some(group_id) = identity.process_group_id.filter(|_| {
+            processes.iter().any(|(pid, start_time)| {
+                *pid == identity.root_pid
+                    && identity
+                        .start_time
+                        .map(|expected| expected == *start_time)
+                        .unwrap_or(true)
+            })
+        }) {
+            let result = unsafe { libc::kill(-(group_id as i32), signal) };
+            if result == 0 {
+                signaled.insert(identity.root_pid);
+            } else {
+                let error = std::io::Error::last_os_error();
+                if error.raw_os_error() != Some(libc::ESRCH) {
+                    return Err(format!("No se pudo señalizar el grupo verificado: {error}"));
+                }
+            }
+        }
+        for (pid, start_time) in processes {
+            if signaled.contains(&pid) {
+                continue;
+            }
+            if !process_snapshot(instance)
+                .iter()
+                .any(|(current_pid, current_start)| {
+                    *current_pid == pid && *current_start == start_time
+                })
+            {
+                continue;
+            }
+            let result = unsafe { libc::kill(pid as i32, signal) };
+            if result != 0 {
+                let error = std::io::Error::last_os_error();
+                if error.raw_os_error() != Some(libc::ESRCH) {
+                    return Err(format!(
+                        "No se pudo señalizar el proceso verificado: {error}"
+                    ));
+                }
+            }
+        }
+        return Ok(());
+    }
+
+    #[cfg(target_os = "windows")]
+    {
+        for (pid, start_time) in processes {
+            if !process_snapshot(instance)
+                .iter()
+                .any(|(current_pid, current_start)| {
+                    *current_pid == pid && *current_start == start_time
+                })
+            {
+                continue;
+            }
+            let mut command = Command::new("taskkill");
+            command.args(["/PID", &pid.to_string(), "/T"]);
+            if force {
+                command.arg("/F");
+            }
+            let status = command.status().map_err(|error| {
+                format!("No se pudo solicitar el cierre de la aplicación: {error}")
+            })?;
+            if !status.success() && process_is_alive(pid) {
+                return Err(format!(
+                    "Windows no pudo detener el proceso verificado {pid}."
+                ));
+            }
+        }
+        return Ok(());
+    }
+
+    #[cfg(not(any(unix, target_os = "windows")))]
+    {
+        let _ = (instance, identity, force);
+        Err("Detener procesos no está soportado en esta plataforma.".to_string())
+    }
+}
+
+fn stop_instance_sync(app: &AppHandle, id: &str) -> Result<(), String> {
+    let paths = ManagedPaths::resolve(&app)?;
+    let mut registry = load_registry(&paths)?;
+    refresh_registry(&mut registry);
+    let position = registry
+        .instances
+        .iter()
+        .position(|instance| instance.id == id)
+        .ok_or_else(|| "La instancia ya no existe.".to_string())?;
+    if registry.instances[position].status != InstanceStatus::Running {
+        registry.instances[position].pid = None;
+        registry.instances[position].process_identity = None;
+        registry.instances[position].status = InstanceStatus::Stopped;
+        return save_registry(&paths, &registry);
+    }
+    let instance = registry.instances[position].clone();
+    let identity = instance.process_identity.clone().ok_or_else(|| {
+        "No se pudo verificar la identidad del proceso. Cierra esta instancia manualmente y vuelve a escanear.".to_string()
+    })?;
+    signal_instance_processes(&instance, &identity, false)?;
+    if !wait_until_instance_stops(&instance, Duration::from_secs(5)) {
+        signal_instance_processes(&instance, &identity, true)?;
+        if !wait_until_instance_stops(&instance, Duration::from_secs(2)) {
+            registry.instances[position].status = InstanceStatus::Running;
+            save_registry(&paths, &registry)?;
+            return Err("La instancia sigue ejecutándose después del cierre forzado. No se cambió su estado.".to_string());
+        }
+    }
+    registry.instances[position].pid = None;
+    registry.instances[position].process_identity = None;
+    registry.instances[position].status = InstanceStatus::Stopped;
+    save_registry(&paths, &registry)
+}
+
+fn normalized_icon_png(bytes: &[u8]) -> Result<Vec<u8>, String> {
+    if bytes.is_empty() || bytes.len() > ICON_MAX_BYTES {
+        return Err("El icono debe pesar entre 1 byte y 5 MiB.".to_string());
+    }
+    let format = image::guess_format(bytes)
+        .map_err(|_| "El archivo no es una imagen PNG o JPEG válida.".to_string())?;
+    if !matches!(format, image::ImageFormat::Png | image::ImageFormat::Jpeg) {
+        return Err("El icono debe ser PNG o JPEG.".to_string());
+    }
+    let dimensions = image::ImageReader::with_format(Cursor::new(bytes), format)
+        .into_dimensions()
+        .map_err(|_| "No se pudo leer la cabecera del icono.".to_string())?;
+    if dimensions.0 == 0
+        || dimensions.1 == 0
+        || dimensions.0 > ICON_MAX_DIMENSION
+        || dimensions.1 > ICON_MAX_DIMENSION
+    {
+        return Err("Las dimensiones del icono no son válidas (máximo 4096×4096).".to_string());
+    }
+    let image = image::load_from_memory_with_format(bytes, format)
+        .map_err(|_| "No se pudo decodificar el icono.".to_string())?;
+    let normalized = image.resize_to_fill(512, 512, image::imageops::FilterType::Lanczos3);
+    let mut encoded = Cursor::new(Vec::new());
+    normalized
+        .write_to(&mut encoded, image::ImageFormat::Png)
+        .map_err(|error| format!("No se pudo normalizar el icono: {error}"))?;
+    Ok(encoded.into_inner())
+}
+
+#[cfg(target_os = "linux")]
+fn desktop_entry_value(value: &str) -> String {
+    value
+        .replace('\\', "\\\\")
+        .replace('\n', " ")
+        .replace('\r', " ")
+        .replace('"', "\\\"")
+}
+
+fn apply_external_icon_best_effort(
+    paths: &ManagedPaths,
+    instance: &ManagedInstance,
+    icon_path: &Path,
+) -> (bool, String) {
+    #[cfg(target_os = "linux")]
+    {
+        let Ok(root) = paths.root_for(&instance.id) else {
+            return (
+                false,
+                "No se pudo resolver el launcher administrado.".to_string(),
+            );
+        };
+        let executable = provider_executable(Path::new(&instance.app_path));
+        let profile_argument = format!("--user-data-dir={}", instance.profile_path);
+        let contents = format!(
+            "[Desktop Entry]\nType=Application\nName={}\nIcon={}\nExec=\"{}\" \"{}\"\nStartupWMClass=code-ai-profiles-{}\nTerminal=false\n",
+            desktop_entry_value(&instance.name),
+            desktop_entry_value(&icon_path.to_string_lossy()),
+            desktop_entry_value(&executable.to_string_lossy()),
+            desktop_entry_value(&profile_argument),
+            instance.id
+        );
+        return match atomic_replace_file(&root.join("launcher.desktop"), contents.as_bytes()) {
+            Ok(()) => (
+                false,
+                "Se creó un launcher opcional por instancia, pero solo se aplicará al sistema si se abre desde ese launcher; Wayland o el compositor pueden conservar el icono oficial."
+                    .to_string(),
+            ),
+            Err(error) => (false, error),
+        };
+    }
+    #[cfg(target_os = "windows")]
+    {
+        let _ = (paths, instance, icon_path);
+        return (
+            false,
+            "Windows conserva el icono del ejecutable firmado; el icono personalizado se muestra dentro de Code AI Profiles."
+                .to_string(),
+        );
+    }
+    #[cfg(target_os = "macos")]
+    {
+        let _ = (paths, instance, icon_path);
+        return (
+            false,
+            "macOS conserva el icono firmado en el Dock; el icono personalizado se muestra dentro de Code AI Profiles."
+                .to_string(),
+        );
+    }
+    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
+    {
+        let _ = (paths, instance, icon_path);
+        (
+            false,
+            "El icono de sistema no está soportado en esta plataforma.".to_string(),
+        )
+    }
+}
+
+#[tauri::command]
+fn set_instance_icon(
+    app: AppHandle,
+    request: SetInstanceIconRequest,
+) -> Result<DashboardState, String> {
+    let paths = ManagedPaths::resolve(&app)?;
+    let root = paths.root_for(&request.id)?;
+    let normalized = normalized_icon_png(&request.bytes)?;
+    let mut registry = load_registry(&paths)?;
+    let position = registry
+        .instances
+        .iter()
+        .position(|instance| instance.id == request.id)
+        .ok_or_else(|| "La instancia ya no existe.".to_string())?;
+    let branding = root.join("branding");
+    fs::create_dir_all(&branding)
+        .map_err(|error| format!("No se pudo preparar el icono administrado: {error}"))?;
+    let icon_path = branding.join("icon.png");
+    atomic_replace_file(&icon_path, &normalized)?;
+    let revision = registry.instances[position]
+        .custom_icon
+        .as_ref()
+        .map(|icon| icon.revision.saturating_add(1))
+        .unwrap_or(1);
+    let (system_applied, system_message) =
+        apply_external_icon_best_effort(&paths, &registry.instances[position], &icon_path);
+    registry.instances[position].custom_icon = Some(CustomIcon {
+        path: icon_path.to_string_lossy().to_string(),
+        revision,
+        system_applied,
+        system_message,
+    });
     save_registry(&paths, &registry)?;
     dashboard_from(&app)
 }
 
 #[tauri::command]
-fn stop_instance(app: AppHandle, id: String) -> Result<DashboardState, String> {
+fn clear_instance_icon(app: AppHandle, id: String) -> Result<DashboardState, String> {
     let paths = ManagedPaths::resolve(&app)?;
+    let root = paths.root_for(&id)?;
     let mut registry = load_registry(&paths)?;
-    refresh_registry(&mut registry);
     let instance = registry
         .instances
         .iter_mut()
         .find(|instance| instance.id == id)
         .ok_or_else(|| "La instancia ya no existe.".to_string())?;
-
-    if let Some(pid) = instance.pid {
-        stop_process(pid)?;
+    let managed_icon = root.join("branding/icon.png");
+    if instance
+        .custom_icon
+        .as_ref()
+        .is_some_and(|icon| Path::new(&icon.path) == managed_icon)
+    {
+        let _ = fs::remove_file(&managed_icon);
     }
-    instance.pid = None;
-    instance.status = InstanceStatus::Stopped;
+    let _ = fs::remove_file(root.join("launcher.desktop"));
+    instance.custom_icon = None;
     save_registry(&paths, &registry)?;
     dashboard_from(&app)
-}
-
-fn stop_process(pid: u32) -> Result<(), String> {
-    #[cfg(target_os = "linux")]
-    {
-        let group_result = unsafe { libc::kill(-(pid as i32), libc::SIGTERM) };
-        if group_result == 0 {
-            return Ok(());
-        }
-        let group_error = std::io::Error::last_os_error();
-        if group_error.raw_os_error() != Some(libc::ESRCH) {
-            return Err(format!(
-                "No se pudo detener el grupo de procesos {pid}: {group_error}"
-            ));
-        }
-        let process_result = unsafe { libc::kill(pid as i32, libc::SIGTERM) };
-        if process_result != 0 {
-            let error = std::io::Error::last_os_error();
-            if error.raw_os_error() != Some(libc::ESRCH) {
-                return Err(format!("No se pudo detener el proceso {pid}: {error}"));
-            }
-        }
-        Ok(())
-    }
-
-    #[cfg(all(unix, not(target_os = "linux")))]
-    {
-        let result = unsafe { libc::kill(pid as i32, libc::SIGTERM) };
-        if result != 0 {
-            let error = std::io::Error::last_os_error();
-            if error.raw_os_error() != Some(libc::ESRCH) {
-                return Err(format!("No se pudo detener el proceso {pid}: {error}"));
-            }
-        }
-        Ok(())
-    }
-
-    #[cfg(target_os = "windows")]
-    {
-        let status = Command::new("taskkill")
-            .args(["/PID", &pid.to_string(), "/T"])
-            .status()
-            .map_err(|error| format!("No se pudo solicitar el cierre de la aplicación: {error}"))?;
-        if status.success() {
-            Ok(())
-        } else {
-            Err(format!("Windows no pudo detener el proceso {pid}."))
-        }
-    }
-
-    #[cfg(not(any(unix, target_os = "windows")))]
-    {
-        let _ = pid;
-        Err("Detener procesos no está soportado en esta plataforma.".to_string())
-    }
 }
 
 #[tauri::command]
@@ -3209,10 +4331,13 @@ pub fn run() {
             create_instance,
             update_instance,
             update_instance_application,
+            synchronize_managed_applications,
             copy_code_session,
             unlink_code_session,
             launch_instance,
             stop_instance,
+            set_instance_icon,
+            clear_instance_icon,
             open_instance_folder,
             update_original_application,
             delete_instance
@@ -3225,12 +4350,134 @@ pub fn run() {
 mod tests {
     use super::*;
 
+    fn test_instance(root: &Path) -> ManagedInstance {
+        ManagedInstance {
+            id: Uuid::new_v4().to_string(),
+            name: "Test profile".to_string(),
+            account_label: None,
+            avatar_url: None,
+            plan: AccountPlan::Unknown,
+            source_version: Some("1.0.0".to_string()),
+            app_path: root
+                .join("application/Test.app")
+                .to_string_lossy()
+                .to_string(),
+            profile_path: root.join("profile").to_string_lossy().to_string(),
+            created_at: Utc::now().to_rfc3339(),
+            last_launched_at: None,
+            pid: None,
+            process_identity: None,
+            launch_generation: 0,
+            custom_icon: None,
+            status: InstanceStatus::Stopped,
+            usage: None,
+            code_sessions: Vec::new(),
+        }
+    }
+
     #[test]
     fn validates_instance_names() {
         assert_eq!(validate_name("  Work  ").unwrap(), "Work");
         assert!(validate_name("  ").is_err());
         assert!(validate_name(&"a".repeat(65)).is_err());
         assert!(validate_name("line\nbreak").is_err());
+    }
+
+    #[test]
+    fn migrates_legacy_pid_records_without_trusting_the_pid_as_identity() {
+        let instance: ManagedInstance = serde_json::from_value(serde_json::json!({
+            "id": "96812ba4-6864-40d5-a70a-0470f244022c",
+            "name": "Legacy",
+            "accountLabel": null,
+            "avatarUrl": null,
+            "plan": "unknown",
+            "sourceVersion": "1.0.0",
+            "appPath": "/managed/application.app",
+            "profilePath": "/managed/profile",
+            "createdAt": "2026-10-10T00:00:00Z",
+            "lastLaunchedAt": null,
+            "pid": 42,
+            "status": "running",
+            "usage": null,
+            "codeSessions": []
+        }))
+        .unwrap();
+        assert_eq!(instance.pid, Some(42));
+        assert!(instance.process_identity.is_none());
+        assert_eq!(instance.launch_generation, 0);
+    }
+
+    #[test]
+    fn process_fingerprint_binds_application_and_exact_profile_argument() {
+        let app = Path::new("/managed/Test.app");
+        let first = process_fingerprint(app, "--user-data-dir=/profiles/a");
+        assert_eq!(
+            first,
+            process_fingerprint(app, "--user-data-dir=/profiles/a")
+        );
+        assert_ne!(
+            first,
+            process_fingerprint(app, "--user-data-dir=/profiles/b")
+        );
+    }
+
+    #[test]
+    fn counts_remote_artifact_arrays_and_objects_without_exposing_values() {
+        let array = serde_json::json!([{"private": "one"}, {"private": "two"}]);
+        let object = serde_json::json!({"secret-a": {}, "secret-b": {}, "secret-c": {}});
+        assert_eq!(artifact_reference_count(Some(&array)), 2);
+        assert_eq!(artifact_reference_count(Some(&object)), 3);
+        assert_eq!(artifact_reference_count(Some(&Value::Null)), 0);
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn artifact_export_rejects_symlinks_and_depth_escapes() {
+        use std::os::unix::fs::symlink;
+
+        let root = env::temp_dir().join(format!("code-ai-artifact-safe-{}", Uuid::new_v4()));
+        let outside = env::temp_dir().join(format!("code-ai-artifact-private-{}", Uuid::new_v4()));
+        fs::create_dir_all(&root).unwrap();
+        fs::write(&outside, b"opaque").unwrap();
+        symlink(&outside, root.join("escape")).unwrap();
+        let mut files = Vec::new();
+        let mut entries = 0;
+        let mut bytes = 0;
+        let error =
+            collect_opaque_artifact_files(&root, &root, 0, &mut entries, &mut files, &mut bytes)
+                .unwrap_err();
+        assert!(error.contains("enlace simbólico"));
+        assert!(files.is_empty());
+        fs::remove_dir_all(root).unwrap();
+        fs::remove_file(outside).unwrap();
+    }
+
+    #[test]
+    fn normalizes_small_png_icons_and_rejects_invalid_input() {
+        let icon = image::DynamicImage::new_rgba8(4, 8);
+        let mut encoded = Cursor::new(Vec::new());
+        icon.write_to(&mut encoded, image::ImageFormat::Png)
+            .unwrap();
+        let normalized = normalized_icon_png(&encoded.into_inner()).unwrap();
+        let decoded = image::load_from_memory(&normalized).unwrap();
+        assert_eq!((decoded.width(), decoded.height()), (512, 512));
+        assert!(normalized_icon_png(b"not-an-image").is_err());
+        assert!(normalized_icon_png(&vec![0; ICON_MAX_BYTES + 1]).is_err());
+    }
+
+    #[test]
+    fn custom_icon_contract_does_not_modify_the_application_path() {
+        let root = env::temp_dir().join(format!("code-ai-icon-contract-{}", Uuid::new_v4()));
+        let mut instance = test_instance(&root);
+        let original_app_path = instance.app_path.clone();
+        instance.custom_icon = Some(CustomIcon {
+            path: root.join("branding/icon.png").to_string_lossy().to_string(),
+            revision: 1,
+            system_applied: false,
+            system_message: "UI only".to_string(),
+        });
+        assert_eq!(instance.app_path, original_app_path);
+        assert!(!instance.custom_icon.unwrap().system_applied);
     }
 
     #[test]
@@ -3685,6 +4932,9 @@ mod tests {
                 created_at: String::new(),
                 last_launched_at: None,
                 pid: None,
+                process_identity: None,
+                launch_generation: 0,
+                custom_icon: None,
                 status: InstanceStatus::Running,
                 usage: Some(last_good.clone()),
                 code_sessions: Vec::new(),
@@ -3784,6 +5034,7 @@ mod tests {
             session_backups: backups.clone(),
             session_links: root.join("session-links.json"),
             source_update_cache: root.join("source-update-cache.json"),
+            artifact_exports: root.join("artifact-exports"),
         };
         let session_id = "local_96812ba4-6864-40d5-a70a-0470f244022c";
         let manifest = |transfer_id: &str, created_at: &str, source_id: &str, target_id: &str| {

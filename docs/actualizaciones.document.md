@@ -1,6 +1,6 @@
 # Actualizaciones de la aplicación original y las instancias
 
-Documento funcional relacionado con [HU-0002](hu/HU-0002-actualizar-aplicacion-original-y-metadatos-por-modelo-y-proveedor.md) y [HU-0003](hu/HU-0003-transferencias-conscientes-de-artefactos-actualizacion-disponible-y-uso-en-vivo.md).
+Documento funcional relacionado con [HU-0002](hu/HU-0002-actualizar-aplicacion-original-y-metadatos-por-modelo-y-proveedor.md), [HU-0003](hu/HU-0003-transferencias-conscientes-de-artefactos-actualizacion-disponible-y-uso-en-vivo.md) y [HU-0004](hu/HU-0004-sincronizacion-desde-la-instancia-mas-reciente-cierre-robusto-artefactos-locales-e-identidad-visual.md).
 
 ## Dos operaciones independientes
 
@@ -9,9 +9,11 @@ Code AI Profiles distingue deliberadamente la aplicación original de las instan
 | Operación | Origen | Resultado | Qué permanece intacto |
 | --- | --- | --- | --- |
 | Actualizar original | Canal oficial de Claude Desktop | Abre la descarga oficial o las instrucciones de instalación para que el usuario complete el proceso | Perfiles, sesiones e instancias administradas |
-| Actualizar instancias | Versión de la aplicación original ya instalada | Sincroniza cada copia administrada que esté desactualizada | Perfil y sesiones de cada instancia |
+| Sincronizar instancias | La instalación local válida más reciente: original o una instancia administrada | Sincroniza cada copia administrada detenida que esté detrás de esa fuente | Perfil y sesiones de cada instancia, y siempre la original |
 
-«Actualizar original» no encadena una actualización de instancias. La comprobación de disponibilidad y el handoff manual son independientes: la primera solo determina si existe una versión posterior; la segunda abre el canal oficial para que el usuario complete la instalación. Cuando el usuario termina esa instalación y vuelve a Code AI Profiles, el escaneo al recuperar el foco detecta la versión local. Si una instancia quedó atrás, el flujo separado «Actualizar instancias» la ofrece como candidata.
+«Actualizar original» no encadena una sincronización de instancias. La comprobación de disponibilidad y el handoff manual son independientes: la primera solo determina si existe una versión posterior; la segunda abre el canal oficial para que el usuario complete la instalación. Cuando el usuario termina esa instalación y vuelve a Code AI Profiles, el escaneo al recuperar el foco detecta la versión local. Si una instancia quedó atrás, el flujo separado «Sincronizar instancias» la ofrece como candidata.
+
+También puede suceder la situación inversa: una instancia gestionada se actualizó por el canal de su proveedor y la original quedó atrás. El dashboard calcula una topología local para elegir la mayor versión válida instalada. Muestra por separado que la original está desactualizada y conserva su único CTA oficial; no copia una instancia sobre la original. La instancia más reciente solo puede ser fuente para otras instancias administradas que estén detenidas.
 
 En Linux las instancias apuntan al binario administrado por el sistema, por lo que siguen la actualización del paquete en lugar de copiar una aplicación nueva.
 
@@ -31,11 +33,23 @@ La detección se limita a metadatos de la instalación. No abre perfiles ni lee 
 2. El modal muestra el nombre, la versión local conocida y la plataforma. También explica que Code AI Profiles entregará el proceso al canal oficial y que la instalación debe completarse manualmente.
 3. La confirmación invoca un comando que vuelve a validar la instalación fuente y después abre una URL constante seleccionada internamente. El comando no acepta URL ni parámetros proporcionados por el usuario.
 4. El navegador, descargador o gestor del sistema toma el control. Code AI Profiles muestra el mensaje devuelto por el backend o un error claro si el handler no se puede abrir.
-5. Al volver a la ventana, el escaneo existente actualiza la versión local y, si corresponde, ofrece por separado la actualización de instancias.
+5. Al volver a la ventana, el escaneo existente actualiza la versión local y, si corresponde, ofrece por separado la sincronización de instancias.
 
 El modal puede cerrarse con Escape cuando no está procesando el handoff. Mientras abre el canal oficial, los controles de cierre y confirmación permanecen deshabilitados para evitar acciones duplicadas.
 
 La existencia del perfil original no es una precondición de actualización. `sourcePath` identifica la instalación fuente; el estado `Missing` también puede significar que falta el perfil, por lo que no se usa para deshabilitar el botón. Como defensa ante llamadas IPC directas o un estado de UI desactualizado, el backend ejecuta primero un guard de fuente: si ya no detecta la instalación, devuelve «No se encontró la instalación original de la aplicación compatible.» antes de resolver la plataforma, elegir el destino o abrir el handler.
+
+## Sincronizar instancias desde la versión instalada más reciente
+
+El escaneo construye una topología que incluye versión local máxima, su fuente, instancias desactualizadas, si la original está detrás y una razón segura si no hay fuente utilizable. Antes de copiar bytes, el backend vuelve a validar la fuente y cada destino.
+
+- La fuente administrada debe estar detenida, dentro de su root gestionado y superar la validación de instalación e identidad del proveedor.
+- Cada destino debe estar detenido, existir dentro de su root, ser compatible y tener una versión inferior. La fuente y los destinos que ya tienen igual o mayor versión se omiten.
+- Cada destino recibe un resultado independiente: actualizado, omitido o fallido. La operación usa staging/swap/rollback por destino y conserva su perfil.
+- La aplicación original nunca es un destino. Aunque una instancia tenga una versión mayor, la original se actualiza exclusivamente mediante su canal oficial.
+- Linux conserva el paquete o binario compartido de la instalación del sistema; no duplica bytes para este flujo.
+
+La fuente puede dejar de ser válida entre el escaneo y la confirmación. En ese caso la operación se rechaza y la interfaz pide volver a escanear, en vez de sincronizar desde una ruta obsoleta.
 
 ## Detección de versión disponible
 

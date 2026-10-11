@@ -7,5 +7,6 @@ Este índice es administrado por el agente `document`. Cada ID es secuencial, ú
 | [HU-0001](HU-0001-integracion-graphify-y-agentes.md) | Done | Integrar Graphify y agentes especializados | 2026-08-13 |
 | [HU-0002](HU-0002-actualizar-aplicacion-original-y-metadatos-por-modelo-y-proveedor.md) | Done | Actualizar la aplicación original y mostrar metadatos precisos por modelo y proveedor | 2026-08-13 |
 | [HU-0003](HU-0003-transferencias-conscientes-de-artefactos-actualizacion-disponible-y-uso-en-vivo.md) | Done | Transferencias conscientes de artefactos, actualización disponible y uso en vivo | 2026-09-25 |
+| [HU-0004](HU-0004-sincronizacion-desde-la-instancia-mas-reciente-cierre-robusto-artefactos-locales-e-identidad-visual.md) | Done | Sincronización desde la instancia más reciente, cierre robusto, artefactos locales e identidad visual | 2026-10-10 |
 
 Estados permitidos: `Draft`, `Ready`, `In Progress`, `Blocked`, `Review`, `Done`, `Cancelled`.

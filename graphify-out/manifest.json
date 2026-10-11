@@ -20,8 +20,8 @@
     "semantic_hash": "dca85abae9a1b384a67b37f98b2f05ea"
   },
   "src-tauri/src/lib.rs": {
-    "mtime": 1790139564.9572804,
-    "ast_hash": "f62c5ad4df8e110f1567897d3a1451f1",
+    "mtime": 1791694348.6827252,
+    "ast_hash": "f79e9d9b5e08f53bffdc7f37f9b5bce1",
     "semantic_hash": ""
   },
   "src-tauri/src/main.rs": {
@@ -30,9 +30,9 @@
     "semantic_hash": "a85314b3cde4f5d5b64d48e0c7b18194"
   },
   "src-tauri/tauri.conf.json": {
-    "mtime": 1784574701.830296,
-    "ast_hash": "92675bd048b346acbce51809ef3aa4fb",
-    "semantic_hash": "92675bd048b346acbce51809ef3aa4fb"
+    "mtime": 1791666248.0250885,
+    "ast_hash": "9530e7e853247a79d6262f773fe0507f",
+    "semantic_hash": ""
   },
   "src-tauri/tauri.linux.conf.json": {
     "mtime": 1784574604.455413,
@@ -45,8 +45,8 @@
     "semantic_hash": "4ef37201944f5f99cbc3aba02a781215"
   },
   "src/App.tsx": {
-    "mtime": 1790139131.3294063,
-    "ast_hash": "71414bc69ad7ed3303c23d327e4a23ed",
+    "mtime": 1791694362.6844246,
+    "ast_hash": "ced72c49d088598ca51fa506b45c4d7a",
     "semantic_hash": ""
   },
   "src/components/Icons.tsx": {
@@ -55,8 +55,8 @@
     "semantic_hash": "51f16f9089a695e79d1d57e1428a0e13"
   },
   "src/lib/bridge.ts": {
-    "mtime": 1790139236.5964139,
-    "ast_hash": "7b3584490e96f2bfb1a927892102a067",
+    "mtime": 1791665905.6450412,
+    "ast_hash": "b8f872aa5c18ad72fd0c5f44f85ec73d",
     "semantic_hash": ""
   },
   "src/main.tsx": {
@@ -65,8 +65,8 @@
     "semantic_hash": "6fbf89872396bfa844c1c92ae437a7a5"
   },
   "src/types.ts": {
-    "mtime": 1790139236.54441,
-    "ast_hash": "8e2fa03c5668d59cc1a442be1a9c468f",
+    "mtime": 1791665895.0661738,
+    "ast_hash": "39afbfa110f9f170a6bb236447d62dd8",
     "semantic_hash": ""
   },
   "src/vite-env.d.ts": {
@@ -150,8 +150,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1786677043.0712588,
-    "ast_hash": "a5175d69a7a424421104e92caa28175a",
+    "mtime": 1791694472.0977588,
+    "ast_hash": "146019514746cb4e38e09bbd5a76c807",
     "semantic_hash": ""
   },
   "code.html": {
@@ -175,8 +175,8 @@
     "semantic_hash": ""
   },
   "docs/hu/index.md": {
-    "mtime": 1790350279.7127912,
-    "ast_hash": "f3bbafa5a4b1391f0d785b63e9da5a79",
+    "mtime": 1791694531.4724088,
+    "ast_hash": "a724960abade1e9635c69fb2bb5499c6",
     "semantic_hash": ""
   },
   "index.html": {
@@ -185,8 +185,8 @@
     "semantic_hash": ""
   },
   "docs/actualizaciones.document.md": {
-    "mtime": 1790139571.6985471,
-    "ast_hash": "fad0df90b6d292032d5ea065ebd8bbe6",
+    "mtime": 1791694472.0451412,
+    "ast_hash": "c654f7622b76e02fa9aa219dd59ec704",
     "semantic_hash": ""
   },
   "docs/hu/HU-0002-actualizar-aplicacion-original-y-metadatos-por-modelo-y-proveedor.md": {
@@ -195,13 +195,23 @@
     "semantic_hash": ""
   },
   "docs/sesiones.document.md": {
-    "mtime": 1790139571.6425967,
-    "ast_hash": "24daa494bb8bbaaa38a5549c02754fd4",
+    "mtime": 1791694472.0633125,
+    "ast_hash": "b2928b24ac4c34757cd69fcc618734f5",
     "semantic_hash": ""
   },
   "docs/hu/HU-0003-transferencias-conscientes-de-artefactos-actualizacion-disponible-y-uso-en-vivo.md": {
     "mtime": 1790350279.6532426,
     "ast_hash": "688ad6051199a21420f76f5faedd1fde",
+    "semantic_hash": ""
+  },
+  "docs/hu/HU-0004-sincronizacion-desde-la-instancia-mas-reciente-cierre-robusto-artefactos-locales-e-identidad-visual.md": {
+    "mtime": 1791694531.449879,
+    "ast_hash": "a9a54b9ffca579c60a9b9cf2d2397d34",
+    "semantic_hash": ""
+  },
+  "docs/instancias.document.md": {
+    "mtime": 1791694472.081142,
+    "ast_hash": "8607491735a87c48bb5d2693314d9c53",
     "semantic_hash": ""
   }
 }

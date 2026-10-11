@@ -17,6 +17,17 @@ export interface ArtifactMonitorSummary {
   artifactCount: number;
 }
 
+export interface ArtifactTransferOutcome {
+  localCandidates: number;
+  copied: number;
+  registered: number;
+  preservedForManualImport: number;
+  remoteReferencesOmitted: number;
+  monitorsOmitted: number;
+  exportPath: string | null;
+  warnings: string[];
+}
+
 export type SessionTransferMode = "copy" | "move";
 
 export interface SessionTransferInfo {
@@ -61,9 +72,27 @@ export interface ManagedInstance {
   createdAt: string;
   lastLaunchedAt: string | null;
   pid: number | null;
+  processIdentity?: ManagedProcessIdentity | null;
+  launchGeneration?: number;
+  customIcon?: CustomIcon | null;
   status: InstanceStatus;
   usage: UsageStats | null;
   codeSessions: CodeSession[];
+}
+
+export interface ManagedProcessIdentity {
+  rootPid: number;
+  processGroupId: number | null;
+  startTime: number | null;
+  fingerprint: string;
+  profileArgument: string;
+}
+
+export interface CustomIcon {
+  path: string;
+  revision: number;
+  systemApplied: boolean;
+  systemMessage: string;
 }
 
 export interface SessionProfile {
@@ -80,11 +109,29 @@ export interface SystemInfo {
   sourceName: string | null;
   sourceVersion: string | null;
   sourceUpdate: SourceUpdateInfo;
+  versionTopology: VersionTopology;
   originalProfilePath: string | null;
   originalStatus: InstanceStatus;
   originalCodeSessions: CodeSession[];
   freeBytes: number | null;
   managedBytes: number;
+}
+
+export type VersionSourceKind = "original" | "managed";
+
+export interface VersionSource {
+  kind: VersionSourceKind;
+  instanceId: string | null;
+  name: string;
+}
+
+export interface VersionTopology {
+  latestInstalledVersion: string | null;
+  latestSource: VersionSource | null;
+  staleInstanceIds: string[];
+  originalBehind: boolean;
+  canSynchronizeManaged: boolean;
+  reason: string | null;
 }
 
 export type OriginalApplicationUpdateAction = "download" | "instructions";
@@ -114,6 +161,32 @@ export interface CopyCodeSessionRequest {
   targetInstanceId: string;
   sessionId: string;
   mode: SessionTransferMode;
+  includeLocalArtifacts?: boolean;
+}
+
+export interface SessionTransferResult {
+  dashboard: DashboardState;
+  artifacts: ArtifactTransferOutcome;
+}
+
+export interface SynchronizeManagedApplicationsRequest {
+  source: VersionSource;
+  targetInstanceIds: string[];
+}
+
+export type SynchronizationStatus = "updated" | "skipped" | "failed";
+
+export interface SynchronizationItemResult {
+  instanceId: string;
+  status: SynchronizationStatus;
+  fromVersion: string | null;
+  toVersion: string | null;
+  message: string;
+}
+
+export interface SynchronizeManagedApplicationsResult {
+  dashboard: DashboardState;
+  results: SynchronizationItemResult[];
 }
 
 export interface UnlinkCodeSessionRequest {
