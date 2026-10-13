@@ -1,16 +1,16 @@
-# Graph Report - Code AI Profiles  (2026-10-10)
+# Graph Report - Code AI Profiles  (2026-10-13)
 
 ## Corpus Check
-- 38 files · ~44,771 words
+- 44 files · ~55,358 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 701 nodes · 1505 edges · 48 communities (46 shown, 2 thin omitted)
+- 824 nodes · 1943 edges · 52 communities (50 shown, 2 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 2 edges (avg confidence: 0.5)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `05437f91`
+- Built from commit: `943175db`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -21,7 +21,7 @@
 - App
 - bundle
 - compilerOptions
-- system_info
+- check_source_update_sync
 - types.ts
 - permissions
 - graphify.mjs
@@ -50,28 +50,32 @@
 - Contribuir a Code AI Profiles
 - Option
 - HU-0003 — Transferencias conscientes de artefactos, actualización disponible y uso en vivo
-- check_source_update_sync
+- release-version.mjs
 - App.tsx
-- update_original_application
+- HU-0005 — Recuperar la respuesta de la interfaz y establecer versionado SemVer
 - session_index_for_target
 - HU-0004 — Sincronización desde la instancia más reciente, cierre robusto, artefactos locales e identidad visual
-- PathBuf
+- Vec
 - deserialize_collection_count
 - TranscriptEntry
-- read_usage
+- update_original_application
 - Ciclo de vida e identidad visual de instancias
+- .default
+- HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md
+- SessionLinkRegistry
+- [0.2.0] - 2026-10-11
 
 ## God Nodes (most connected - your core abstractions)
-1. `copy_code_session_sync()` - 29 edges
-2. `dashboard_from()` - 24 edges
-3. `update_instance_application_from_source_sync()` - 22 edges
-4. `synchronize_managed_applications_sync()` - 22 edges
-5. `load_registry()` - 21 edges
-6. `ManagedInstance` - 20 edges
-7. `system_info()` - 19 edges
-8. `HU-0002 — Actualizar la aplicación original y mostrar metadatos precisos por modelo y proveedor` - 19 edges
-9. `DashboardState` - 18 edges
-10. `scan_system()` - 18 edges
+1. `copy_code_session_sync()` - 30 edges
+2. `update_instance_application_from_source_sync()` - 28 edges
+3. `set_instance_icon_sync()` - 24 edges
+4. `system_info_scoped()` - 23 edges
+5. `synchronize_managed_applications_sync()` - 23 edges
+6. `ManagedInstance` - 21 edges
+7. `DashboardState` - 21 edges
+8. `load_registry()` - 21 edges
+9. `scan_system_sync()` - 21 edges
+10. `clear_instance_icon_sync()` - 21 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `SessionTransferSelection` --references--> `CodeSession`  [EXTRACTED]
@@ -88,23 +92,23 @@
 ## Import Cycles
 - None detected.
 
-## Communities (48 total, 2 thin omitted)
+## Communities (52 total, 2 thin omitted)
 
 ### Community 0 - "lib.rs"
 Cohesion: 0.06
-Nodes (33): annotates_a_session_linked_inside_the_original_app(), apply_session_links(), apply_session_links_to_profile(), atomically_creates_and_replaces_session_index(), canonical_code_session_id(), contains_model_alias(), context_window_for_model(), CustomIcon (+25 more)
+Nodes (26): application_fingerprint_changes_when_managed_bytes_change(), atomically_creates_and_replaces_session_index(), clears_context_after_compaction_until_the_next_response(), CodeSessionDocument, contains_model_alias(), context_window_for_model(), custom_icon_contract_does_not_modify_the_application_path(), desktop_entry_value() (+18 more)
 
 ### Community 1 - "String"
-Cohesion: 0.13
-Nodes (66): AppHandle, Child, Result, apply_external_icon_best_effort(), atomic_replace_file(), check_source_update(), clean_session_text(), clear_instance_icon() (+58 more)
+Cohesion: 0.12
+Nodes (74): AppHandle, Child, Mutex, Result, atomic_replace_file(), canonical_code_session_id(), clean_session_text(), clear_instance_icon() (+66 more)
 
 ### Community 2 - "scripts"
 Cohesion: 0.05
-Nodes (39): @fontsource/inter, @fontsource/jetbrains-mono, dependencies, @fontsource/inter, @fontsource/jetbrains-mono, react, react-dom, @tauri-apps/api (+31 more)
+Nodes (42): @fontsource/inter, @fontsource/jetbrains-mono, dependencies, @fontsource/inter, @fontsource/jetbrains-mono, react, react-dom, @tauri-apps/api (+34 more)
 
 ### Community 3 - "App"
-Cohesion: 0.29
-Nodes (6): App(), describeArtifactOutcome(), formatBytes(), friendlyError(), loadAppearancePreferences(), SCAN_STAGES
+Cohesion: 0.33
+Nodes (5): App(), describeArtifactOutcome(), formatBytes(), friendlyError(), loadAppearancePreferences()
 
 ### Community 4 - "bundle"
 Cohesion: 0.06
@@ -114,13 +118,13 @@ Nodes (33): $APPDATA/managed-instances/*/branding/icon.png, icons/128x128@2x.png
 Cohesion: 0.09
 Nodes (22): DOM, DOM.Iterable, ES2022, src, compilerOptions, allowJs, allowSyntheticDefaultImports, esModuleInterop (+14 more)
 
-### Community 6 - "system_info"
-Cohesion: 0.19
-Nodes (17): ManagedInstance, SourceUpdateInfo, build_version_topology(), detect_original_profile(), detect_provider_source(), InstanceStatus, original_app_is_running(), original_instance_status() (+9 more)
+### Community 6 - "check_source_update_sync"
+Cohesion: 0.20
+Nodes (15): SourceUpdateSource, SourceUpdateStatus, check_apt_update(), check_official_update_feed(), check_source_update(), check_source_update_sync(), parse_apt_policy(), read_source_update_cache() (+7 more)
 
 ### Community 7 - "types.ts"
 Cohesion: 0.07
-Nodes (35): bridge, call(), isTauri(), mockInstances, mockOriginalSessions, now, ArtifactMonitorSummary, ArtifactTransferOutcome (+27 more)
+Nodes (34): bridge, call(), isTauri(), mockInstances, mockOriginalSessions, now, ArtifactMonitorSummary, ArtifactTransferOutcome (+26 more)
 
 ### Community 8 - "permissions"
 Cohesion: 0.17
@@ -139,8 +143,8 @@ Cohesion: 0.25
 Nodes (7): appimage, deb, app, windows, bundle, targets, $schema
 
 ### Community 12 - "CodeSession"
-Cohesion: 0.40
-Nodes (6): InstanceCardProps, SessionTransferSelection, SessionUnlinkSelection, CodeSession, ManagedInstance, SessionProfile
+Cohesion: 0.33
+Nodes (7): InstanceCardProps, SessionTransferSelection, SessionUnlinkSelection, CodeSession, DashboardState, ManagedInstance, SessionProfile
 
 ### Community 13 - "app"
 Cohesion: 0.40
@@ -156,7 +160,7 @@ Nodes (16): Alcance, Bitácora de implementación, Casos límite, privacidad y p
 
 ### Community 21 - "Code AI Profiles"
 Cohesion: 0.12
-Nodes (16): Cierre e identidad visual de instancias, Code AI Profiles, Compatibilidad actual y marcas, Contribuir, Crear cada versión, Cómo funciona el aislamiento, Desarrollo asistido por IA y Graphify, Desarrollo local (+8 more)
+Nodes (17): Cierre e identidad visual de instancias, Code AI Profiles, Compatibilidad actual y marcas, Contribuir, Crear cada versión, Cómo funciona el aislamiento, Desarrollo asistido por IA y Graphify, Desarrollo local (+9 more)
 
 ### Community 22 - "DESIGN.md"
 Cohesion: 0.25
@@ -195,8 +199,8 @@ Cohesion: 0.20
 Nodes (10): Actualizaciones de la aplicación original y las instancias, Comportamiento por plataforma, Detección de versión disponible, Dos operaciones independientes, Errores y limitaciones, Flujo de actualización original, Límites de seguridad, Nombre y estado de la aplicación original (+2 more)
 
 ### Community 31 - "ManagedInstance"
-Cohesion: 0.15
-Nodes (19): CodeSession, CustomIcon, Duration, InstanceStatus, ManagedProcessIdentity, AccountPlan, custom_icon_contract_does_not_modify_the_application_path(), identity_matches_instance() (+11 more)
+Cohesion: 0.17
+Nodes (15): CodeSession, CustomIcon, Duration, InstanceStatus, ManagedProcessIdentity, AccountPlan, identity_matches_instance(), ManagedInstance (+7 more)
 
 ### Community 32 - "Sesiones y estimación de contexto"
 Cohesion: 0.20
@@ -215,24 +219,24 @@ Cohesion: 0.33
 Nodes (6): Antes de programar, Contribuir a Code AI Profiles, Licencia de las contribuciones, Privacidad y seguridad, Pull requests, Verificación local
 
 ### Community 36 - "Option"
-Cohesion: 0.13
-Nodes (28): Option, Path, ArtifactMonitorSummary, clean_monitor_state(), clears_context_after_compaction_until_the_next_response(), CodeSessionDocument, copy_provider_application(), find_file_named() (+20 more)
+Cohesion: 0.12
+Nodes (47): Option, Path, application_fingerprint(), apply_macos_branding_after_update(), apply_macos_custom_icon(), ArtifactMonitorSummary, cached_source_version(), clean_monitor_state() (+39 more)
 
 ### Community 37 - "HU-0003 — Transferencias conscientes de artefactos, actualización disponible y uso en vivo"
 Cohesion: 0.10
 Nodes (21): Actualización disponible, Alcance, Bitácora de implementación, Casos límite, privacidad y plataformas, Cierre de Graphify, Contexto y evidencia de Graphify, Criterios de aceptación, Diseño técnico y contratos (+13 more)
 
-### Community 38 - "check_source_update_sync"
-Cohesion: 0.18
-Nodes (13): Default, Self, SourceUpdateSource, SourceUpdateStatus, check_apt_update(), check_official_update_feed(), check_source_update_sync(), parse_apt_policy() (+5 more)
+### Community 38 - "release-version.mjs"
+Cohesion: 0.17
+Nodes (17): canonicalVersion(), cargoPackageBlocks(), checkVersions(), collectState(), main(), packageSection(), parseJson(), readSources() (+9 more)
 
 ### Community 39 - "App.tsx"
 Cohesion: 0.06
 Nodes (30): AppearancePreferences, AppTheme, DEFAULT_APPEARANCE, EMPTY_STATE, formatTokenCount(), InstanceIconChange, ScanProgressState, SessionContextLevel (+22 more)
 
-### Community 40 - "update_original_application"
-Cohesion: 0.29
-Nodes (8): original_application_update_target(), OriginalApplicationUpdateAction, OriginalApplicationUpdateResult, OriginalApplicationUpdateTarget, platform_name(), require_provider_source(), selects_official_update_targets_by_platform_and_architecture(), update_original_application()
+### Community 40 - "HU-0005 — Recuperar la respuesta de la interfaz y establecer versionado SemVer"
+Cohesion: 0.10
+Nodes (20): Alcance, Bitácora de implementación, Casos límite, privacidad y plataformas, Cierre de Graphify, Contexto y evidencia de Graphify, Criterios de aceptación, Diseño técnico y contratos, Documentación afectada (+12 more)
 
 ### Community 41 - "session_index_for_target"
 Cohesion: 0.33
@@ -242,9 +246,9 @@ Nodes (7): artifact_reference_count(), published_artifacts(), restored_origin_ar
 Cohesion: 0.10
 Nodes (21): Alcance, Artefactos locales con soporte seguro, Bitácora de implementación, Casos límite, privacidad y plataformas, Cierre de Graphify, Contexto y evidencia de Graphify, Criterios de aceptación, Diseño técnico y contratos (+13 more)
 
-### Community 43 - "PathBuf"
-Cohesion: 0.18
-Nodes (21): ArtifactMonitorSummary, HashMap, PathBuf, SessionTransferInfo, applies_the_latest_model_context_and_clamps_percentage(), apply_session_context(), artifact_export_rejects_symlinks_and_depth_escapes(), artifact_export_roots() (+13 more)
+### Community 43 - "Vec"
+Cohesion: 0.07
+Nodes (66): ArtifactMonitorSummary, DashboardState, FnOnce, HashMap, Instant, ManagedInstance, OsString, PathBuf (+58 more)
 
 ### Community 44 - "deserialize_collection_count"
 Cohesion: 0.67
@@ -254,16 +258,32 @@ Nodes (3): D, Error, deserialize_collection_count()
 Cohesion: 0.40
 Nodes (5): ArtifactMonitorEntry, TranscriptEntry, TranscriptMessage, TranscriptUsage, TranscriptUsageIteration
 
-### Community 46 - "read_usage"
-Cohesion: 0.33
-Nodes (6): read_usage(), reads_complete_usage_samples_and_rejects_partial_files(), refresh_instance_usage(), refresh_usage_keeps_the_last_good_snapshot_on_partial_data(), UsageSnapshot, UsageStats
+### Community 46 - "update_original_application"
+Cohesion: 0.29
+Nodes (8): original_application_update_target(), OriginalApplicationUpdateAction, OriginalApplicationUpdateResult, OriginalApplicationUpdateTarget, platform_name(), require_provider_source(), selects_official_update_targets_by_platform_and_architecture(), update_original_application()
 
 ### Community 47 - "Ciclo de vida e identidad visual de instancias"
 Cohesion: 0.50
 Nodes (4): Ciclo de vida e identidad visual de instancias, Iconos por instancia, Inicio, detección y cierre, Privacidad y límites
 
+### Community 48 - ".default"
+Cohesion: 0.29
+Nodes (4): Self, light_refresh_executes_one_inventory_and_skips_expensive_work(), reset_refresh_work_counters(), run()
+
+### Community 49 - "HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md"
+Cohesion: 0.15
+Nodes (10): Límites, Procesos y almacenamiento, Progreso y privacidad, Refrescos por alcance, Rendimiento del dashboard, Actualizar una versión, Política, Publicación (+2 more)
+
+### Community 50 - "SessionLinkRegistry"
+Cohesion: 0.18
+Nodes (13): Default, annotates_a_session_linked_inside_the_original_app(), apply_session_links(), apply_session_links_to_profile(), migrate_session_links(), migrates_existing_round_trip_as_a_link_to_the_original(), SessionLink, SessionLinkRegistry (+5 more)
+
+### Community 52 - "[0.2.0] - 2026-10-11"
+Cohesion: 0.40
+Nodes (4): [0.2.0] - 2026-10-11, Added, Changed, Changelog
+
 ## Knowledge Gaps
-- **286 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+281 more)
+- **321 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+316 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -271,16 +291,16 @@ Nodes (4): Ciclo de vida e identidad visual de instancias, Iconos por instancia,
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `HU-0002 — Actualizar la aplicación original y mostrar metadatos precisos por modelo y proveedor` connect `HU-0002 — Actualizar la aplicación original y mostrar metadatos precisos por modelo y proveedor` to `README.md`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
+  _High betweenness centrality (0.011) - this node is a cross-community bridge._
 - **Why does `HU-0003 — Transferencias conscientes de artefactos, actualización disponible y uso en vivo` connect `HU-0003 — Transferencias conscientes de artefactos, actualización disponible y uso en vivo` to `README.md`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
+  _High betweenness centrality (0.011) - this node is a cross-community bridge._
 - **Why does `HU-0004 — Sincronización desde la instancia más reciente, cierre robusto, artefactos locales e identidad visual` connect `HU-0004 — Sincronización desde la instancia más reciente, cierre robusto, artefactos locales e identidad visual` to `README.md`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
+  _High betweenness centrality (0.011) - this node is a cross-community bridge._
 - **What connects `name`, `private`, `version` to the rest of the system?**
-  _286 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _321 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `lib.rs` be split into smaller, more focused modules?**
-  _Cohesion score 0.05959183673469388 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05807200929152149 - nodes in this community are weakly interconnected._
 - **Should `String` be split into smaller, more focused modules?**
-  _Cohesion score 0.12598770851624233 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.11649122807017544 - nodes in this community are weakly interconnected._
 - **Should `scripts` be split into smaller, more focused modules?**
-  _Cohesion score 0.05 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.046511627906976744 - nodes in this community are weakly interconnected._

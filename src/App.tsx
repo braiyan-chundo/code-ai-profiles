@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { convertFileSrc } from "@tauri-apps/api/core";
+import { listen } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { bridge } from "./lib/bridge";
 import type {
@@ -37,6 +38,7 @@ import {
 const EMPTY_STATE: DashboardState = {
   instances: [],
   system: {
+    appVersion: "",
     platform: "unknown",
     sourcePath: null,
     sourceName: null,
@@ -114,16 +116,6 @@ function loadAppearancePreferences(): AppearancePreferences {
     return DEFAULT_APPEARANCE;
   }
 }
-
-const SCAN_STAGES: ScanProgressState[] = [
-  { progress: 8, label: "Preparando el escaneo…" },
-  { progress: 22, label: "Cargando perfiles administrados…" },
-  { progress: 40, label: "Comprobando instancias y procesos…" },
-  { progress: 62, label: "Leyendo métricas locales de uso…" },
-  { progress: 74, label: "Leyendo modelos y contexto de las sesiones…" },
-  { progress: 88, label: "Buscando la aplicación compatible y su versión…" },
-  { progress: 92, label: "Actualizando almacenamiento y registro…" },
-];
 
 function formatBytes(value: number | null): string {
   if (value == null) return "No disponible";
@@ -240,37 +232,43 @@ function App() {
   const [systemDark, setSystemDark] = useState(() => window.matchMedia("(prefers-color-scheme: dark)").matches);
   const searchRef = useRef<HTMLInputElement>(null);
   const scanInFlightRef = useRef(false);
+  const scanProgressCloseTimerRef = useRef<number | null>(null);
   const busyRef = useRef<string | null>(null);
   busyRef.current = busy;
+
+  const closeScanProgressSoon = (delay = 260) => {
+    if (scanProgressCloseTimerRef.current !== null) {
+      window.clearTimeout(scanProgressCloseTimerRef.current);
+    }
+    scanProgressCloseTimerRef.current = window.setTimeout(() => {
+      setScanProgress(null);
+      scanProgressCloseTimerRef.current = null;
+    }, delay);
+  };
 
   const refresh = async (scan = false) => {
     if (scan && scanInFlightRef.current) return;
     if (scan) scanInFlightRef.current = true;
     setBusy(scan ? "scan" : "refresh");
     setError(null);
-    const startedAt = Date.now();
-    const stageTimers: number[] = [];
     if (scan) {
-      setScanProgress(SCAN_STAGES[0]);
-      SCAN_STAGES.slice(1).forEach((stage, index) => {
-        stageTimers.push(window.setTimeout(() => setScanProgress(stage), (index + 1) * 190));
-      });
+      if (scanProgressCloseTimerRef.current !== null) {
+        window.clearTimeout(scanProgressCloseTimerRef.current);
+        scanProgressCloseTimerRef.current = null;
+      }
+      setScanProgress({ progress: 0, label: "Iniciando el escaneo…" });
     }
     try {
       const nextState = scan ? await bridge.scan() : await bridge.dashboard();
-      if (scan) {
-        const remaining = Math.max(0, 1_150 - (Date.now() - startedAt));
-        await new Promise((resolve) => window.setTimeout(resolve, remaining));
-        stageTimers.forEach(window.clearTimeout);
-        setScanProgress({ progress: 100, label: "Escaneo completado" });
-        window.setTimeout(() => setScanProgress(null), 420);
-      }
       setState(nextState);
+      if (scan) {
+        setScanProgress({ progress: 100, label: "Escaneo completado" });
+        closeScanProgressSoon();
+      }
     } catch (reason) {
-      stageTimers.forEach(window.clearTimeout);
       if (scan) {
         setScanProgress({ progress: 100, label: "No se pudo completar el escaneo" });
-        window.setTimeout(() => setScanProgress(null), 1_200);
+        closeScanProgressSoon(900);
       }
       setError(friendlyError(reason));
     } finally {
@@ -279,6 +277,28 @@ function App() {
       setBusy(null);
     }
   };
+
+  useEffect(() => {
+    if (!bridge.isDesktop()) return;
+    let active = true;
+    let removeListener: (() => void) | undefined;
+    void listen<ScanProgressState>("scan-progress", ({ payload }) => {
+      if (active && scanInFlightRef.current) setScanProgress(payload);
+    }).then((unlisten) => {
+      if (active) removeListener = unlisten;
+      else unlisten();
+    }).catch(() => {
+      // El escaneo sigue mostrando inicio y resultado aunque el WebView no exponga eventos.
+    });
+    return () => {
+      active = false;
+      removeListener?.();
+      if (scanProgressCloseTimerRef.current !== null) {
+        window.clearTimeout(scanProgressCloseTimerRef.current);
+        scanProgressCloseTimerRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -495,6 +515,7 @@ function App() {
   const runtimePlatform = state.system.platform === "unknown"
     ? fallbackPlatform
     : state.system.platform;
+  const buildLabel = state.system.appVersion || (loading ? "cargando…" : "no disponible");
   const resolvedTheme = appearance.theme === "system"
     ? (systemDark ? "dark" : "light")
     : appearance.theme;
@@ -706,6 +727,7 @@ function App() {
                       <InstanceCard
                         key={instance.id}
                         instance={instance}
+                        platform={runtimePlatform}
                         busy={busy}
                         updateAvailable={outdatedInstances.some((outdated) => outdated.id === instance.id)}
                         iconPreviewUrl={iconPreviews[instance.id] ?? null}
@@ -754,7 +776,7 @@ function App() {
             <span>{formatBytes(state.system.managedBytes)} administrados</span>
           </div>
           <div className="footer-build">
-            <span>AUTO · 60S</span><span className="mini-dot" /><span>BUILD 0.1.0</span><span className="mini-dot" /><span>{runtimePlatform.toUpperCase()}</span>
+            <span>AUTO · 60S</span><span className="mini-dot" /><span aria-label={`Versión de Code AI Profiles ${buildLabel}`}>BUILD {buildLabel}</span><span className="mini-dot" /><span>{runtimePlatform.toUpperCase()}</span>
           </div>
         </footer>
       </main>
@@ -1141,6 +1163,7 @@ function OriginalAppSection({
 
 interface InstanceCardProps {
   instance: ManagedInstance;
+  platform: DashboardState["system"]["platform"];
   busy: string | null;
   updateAvailable: boolean;
   iconPreviewUrl: string | null;
@@ -1154,7 +1177,7 @@ interface InstanceCardProps {
   onUnlink: (session: CodeSession) => void;
 }
 
-function InstanceCard({ instance, busy, updateAvailable, iconPreviewUrl, autoExpand, onLaunch, onStop, onOpen, onEdit, onDelete, onTransfer, onUnlink }: InstanceCardProps) {
+function InstanceCard({ instance, platform, busy, updateAvailable, iconPreviewUrl, autoExpand, onLaunch, onStop, onOpen, onEdit, onDelete, onTransfer, onUnlink }: InstanceCardProps) {
   const [sessionsExpanded, setSessionsExpanded] = useState(false);
   const isRunning = instance.status === "running";
   const sessionUsage = instance.usage?.sessionPercent ?? null;
@@ -1188,7 +1211,13 @@ function InstanceCard({ instance, busy, updateAvailable, iconPreviewUrl, autoExp
           <span className="version">
             Versión {instance.sourceVersion ?? "—"}
             {updateAvailable && <small className="version-update-badge">Actualización disponible</small>}
-            {instance.customIcon && <small className="custom-icon-badge">Icono personalizado · {instance.customIcon.systemApplied ? "sistema aplicado" : "solo en la app"}</small>}
+            {instance.customIcon && (
+              <small className="custom-icon-badge" title={instance.customIcon.systemMessage}>
+                Icono personalizado · {platform === "macos"
+                  ? instance.customIcon.systemApplied ? "Dock aplicado" : "Dock no aplicado"
+                  : instance.customIcon.systemApplied ? "sistema aplicado" : "solo en la app"}
+              </small>
+            )}
           </span>
         </div>
         <div className="usage-overview">
@@ -1644,10 +1673,10 @@ function InstanceEditor({
     }
     try {
       const bitmap = await createImageBitmap(file);
-      const dimensionsValid = bitmap.width >= 32 && bitmap.height >= 32 && bitmap.width <= 8192 && bitmap.height <= 8192;
+      const dimensionsValid = bitmap.width >= 32 && bitmap.height >= 32 && bitmap.width <= 4096 && bitmap.height <= 4096;
       bitmap.close();
       if (!dimensionsValid) {
-        setIconError("Usa una imagen entre 32×32 y 8192×8192 píxeles.");
+        setIconError("Usa una imagen entre 32×32 y 4096×4096 píxeles.");
         return;
       }
       const reader = new FileReader();
@@ -1731,14 +1760,17 @@ function InstanceEditor({
           <AlertIcon size={17} />
           <p>
             {platform === "macos"
-              ? "En macOS el icono siempre identifica la instancia dentro de Code AI Profiles. El Dock puede conservar el icono oficial para no alterar la firma ni el actualizador; el resultado del sistema es best-effort."
+              ? "Al guardar, Code AI Profiles intentará aplicar el icono al Dock y verificará la copia administrada. El resultado aparecerá aquí cuando termine."
               : platform === "windows"
-                ? "En Windows se intenta aplicar el icono al launcher y la barra de tareas sin modificar el ejecutable; algunas ventanas pueden conservar el icono oficial."
+                ? "En Windows el ejecutable conserva su icono oficial; la imagen personalizada identifica la instancia dentro de Code AI Profiles."
                 : "En Linux se intenta aplicar el icono al launcher; Wayland o el compositor pueden conservar el icono oficial."}
           </p>
         </div>
         {instance?.customIcon && !removeIcon && (
           <p className={`icon-application-result ${instance.customIcon.systemApplied ? "is-applied" : "is-limited"}`}>
+            {platform === "macos" && (
+              <strong>{instance.customIcon.systemApplied ? "Dock aplicado. " : "No se aplicó al Dock. "}</strong>
+            )}
             {instance.customIcon.systemMessage}
           </p>
         )}

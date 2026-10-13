@@ -61,6 +61,20 @@ npm run build
 cargo test --manifest-path src-tauri/Cargo.toml
 ```
 
+## Versionado
+
+El repositorio usa Semantic Versioning y actualmente está en `0.2.0`. Para preparar una versión compatible, una funcionalidad o un cambio incompatible, ejecuta:
+
+```bash
+npm run release:version -- patch
+npm run release:version -- minor
+npm run release:version -- major
+npm run release:version -- 0.2.1
+npm run release:check
+```
+
+`patch` corresponde a fixes compatibles, `minor` a funcionalidades compatibles y `major` a incompatibilidades. Mientras la versión sea `0.y.z`, un `minor` puede incluir incompatibilidades conforme al estándar; el proyecto procurará documentarlas de forma explícita. La herramienta sincroniza las fuentes de versión de Node y Tauri de forma atómica, y `release:check` comprueba que no diverjan. Cambiar una versión no publica un instalador ni crea una release. Consulta [la política completa](docs/versionado.document.md) y el [changelog](CHANGELOG.md).
+
 ## Desarrollo asistido por IA y Graphify
 
 El repositorio incluye cuatro agentes de desarrollo: `architect`, `backend`, `frontend` y `document`. Sus instrucciones neutrales viven en [`.agents/roles/`](.agents/roles/README.md) y Codex dispone de adaptadores con modelos independientes en [`.codex/agents/`](.codex/agents/). Toda feature o fix requiere una HU única en [`docs/hu/`](docs/hu/index.md).
@@ -194,7 +208,7 @@ Las referencias cloud, la propiedad remota y los monitores de artefactos no se t
 
 El botón **Detener** verifica que el proceso pertenezca a la aplicación y perfil de la instancia antes de cerrarlo, intenta un cierre normal y solo después escala dentro del árbol o grupo verificado. Si aún quedan procesos, conserva el estado ejecutándose y explica el error en vez de informar un cierre falso.
 
-Puedes asignar un icono PNG o JPEG de hasta 5 MiB a cada instancia. El icono se muestra dentro de Code AI Profiles y sobrevive a la sincronización de su aplicación. Para conservar firma y actualizador, macOS mantiene el icono oficial en el Dock; Windows conserva el icono del ejecutable firmado; Linux crea un launcher opcional cuyo resultado depende del compositor. Consulta [la guía de instancias](docs/instancias.document.md).
+Puedes asignar un icono PNG o JPEG de hasta 5 MiB a cada instancia. El icono se muestra dentro de Code AI Profiles y sobrevive a la sincronización de su aplicación. En macOS, `NSWorkspace.setIcon` se está evaluando para el Dock, pero su metadata impide la verificación estricta mientras está aplicada; producción la revierte y conserva el icono personalizado dentro de Code AI Profiles. Windows conserva el icono del ejecutable firmado; Linux crea un launcher opcional cuyo resultado depende del compositor. Consulta [la guía de instancias](docs/instancias.document.md).
 
 ## Privacidad y seguridad
 

@@ -104,6 +104,7 @@ export interface SessionProfile {
 }
 
 export interface SystemInfo {
+  appVersion: string;
   platform: "macos" | "windows" | "linux" | "unknown";
   sourcePath: string | null;
   sourceName: string | null;
