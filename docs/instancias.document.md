@@ -1,6 +1,6 @@
 # Ciclo de vida e identidad visual de instancias
 
-Documento funcional relacionado con [HU-0004](hu/HU-0004-sincronizacion-desde-la-instancia-mas-reciente-cierre-robusto-artefactos-locales-e-identidad-visual.md).
+Documento funcional relacionado con [HU-0004](hu/HU-0004-sincronizacion-desde-la-instancia-mas-reciente-cierre-robusto-artefactos-locales-e-identidad-visual.md) y [HU-0005](hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md).
 
 ## Inicio, detección y cierre
 
@@ -19,15 +19,19 @@ La verificación local reduce el riesgo de reutilización de PID, pero la integr
 
 Desde el editor de una instancia se puede seleccionar una imagen PNG o JPEG de hasta 5 MiB. La aplicación valida y normaliza el archivo a PNG cuadrado administrado fuera del bundle del proveedor. El icono aparece en la tarjeta y el editor, sobrevive a una sincronización de aplicación y se puede reemplazar o quitar sin modificar la aplicación original.
 
-No se cambia `app.asar`, ejecutables, `Info.plist`, recursos sellados ni xattrs. Esto conserva la firma y reduce el riesgo de romper el actualizador de la aplicación compatible.
+No se cambian archivos dentro del bundle como `app.asar`, ejecutables, `Info.plist` o recursos sellados. `NSWorkspace.setIcon` puede escribir metadata de filesystem del bundle gestionado —por ejemplo, FinderInfo, resource fork o atributos extendidos— sin alterar bytes sellados, CDHash, Team ID o designated requirement. Sin embargo, mientras esa metadata existe, `codesign --verify --deep --strict` falla; por seguridad, producción la retira y recupera el baseline estricto.
 
 | Plataforma | Resultado del icono de sistema |
 | --- | --- |
-| macOS | El Dock conserva el icono oficial firmado. El personalizado identifica la instancia dentro de Code AI Profiles. |
+| macOS | El spike opt-in de `NSWorkspace.setIcon` falló. El icono personalizado permanece en la UI con `systemApplied=false`; el Dock no está confirmado. |
 | Windows | El ejecutable firmado conserva su icono. El personalizado se muestra dentro de Code AI Profiles. |
 | Linux | Se crea un launcher opcional por instancia con el icono. Debe abrirse desde ese launcher y Wayland o el compositor pueden conservar el icono oficial. |
 
-El estado que aparece en el editor indica si el sistema aplicó el icono o si está limitado a la aplicación. No se promete que el Dock, la barra de tareas o todos los compositores distingan las instancias.
+En macOS, el spike opt-in de `NSWorkspace.setIcon` sobre un clon temporal con perfil vacío falló: `set_macos_workspace_icon(..., None)` devolvió «NSWorkspace rechazó el icono personalizado» en `src-tauri/src/lib.rs:5895`. `open -n` sí abrió el clon y Cua mostró únicamente su pantalla Sign in, pero no hubo icono distinguible en Dock. La ruta no altera bytes sellados, CDHash, Team ID ni designated requirement, ni cambia el bundle ID; además, FinderInfo/resource fork impedirían `codesign --verify --deep --strict` mientras la metadata existe. Producción la retira y restaura el baseline, por lo que `systemApplied=false` y el Dock no recibe un icono personalizado confirmado. La ruta de ICNS, `CFBundleIconFile` o firma ad-hoc queda descartada porque puede alterar requisitos de firma y afectar Keychain/safeStorage. Las copias legacy ya re-firmadas o manipuladas siguen excluidas como donantes por la validación normal de proveedor.
+
+La transacción se limita a metadata externa de branding y metadata administrada. Puede escribir metadata de filesystem asociada al bundle gestionado, pero no archivos dentro del bundle, perfiles, sesiones, credenciales, autenticación ni transcripts; nunca toca la instalación original. Si la verificación estricta falla, revierte metadata y registro. Mientras no exista una alternativa que cumpla los criterios, producción conserva el fallback de UI y no reaplica el icono al Dock tras create, sync o update.
+
+La confirmación requerida en macOS necesita una alternativa que mantenga `codesign --verify --deep --strict`, CDHash/Team ID/designated requirement de proveedor, launch smoke e icono distinguible en Dock mediante Cua, sin modificar perfiles. El spike opt-in se ejecutó fuera de sandbox y falló; Root cerró únicamente el PID `27587` tras validar el ejecutable y el argumento exacto `--user-data-dir` del fixture. No se tocaron perfiles ni sesiones reales y no habrá más experimentos de Dock en esta iteración. La ruta actual de `NSWorkspace.setIcon` no satisface esa comprobación: producción elimina su metadata para restaurar el baseline y deja `systemApplied=false`. El icono personalizado continúa dentro de Code AI Profiles como fallback seguro, sin re-firma, sin cambiar archivos del bundle y sin tocar perfiles, sesiones ni autenticación. Windows y Linux mantienen los límites de la tabla.
 
 ## Privacidad y límites
 

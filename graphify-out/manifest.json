@@ -1,8 +1,8 @@
 {
   "package.json": {
-    "mtime": 1786673650.3607156,
-    "ast_hash": "c6137f98d3e363d6d223189a0932140c",
-    "semantic_hash": "c6137f98d3e363d6d223189a0932140c"
+    "mtime": 1791741142.023665,
+    "ast_hash": "890e46f5c9d60ed9d02e6a50bf25a5f9",
+    "semantic_hash": ""
   },
   "scripts/graphify.mjs": {
     "mtime": 1786674898.1491435,
@@ -20,8 +20,8 @@
     "semantic_hash": "dca85abae9a1b384a67b37f98b2f05ea"
   },
   "src-tauri/src/lib.rs": {
-    "mtime": 1791694348.6827252,
-    "ast_hash": "f79e9d9b5e08f53bffdc7f37f9b5bce1",
+    "mtime": 1791836368.5817332,
+    "ast_hash": "89511df7ddf9937c5c0d0ec80656b207",
     "semantic_hash": ""
   },
   "src-tauri/src/main.rs": {
@@ -30,8 +30,8 @@
     "semantic_hash": "a85314b3cde4f5d5b64d48e0c7b18194"
   },
   "src-tauri/tauri.conf.json": {
-    "mtime": 1791666248.0250885,
-    "ast_hash": "9530e7e853247a79d6262f773fe0507f",
+    "mtime": 1791741142.024672,
+    "ast_hash": "4f53a930981c0cdc36a89a5f6f9ff85d",
     "semantic_hash": ""
   },
   "src-tauri/tauri.linux.conf.json": {
@@ -45,8 +45,8 @@
     "semantic_hash": "4ef37201944f5f99cbc3aba02a781215"
   },
   "src/App.tsx": {
-    "mtime": 1791694362.6844246,
-    "ast_hash": "ced72c49d088598ca51fa506b45c4d7a",
+    "mtime": 1791741251.4838889,
+    "ast_hash": "04d9cb2f0851399ef5f6cae1b17e8e14",
     "semantic_hash": ""
   },
   "src/components/Icons.tsx": {
@@ -55,8 +55,8 @@
     "semantic_hash": "51f16f9089a695e79d1d57e1428a0e13"
   },
   "src/lib/bridge.ts": {
-    "mtime": 1791665905.6450412,
-    "ast_hash": "b8f872aa5c18ad72fd0c5f44f85ec73d",
+    "mtime": 1791741083.501117,
+    "ast_hash": "edbe80eaf3621ee3ce56a68b79b5d709",
     "semantic_hash": ""
   },
   "src/main.tsx": {
@@ -65,8 +65,8 @@
     "semantic_hash": "6fbf89872396bfa844c1c92ae437a7a5"
   },
   "src/types.ts": {
-    "mtime": 1791665895.0661738,
-    "ast_hash": "39afbfa110f9f170a6bb236447d62dd8",
+    "mtime": 1791741083.4838529,
+    "ast_hash": "58416249e391f33d197c6964811167d6",
     "semantic_hash": ""
   },
   "src/vite-env.d.ts": {
@@ -130,8 +130,8 @@
     "semantic_hash": ""
   },
   ".github/workflows/validate.yml": {
-    "mtime": 1786674023.818143,
-    "ast_hash": "8d97a1bdb709c0c74c09a54ba7063eb9",
+    "mtime": 1791761864.8352387,
+    "ast_hash": "efa578b988d72dbacb9a2dc164881fc2",
     "semantic_hash": ""
   },
   "AGENTS.md": {
@@ -150,8 +150,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1791694472.0977588,
-    "ast_hash": "146019514746cb4e38e09bbd5a76c807",
+    "mtime": 1791871243.9294097,
+    "ast_hash": "b41fabab75e705ae598d9b485a4e5f11",
     "semantic_hash": ""
   },
   "code.html": {
@@ -175,8 +175,8 @@
     "semantic_hash": ""
   },
   "docs/hu/index.md": {
-    "mtime": 1791694531.4724088,
-    "ast_hash": "a724960abade1e9635c69fb2bb5499c6",
+    "mtime": 1791871105.1319084,
+    "ast_hash": "73885f845918e875907045b1b4ddb91b",
     "semantic_hash": ""
   },
   "index.html": {
@@ -210,8 +210,38 @@
     "semantic_hash": ""
   },
   "docs/instancias.document.md": {
-    "mtime": 1791694472.081142,
-    "ast_hash": "8607491735a87c48bb5d2693314d9c53",
+    "mtime": 1791893972.489596,
+    "ast_hash": "043b3930fde4f65265157d75d699af59",
+    "semantic_hash": ""
+  },
+  "scripts/release-version.mjs": {
+    "mtime": 1791741250.3077285,
+    "ast_hash": "c4070e11a5bd8e50351006c7efef384e",
+    "semantic_hash": ""
+  },
+  "scripts/release-version.test.mjs": {
+    "mtime": 1791741250.328171,
+    "ast_hash": "686fba07048c1fd87d0c3cb274cc1f8f",
+    "semantic_hash": ""
+  },
+  "CHANGELOG.md": {
+    "mtime": 1791893972.5080297,
+    "ast_hash": "685a0debe3649038b43dbb3a09cc8e8c",
+    "semantic_hash": ""
+  },
+  "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md": {
+    "mtime": 1791893972.4687912,
+    "ast_hash": "db0e5de4b68576d181b09f41dd37e781",
+    "semantic_hash": ""
+  },
+  "docs/rendimiento.document.md": {
+    "mtime": 1791762110.1936197,
+    "ast_hash": "9d2c8a4df3ef47afe142068feeb9b998",
+    "semantic_hash": ""
+  },
+  "docs/versionado.document.md": {
+    "mtime": 1791762036.261234,
+    "ast_hash": "28afcc9f45ef2acc3d1215aa088213b6",
     "semantic_hash": ""
   }
 }

@@ -1,4 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
+import packageMetadata from "../../package.json";
 import type {
   CodeSession,
   ManagedInstance,
@@ -81,6 +82,7 @@ let mockInstances: ManagedInstance[] = [
 const mockState = (): DashboardState => ({
   instances: mockInstances,
   system: {
+    appVersion: packageMetadata.version,
     platform: "macos",
     sourcePath: "/Applications/Claude.app",
     sourceName: mockSourceName,

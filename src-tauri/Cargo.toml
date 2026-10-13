@@ -1,6 +1,6 @@
 [package]
 name = "code-ai-profiles"
-version = "0.1.0"
+version = "0.2.0"
 description = "Isolated desktop AI application profile manager"
 authors = ["Code AI Profiles contributors"]
 edition = "2021"
