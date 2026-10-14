@@ -1,6 +1,6 @@
 # Rendimiento del dashboard
 
-Documento funcional y técnico relacionado con [HU-0005](hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md). La HU está en curso; los gates de validación final siguen pendientes.
+Documento funcional y técnico relacionado con [HU-0005](hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md) y [HU-0006](hu/HU-0006-escaneo-automatico-silencioso-y-ciclo-manual-controlado.md). HU-0005 conserva sus propios gates pendientes; HU-0006 está completada.
 
 ## Refrescos por alcance
 
@@ -30,6 +30,14 @@ El indicador de escaneo refleja la operación real; ya no mantiene una espera m�
 
 Las pruebas de rendimiento emplean contadores y fixtures sintéticos. El dashboard no registra prompts, respuestas, razonamientos, resultados de herramientas ni contenido de transcripts para medir la respuesta.
 
+## Escaneo automático y manual
+
+El refresco de fondo usa `dashboard()` y no abre el panel de escaneo, no ocupa el estado visual `busy` ni muestra errores. La carga inicial marca un cooldown de 60 segundos; foco e intervalo comparten ese periodo y solo pueden iniciar un trabajo de fondo. El foco inicial no fuerza otro escaneo completo, y un estado stale inicia como máximo un refresco.
+
+El escaneo manual usa `scan()` y es el único que instala un listener de progreso. Muestra el avance real y se autocierra 900 ms después de un éxito. Un resultado success o error permite «Ocultar»; mientras está running no ofrece una falsa cancelación.
+
+Si el usuario solicita un escaneo manual mientras hay un refresco de fondo, la solicitud queda visible como espera y se ejecuta después. El controlador conserva una generación y un lifecycle por operación: listeners, timers, resultados o eventos viejos no pueden reabrir el panel ni sobrescribir un ciclo más reciente, y se limpian al desmontar.
+
 ## Límites
 
-El alcance reduce lecturas redundantes, pero no fija un tiempo máximo. El rendimiento de una operación aún depende del filesystem, de la cantidad de sesiones, de procesos del proveedor y de las copias físicas de aplicaciones. Crear o sincronizar una aplicación puede tardar de forma perceptible porque copia archivos por diseño.
+El alcance reduce lecturas redundantes, pero no fija un tiempo máximo. El rendimiento de una operación aún depende del filesystem, de la cantidad de sesiones, de procesos del proveedor y de las copias físicas de aplicaciones. Crear o sincronizar una aplicación puede tardar de forma perceptible porque copia archivos por diseño. Las pruebas de state machine son sintéticas; no sustituyen una medición temporal dependiente de cada equipo.

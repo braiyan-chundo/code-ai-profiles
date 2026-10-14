@@ -349,6 +349,21 @@ button:disabled { opacity: 0.48; cursor: not-allowed; }
   animation: radar-pulse 1s ease-out infinite;
 }
 .scan-percentage { color: #ffb29d; font: 600 11px/1 JetBrains Mono, monospace; }
+.scan-progress-actions { display: flex; flex: 0 0 auto; align-items: center; gap: 10px; }
+.scan-progress-actions button {
+  padding: 6px 9px;
+  color: #d8c6c1;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 8px;
+  font-size: 9px;
+  font-weight: 650;
+  cursor: pointer;
+}
+.scan-progress-actions button:hover { color: #fff4f0; background: rgba(255, 255, 255, 0.08); }
+.scan-progress-panel.is-error { border-color: rgba(255, 180, 171, 0.25); }
+.scan-progress-panel.is-error .scan-radar, .scan-progress-panel.is-error .scan-percentage { color: #ffb4ab; }
+.scan-progress-panel.is-success .scan-radar::after, .scan-progress-panel.is-error .scan-radar::after { animation: none; }
 .scan-progress-track { height: 5px; overflow: hidden; background: rgba(255, 255, 255, 0.09); border-radius: 999px; }
 .scan-progress-track span {
   display: block;
@@ -897,6 +912,8 @@ button:disabled { opacity: 0.48; cursor: not-allowed; }
 .theme-light .update-profile-note, .theme-light .transfer-warning { color: #675e59; background: rgba(75, 54, 46, 0.035); border-color: rgba(75, 54, 46, 0.11); }
 .theme-light .empty-state p { color: #786e69; }
 .theme-light .update-banner, .theme-light .source-update-banner { color: #645a56; background: rgba(250, 246, 242, 0.96); border-color: rgba(156, 83, 61, 0.17); box-shadow: 0 10px 25px rgba(76, 54, 45, 0.1); }
+.theme-light .scan-progress-actions button { color: #6e5a53; background: rgba(75, 54, 46, 0.045); border-color: rgba(75, 54, 46, 0.12); }
+.theme-light .scan-progress-actions button:hover { color: #3d302c; background: rgba(75, 54, 46, 0.08); }
 .theme-light .update-banner strong, .theme-light .source-update-banner strong { color: #4b403c; }
 .theme-light .update-banner > div > span, .theme-light .source-update-banner > div > span { color: #817570; }
 .theme-light .usage-captured-at { color: #7e736e; }

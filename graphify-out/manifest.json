@@ -1,7 +1,7 @@
 {
   "package.json": {
-    "mtime": 1791741142.023665,
-    "ast_hash": "890e46f5c9d60ed9d02e6a50bf25a5f9",
+    "mtime": 1791939021.4066067,
+    "ast_hash": "9abb3774410e13c3b9f212fd58db4a17",
     "semantic_hash": ""
   },
   "scripts/graphify.mjs": {
@@ -20,7 +20,7 @@
     "semantic_hash": "dca85abae9a1b384a67b37f98b2f05ea"
   },
   "src-tauri/src/lib.rs": {
-    "mtime": 1791836368.5817332,
+    "mtime": 1791894359.7571666,
     "ast_hash": "89511df7ddf9937c5c0d0ec80656b207",
     "semantic_hash": ""
   },
@@ -30,8 +30,8 @@
     "semantic_hash": "a85314b3cde4f5d5b64d48e0c7b18194"
   },
   "src-tauri/tauri.conf.json": {
-    "mtime": 1791741142.024672,
-    "ast_hash": "4f53a930981c0cdc36a89a5f6f9ff85d",
+    "mtime": 1791939021.4077253,
+    "ast_hash": "5c41928001b34798e54eefd0bfdcc4d7",
     "semantic_hash": ""
   },
   "src-tauri/tauri.linux.conf.json": {
@@ -45,8 +45,8 @@
     "semantic_hash": "4ef37201944f5f99cbc3aba02a781215"
   },
   "src/App.tsx": {
-    "mtime": 1791741251.4838889,
-    "ast_hash": "04d9cb2f0851399ef5f6cae1b17e8e14",
+    "mtime": 1791922723.7254794,
+    "ast_hash": "408e15ae6ddc14590ad34bff035b9ef2",
     "semantic_hash": ""
   },
   "src/components/Icons.tsx": {
@@ -55,7 +55,7 @@
     "semantic_hash": "51f16f9089a695e79d1d57e1428a0e13"
   },
   "src/lib/bridge.ts": {
-    "mtime": 1791741083.501117,
+    "mtime": 1791894359.7577486,
     "ast_hash": "edbe80eaf3621ee3ce56a68b79b5d709",
     "semantic_hash": ""
   },
@@ -65,7 +65,7 @@
     "semantic_hash": "6fbf89872396bfa844c1c92ae437a7a5"
   },
   "src/types.ts": {
-    "mtime": 1791741083.4838529,
+    "mtime": 1791894359.758358,
     "ast_hash": "58416249e391f33d197c6964811167d6",
     "semantic_hash": ""
   },
@@ -130,8 +130,8 @@
     "semantic_hash": ""
   },
   ".github/workflows/validate.yml": {
-    "mtime": 1791761864.8352387,
-    "ast_hash": "efa578b988d72dbacb9a2dc164881fc2",
+    "mtime": 1791939018.3235745,
+    "ast_hash": "2b7b78a25b8ed53afad27c28f13137b6",
     "semantic_hash": ""
   },
   "AGENTS.md": {
@@ -150,8 +150,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1791871243.9294097,
-    "ast_hash": "b41fabab75e705ae598d9b485a4e5f11",
+    "mtime": 1791939215.678394,
+    "ast_hash": "a8032e935af0dcfb29612a1301ffae48",
     "semantic_hash": ""
   },
   "code.html": {
@@ -175,8 +175,8 @@
     "semantic_hash": ""
   },
   "docs/hu/index.md": {
-    "mtime": 1791871105.1319084,
-    "ast_hash": "73885f845918e875907045b1b4ddb91b",
+    "mtime": 1791939195.7770793,
+    "ast_hash": "0ea499ecd9c3c63f1458e2d3f0fbc9dd",
     "semantic_hash": ""
   },
   "index.html": {
@@ -185,7 +185,7 @@
     "semantic_hash": ""
   },
   "docs/actualizaciones.document.md": {
-    "mtime": 1791694472.0451412,
+    "mtime": 1791894359.753102,
     "ast_hash": "c654f7622b76e02fa9aa219dd59ec704",
     "semantic_hash": ""
   },
@@ -195,7 +195,7 @@
     "semantic_hash": ""
   },
   "docs/sesiones.document.md": {
-    "mtime": 1791694472.0633125,
+    "mtime": 1791894359.7542782,
     "ast_hash": "b2928b24ac4c34757cd69fcc618734f5",
     "semantic_hash": ""
   },
@@ -205,43 +205,58 @@
     "semantic_hash": ""
   },
   "docs/hu/HU-0004-sincronizacion-desde-la-instancia-mas-reciente-cierre-robusto-artefactos-locales-e-identidad-visual.md": {
-    "mtime": 1791694531.449879,
+    "mtime": 1791894359.7534535,
     "ast_hash": "a9a54b9ffca579c60a9b9cf2d2397d34",
     "semantic_hash": ""
   },
   "docs/instancias.document.md": {
-    "mtime": 1791893972.489596,
+    "mtime": 1791894359.7539053,
     "ast_hash": "043b3930fde4f65265157d75d699af59",
     "semantic_hash": ""
   },
   "scripts/release-version.mjs": {
-    "mtime": 1791741250.3077285,
+    "mtime": 1791894359.7561305,
     "ast_hash": "c4070e11a5bd8e50351006c7efef384e",
     "semantic_hash": ""
   },
   "scripts/release-version.test.mjs": {
-    "mtime": 1791741250.328171,
+    "mtime": 1791894359.7562394,
     "ast_hash": "686fba07048c1fd87d0c3cb274cc1f8f",
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1791893972.5080297,
-    "ast_hash": "685a0debe3649038b43dbb3a09cc8e8c",
+    "mtime": 1791939195.851201,
+    "ast_hash": "52b72645fcb24dade209deed4b8a62fd",
     "semantic_hash": ""
   },
   "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md": {
-    "mtime": 1791893972.4687912,
+    "mtime": 1791894359.7536206,
     "ast_hash": "db0e5de4b68576d181b09f41dd37e781",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
-    "mtime": 1791762110.1936197,
-    "ast_hash": "9d2c8a4df3ef47afe142068feeb9b998",
+    "mtime": 1791939195.7978098,
+    "ast_hash": "f5da5f5c3eca394f62faf9438595fa1b",
     "semantic_hash": ""
   },
   "docs/versionado.document.md": {
-    "mtime": 1791762036.261234,
-    "ast_hash": "28afcc9f45ef2acc3d1215aa088213b6",
+    "mtime": 1791939195.8160563,
+    "ast_hash": "00e485c393e43b7836194c563eb7b69c",
+    "semantic_hash": ""
+  },
+  "src/lib/scan-controller.ts": {
+    "mtime": 1791922723.7030432,
+    "ast_hash": "3e6a39d3004f4bc44f45443d34c94042",
+    "semantic_hash": ""
+  },
+  "tests/scan-controller.test.ts": {
+    "mtime": 1791922723.7438564,
+    "ast_hash": "46e472841bc9055e09a39815eac86af8",
+    "semantic_hash": ""
+  },
+  "docs/hu/HU-0006-escaneo-automatico-silencioso-y-ciclo-manual-controlado.md": {
+    "mtime": 1791939366.4041896,
+    "ast_hash": "4501f21c5166b090fa41b0f0a7a58d5f",
     "semantic_hash": ""
   }
 }

@@ -4,6 +4,19 @@ Todos los cambios relevantes de este proyecto se documentan en este archivo.
 
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.2.1] - 2026-10-13
+
+### Fixed
+
+- El refresco automático actualiza el dashboard con `dashboard()` sin abrir un panel de escaneo, ocupar `busy` ni mostrar errores visibles.
+- Focus e intervalo comparten un cooldown de 60 segundos y se deduplican; el foco inicial no inicia otro escaneo completo.
+- Una solicitud manual durante trabajo de fondo queda visible y se ejecuta de forma determinista después de ese trabajo.
+- Los listeners, timers y callbacks tardíos quedan asociados a su lifecycle y generación, evitando que reabran o pisen un escaneo nuevo.
+
+### Changed
+
+- El escaneo manual es el único que muestra progreso. Se autocierra tras éxito y permite ocultar resultados terminales sin ofrecer una falsa cancelación mientras corre.
+
 ## [0.2.0] - 2026-10-11
 
 Esta versión está en validación dentro de la rama de desarrollo.

@@ -58,18 +58,19 @@ Verifica el frontend y las pruebas de Rust:
 
 ```bash
 npm run build
+npm run test:scan
 cargo test --manifest-path src-tauri/Cargo.toml
 ```
 
 ## Versionado
 
-El repositorio usa Semantic Versioning y actualmente está en `0.2.0`. Para preparar una versión compatible, una funcionalidad o un cambio incompatible, ejecuta:
+El repositorio usa Semantic Versioning y actualmente está en `0.2.1`. Para preparar una versión compatible, una funcionalidad o un cambio incompatible, ejecuta:
 
 ```bash
 npm run release:version -- patch
 npm run release:version -- minor
 npm run release:version -- major
-npm run release:version -- 0.2.1
+npm run release:version -- 0.2.2
 npm run release:check
 ```
 
@@ -119,6 +120,8 @@ Resultados:
 src-tauri/target/release/bundle/macos/Code AI Profiles.app
 src-tauri/target/release/bundle/dmg/*.dmg
 ```
+
+La entrega local verificada de `0.2.1` para Apple Silicon es `src-tauri/target/release/bundle/dmg/Code AI Profiles_0.2.1_aarch64.dmg`. Pasó build, verificación del DMG y verificación estricta de la app; el binario es `arm64`. Está firmada ad-hoc y no está notarizada, por lo que macOS puede requerir clic derecho → **Abrir**. Este artefacto local no implica una publicación o GitHub Release.
 
 ### Windows x64
 
