@@ -4,7 +4,7 @@
 
 - Estado: `In Progress`
 - Creada: 2026-10-11
-- Actualizada: 2026-10-13
+- Actualizada: 2026-10-14
 - Solicitante: mantenedor del proyecto
 - Orquestación: `architect`
 - Documentación: `document`
@@ -30,6 +30,7 @@ Evidencia entregada por `architect`; `document` no ejecutó ni modificó Graphif
 - Todos los comandos de mutación terminan en `dashboard_from`; `launch_instance` llama además `refresh_registry` antes y `dashboard_from` después.
 - En frontend, `refresh(scan = true)` impone una espera artificial mínima de 1.150 ms aunque el backend termine antes.
 - `0.1.0` está hardcodeada en los manifests, locks, configuración Tauri y `App.tsx`.
+- La reanudación del análisis conecta `apply_macos_custom_icon`, `set_macos_workspace_icon`, `set_instance_icon`, `launch_instance` y el spike de Dock. La consulta se limita a relaciones de código y documentación; `document` no ejecutó Graphify.
 
 ## Alcance
 
@@ -62,6 +63,14 @@ Evidencia entregada por `architect`; `document` no ejecutó ni modificó Graphif
 5. La implementación comprobará si una identidad de bundle única es imprescindible para invalidar la caché de Dock. Si ese cambio tiene impacto material sobre autenticación, perfil o updater, debe documentarse y elevarse al arquitecto antes de aplicarlo.
 6. La personalización mediante metadata externa no relaja `validate_provider_identity`: mientras la metadata exista, la copia no supera la verificación estricta aunque sus bytes sellados, CDHash, Team ID y designated requirement sigan intactos. Producción retira esa metadata y restaura el baseline estricto antes de considerar la copia; por ello la personalización de sistema queda sin aplicar (`systemApplied=false`) y no puede declararse como icono de Dock. Copias legacy re-firmadas ad-hoc o manipuladas quedan excluidas como donantes.
 
+### Decisión pendiente para el Dock
+
+La investigación de reanudación descarta repetir `NSWorkspace.setIcon`: Apple documenta que FinderInfo, resource fork y atributos extendidos de icono están prohibidos en bundles firmados y explican el fallo de `codesign --verify --deep --strict`. `app.dock.setIcon` de Electron solo se puede invocar dentro del main process de la aplicación propietaria; `NSDockTile` también corresponde al proceso propio y `NSRunningApplication.icon` es de solo lectura. La inyección de `NODE_OPTIONS` no es una alternativa para aplicaciones empaquetadas.
+
+Al 14 de octubre, modificar recursos de **una copia gestionada detenida** y aplicar una re-firma controlada era una alternativa candidata para investigar un icono real de Dock. El diseño no escribiría perfiles, conversaciones ni archivos de sesión y los fixtures podrían comprobar bytes intactos, pero una identidad de firma distinta puede impedir descifrar o acceder datos ligados a Keychain/safeStorage. Por tanto, ni el login ni la accesibilidad funcional de conversaciones podían garantizarse sin staging. El cliente propuso limitar el branding al momento de crear, antes del primer login, y autorizó el spike de HU-0007; ese experimento dio resultado negativo y no demostró viabilidad visual en el Dock.
+
+La aplicación original, perfiles, conversaciones, credenciales, llavero y sesiones reales quedan fuera de cualquier spike. Esta reanudación no experimentó con ellos ni con instancias reales.
+
 ## Fuera de alcance
 
 - Auto-updater de Code AI Profiles, descargas de la propia aplicación, tags, GitHub Releases o publicación de instaladores.
@@ -85,7 +94,7 @@ Evidencia entregada por `architect`; `document` no ejecutó ni modificó Graphif
 11. Pasan `npm run build`, `cargo fmt --check`, `cargo test --manifest-path src-tauri/Cargo.toml`, `npm run release:check`, `git diff --check` y el cierre Graphify indicado por el arquitecto.
 12. Se preservan compatibilidad macOS, Windows y Linux, privacidad y el diseño visual actual.
 13. En macOS, una solución de icono de sistema debe conservar el resultado de `codesign --verify --deep --strict` antes y después, mantener CDHash/Team ID/designated requirement del proveedor, superar un launch smoke y mostrar un icono distinguible en el Dock. La ruta actual de `NSWorkspace.setIcon` no cumple todavía este criterio porque se revierte para restaurar la verificación estricta.
-14. La prueba del icono usa un bundle y perfil fixture o temporal; comprueba que los bytes del perfil quedan intactos y no usa ni cierra sesiones reales ni la aplicación original.
+14. La prueba del icono usa un bundle y perfil fixture o temporal; puede comprobar que los bytes del perfil quedan intactos y no usa ni cierra sesiones reales ni la aplicación original, pero ese resultado no garantiza el login ni la accesibilidad funcional de datos protegidos por Keychain/safeStorage tras una re-firma.
 15. Cada operación de create, sync o update reaplica el branding de la copia gestionada y hace rollback de bundle/registry si falla.
 16. La topología sigue rechazando copias legacy re-firmadas ad-hoc, manipuladas o no confiables como donantes; la personalización actual no modifica recursos sellados ni firma del proveedor.
 
@@ -109,7 +118,7 @@ Evidencia entregada por `architect`; `document` no ejecutó ni modificó Graphif
 - Las diferencias de filesystem, firmas y mecanismos de proceso entre macOS, Windows y Linux deben tener pruebas con fixtures o abstracciones cuando el host no cubra una rama. No se agregan permisos, telemetría ni acceso de red.
 - Los datos de sesión se miden mediante contadores o fixtures sintéticos; no se registran rutas o contenidos sensibles para demostrar rendimiento.
 - El Dock puede conservar una caché de icono o agrupar por identidad de bundle. El spike mostró que `NSWorkspace.setIcon` no satisface simultáneamente el icono de Dock y la verificación estricta: su metadata se revierte en producción. El bundle ID no se modifica por su posible efecto en autenticación, perfil o updater.
-- Una vía anterior de ICNS, `CFBundleIconFile` y firma ad-hoc se descarta para el comportamiento actual porque puede cambiar la firma, Team ID o designated requirement y comprometer Keychain/safeStorage. La original permanece intacta y las copias legacy no validables quedan excluidas de la topología como donantes.
+- La edición de ICNS/`CFBundleIconFile` exige re-firma. La re-firma controlada fue una alternativa candidata para buscar un icono real, pero HU-0007 no demostró que arranque ni que llegue a producir evidencia visual del Dock en esta configuración. Puede cambiar firma, Team ID o designated requirement y comprometer Keychain/safeStorage o login. La original permanece intacta y las copias legacy no validables quedan excluidas de la topología como donantes.
 
 ## Plan de delegación
 
@@ -126,7 +135,7 @@ Plan pendiente de implementación:
 - Pruebas de caché que cambien el fingerprint y comprueben invalidación.
 - Pruebas de `release:version` para incrementos, versión exacta, entrada inválida, inconsistencias y ausencia de escrituras parciales; prueba de `release:check` ante fuentes iguales y divergentes.
 - Pruebas de contrato y mock para `SystemInfo.appVersion`, build de frontend y verificaciones mínimas de las rutas de plataforma no host.
-- Prueba nativa en macOS sobre bundle/perfil fixture o temporal: baseline y resultado de `codesign --verify --deep --strict`, CDHash/Team ID/designated requirement de proveedor, launch smoke, estado `systemApplied`, icono distinguible en Dock mediante Cua y bytes de perfil sin cambios. La ruta actual debe comprobar que retira la metadata y recupera el baseline; no cuenta como cumplimiento del Dock. Pruebas de rollback y rechazo de copias legacy no confiables como donantes.
+- Prueba nativa en macOS sobre bundle/perfil fixture o temporal: baseline y resultado de `codesign --verify --deep --strict`, CDHash/Team ID/designated requirement de proveedor, launch smoke, estado `systemApplied`, icono distinguible en Dock mediante Cua y bytes de perfil sin cambios. La conservación de bytes no demuestra login ni accesibilidad de datos ligados a Keychain/safeStorage tras una re-firma. La ruta actual debe comprobar que retira la metadata y recupera el baseline; no cuenta como cumplimiento del Dock. Pruebas de rollback y rechazo de copias legacy no confiables como donantes.
 
 Evidencia verificada y pendiente entregada por `architect`:
 
@@ -156,16 +165,23 @@ Evidencia verificada y pendiente entregada por `architect`:
 - 2026-10-12: `document` actualizó la documentación de Dock tras la decisión arquitectónica de usar exclusivamente `NSWorkspace.setIcon` como metadata externa. Las copias legacy re-firmadas ad-hoc siguen excluidas como donantes. La HU permanece en `In Progress` hasta la evidencia nativa y el cierre del arquitecto.
 - 2026-10-13: `architect` confirmó rendimiento y SemVer con build frontend, 11 de 11 pruebas de release y coherencia `0.2.0`; el backend completó 38 pruebas, 1 ignorada y 0 fallos. La prueba ignorada corresponde al spike visual opt-in y no satisface el criterio de aceptación del Dock. Fuera de sandbox, `open -n` abrió el clon temporal con perfil vacío y Cua mostró Sign in; `set_macos_workspace_icon(..., None)` falló en `lib.rs:5895` con «NSWorkspace rechazó el icono personalizado». No se consiguió icono de Dock, no se tocaron perfiles/sesiones reales y no habrá más experimentos de Dock en esta iteración.
 - 2026-10-13: `architect` precisó que `NSWorkspace.setIcon` deja intactos bytes sellados, CDHash, Team ID y designated requirement, pero su metadata FinderInfo/resource fork hace fallar la verificación estricta mientras está presente. Producción la revierte, restaura el baseline y deja `systemApplied=false`; el Dock sigue sin cumplir su criterio.
+- 2026-10-14: el cliente confirmó que `0.2.1` funciona y pidió reanudar el icono de Dock. `architect` documentó que `NSWorkspace.setIcon`, APIs externas de Electron y variables de entorno empaquetadas no resuelven la necesidad. El cliente propuso branding únicamente al crear y antes del primer login, y autorizó HU-0007 para evaluar la re-firma como alternativa candidata. No se experimentó con instancias reales, perfiles, conversaciones ni llavero.
+- 2026-10-14: [HU-0007](HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md) cerró con resultado negativo válido: la re-firma ad-hoc de un clon temporal no produjo proceso validable ni confirmación visual de Dock. La técnica queda rechazada en esta configuración y no habilita producto.
 
 ## Resultado y riesgos residuales
 
 La implementación está en progreso. La optimización elimina trabajo redundante y esperas artificiales, pero no garantiza una latencia fija porque el filesystem, los procesos del proveedor y el copiado físico dependen del equipo y de la plataforma.
 
-La identidad distintiva de Dock no está cumplida. El spike opt-in fuera de sandbox falló porque `NSWorkspace` rechazó el icono personalizado; aunque el clon temporal abrió con un perfil vacío y Cua mostró solo su pantalla Sign in, no hubo evidencia visual de Dock. Root cerró únicamente el proceso fixture validado por ejecutable y `--user-data-dir`; no se tocaron perfiles ni sesiones reales. Producción mantiene `systemApplied=false` y el icono personalizado solo dentro de la UI. La vía de re-firma queda descartada por su riesgo sobre Keychain/safeStorage, y no habrá más experimentos de Dock en esta iteración.
+La identidad distintiva de Dock no está cumplida. HU-0007 evaluó una copia temporal nueva, pero la ejecución directa terminó con señal 9 antes de tener un PID validable y el segundo intento mediante `open -n` falló antes de crear un proceso validable; no se atribuyó causa. El intento de seleccionar el Dock con CUA agotó el tiempo (`-10005`) y no produjo evidencia visual. No se tocaron perfiles ni sesiones reales. Producción mantiene `systemApplied=false` y el icono personalizado solo dentro de la UI.
+
+La re-firma controlada de una copia gestionada detenida fue una alternativa candidata para cambiar ICNS/`Info.plist`, pero HU-0007 la rechazó en la configuración evaluada: no produjo un proceso fixture validable ni confirmación visual de Dock. Además, podría romper Keychain/safeStorage y exigir reautenticación. Aunque no escriba los archivos de perfil o conversación, no garantiza que puedan descifrarse o seguir siendo accesibles. El Dock permanece pendiente por ausencia de una implementación validada, no por falta de respuesta del cliente. No se realizarán experimentos con instancias reales, perfiles, conversaciones o llavero en esta iteración.
+
+HU-0007 descartó la configuración de re-firma ad-hoc evaluada: no produjo un proceso fixture validable ni evidencia visual de Dock. El requisito de Dock de esta HU permanece sin cumplir.
 
 ## Referencias primarias
 
-- Apple: [NSWorkspace.setIcon](https://developer.apple.com/documentation/appkit/nsworkspace/seticon(_:forfile:options:)), [TN2206: macOS Code Signing In Depth](https://developer.apple.com/library/archive/technotes/tn2206/) y [TN3127: Inside Code Signing Requirements](https://developer.apple.com/documentation/technotes/tn3127-inside-code-signing-requirements).
+- Apple: [NSWorkspace.setIcon](https://developer.apple.com/documentation/appkit/nsworkspace/seticon(_:forfile:options:)), [QA1940: resolving Finder information](https://developer.apple.com/library/archive/qa/qa1940/_index.html), [TN2206: macOS Code Signing In Depth](https://developer.apple.com/library/archive/technotes/tn2206/), [TN3127: Inside Code Signing Requirements](https://developer.apple.com/documentation/technotes/tn3127-inside-code-signing-requirements), [NSDockTile](https://developer.apple.com/documentation/appkit/nsdocktile) y [NSRunningApplication.icon](https://developer.apple.com/documentation/appkit/nsrunningapplication/icon).
+- Electron: [Dock.setIcon](https://www.electronjs.org/docs/latest/api/dock/) y [variables de entorno](https://www.electronjs.org/docs/latest/api/environment-variables).
 
 ## Cierre de Graphify
 

@@ -175,8 +175,8 @@
     "semantic_hash": ""
   },
   "docs/hu/index.md": {
-    "mtime": 1791939195.7770793,
-    "ast_hash": "0ea499ecd9c3c63f1458e2d3f0fbc9dd",
+    "mtime": 1792004545.3911633,
+    "ast_hash": "2b2ef42e8621d95a52ad4cbcca5e7e28",
     "semantic_hash": ""
   },
   "index.html": {
@@ -230,8 +230,8 @@
     "semantic_hash": ""
   },
   "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md": {
-    "mtime": 1791894359.7536206,
-    "ast_hash": "db0e5de4b68576d181b09f41dd37e781",
+    "mtime": 1792004656.7795897,
+    "ast_hash": "f7363c42c5d38b5cfe087291ae34fb7a",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
@@ -257,6 +257,16 @@
   "docs/hu/HU-0006-escaneo-automatico-silencioso-y-ciclo-manual-controlado.md": {
     "mtime": 1791939366.4041896,
     "ast_hash": "4501f21c5166b090fa41b0f0a7a58d5f",
+    "semantic_hash": ""
+  },
+  "scripts/hu0007-macos-dock-icon-spike.sh": {
+    "mtime": 1792004617.2091215,
+    "ast_hash": "18e127cf8cefa1860a41e6eefb35a486",
+    "semantic_hash": ""
+  },
+  "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md": {
+    "mtime": 1792027554.1347513,
+    "ast_hash": "3a01af79e234a28994d53575da211b3d",
     "semantic_hash": ""
   }
 }

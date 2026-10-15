@@ -631,6 +631,396 @@
       "norm_label": "normalizemanifest()"
     },
     {
+      "label": "hu0007-macos-dock-icon-spike.sh",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "hu0007-macos-dock-icon-spike.sh"
+    },
+    {
+      "label": "hu0007-macos-dock-icon-spike.sh script",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_sh__entry",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "hu0007-macos-dock-icon-spike.sh script"
+    },
+    {
+      "label": "SCRIPT_NAME",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L5",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_script_name",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "script_name"
+    },
+    {
+      "label": "SOURCE_APP",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L6",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_source_app",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "source_app"
+    },
+    {
+      "label": "REPO_ROOT",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L7",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_repo_root",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "repo_root"
+    },
+    {
+      "label": "REPO_ICON",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L8",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_repo_icon",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "repo_icon"
+    },
+    {
+      "label": "CLONE_NAME",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L9",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_clone_name",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "clone_name"
+    },
+    {
+      "label": "SENTINEL_CONTENT",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L10",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_sentinel_content",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "sentinel_content"
+    },
+    {
+      "label": "json_error()",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L16",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_json_error",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "json_error()"
+    },
+    {
+      "label": "require_macos()",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L26",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_require_macos",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "require_macos()"
+    },
+    {
+      "label": "sha256_file()",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L33",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_sha256_file",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "sha256_file()"
+    },
+    {
+      "label": "bundle_value()",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L37",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_bundle_value",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "bundle_value()"
+    },
+    {
+      "label": "snapshot_bundle()",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L43",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_snapshot_bundle",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "snapshot_bundle()"
+    },
+    {
+      "label": "snapshot_equal()",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L122",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_snapshot_equal",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "snapshot_equal()"
+    },
+    {
+      "label": "clone_processes()",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L137",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_clone_processes",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "clone_processes()"
+    },
+    {
+      "label": "terminate_clone_processes()",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L144",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_terminate_clone_processes",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "terminate_clone_processes()"
+    },
+    {
+      "label": "prepare_failure_cleanup()",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L160",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_prepare_failure_cleanup",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "prepare_failure_cleanup()"
+    },
+    {
+      "label": "validate_state_location()",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L185",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_validate_state_location",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "validate_state_location()"
+    },
+    {
+      "label": "validate_pid()",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L194",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_validate_pid",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "validate_pid()"
+    },
+    {
+      "label": "find_valid_primary_pid()",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L209",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_find_valid_primary_pid",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "find_valid_primary_pid()"
+    },
+    {
+      "label": "write_icon_helper()",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L223",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_write_icon_helper",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "write_icon_helper()"
+    },
+    {
+      "label": "dry_run()",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L249",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_dry_run",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "dry_run()"
+    },
+    {
+      "label": "prepare()",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L279",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_prepare",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "prepare()"
+    },
+    {
+      "label": "cleanup()",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L563",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_cleanup",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "cleanup()"
+    },
+    {
+      "label": "self_test()",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L704",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_self_test",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "self_test()"
+    },
+    {
+      "label": "usage()",
+      "file_type": "code",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L723",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0007_macos_dock_icon_spike_usage",
+      "community": 47,
+      "community_name": "hu0007-macos-dock-icon-spike.sh",
+      "norm_label": "usage()"
+    },
+    {
       "label": "release-version.mjs",
       "file_type": "code",
       "source_file": "scripts/release-version.mjs",
@@ -1044,8 +1434,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "src_tauri_src_lib_registry",
-      "community": 31,
-      "community_name": "system_info_scoped",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "registry"
     },
     {
@@ -1055,8 +1445,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "vec",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "vec"
     },
     {
@@ -1066,8 +1456,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "managedinstance",
-      "community": 31,
-      "community_name": "system_info_scoped",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "managedinstance"
     },
     {
@@ -1077,8 +1467,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "default",
-      "community": 1,
-      "community_name": "String",
+      "community": 55,
+      "community_name": "SessionLinkRegistry",
       "norm_label": "default"
     },
     {
@@ -1088,8 +1478,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "src_tauri_src_lib_registry_default",
-      "community": 1,
-      "community_name": "String",
+      "community": 31,
+      "community_name": "ManagedInstance",
       "norm_label": ".default()"
     },
     {
@@ -1099,8 +1489,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "self",
-      "community": 1,
-      "community_name": "String",
+      "community": 31,
+      "community_name": "ManagedInstance",
       "norm_label": "self"
     },
     {
@@ -1122,7 +1512,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_managedinstance",
       "community": 31,
-      "community_name": "system_info_scoped",
+      "community_name": "ManagedInstance",
       "norm_label": "managedinstance"
     },
     {
@@ -1143,8 +1533,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "option",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "option"
     },
     {
@@ -1155,7 +1545,7 @@
       "_origin": "ast",
       "id": "managedprocessidentity",
       "community": 31,
-      "community_name": "system_info_scoped",
+      "community_name": "ManagedInstance",
       "norm_label": "managedprocessidentity"
     },
     {
@@ -1166,7 +1556,7 @@
       "_origin": "ast",
       "id": "customicon",
       "community": 31,
-      "community_name": "system_info_scoped",
+      "community_name": "ManagedInstance",
       "norm_label": "customicon"
     },
     {
@@ -1177,7 +1567,7 @@
       "_origin": "ast",
       "id": "instancestatus",
       "community": 31,
-      "community_name": "system_info_scoped",
+      "community_name": "ManagedInstance",
       "norm_label": "instancestatus"
     },
     {
@@ -1188,7 +1578,7 @@
       "_origin": "ast",
       "id": "usagestats",
       "community": 31,
-      "community_name": "system_info_scoped",
+      "community_name": "ManagedInstance",
       "norm_label": "usagestats"
     },
     {
@@ -1199,7 +1589,7 @@
       "_origin": "ast",
       "id": "codesession",
       "community": 31,
-      "community_name": "system_info_scoped",
+      "community_name": "ManagedInstance",
       "norm_label": "codesession"
     },
     {
@@ -1209,8 +1599,8 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "src_tauri_src_lib_providerprovenance",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "providerprovenance"
     },
     {
@@ -1221,7 +1611,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_managedprocessidentity",
       "community": 31,
-      "community_name": "system_info_scoped",
+      "community_name": "ManagedInstance",
       "norm_label": "managedprocessidentity"
     },
     {
@@ -1231,8 +1621,8 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "src_tauri_src_lib_customicon",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "customicon"
     },
     {
@@ -1243,7 +1633,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_accountplan",
       "community": 31,
-      "community_name": "system_info_scoped",
+      "community_name": "ManagedInstance",
       "norm_label": "accountplan"
     },
     {
@@ -1253,8 +1643,8 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "src_tauri_src_lib_instancestatus",
-      "community": 45,
-      "community_name": "CodeSession",
+      "community": 50,
+      "community_name": "system_info_scoped",
       "norm_label": "instancestatus"
     },
     {
@@ -1264,8 +1654,8 @@
       "source_location": "L145",
       "_origin": "ast",
       "id": "src_tauri_src_lib_usagestats",
-      "community": 36,
-      "community_name": "Option",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "usagestats"
     },
     {
@@ -1276,7 +1666,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_codesession",
       "community": 45,
-      "community_name": "CodeSession",
+      "community_name": "read_code_sessions",
       "norm_label": "codesession"
     },
     {
@@ -1287,7 +1677,7 @@
       "_origin": "ast",
       "id": "artifactmonitorsummary",
       "community": 45,
-      "community_name": "CodeSession",
+      "community_name": "read_code_sessions",
       "norm_label": "artifactmonitorsummary"
     },
     {
@@ -1298,7 +1688,7 @@
       "_origin": "ast",
       "id": "sessiontransferinfo",
       "community": 45,
-      "community_name": "CodeSession",
+      "community_name": "read_code_sessions",
       "norm_label": "sessiontransferinfo"
     },
     {
@@ -1308,8 +1698,8 @@
       "source_location": "L177",
       "_origin": "ast",
       "id": "src_tauri_src_lib_artifactmonitorsummary",
-      "community": 36,
-      "community_name": "Option",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "artifactmonitorsummary"
     },
     {
@@ -1319,8 +1709,8 @@
       "source_location": "L185",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessiontransfermode",
-      "community": 50,
-      "community_name": "SessionLinkRegistry",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "sessiontransfermode"
     },
     {
@@ -1330,8 +1720,8 @@
       "source_location": "L193",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessiontransferinfo",
-      "community": 50,
-      "community_name": "SessionLinkRegistry",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "sessiontransferinfo"
     },
     {
@@ -1341,8 +1731,8 @@
       "source_location": "L200",
       "_origin": "ast",
       "id": "src_tauri_src_lib_codesessiondocument",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "codesessiondocument"
     },
     {
@@ -1463,7 +1853,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessioncontextsnapshot",
       "community": 45,
-      "community_name": "CodeSession",
+      "community_name": "read_code_sessions",
       "norm_label": "sessioncontextsnapshot"
     },
     {
@@ -1473,8 +1863,8 @@
       "source_location": "L319",
       "_origin": "ast",
       "id": "src_tauri_src_lib_systeminfo",
-      "community": 45,
-      "community_name": "CodeSession",
+      "community": 50,
+      "community_name": "system_info_scoped",
       "norm_label": "systeminfo"
     },
     {
@@ -1484,8 +1874,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "sourceupdateinfo",
-      "community": 45,
-      "community_name": "CodeSession",
+      "community": 50,
+      "community_name": "system_info_scoped",
       "norm_label": "sourceupdateinfo"
     },
     {
@@ -1495,8 +1885,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "versiontopology",
-      "community": 45,
-      "community_name": "CodeSession",
+      "community": 50,
+      "community_name": "system_info_scoped",
       "norm_label": "versiontopology"
     },
     {
@@ -1506,8 +1896,8 @@
       "source_location": "L335",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refreshscope",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "refreshscope"
     },
     {
@@ -1550,7 +1940,7 @@
       "source_location": "L404",
       "_origin": "ast",
       "id": "src_tauri_src_lib_reset_refresh_work_counters",
-      "community": 50,
+      "community": 55,
       "community_name": "SessionLinkRegistry",
       "norm_label": "reset_refresh_work_counters()"
     },
@@ -1627,8 +2017,8 @@
       "source_location": "L430",
       "_origin": "ast",
       "id": "src_tauri_src_lib_runtime_cache",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "runtime_cache()"
     },
     {
@@ -1638,8 +2028,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "mutex",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "mutex"
     },
     {
@@ -1649,8 +2039,8 @@
       "source_location": "L435",
       "_origin": "ast",
       "id": "src_tauri_src_lib_registry_operation_mutex",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "registry_operation_mutex()"
     },
     {
@@ -1660,8 +2050,8 @@
       "source_location": "L440",
       "_origin": "ast",
       "id": "src_tauri_src_lib_with_registry_operation",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "with_registry_operation()"
     },
     {
@@ -1671,8 +2061,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "t",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "t"
     },
     {
@@ -1682,8 +2072,8 @@
       "source_location": "L449",
       "_origin": "ast",
       "id": "src_tauri_src_lib_versiontopology",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "versiontopology"
     },
     {
@@ -1693,8 +2083,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "versionsource",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "versionsource"
     },
     {
@@ -1770,8 +2160,8 @@
       "source_location": "L484",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sourceupdateinfo_default",
-      "community": 1,
-      "community_name": "String",
+      "community": 31,
+      "community_name": "ManagedInstance",
       "norm_label": ".default()"
     },
     {
@@ -1814,8 +2204,8 @@
       "source_location": "L520",
       "_origin": "ast",
       "id": "src_tauri_src_lib_usagesnapshot",
-      "community": 1,
-      "community_name": "String",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "usagesnapshot"
     },
     {
@@ -1836,8 +2226,8 @@
       "source_location": "L534",
       "_origin": "ast",
       "id": "src_tauri_src_lib_originalapplicationupdateresult",
-      "community": 1,
-      "community_name": "String",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "originalapplicationupdateresult"
     },
     {
@@ -1858,8 +2248,8 @@
       "source_location": "L547",
       "_origin": "ast",
       "id": "src_tauri_src_lib_dashboardstate",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "dashboardstate"
     },
     {
@@ -1913,8 +2303,8 @@
       "source_location": "L582",
       "_origin": "ast",
       "id": "src_tauri_src_lib_copycodesessionrequest",
-      "community": 1,
-      "community_name": "String",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "copycodesessionrequest"
     },
     {
@@ -1935,8 +2325,8 @@
       "source_location": "L598",
       "_origin": "ast",
       "id": "src_tauri_src_lib_artifacttransferoutcome",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "artifacttransferoutcome"
     },
     {
@@ -1946,8 +2336,8 @@
       "source_location": "L611",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessiontransferresult",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "sessiontransferresult"
     },
     {
@@ -1968,8 +2358,8 @@
       "source_location": "L625",
       "_origin": "ast",
       "id": "src_tauri_src_lib_synchronizationstatus",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "synchronizationstatus"
     },
     {
@@ -1979,8 +2369,8 @@
       "source_location": "L633",
       "_origin": "ast",
       "id": "src_tauri_src_lib_synchronizationitemresult",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "synchronizationitemresult"
     },
     {
@@ -1990,8 +2380,8 @@
       "source_location": "L643",
       "_origin": "ast",
       "id": "src_tauri_src_lib_synchronizemanagedapplicationsresult",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "synchronizemanagedapplicationsresult"
     },
     {
@@ -2001,8 +2391,8 @@
       "source_location": "L650",
       "_origin": "ast",
       "id": "src_tauri_src_lib_setinstanceiconrequest",
-      "community": 1,
-      "community_name": "String",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "setinstanceiconrequest"
     },
     {
@@ -2012,8 +2402,8 @@
       "source_location": "L657",
       "_origin": "ast",
       "id": "src_tauri_src_lib_unlinkcodesessionrequest",
-      "community": 1,
-      "community_name": "String",
+      "community": 41,
+      "community_name": "copy_code_session_sync",
       "norm_label": "unlinkcodesessionrequest"
     },
     {
@@ -2023,8 +2413,8 @@
       "source_location": "L664",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessiontransfermanifest",
-      "community": 50,
-      "community_name": "SessionLinkRegistry",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "sessiontransfermanifest"
     },
     {
@@ -2034,8 +2424,8 @@
       "source_location": "L683",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessionlink",
-      "community": 50,
-      "community_name": "SessionLinkRegistry",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "sessionlink"
     },
     {
@@ -2045,7 +2435,7 @@
       "source_location": "L695",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessionlinkregistry",
-      "community": 50,
+      "community": 55,
       "community_name": "SessionLinkRegistry",
       "norm_label": "sessionlinkregistry"
     },
@@ -2056,8 +2446,8 @@
       "source_location": "L703",
       "_origin": "ast",
       "id": "src_tauri_src_lib_transferprofile",
-      "community": 45,
-      "community_name": "CodeSession",
+      "community": 50,
+      "community_name": "system_info_scoped",
       "norm_label": "transferprofile"
     },
     {
@@ -2067,7 +2457,7 @@
       "source_location": "L711",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessionlinkregistry_default",
-      "community": 50,
+      "community": 55,
       "community_name": "SessionLinkRegistry",
       "norm_label": ".default()"
     },
@@ -2100,8 +2490,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "apphandle",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "apphandle"
     },
     {
@@ -2177,7 +2567,7 @@
       "source_location": "L851",
       "_origin": "ast",
       "id": "src_tauri_src_lib_apply_session_links",
-      "community": 50,
+      "community": 55,
       "community_name": "SessionLinkRegistry",
       "norm_label": "apply_session_links()"
     },
@@ -2188,7 +2578,7 @@
       "source_location": "L857",
       "_origin": "ast",
       "id": "src_tauri_src_lib_apply_session_links_to_profile",
-      "community": 50,
+      "community": 55,
       "community_name": "SessionLinkRegistry",
       "norm_label": "apply_session_links_to_profile()"
     },
@@ -2221,8 +2611,8 @@
       "source_location": "L901",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sanitize_source_name",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "sanitize_source_name()"
     },
     {
@@ -2232,8 +2622,8 @@
       "source_location": "L907",
       "_origin": "ast",
       "id": "src_tauri_src_lib_readable_source_stem",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "readable_source_stem()"
     },
     {
@@ -2243,8 +2633,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "path",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "path"
     },
     {
@@ -2254,8 +2644,8 @@
       "source_location": "L924",
       "_origin": "ast",
       "id": "src_tauri_src_lib_source_name_from_metadata",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "source_name_from_metadata()"
     },
     {
@@ -2265,8 +2655,8 @@
       "source_location": "L936",
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_bundle_value",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "macos_bundle_value()"
     },
     {
@@ -2276,8 +2666,8 @@
       "source_location": "L950",
       "_origin": "ast",
       "id": "src_tauri_src_lib_linux_desktop_name",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "linux_desktop_name()"
     },
     {
@@ -2287,8 +2677,8 @@
       "source_location": "L967",
       "_origin": "ast",
       "id": "src_tauri_src_lib_source_display_name",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "source_display_name()"
     },
     {
@@ -2320,8 +2710,8 @@
       "source_location": "L1046",
       "_origin": "ast",
       "id": "src_tauri_src_lib_detect_provider_source",
-      "community": 31,
-      "community_name": "system_info_scoped",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "detect_provider_source()"
     },
     {
@@ -2331,7 +2721,7 @@
       "source_location": "L1104",
       "_origin": "ast",
       "id": "src_tauri_src_lib_detect_original_profile",
-      "community": 31,
+      "community": 50,
       "community_name": "system_info_scoped",
       "norm_label": "detect_original_profile()"
     },
@@ -2342,7 +2732,7 @@
       "source_location": "L1146",
       "_origin": "ast",
       "id": "src_tauri_src_lib_original_instance_status_with_inventory",
-      "community": 31,
+      "community": 50,
       "community_name": "system_info_scoped",
       "norm_label": "original_instance_status_with_inventory()"
     },
@@ -2353,7 +2743,7 @@
       "source_location": "L1160",
       "_origin": "ast",
       "id": "src_tauri_src_lib_resolve_transfer_profile",
-      "community": 31,
+      "community": 50,
       "community_name": "system_info_scoped",
       "norm_label": "resolve_transfer_profile()"
     },
@@ -2365,7 +2755,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_provider_executable",
       "community": 31,
-      "community_name": "system_info_scoped",
+      "community_name": "ManagedInstance",
       "norm_label": "provider_executable()"
     },
     {
@@ -2375,8 +2765,8 @@
       "source_location": "L1202",
       "_origin": "ast",
       "id": "src_tauri_src_lib_linux_provider_installation",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "linux_provider_installation()"
     },
     {
@@ -2386,8 +2776,8 @@
       "source_location": "L1217",
       "_origin": "ast",
       "id": "src_tauri_src_lib_normalize_linux_version",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "normalize_linux_version()"
     },
     {
@@ -2419,8 +2809,8 @@
       "source_location": "L1351",
       "_origin": "ast",
       "id": "src_tauri_src_lib_metadata_stamp",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "metadata_stamp()"
     },
     {
@@ -2430,8 +2820,8 @@
       "source_location": "L1366",
       "_origin": "ast",
       "id": "src_tauri_src_lib_application_fingerprint",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "application_fingerprint()"
     },
     {
@@ -2463,8 +2853,8 @@
       "source_location": "L1433",
       "_origin": "ast",
       "id": "src_tauri_src_lib_invalidate_managed_bytes_cache",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "invalidate_managed_bytes_cache()"
     },
     {
@@ -2474,8 +2864,8 @@
       "source_location": "L1439",
       "_origin": "ast",
       "id": "src_tauri_src_lib_version_parts",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "version_parts()"
     },
     {
@@ -2485,8 +2875,8 @@
       "source_location": "L1447",
       "_origin": "ast",
       "id": "src_tauri_src_lib_version_is_newer",
-      "community": 1,
-      "community_name": "String",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "version_is_newer()"
     },
     {
@@ -2496,8 +2886,8 @@
       "source_location": "L1463",
       "_origin": "ast",
       "id": "src_tauri_src_lib_versions_equal",
-      "community": 1,
-      "community_name": "String",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "versions_equal()"
     },
     {
@@ -2518,8 +2908,8 @@
       "source_location": "L1478",
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_team_identifier",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "macos_team_identifier()"
     },
     {
@@ -2529,8 +2919,8 @@
       "source_location": "L1494",
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_code_hash",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "macos_code_hash()"
     },
     {
@@ -2540,8 +2930,8 @@
       "source_location": "L1510",
       "_origin": "ast",
       "id": "src_tauri_src_lib_validate_provider_identity_uncached",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "validate_provider_identity_uncached()"
     },
     {
@@ -2551,8 +2941,8 @@
       "source_location": "L1535",
       "_origin": "ast",
       "id": "src_tauri_src_lib_windows_signer_subject",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "windows_signer_subject()"
     },
     {
@@ -2562,8 +2952,8 @@
       "source_location": "L1575",
       "_origin": "ast",
       "id": "src_tauri_src_lib_validate_provider_identity",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "validate_provider_identity()"
     },
     {
@@ -2573,8 +2963,8 @@
       "source_location": "L1595",
       "_origin": "ast",
       "id": "src_tauri_src_lib_fingerprint_label",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "fingerprint_label()"
     },
     {
@@ -2584,8 +2974,8 @@
       "source_location": "L1604",
       "_origin": "ast",
       "id": "src_tauri_src_lib_validate_managed_provenance",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "validate_managed_provenance()"
     },
     {
@@ -2639,8 +3029,8 @@
       "source_location": "L1830",
       "_origin": "ast",
       "id": "src_tauri_src_lib_update_feed_target",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "update_feed_target()"
     },
     {
@@ -2727,8 +3117,8 @@
       "source_location": "L2023",
       "_origin": "ast",
       "id": "src_tauri_src_lib_copy_provider_application",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "copy_provider_application()"
     },
     {
@@ -2738,8 +3128,8 @@
       "source_location": "L2114",
       "_origin": "ast",
       "id": "src_tauri_src_lib_instance_bundle_name",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "instance_bundle_name()"
     },
     {
@@ -2749,8 +3139,8 @@
       "source_location": "L2133",
       "_origin": "ast",
       "id": "src_tauri_src_lib_personalize_application_path",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "personalize_application_path()"
     },
     {
@@ -2782,8 +3172,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "uuid",
-      "community": 1,
-      "community_name": "String",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "uuid"
     },
     {
@@ -2793,8 +3183,8 @@
       "source_location": "L2214",
       "_origin": "ast",
       "id": "src_tauri_src_lib_read_usage",
-      "community": 36,
-      "community_name": "Option",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "read_usage()"
     },
     {
@@ -2805,7 +3195,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_clean_session_text",
       "community": 45,
-      "community_name": "CodeSession",
+      "community_name": "read_code_sessions",
       "norm_label": "clean_session_text()"
     },
     {
@@ -2827,7 +3217,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_parse_code_session",
       "community": 45,
-      "community_name": "CodeSession",
+      "community_name": "read_code_sessions",
       "norm_label": "parse_code_session()"
     },
     {
@@ -2837,8 +3227,8 @@
       "source_location": "L2284",
       "_origin": "ast",
       "id": "src_tauri_src_lib_clean_monitor_state",
-      "community": 36,
-      "community_name": "Option",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "clean_monitor_state()"
     },
     {
@@ -2848,8 +3238,8 @@
       "source_location": "L2295",
       "_origin": "ast",
       "id": "src_tauri_src_lib_latest_artifact_monitor",
-      "community": 36,
-      "community_name": "Option",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "latest_artifact_monitor()"
     },
     {
@@ -2915,7 +3305,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_latest_transcript_context",
       "community": 45,
-      "community_name": "CodeSession",
+      "community_name": "read_code_sessions",
       "norm_label": "latest_transcript_context()"
     },
     {
@@ -2925,8 +3315,8 @@
       "source_location": "L2546",
       "_origin": "ast",
       "id": "src_tauri_src_lib_apply_session_context",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 45,
+      "community_name": "read_code_sessions",
       "norm_label": "apply_session_context()"
     },
     {
@@ -2936,8 +3326,8 @@
       "source_location": "L2572",
       "_origin": "ast",
       "id": "src_tauri_src_lib_read_code_sessions",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 45,
+      "community_name": "read_code_sessions",
       "norm_label": "read_code_sessions()"
     },
     {
@@ -2980,8 +3370,8 @@
       "source_location": "L2658",
       "_origin": "ast",
       "id": "src_tauri_src_lib_find_file_named",
-      "community": 36,
-      "community_name": "Option",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "find_file_named()"
     },
     {
@@ -2991,8 +3381,8 @@
       "source_location": "L2683",
       "_origin": "ast",
       "id": "src_tauri_src_lib_atomic_replace_file",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "atomic_replace_file()"
     },
     {
@@ -3002,8 +3392,8 @@
       "source_location": "L2715",
       "_origin": "ast",
       "id": "src_tauri_src_lib_restore_optional_file",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "restore_optional_file()"
     },
     {
@@ -3013,7 +3403,7 @@
       "source_location": "L2723",
       "_origin": "ast",
       "id": "src_tauri_src_lib_update_session_links_after_transfer",
-      "community": 50,
+      "community": 55,
       "community_name": "SessionLinkRegistry",
       "norm_label": "update_session_links_after_transfer()"
     },
@@ -3024,8 +3414,8 @@
       "source_location": "L2792",
       "_origin": "ast",
       "id": "src_tauri_src_lib_rollback_transfer_target",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "rollback_transfer_target()"
     },
     {
@@ -3068,8 +3458,8 @@
       "source_location": "L2875",
       "_origin": "ast",
       "id": "src_tauri_src_lib_artifact_export_roots",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "artifact_export_roots()"
     },
     {
@@ -3090,8 +3480,8 @@
       "source_location": "L2897",
       "_origin": "ast",
       "id": "src_tauri_src_lib_collect_opaque_artifact_files",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "collect_opaque_artifact_files()"
     },
     {
@@ -3101,8 +3491,8 @@
       "source_location": "L2957",
       "_origin": "ast",
       "id": "src_tauri_src_lib_export_local_artifacts",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "export_local_artifacts()"
     },
     {
@@ -3146,7 +3536,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_process_is_alive",
       "community": 31,
-      "community_name": "system_info_scoped",
+      "community_name": "ManagedInstance",
       "norm_label": "process_is_alive()"
     },
     {
@@ -3157,7 +3547,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_process_fingerprint",
       "community": 31,
-      "community_name": "system_info_scoped",
+      "community_name": "ManagedInstance",
       "norm_label": "process_fingerprint()"
     },
     {
@@ -3167,8 +3557,8 @@
       "source_location": "L3409",
       "_origin": "ast",
       "id": "src_tauri_src_lib_processinventoryentry",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 50,
+      "community_name": "system_info_scoped",
       "norm_label": "processinventoryentry"
     },
     {
@@ -3178,8 +3568,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "osstring",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 50,
+      "community_name": "system_info_scoped",
       "norm_label": "osstring"
     },
     {
@@ -3189,7 +3579,7 @@
       "source_location": "L3416",
       "_origin": "ast",
       "id": "src_tauri_src_lib_processinventory",
-      "community": 31,
+      "community": 50,
       "community_name": "system_info_scoped",
       "norm_label": "processinventory"
     },
@@ -3200,8 +3590,8 @@
       "source_location": "L3421",
       "_origin": "ast",
       "id": "src_tauri_src_lib_processinventory_capture",
-      "community": 1,
-      "community_name": "String",
+      "community": 31,
+      "community_name": "ManagedInstance",
       "norm_label": ".capture()"
     },
     {
@@ -3211,8 +3601,8 @@
       "source_location": "L3447",
       "_origin": "ast",
       "id": "src_tauri_src_lib_processinventory_start_time",
-      "community": 1,
-      "community_name": "String",
+      "community": 31,
+      "community_name": "ManagedInstance",
       "norm_label": ".start_time()"
     },
     {
@@ -3222,7 +3612,7 @@
       "source_location": "L3454",
       "_origin": "ast",
       "id": "src_tauri_src_lib_processinventory_application_is_running",
-      "community": 31,
+      "community": 50,
       "community_name": "system_info_scoped",
       "norm_label": ".application_is_running()"
     },
@@ -3234,7 +3624,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_process_snapshot",
       "community": 31,
-      "community_name": "system_info_scoped",
+      "community_name": "ManagedInstance",
       "norm_label": "process_snapshot()"
     },
     {
@@ -3245,7 +3635,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_identity_matches_instance",
       "community": 31,
-      "community_name": "system_info_scoped",
+      "community_name": "ManagedInstance",
       "norm_label": "identity_matches_instance()"
     },
     {
@@ -3256,7 +3646,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_refresh_process_identity",
       "community": 31,
-      "community_name": "system_info_scoped",
+      "community_name": "ManagedInstance",
       "norm_label": "refresh_process_identity()"
     },
     {
@@ -3277,8 +3667,8 @@
       "source_location": "L3563",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refresh_instance_bundle_names",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "refresh_instance_bundle_names()"
     },
     {
@@ -3299,8 +3689,8 @@
       "source_location": "L3600",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refresh_instance_versions",
-      "community": 1,
-      "community_name": "String",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "refresh_instance_versions()"
     },
     {
@@ -3310,8 +3700,8 @@
       "source_location": "L3611",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refresh_instance_usage",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "refresh_instance_usage()"
     },
     {
@@ -3343,7 +3733,7 @@
       "source_location": "L3648",
       "_origin": "ast",
       "id": "src_tauri_src_lib_system_info_scoped",
-      "community": 31,
+      "community": 50,
       "community_name": "system_info_scoped",
       "norm_label": "system_info_scoped()"
     },
@@ -3354,8 +3744,8 @@
       "source_location": "L3729",
       "_origin": "ast",
       "id": "src_tauri_src_lib_dashboard_from_scope",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "dashboard_from_scope()"
     },
     {
@@ -3365,8 +3755,8 @@
       "source_location": "L3736",
       "_origin": "ast",
       "id": "src_tauri_src_lib_dashboard_from_scope_unlocked",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "dashboard_from_scope_unlocked()"
     },
     {
@@ -3376,8 +3766,8 @@
       "source_location": "L3775",
       "_origin": "ast",
       "id": "src_tauri_src_lib_dashboard_from_scope_async",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "dashboard_from_scope_async()"
     },
     {
@@ -3387,8 +3777,8 @@
       "source_location": "L3786",
       "_origin": "ast",
       "id": "src_tauri_src_lib_get_dashboard_state",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "get_dashboard_state()"
     },
     {
@@ -3409,8 +3799,8 @@
       "source_location": "L3800",
       "_origin": "ast",
       "id": "src_tauri_src_lib_get_live_usage",
-      "community": 1,
-      "community_name": "String",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "get_live_usage()"
     },
     {
@@ -3420,8 +3810,8 @@
       "source_location": "L3809",
       "_origin": "ast",
       "id": "src_tauri_src_lib_get_live_usage_sync",
-      "community": 1,
-      "community_name": "String",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "get_live_usage_sync()"
     },
     {
@@ -3431,8 +3821,8 @@
       "source_location": "L3833",
       "_origin": "ast",
       "id": "src_tauri_src_lib_scan_system",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "scan_system()"
     },
     {
@@ -3442,8 +3832,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "webviewwindow",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "webviewwindow"
     },
     {
@@ -3453,8 +3843,8 @@
       "source_location": "L3841",
       "_origin": "ast",
       "id": "src_tauri_src_lib_scan_system_sync",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "scan_system_sync()"
     },
     {
@@ -3464,8 +3854,8 @@
       "source_location": "L3897",
       "_origin": "ast",
       "id": "src_tauri_src_lib_create_instance",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "create_instance()"
     },
     {
@@ -3475,8 +3865,8 @@
       "source_location": "L3913",
       "_origin": "ast",
       "id": "src_tauri_src_lib_update_instance_application",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "update_instance_application()"
     },
     {
@@ -3508,8 +3898,8 @@
       "source_location": "L4101",
       "_origin": "ast",
       "id": "src_tauri_src_lib_synchronize_managed_applications",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "synchronize_managed_applications()"
     },
     {
@@ -3530,8 +3920,8 @@
       "source_location": "L4271",
       "_origin": "ast",
       "id": "src_tauri_src_lib_copy_code_session",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "copy_code_session()"
     },
     {
@@ -3541,8 +3931,8 @@
       "source_location": "L4294",
       "_origin": "ast",
       "id": "src_tauri_src_lib_unlink_code_session",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "unlink_code_session()"
     },
     {
@@ -3563,8 +3953,8 @@
       "source_location": "L4372",
       "_origin": "ast",
       "id": "src_tauri_src_lib_update_instance",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "update_instance()"
     },
     {
@@ -3585,8 +3975,8 @@
       "source_location": "L4409",
       "_origin": "ast",
       "id": "src_tauri_src_lib_launch_instance",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "launch_instance()"
     },
     {
@@ -3596,8 +3986,8 @@
       "source_location": "L4419",
       "_origin": "ast",
       "id": "src_tauri_src_lib_launch_instance_sync",
-      "community": 1,
-      "community_name": "String",
+      "community": 31,
+      "community_name": "ManagedInstance",
       "norm_label": "launch_instance_sync()"
     },
     {
@@ -3607,8 +3997,8 @@
       "source_location": "L4489",
       "_origin": "ast",
       "id": "src_tauri_src_lib_stop_instance",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "stop_instance()"
     },
     {
@@ -3618,8 +4008,8 @@
       "source_location": "L4497",
       "_origin": "ast",
       "id": "src_tauri_src_lib_process_start_time",
-      "community": 1,
-      "community_name": "String",
+      "community": 31,
+      "community_name": "ManagedInstance",
       "norm_label": "process_start_time()"
     },
     {
@@ -3629,8 +4019,8 @@
       "source_location": "L4501",
       "_origin": "ast",
       "id": "src_tauri_src_lib_spawn_process_reaper",
-      "community": 1,
-      "community_name": "String",
+      "community": 31,
+      "community_name": "ManagedInstance",
       "norm_label": "spawn_process_reaper()"
     },
     {
@@ -3640,8 +4030,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "child",
-      "community": 1,
-      "community_name": "String",
+      "community": 31,
+      "community_name": "ManagedInstance",
       "norm_label": "child"
     },
     {
@@ -3651,8 +4041,8 @@
       "source_location": "L4514",
       "_origin": "ast",
       "id": "src_tauri_src_lib_wait_until_instance_stops",
-      "community": 1,
-      "community_name": "String",
+      "community": 31,
+      "community_name": "ManagedInstance",
       "norm_label": "wait_until_instance_stops()"
     },
     {
@@ -3662,8 +4052,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "duration",
-      "community": 1,
-      "community_name": "String",
+      "community": 31,
+      "community_name": "ManagedInstance",
       "norm_label": "duration"
     },
     {
@@ -3674,7 +4064,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_signal_instance_processes",
       "community": 31,
-      "community_name": "system_info_scoped",
+      "community_name": "ManagedInstance",
       "norm_label": "signal_instance_processes()"
     },
     {
@@ -3706,8 +4096,8 @@
       "source_location": "L4710",
       "_origin": "ast",
       "id": "src_tauri_src_lib_clone_directory",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "clone_directory()"
     },
     {
@@ -3717,8 +4107,8 @@
       "source_location": "L4740",
       "_origin": "ast",
       "id": "src_tauri_src_lib_set_macos_workspace_icon",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "set_macos_workspace_icon()"
     },
     {
@@ -3728,8 +4118,8 @@
       "source_location": "L4856",
       "_origin": "ast",
       "id": "src_tauri_src_lib_apply_macos_custom_icon",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "apply_macos_custom_icon()"
     },
     {
@@ -3739,8 +4129,8 @@
       "source_location": "L4928",
       "_origin": "ast",
       "id": "src_tauri_src_lib_macosupdatebrandingoutcome",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "macosupdatebrandingoutcome"
     },
     {
@@ -3750,8 +4140,8 @@
       "source_location": "L4935",
       "_origin": "ast",
       "id": "src_tauri_src_lib_apply_macos_branding_after_update",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "apply_macos_branding_after_update()"
     },
     {
@@ -3761,8 +4151,8 @@
       "source_location": "L4991",
       "_origin": "ast",
       "id": "src_tauri_src_lib_restore_macos_workspace_icon_after_failure",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "restore_macos_workspace_icon_after_failure()"
     },
     {
@@ -3772,8 +4162,8 @@
       "source_location": "L5004",
       "_origin": "ast",
       "id": "src_tauri_src_lib_clear_macos_custom_icon",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "clear_macos_custom_icon()"
     },
     {
@@ -3805,8 +4195,8 @@
       "source_location": "L5090",
       "_origin": "ast",
       "id": "src_tauri_src_lib_set_instance_icon",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "set_instance_icon()"
     },
     {
@@ -3827,8 +4217,8 @@
       "source_location": "L5228",
       "_origin": "ast",
       "id": "src_tauri_src_lib_clear_instance_icon",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "clear_instance_icon()"
     },
     {
@@ -3871,8 +4261,8 @@
       "source_location": "L5421",
       "_origin": "ast",
       "id": "src_tauri_src_lib_delete_instance",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "AppHandle",
       "norm_label": "delete_instance()"
     },
     {
@@ -3893,7 +4283,7 @@
       "source_location": "L5469",
       "_origin": "ast",
       "id": "src_tauri_src_lib_run",
-      "community": 50,
+      "community": 55,
       "community_name": "SessionLinkRegistry",
       "norm_label": "run()"
     },
@@ -3904,8 +4294,8 @@
       "source_location": "L5503",
       "_origin": "ast",
       "id": "src_tauri_src_lib_test_instance",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 31,
+      "community_name": "ManagedInstance",
       "norm_label": "test_instance()"
     },
     {
@@ -3915,8 +4305,8 @@
       "source_location": "L5531",
       "_origin": "ast",
       "id": "src_tauri_src_lib_macossignaturesnapshot",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "macossignaturesnapshot"
     },
     {
@@ -3926,8 +4316,8 @@
       "source_location": "L5543",
       "_origin": "ast",
       "id": "src_tauri_src_lib_normalized_codesign_diagnostic",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "normalized_codesign_diagnostic()"
     },
     {
@@ -3937,8 +4327,8 @@
       "source_location": "L5559",
       "_origin": "ast",
       "id": "src_tauri_src_lib_codesign_verification",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "codesign_verification()"
     },
     {
@@ -3948,8 +4338,8 @@
       "source_location": "L5573",
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_designated_requirement",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "macos_designated_requirement()"
     },
     {
@@ -3959,8 +4349,8 @@
       "source_location": "L5589",
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_signature_snapshot",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "macos_signature_snapshot()"
     },
     {
@@ -3970,7 +4360,7 @@
       "source_location": "L5605",
       "_origin": "ast",
       "id": "src_tauri_src_lib_light_refresh_executes_one_inventory_and_skips_expensive_work",
-      "community": 50,
+      "community": 55,
       "community_name": "SessionLinkRegistry",
       "norm_label": "light_refresh_executes_one_inventory_and_skips_expensive_work()"
     },
@@ -3992,8 +4382,8 @@
       "source_location": "L5649",
       "_origin": "ast",
       "id": "src_tauri_src_lib_write_signed_fixture_bundle",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "write_signed_fixture_bundle()"
     },
     {
@@ -4003,8 +4393,8 @@
       "source_location": "L5713",
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_branding_fixture_verifies_launches_and_preserves_profile_bytes",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "macos_branding_fixture_verifies_launches_and_preserves_profile_bytes()"
     },
     {
@@ -4014,8 +4404,8 @@
       "source_location": "L5765",
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_update_keeps_new_bundle_when_workspace_icon_is_strict_incompatible",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "macos_update_keeps_new_bundle_when_workspace_icon_is_strict_incompatible()"
     },
     {
@@ -4025,8 +4415,8 @@
       "source_location": "L5808",
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_ui_only_icon_rollback_clears_workspace_metadata",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "macos_ui_only_icon_rollback_clears_workspace_metadata()"
     },
     {
@@ -4036,8 +4426,8 @@
       "source_location": "L5839",
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_provider_clone_dock_visual_spike",
-      "community": 36,
-      "community_name": "Option",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "macos_provider_clone_dock_visual_spike()"
     },
     {
@@ -4070,7 +4460,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_process_fingerprint_binds_application_and_exact_profile_argument",
       "community": 31,
-      "community_name": "system_info_scoped",
+      "community_name": "ManagedInstance",
       "norm_label": "process_fingerprint_binds_application_and_exact_profile_argument()"
     },
     {
@@ -4091,8 +4481,8 @@
       "source_location": "L5966",
       "_origin": "ast",
       "id": "src_tauri_src_lib_artifact_export_rejects_symlinks_and_depth_escapes",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "artifact_export_rejects_symlinks_and_depth_escapes()"
     },
     {
@@ -4113,8 +4503,8 @@
       "source_location": "L6000",
       "_origin": "ast",
       "id": "src_tauri_src_lib_custom_icon_contract_does_not_modify_the_application_path",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 31,
+      "community_name": "ManagedInstance",
       "norm_label": "custom_icon_contract_does_not_modify_the_application_path()"
     },
     {
@@ -4169,7 +4559,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_parses_only_safe_code_session_fields",
       "community": 45,
-      "community_name": "CodeSession",
+      "community_name": "read_code_sessions",
       "norm_label": "parses_only_safe_code_session_fields()"
     },
     {
@@ -4201,8 +4591,8 @@
       "source_location": "L6173",
       "_origin": "ast",
       "id": "src_tauri_src_lib_summarizes_artifact_monitors_without_exposing_identifiers_or_content",
-      "community": 36,
-      "community_name": "Option",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "summarizes_artifact_monitors_without_exposing_identifiers_or_content()"
     },
     {
@@ -4213,7 +4603,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_reads_latest_main_context_without_exposing_transcript_content",
       "community": 45,
-      "community_name": "CodeSession",
+      "community_name": "read_code_sessions",
       "norm_label": "reads_latest_main_context_without_exposing_transcript_content()"
     },
     {
@@ -4234,8 +4624,8 @@
       "source_location": "L6249",
       "_origin": "ast",
       "id": "src_tauri_src_lib_applies_the_latest_model_context_and_clamps_percentage",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 45,
+      "community_name": "read_code_sessions",
       "norm_label": "applies_the_latest_model_context_and_clamps_percentage()"
     },
     {
@@ -4256,8 +4646,8 @@
       "source_location": "L6308",
       "_origin": "ast",
       "id": "src_tauri_src_lib_recognizes_the_official_linux_electron_layout_through_a_symlink",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "recognizes_the_official_linux_electron_layout_through_a_symlink()"
     },
     {
@@ -4268,7 +4658,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_clears_context_after_compaction_until_the_next_response",
       "community": 45,
-      "community_name": "CodeSession",
+      "community_name": "read_code_sessions",
       "norm_label": "clears_context_after_compaction_until_the_next_response()"
     },
     {
@@ -4278,8 +4668,8 @@
       "source_location": "L6359",
       "_origin": "ast",
       "id": "src_tauri_src_lib_atomically_creates_and_replaces_session_index",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "atomically_creates_and_replaces_session_index()"
     },
     {
@@ -4322,8 +4712,8 @@
       "source_location": "L6421",
       "_origin": "ast",
       "id": "src_tauri_src_lib_reads_complete_usage_samples_and_rejects_partial_files",
-      "community": 36,
-      "community_name": "Option",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "reads_complete_usage_samples_and_rejects_partial_files()"
     },
     {
@@ -4333,8 +4723,8 @@
       "source_location": "L6443",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refresh_usage_keeps_the_last_good_snapshot_on_partial_data",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "refresh_usage_keeps_the_last_good_snapshot_on_partial_data()"
     },
     {
@@ -4366,7 +4756,7 @@
       "source_location": "L6503",
       "_origin": "ast",
       "id": "src_tauri_src_lib_tracks_copy_move_and_return_session_lineage",
-      "community": 50,
+      "community": 55,
       "community_name": "SessionLinkRegistry",
       "norm_label": "tracks_copy_move_and_return_session_lineage()"
     },
@@ -4388,7 +4778,7 @@
       "source_location": "L6626",
       "_origin": "ast",
       "id": "src_tauri_src_lib_annotates_a_session_linked_inside_the_original_app",
-      "community": 50,
+      "community": 55,
       "community_name": "SessionLinkRegistry",
       "norm_label": "annotates_a_session_linked_inside_the_original_app()"
     },
@@ -6643,7 +7033,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "agents_roles_readme",
-      "community": 19,
+      "community": 57,
       "community_name": "README.md",
       "norm_label": "roles/readme.md"
     },
@@ -6654,7 +7044,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "agents_roles_readme_agentes_de_desarrollo",
-      "community": 19,
+      "community": 57,
       "community_name": "README.md",
       "norm_label": "agentes de desarrollo"
     },
@@ -7149,7 +7539,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "contributing",
-      "community": 19,
+      "community": 57,
       "community_name": "README.md",
       "norm_label": "contributing.md"
     },
@@ -7314,7 +7704,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "readme",
-      "community": 19,
+      "community": 57,
       "community_name": "README.md",
       "norm_label": "readme.md"
     },
@@ -7513,7 +7903,7 @@
       "_origin": "ast",
       "id": "docs_actualizaciones_document",
       "community": 19,
-      "community_name": "README.md",
+      "community_name": "actualizaciones.document.md",
       "norm_label": "actualizaciones.document.md"
     },
     {
@@ -7633,7 +8023,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_agents_document",
-      "community": 19,
+      "community": 57,
       "community_name": "README.md",
       "norm_label": "agents.document.md"
     },
@@ -7721,7 +8111,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_graphify_document",
-      "community": 19,
+      "community": 57,
       "community_name": "README.md",
       "norm_label": "graphify.document.md"
     },
@@ -7809,8 +8199,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_hu_hu_0001_integracion_graphify_y_agentes",
-      "community": 19,
-      "community_name": "README.md",
+      "community": 20,
+      "community_name": "HU-0001 \u2014 Integrar Graphify y agentes especializados",
       "norm_label": "hu-0001-integracion-graphify-y-agentes.md"
     },
     {
@@ -7997,7 +8387,7 @@
       "_origin": "ast",
       "id": "docs_hu_hu_0002_actualizar_aplicacion_original_y_metadatos_por_modelo_y_proveedor",
       "community": 19,
-      "community_name": "README.md",
+      "community_name": "actualizaciones.document.md",
       "norm_label": "hu-0002-actualizar-aplicacion-original-y-metadatos-por-modelo-y-proveedor.md"
     },
     {
@@ -8239,7 +8629,7 @@
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo",
       "community": 19,
-      "community_name": "README.md",
+      "community_name": "actualizaciones.document.md",
       "norm_label": "hu-0003-transferencias-conscientes-de-artefactos-actualizacion-disponible-y-uso-en-vivo.md"
     },
     {
@@ -8481,7 +8871,7 @@
       "_origin": "ast",
       "id": "docs_hu_hu_0004_sincronizacion_desde_la_instancia_mas_reciente_cierre_robusto_artefactos_locales_e_identidad_visual",
       "community": 19,
-      "community_name": "README.md",
+      "community_name": "actualizaciones.document.md",
       "norm_label": "hu-0004-sincronizacion-desde-la-instancia-mas-reciente-cierre-robusto-artefactos-locales-e-identidad-visual.md"
     },
     {
@@ -8722,8 +9112,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver",
-      "community": 49,
-      "community_name": "Rendimiento del dashboard",
+      "community": 56,
+      "community_name": "index.md",
       "norm_label": "hu-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md"
     },
     {
@@ -8785,7 +9175,7 @@
       "label": "Alcance",
       "file_type": "document",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L34",
+      "source_location": "L35",
       "_origin": "ast",
       "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_alcance",
       "community": 40,
@@ -8796,7 +9186,7 @@
       "label": "Respuesta y refresco incremental",
       "file_type": "document",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L36",
+      "source_location": "L37",
       "_origin": "ast",
       "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_respuesta_y_refresco_incremental",
       "community": 40,
@@ -8807,7 +9197,7 @@
       "label": "Versionado SemVer",
       "file_type": "document",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L47",
+      "source_location": "L48",
       "_origin": "ast",
       "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_versionado_semver",
       "community": 40,
@@ -8818,7 +9208,7 @@
       "label": "Icono distintivo en Dock de macOS",
       "file_type": "document",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L56",
+      "source_location": "L57",
       "_origin": "ast",
       "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_icono_distintivo_en_dock_de_macos",
       "community": 40,
@@ -8826,10 +9216,21 @@
       "norm_label": "icono distintivo en dock de macos"
     },
     {
+      "label": "Decisi\u00f3n pendiente para el Dock",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
+      "source_location": "L66",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_decisi\u00f3n_pendiente_para_el_dock",
+      "community": 40,
+      "community_name": "HU-0005 \u2014 Recuperar la respuesta de la interfaz y establecer versionado SemVer",
+      "norm_label": "decision pendiente para el dock"
+    },
+    {
       "label": "Fuera de alcance",
       "file_type": "document",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L65",
+      "source_location": "L74",
       "_origin": "ast",
       "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_fuera_de_alcance",
       "community": 40,
@@ -8840,7 +9241,7 @@
       "label": "Criterios de aceptaci\u00f3n",
       "file_type": "document",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L73",
+      "source_location": "L82",
       "_origin": "ast",
       "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_criterios_de_aceptaci\u00f3n",
       "community": 40,
@@ -8851,7 +9252,7 @@
       "label": "Dise\u00f1o t\u00e9cnico y contratos",
       "file_type": "document",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L92",
+      "source_location": "L101",
       "_origin": "ast",
       "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_dise\u00f1o_t\u00e9cnico_y_contratos",
       "community": 40,
@@ -8862,7 +9263,7 @@
       "label": "Casos l\u00edmite, privacidad y plataformas",
       "file_type": "document",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L103",
+      "source_location": "L112",
       "_origin": "ast",
       "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_casos_l\u00edmite_privacidad_y_plataformas",
       "community": 40,
@@ -8873,7 +9274,7 @@
       "label": "Plan de delegaci\u00f3n",
       "file_type": "document",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L114",
+      "source_location": "L123",
       "_origin": "ast",
       "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_plan_de_delegaci\u00f3n",
       "community": 40,
@@ -8884,7 +9285,7 @@
       "label": "Plan y resultado de pruebas",
       "file_type": "document",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L120",
+      "source_location": "L129",
       "_origin": "ast",
       "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_plan_y_resultado_de_pruebas",
       "community": 40,
@@ -8895,7 +9296,7 @@
       "label": "Documentaci\u00f3n afectada",
       "file_type": "document",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L141",
+      "source_location": "L150",
       "_origin": "ast",
       "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_documentaci\u00f3n_afectada",
       "community": 40,
@@ -8906,7 +9307,7 @@
       "label": "Bit\u00e1cora de implementaci\u00f3n",
       "file_type": "document",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L150",
+      "source_location": "L159",
       "_origin": "ast",
       "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_bit\u00e1cora_de_implementaci\u00f3n",
       "community": 40,
@@ -8917,7 +9318,7 @@
       "label": "Resultado y riesgos residuales",
       "file_type": "document",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L160",
+      "source_location": "L171",
       "_origin": "ast",
       "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_resultado_y_riesgos_residuales",
       "community": 40,
@@ -8928,7 +9329,7 @@
       "label": "Referencias primarias",
       "file_type": "document",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L166",
+      "source_location": "L181",
       "_origin": "ast",
       "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_referencias_primarias",
       "community": 40,
@@ -8939,7 +9340,7 @@
       "label": "Cierre de Graphify",
       "file_type": "document",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L170",
+      "source_location": "L186",
       "_origin": "ast",
       "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_cierre_de_graphify",
       "community": 40,
@@ -8953,8 +9354,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_hu_hu_0006_escaneo_automatico_silencioso_y_ciclo_manual_controlado",
-      "community": 49,
-      "community_name": "Rendimiento del dashboard",
+      "community": 56,
+      "community_name": "index.md",
       "norm_label": "hu-0006-escaneo-automatico-silencioso-y-ciclo-manual-controlado.md"
     },
     {
@@ -9156,14 +9557,212 @@
       "norm_label": "cierre de graphify"
     },
     {
+      "label": "HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion",
+      "community": 56,
+      "community_name": "index.md",
+      "norm_label": "hu-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md"
+    },
+    {
+      "label": "HU-0007 \u2014 Spike de icono de Dock previo al primer inicio de sesi\u00f3n",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_hu_0007_spike_de_icono_de_dock_previo_al_primer_inicio_de_sesi\u00f3n",
+      "community": 54,
+      "community_name": "HU-0007 \u2014 Spike de icono de Dock previo al primer inicio de sesi\u00f3n",
+      "norm_label": "hu-0007 \u2014 spike de icono de dock previo al primer inicio de sesion"
+    },
+    {
+      "label": "Metadatos",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_metadatos",
+      "community": 54,
+      "community_name": "HU-0007 \u2014 Spike de icono de Dock previo al primer inicio de sesi\u00f3n",
+      "norm_label": "metadatos"
+    },
+    {
+      "label": "Historia de usuario",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_historia_de_usuario",
+      "community": 54,
+      "community_name": "HU-0007 \u2014 Spike de icono de Dock previo al primer inicio de sesi\u00f3n",
+      "norm_label": "historia de usuario"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_problema",
+      "community": 54,
+      "community_name": "HU-0007 \u2014 Spike de icono de Dock previo al primer inicio de sesi\u00f3n",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Contexto y evidencia de Graphify",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_contexto_y_evidencia_de_graphify",
+      "community": 54,
+      "community_name": "HU-0007 \u2014 Spike de icono de Dock previo al primer inicio de sesi\u00f3n",
+      "norm_label": "contexto y evidencia de graphify"
+    },
+    {
+      "label": "Alcance",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_alcance",
+      "community": 54,
+      "community_name": "HU-0007 \u2014 Spike de icono de Dock previo al primer inicio de sesi\u00f3n",
+      "norm_label": "alcance"
+    },
+    {
+      "label": "Fuera de alcance",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_fuera_de_alcance",
+      "community": 54,
+      "community_name": "HU-0007 \u2014 Spike de icono de Dock previo al primer inicio de sesi\u00f3n",
+      "norm_label": "fuera de alcance"
+    },
+    {
+      "label": "Criterios de aceptaci\u00f3n",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L47",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_criterios_de_aceptaci\u00f3n",
+      "community": 54,
+      "community_name": "HU-0007 \u2014 Spike de icono de Dock previo al primer inicio de sesi\u00f3n",
+      "norm_label": "criterios de aceptacion"
+    },
+    {
+      "label": "Dise\u00f1o t\u00e9cnico y contratos",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L61",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_dise\u00f1o_t\u00e9cnico_y_contratos",
+      "community": 54,
+      "community_name": "HU-0007 \u2014 Spike de icono de Dock previo al primer inicio de sesi\u00f3n",
+      "norm_label": "diseno tecnico y contratos"
+    },
+    {
+      "label": "Casos l\u00edmite, privacidad y plataformas",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L68",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_casos_l\u00edmite_privacidad_y_plataformas",
+      "community": 54,
+      "community_name": "HU-0007 \u2014 Spike de icono de Dock previo al primer inicio de sesi\u00f3n",
+      "norm_label": "casos limite, privacidad y plataformas"
+    },
+    {
+      "label": "Plan de delegaci\u00f3n",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L76",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_plan_de_delegaci\u00f3n",
+      "community": 54,
+      "community_name": "HU-0007 \u2014 Spike de icono de Dock previo al primer inicio de sesi\u00f3n",
+      "norm_label": "plan de delegacion"
+    },
+    {
+      "label": "Plan previsto y resultado de pruebas",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L83",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_plan_previsto_y_resultado_de_pruebas",
+      "community": 54,
+      "community_name": "HU-0007 \u2014 Spike de icono de Dock previo al primer inicio de sesi\u00f3n",
+      "norm_label": "plan previsto y resultado de pruebas"
+    },
+    {
+      "label": "Documentaci\u00f3n afectada",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L103",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_documentaci\u00f3n_afectada",
+      "community": 54,
+      "community_name": "HU-0007 \u2014 Spike de icono de Dock previo al primer inicio de sesi\u00f3n",
+      "norm_label": "documentacion afectada"
+    },
+    {
+      "label": "Bit\u00e1cora de implementaci\u00f3n",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L108",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_bit\u00e1cora_de_implementaci\u00f3n",
+      "community": 54,
+      "community_name": "HU-0007 \u2014 Spike de icono de Dock previo al primer inicio de sesi\u00f3n",
+      "norm_label": "bitacora de implementacion"
+    },
+    {
+      "label": "Resultado y riesgos residuales",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L114",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_resultado_y_riesgos_residuales",
+      "community": 54,
+      "community_name": "HU-0007 \u2014 Spike de icono de Dock previo al primer inicio de sesi\u00f3n",
+      "norm_label": "resultado y riesgos residuales"
+    },
+    {
+      "label": "Referencias primarias",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L118",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_referencias_primarias",
+      "community": 54,
+      "community_name": "HU-0007 \u2014 Spike de icono de Dock previo al primer inicio de sesi\u00f3n",
+      "norm_label": "referencias primarias"
+    },
+    {
+      "label": "Cierre de Graphify",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L123",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_cierre_de_graphify",
+      "community": 54,
+      "community_name": "HU-0007 \u2014 Spike de icono de Dock previo al primer inicio de sesi\u00f3n",
+      "norm_label": "cierre de graphify"
+    },
+    {
       "label": "index.md",
       "file_type": "document",
       "source_file": "docs/hu/index.md",
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_hu_index",
-      "community": 19,
-      "community_name": "README.md",
+      "community": 56,
+      "community_name": "index.md",
       "norm_label": "index.md"
     },
     {
@@ -9173,8 +9772,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_hu_index_\u00edndice_de_historias_de_usuario",
-      "community": 19,
-      "community_name": "README.md",
+      "community": 56,
+      "community_name": "index.md",
       "norm_label": "indice de historias de usuario"
     },
     {
@@ -9185,7 +9784,7 @@
       "_origin": "ast",
       "id": "docs_instancias_document",
       "community": 19,
-      "community_name": "README.md",
+      "community_name": "actualizaciones.document.md",
       "norm_label": "instancias.document.md"
     },
     {
@@ -9195,8 +9794,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_instancias_document_ciclo_de_vida_e_identidad_visual_de_instancias",
-      "community": 47,
-      "community_name": "Ciclo de vida e identidad visual de instancias",
+      "community": 19,
+      "community_name": "actualizaciones.document.md",
       "norm_label": "ciclo de vida e identidad visual de instancias"
     },
     {
@@ -9206,8 +9805,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "docs_instancias_document_inicio_detecci\u00f3n_y_cierre",
-      "community": 47,
-      "community_name": "Ciclo de vida e identidad visual de instancias",
+      "community": 19,
+      "community_name": "actualizaciones.document.md",
       "norm_label": "inicio, deteccion y cierre"
     },
     {
@@ -9217,8 +9816,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "docs_instancias_document_iconos_por_instancia",
-      "community": 47,
-      "community_name": "Ciclo de vida e identidad visual de instancias",
+      "community": 19,
+      "community_name": "actualizaciones.document.md",
       "norm_label": "iconos por instancia"
     },
     {
@@ -9228,8 +9827,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "docs_instancias_document_privacidad_y_l\u00edmites",
-      "community": 47,
-      "community_name": "Ciclo de vida e identidad visual de instancias",
+      "community": 19,
+      "community_name": "actualizaciones.document.md",
       "norm_label": "privacidad y limites"
     },
     {
@@ -9239,8 +9838,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_rendimiento_document",
-      "community": 49,
-      "community_name": "Rendimiento del dashboard",
+      "community": 56,
+      "community_name": "index.md",
       "norm_label": "rendimiento.document.md"
     },
     {
@@ -9317,7 +9916,7 @@
       "_origin": "ast",
       "id": "docs_sesiones_document",
       "community": 19,
-      "community_name": "README.md",
+      "community_name": "actualizaciones.document.md",
       "norm_label": "sesiones.document.md"
     },
     {
@@ -9437,8 +10036,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_versionado_document",
-      "community": 49,
-      "community_name": "Rendimiento del dashboard",
+      "community": 56,
+      "community_name": "index.md",
       "norm_label": "versionado.document.md"
     },
     {
@@ -10148,6 +10747,557 @@
       "_origin": "ast",
       "source": "scripts_graphify_updategraph",
       "target": "scripts_graphify_rungraphify",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_bundle_value",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L563",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_cleanup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_clone_name",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L137",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_clone_processes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L249",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_dry_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L209",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_find_valid_primary_pid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_json_error",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L279",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_prepare",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L160",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_prepare_failure_cleanup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_repo_icon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_repo_root",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_require_macos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_script_name",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L704",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_self_test",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_sentinel_content",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_sha256_file",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L43",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_snapshot_bundle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L122",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_snapshot_equal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_source_app",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L144",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_terminate_clone_processes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L723",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_usage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L194",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_validate_pid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L185",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_validate_state_location",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L223",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike",
+      "target": "scripts_hu0007_macos_dock_icon_spike_write_icon_helper",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L741",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_sh__entry",
+      "target": "scripts_hu0007_macos_dock_icon_spike_cleanup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L729",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_sh__entry",
+      "target": "scripts_hu0007_macos_dock_icon_spike_dry_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L735",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_sh__entry",
+      "target": "scripts_hu0007_macos_dock_icon_spike_prepare",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L732",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_sh__entry",
+      "target": "scripts_hu0007_macos_dock_icon_spike_self_test",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L744",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_sh__entry",
+      "target": "scripts_hu0007_macos_dock_icon_spike_usage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L567",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_cleanup",
+      "target": "scripts_hu0007_macos_dock_icon_spike_json_error",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L287",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_prepare",
+      "target": "scripts_hu0007_macos_dock_icon_spike_json_error",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L28",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_require_macos",
+      "target": "scripts_hu0007_macos_dock_icon_spike_json_error",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L564",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_cleanup",
+      "target": "scripts_hu0007_macos_dock_icon_spike_require_macos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L250",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_dry_run",
+      "target": "scripts_hu0007_macos_dock_icon_spike_require_macos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L280",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_prepare",
+      "target": "scripts_hu0007_macos_dock_icon_spike_require_macos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L677",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_cleanup",
+      "target": "scripts_hu0007_macos_dock_icon_spike_snapshot_bundle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L317",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_prepare",
+      "target": "scripts_hu0007_macos_dock_icon_spike_snapshot_bundle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L679",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_cleanup",
+      "target": "scripts_hu0007_macos_dock_icon_spike_snapshot_equal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L334",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_prepare",
+      "target": "scripts_hu0007_macos_dock_icon_spike_snapshot_equal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L163",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_prepare_failure_cleanup",
+      "target": "scripts_hu0007_macos_dock_icon_spike_terminate_clone_processes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L168",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_prepare_failure_cleanup",
+      "target": "scripts_hu0007_macos_dock_icon_spike_validate_state_location",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L566",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_cleanup",
+      "target": "scripts_hu0007_macos_dock_icon_spike_validate_state_location",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L304",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_prepare",
+      "target": "scripts_hu0007_macos_dock_icon_spike_validate_state_location",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L649",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_cleanup",
+      "target": "scripts_hu0007_macos_dock_icon_spike_validate_pid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L215",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_find_valid_primary_pid",
+      "target": "scripts_hu0007_macos_dock_icon_spike_validate_pid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L432",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_prepare",
+      "target": "scripts_hu0007_macos_dock_icon_spike_validate_pid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0007-macos-dock-icon-spike.sh",
+      "source_location": "L368",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0007_macos_dock_icon_spike_prepare",
+      "target": "scripts_hu0007_macos_dock_icon_spike_write_icon_helper",
       "confidence_score": 1.0
     },
     {
@@ -31901,6 +33051,17 @@
     {
       "relation": "references",
       "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
+      "source_location": "L169",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver",
+      "target": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
       "source_file": "docs/hu/index.md",
       "source_location": "L11",
       "weight": 1.0,
@@ -31946,7 +33107,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L34",
+      "source_location": "L35",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_hu_0005_recuperar_la_respuesta_de_la_interfaz_y_establecer_versionado_semver",
@@ -31957,7 +33118,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L150",
+      "source_location": "L159",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_hu_0005_recuperar_la_respuesta_de_la_interfaz_y_establecer_versionado_semver",
@@ -31968,7 +33129,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L103",
+      "source_location": "L112",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_hu_0005_recuperar_la_respuesta_de_la_interfaz_y_establecer_versionado_semver",
@@ -31979,7 +33140,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L170",
+      "source_location": "L186",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_hu_0005_recuperar_la_respuesta_de_la_interfaz_y_establecer_versionado_semver",
@@ -32001,7 +33162,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L73",
+      "source_location": "L82",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_hu_0005_recuperar_la_respuesta_de_la_interfaz_y_establecer_versionado_semver",
@@ -32012,7 +33173,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L92",
+      "source_location": "L101",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_hu_0005_recuperar_la_respuesta_de_la_interfaz_y_establecer_versionado_semver",
@@ -32023,7 +33184,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L141",
+      "source_location": "L150",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_hu_0005_recuperar_la_respuesta_de_la_interfaz_y_establecer_versionado_semver",
@@ -32034,7 +33195,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L65",
+      "source_location": "L74",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_hu_0005_recuperar_la_respuesta_de_la_interfaz_y_establecer_versionado_semver",
@@ -32067,7 +33228,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L114",
+      "source_location": "L123",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_hu_0005_recuperar_la_respuesta_de_la_interfaz_y_establecer_versionado_semver",
@@ -32078,7 +33239,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L120",
+      "source_location": "L129",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_hu_0005_recuperar_la_respuesta_de_la_interfaz_y_establecer_versionado_semver",
@@ -32100,7 +33261,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L166",
+      "source_location": "L181",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_hu_0005_recuperar_la_respuesta_de_la_interfaz_y_establecer_versionado_semver",
@@ -32111,7 +33272,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L160",
+      "source_location": "L171",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_hu_0005_recuperar_la_respuesta_de_la_interfaz_y_establecer_versionado_semver",
@@ -32122,7 +33283,18 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L56",
+      "source_location": "L66",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_alcance",
+      "target": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_decisi\u00f3n_pendiente_para_el_dock",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
+      "source_location": "L57",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_alcance",
@@ -32133,7 +33305,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L36",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_alcance",
@@ -32144,7 +33316,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_alcance",
@@ -32380,6 +33552,204 @@
       "_origin": "ast",
       "source": "docs_hu_hu_0006_escaneo_automatico_silencioso_y_ciclo_manual_controlado_alcance",
       "target": "docs_hu_hu_0006_escaneo_automatico_silencioso_y_ciclo_manual_controlado_versi\u00f3n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion",
+      "target": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_hu_0007_spike_de_icono_de_dock_previo_al_primer_inicio_de_sesi\u00f3n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/index.md",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_index",
+      "target": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_hu_0007_spike_de_icono_de_dock_previo_al_primer_inicio_de_sesi\u00f3n",
+      "target": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_alcance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L108",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_hu_0007_spike_de_icono_de_dock_previo_al_primer_inicio_de_sesi\u00f3n",
+      "target": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_bit\u00e1cora_de_implementaci\u00f3n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L68",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_hu_0007_spike_de_icono_de_dock_previo_al_primer_inicio_de_sesi\u00f3n",
+      "target": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_casos_l\u00edmite_privacidad_y_plataformas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L123",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_hu_0007_spike_de_icono_de_dock_previo_al_primer_inicio_de_sesi\u00f3n",
+      "target": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_cierre_de_graphify",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_hu_0007_spike_de_icono_de_dock_previo_al_primer_inicio_de_sesi\u00f3n",
+      "target": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_contexto_y_evidencia_de_graphify",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L47",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_hu_0007_spike_de_icono_de_dock_previo_al_primer_inicio_de_sesi\u00f3n",
+      "target": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_criterios_de_aceptaci\u00f3n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L61",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_hu_0007_spike_de_icono_de_dock_previo_al_primer_inicio_de_sesi\u00f3n",
+      "target": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_dise\u00f1o_t\u00e9cnico_y_contratos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L103",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_hu_0007_spike_de_icono_de_dock_previo_al_primer_inicio_de_sesi\u00f3n",
+      "target": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_documentaci\u00f3n_afectada",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_hu_0007_spike_de_icono_de_dock_previo_al_primer_inicio_de_sesi\u00f3n",
+      "target": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_fuera_de_alcance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_hu_0007_spike_de_icono_de_dock_previo_al_primer_inicio_de_sesi\u00f3n",
+      "target": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_historia_de_usuario",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_hu_0007_spike_de_icono_de_dock_previo_al_primer_inicio_de_sesi\u00f3n",
+      "target": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_metadatos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L76",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_hu_0007_spike_de_icono_de_dock_previo_al_primer_inicio_de_sesi\u00f3n",
+      "target": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_plan_de_delegaci\u00f3n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_hu_0007_spike_de_icono_de_dock_previo_al_primer_inicio_de_sesi\u00f3n",
+      "target": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_plan_previsto_y_resultado_de_pruebas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_hu_0007_spike_de_icono_de_dock_previo_al_primer_inicio_de_sesi\u00f3n",
+      "target": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L118",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_hu_0007_spike_de_icono_de_dock_previo_al_primer_inicio_de_sesi\u00f3n",
+      "target": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_referencias_primarias",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md",
+      "source_location": "L114",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_hu_0007_spike_de_icono_de_dock_previo_al_primer_inicio_de_sesi\u00f3n",
+      "target": "docs_hu_hu_0007_spike_icono_dock_previo_al_primer_inicio_de_sesion_resultado_y_riesgos_residuales",
       "confidence_score": 1.0
     },
     {
@@ -32670,5 +34040,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "b385ffd7665c1c9872048979f4613145cc381460"
+  "built_at_commit": "e3e1191e675d098acb6717a3c2ce83b1b8a45517"
 }
