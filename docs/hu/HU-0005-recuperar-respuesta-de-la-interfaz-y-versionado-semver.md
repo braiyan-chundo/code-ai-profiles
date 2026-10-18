@@ -4,7 +4,7 @@
 
 - Estado: `In Progress`
 - Creada: 2026-10-11
-- Actualizada: 2026-10-14
+- Actualizada: 2026-10-17
 - Solicitante: mantenedor del proyecto
 - Orquestación: `architect`
 - Documentación: `document`
@@ -167,6 +167,7 @@ Evidencia verificada y pendiente entregada por `architect`:
 - 2026-10-13: `architect` precisó que `NSWorkspace.setIcon` deja intactos bytes sellados, CDHash, Team ID y designated requirement, pero su metadata FinderInfo/resource fork hace fallar la verificación estricta mientras está presente. Producción la revierte, restaura el baseline y deja `systemApplied=false`; el Dock sigue sin cumplir su criterio.
 - 2026-10-14: el cliente confirmó que `0.2.1` funciona y pidió reanudar el icono de Dock. `architect` documentó que `NSWorkspace.setIcon`, APIs externas de Electron y variables de entorno empaquetadas no resuelven la necesidad. El cliente propuso branding únicamente al crear y antes del primer login, y autorizó HU-0007 para evaluar la re-firma como alternativa candidata. No se experimentó con instancias reales, perfiles, conversaciones ni llavero.
 - 2026-10-14: [HU-0007](HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md) cerró con resultado negativo válido: la re-firma ad-hoc de un clon temporal no produjo proceso validable ni confirmación visual de Dock. La técnica queda rechazada en esta configuración y no habilita producto.
+- 2026-10-17: [HU-0008](HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md) cerró el diagnóstico A/B con resultado `inconclusive`. El control y la variante re-firmada sobrevivieron la ventana de observación, pero la variante terminó con señal `9` después de `TERM`; no hubo muestra de UI, Dock ni login y no se atribuyó causa. No existe una implementación de branding de Dock validada.
 
 ## Resultado y riesgos residuales
 
@@ -177,6 +178,8 @@ La identidad distintiva de Dock no está cumplida. HU-0007 evaluó una copia tem
 La re-firma controlada de una copia gestionada detenida fue una alternativa candidata para cambiar ICNS/`Info.plist`, pero HU-0007 la rechazó en la configuración evaluada: no produjo un proceso fixture validable ni confirmación visual de Dock. Además, podría romper Keychain/safeStorage y exigir reautenticación. Aunque no escriba los archivos de perfil o conversación, no garantiza que puedan descifrarse o seguir siendo accesibles. El Dock permanece pendiente por ausencia de una implementación validada, no por falta de respuesta del cliente. No se realizarán experimentos con instancias reales, perfiles, conversaciones o llavero en esta iteración.
 
 HU-0007 descartó la configuración de re-firma ad-hoc evaluada: no produjo un proceso fixture validable ni evidencia visual de Dock. El requisito de Dock de esta HU permanece sin cumplir.
+
+HU-0008 no habilita una alternativa: aunque ambos fixtures iniciaron en el diagnóstico A/B, la terminación anómala de la variante tras `TERM` obliga a clasificarlo como `inconclusive`. El Dock continúa pendiente por ausencia de una implementación validada; no se infiere compatibilidad con UI, login, Keychain/safeStorage, sesiones ni updater.
 
 ## Referencias primarias
 

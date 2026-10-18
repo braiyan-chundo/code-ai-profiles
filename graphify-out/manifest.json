@@ -175,8 +175,8 @@
     "semantic_hash": ""
   },
   "docs/hu/index.md": {
-    "mtime": 1792004545.3911633,
-    "ast_hash": "2b2ef42e8621d95a52ad4cbcca5e7e28",
+    "mtime": 1792296832.568398,
+    "ast_hash": "20423134cc4ab06b70e4b10bed00a78b",
     "semantic_hash": ""
   },
   "index.html": {
@@ -230,8 +230,8 @@
     "semantic_hash": ""
   },
   "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md": {
-    "mtime": 1792004656.7795897,
-    "ast_hash": "f7363c42c5d38b5cfe087291ae34fb7a",
+    "mtime": 1792296840.5776398,
+    "ast_hash": "9c9acdc8e8e611a3b45eab724c8bc0db",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
@@ -267,6 +267,16 @@
   "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md": {
     "mtime": 1792027554.1347513,
     "ast_hash": "3a01af79e234a28994d53575da211b3d",
+    "semantic_hash": ""
+  },
+  "scripts/hu0008-macos-launch-ab-diagnostic.sh": {
+    "mtime": 1792257206.5112975,
+    "ast_hash": "9cf8a39e4da325aed33b9bfc8022a6af",
+    "semantic_hash": ""
+  },
+  "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md": {
+    "mtime": 1792296871.4929163,
+    "ast_hash": "2958e31fcac18bb9902908a57f14c589",
     "semantic_hash": ""
   }
 }

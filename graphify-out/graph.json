@@ -1021,6 +1021,501 @@
       "norm_label": "usage()"
     },
     {
+      "label": "hu0008-macos-launch-ab-diagnostic.sh",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "hu0008-macos-launch-ab-diagnostic.sh"
+    },
+    {
+      "label": "hu0008-macos-launch-ab-diagnostic.sh script",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_sh__entry",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "hu0008-macos-launch-ab-diagnostic.sh script"
+    },
+    {
+      "label": "SCRIPT_NAME",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L5",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_script_name",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "script_name"
+    },
+    {
+      "label": "SOURCE_APP",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L6",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_source_app",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "source_app"
+    },
+    {
+      "label": "REPO_ROOT",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L7",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_repo_root",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "repo_root"
+    },
+    {
+      "label": "REPO_ICON",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L8",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_repo_icon",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "repo_icon"
+    },
+    {
+      "label": "STATE_PREFIX",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L9",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_state_prefix",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "state_prefix"
+    },
+    {
+      "label": "ROOT_PREFIX",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L10",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_root_prefix",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "root_prefix"
+    },
+    {
+      "label": "OBSERVATION_MS",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L11",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_observation_ms",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "observation_ms"
+    },
+    {
+      "label": "TERM_GRACE_MS",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L12",
+      "metadata": {
+        "language": "bash",
+        "kind": "code"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_term_grace_ms",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "term_grace_ms"
+    },
+    {
+      "label": "emit_error()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L18",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_emit_error",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "emit_error()"
+    },
+    {
+      "label": "require_macos()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L25",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_require_macos",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "require_macos()"
+    },
+    {
+      "label": "sha256_file()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L32",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_sha256_file",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "sha256_file()"
+    },
+    {
+      "label": "tree_hash()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L36",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_tree_hash",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "tree_hash()"
+    },
+    {
+      "label": "bundle_value()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L48",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_bundle_value",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "bundle_value()"
+    },
+    {
+      "label": "valid_state_path()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L52",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_valid_state_path",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "valid_state_path()"
+    },
+    {
+      "label": "validate_state_file()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L60",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_validate_state_file",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "validate_state_file()"
+    },
+    {
+      "label": "snapshot_bundle()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L74",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_snapshot_bundle",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "snapshot_bundle()"
+    },
+    {
+      "label": "purge_snapshot_raw()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L148",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_purge_snapshot_raw",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "purge_snapshot_raw()"
+    },
+    {
+      "label": "clone_pids()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L156",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_clone_pids",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "clone_pids()"
+    },
+    {
+      "label": "validate_primary_pid()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L161",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_validate_primary_pid",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "validate_primary_pid()"
+    },
+    {
+      "label": "write_launcher()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L169",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_write_launcher",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "write_launcher()"
+    },
+    {
+      "label": "launch_one()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L227",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_launch_one",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "launch_one()"
+    },
+    {
+      "label": "classify_results()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L254",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_classify_results",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "classify_results()"
+    },
+    {
+      "label": "snapshot_crash_candidates()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L272",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_snapshot_crash_candidates",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "snapshot_crash_candidates()"
+    },
+    {
+      "label": "write_crash_parser()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L288",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_write_crash_parser",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "write_crash_parser()"
+    },
+    {
+      "label": "collect_crash_evidence()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L375",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_collect_crash_evidence",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "collect_crash_evidence()"
+    },
+    {
+      "label": "failure_cleanup()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L380",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_failure_cleanup",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "failure_cleanup()"
+    },
+    {
+      "label": "run_diagnostic()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L401",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_run_diagnostic",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "run_diagnostic()"
+    },
+    {
+      "label": "cleanup()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L567",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_cleanup",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "cleanup()"
+    },
+    {
+      "label": "self_test()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L626",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_self_test",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "self_test()"
+    },
+    {
+      "label": "dry_run()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L698",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_dry_run",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "dry_run()"
+    },
+    {
+      "label": "usage()",
+      "file_type": "code",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L712",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "scripts_hu0008_macos_launch_ab_diagnostic_usage",
+      "community": 37,
+      "community_name": "hu0008-macos-launch-ab-diagnostic.sh",
+      "norm_label": "usage()"
+    },
+    {
       "label": "release-version.mjs",
       "file_type": "code",
       "source_file": "scripts/release-version.mjs",
@@ -1445,8 +1940,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "vec",
-      "community": 53,
-      "community_name": "Vec",
+      "community": 41,
+      "community_name": "copy_code_session_sync",
       "norm_label": "vec"
     },
     {
@@ -1467,8 +1962,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "default",
-      "community": 55,
-      "community_name": "SessionLinkRegistry",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "default"
     },
     {
@@ -1478,8 +1973,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "src_tauri_src_lib_registry_default",
-      "community": 31,
-      "community_name": "ManagedInstance",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": ".default()"
     },
     {
@@ -1489,8 +1984,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "self",
-      "community": 31,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "self"
     },
     {
@@ -1511,7 +2006,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "src_tauri_src_lib_managedinstance",
-      "community": 31,
+      "community": 55,
       "community_name": "ManagedInstance",
       "norm_label": "managedinstance"
     },
@@ -1544,7 +2039,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "managedprocessidentity",
-      "community": 31,
+      "community": 55,
       "community_name": "ManagedInstance",
       "norm_label": "managedprocessidentity"
     },
@@ -1555,7 +2050,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "customicon",
-      "community": 31,
+      "community": 55,
       "community_name": "ManagedInstance",
       "norm_label": "customicon"
     },
@@ -1566,7 +2061,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "instancestatus",
-      "community": 31,
+      "community": 55,
       "community_name": "ManagedInstance",
       "norm_label": "instancestatus"
     },
@@ -1577,7 +2072,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "usagestats",
-      "community": 31,
+      "community": 55,
       "community_name": "ManagedInstance",
       "norm_label": "usagestats"
     },
@@ -1588,7 +2083,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "codesession",
-      "community": 31,
+      "community": 55,
       "community_name": "ManagedInstance",
       "norm_label": "codesession"
     },
@@ -1611,7 +2106,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_managedprocessidentity",
       "community": 31,
-      "community_name": "ManagedInstance",
+      "community_name": "signal_instance_processes",
       "norm_label": "managedprocessidentity"
     },
     {
@@ -1632,7 +2127,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "src_tauri_src_lib_accountplan",
-      "community": 31,
+      "community": 55,
       "community_name": "ManagedInstance",
       "norm_label": "accountplan"
     },
@@ -1643,8 +2138,8 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "src_tauri_src_lib_instancestatus",
-      "community": 50,
-      "community_name": "system_info_scoped",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "instancestatus"
     },
     {
@@ -1655,7 +2150,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_usagestats",
       "community": 53,
-      "community_name": "Vec",
+      "community_name": "get_live_usage_sync",
       "norm_label": "usagestats"
     },
     {
@@ -1666,7 +2161,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_codesession",
       "community": 45,
-      "community_name": "read_code_sessions",
+      "community_name": "CodeSession",
       "norm_label": "codesession"
     },
     {
@@ -1677,7 +2172,7 @@
       "_origin": "ast",
       "id": "artifactmonitorsummary",
       "community": 45,
-      "community_name": "read_code_sessions",
+      "community_name": "CodeSession",
       "norm_label": "artifactmonitorsummary"
     },
     {
@@ -1688,7 +2183,7 @@
       "_origin": "ast",
       "id": "sessiontransferinfo",
       "community": 45,
-      "community_name": "read_code_sessions",
+      "community_name": "CodeSession",
       "norm_label": "sessiontransferinfo"
     },
     {
@@ -1698,8 +2193,8 @@
       "source_location": "L177",
       "_origin": "ast",
       "id": "src_tauri_src_lib_artifactmonitorsummary",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "artifactmonitorsummary"
     },
     {
@@ -1742,8 +2237,8 @@
       "source_location": "L217",
       "_origin": "ast",
       "id": "src_tauri_src_lib_transcriptentry",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "transcriptentry"
     },
     {
@@ -1764,8 +2259,8 @@
       "source_location": "L228",
       "_origin": "ast",
       "id": "src_tauri_src_lib_artifactmonitorentry",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "artifactmonitorentry"
     },
     {
@@ -1775,8 +2270,8 @@
       "source_location": "L233",
       "_origin": "ast",
       "id": "src_tauri_src_lib_transcriptmessage",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "transcriptmessage"
     },
     {
@@ -1830,8 +2325,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "result",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "Result",
       "norm_label": "result"
     },
     {
@@ -1852,8 +2347,8 @@
       "source_location": "L311",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessioncontextsnapshot",
-      "community": 45,
-      "community_name": "read_code_sessions",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "sessioncontextsnapshot"
     },
     {
@@ -1863,8 +2358,8 @@
       "source_location": "L319",
       "_origin": "ast",
       "id": "src_tauri_src_lib_systeminfo",
-      "community": 50,
-      "community_name": "system_info_scoped",
+      "community": 45,
+      "community_name": "CodeSession",
       "norm_label": "systeminfo"
     },
     {
@@ -1874,8 +2369,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "sourceupdateinfo",
-      "community": 50,
-      "community_name": "system_info_scoped",
+      "community": 45,
+      "community_name": "CodeSession",
       "norm_label": "sourceupdateinfo"
     },
     {
@@ -1885,8 +2380,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "versiontopology",
-      "community": 50,
-      "community_name": "system_info_scoped",
+      "community": 45,
+      "community_name": "CodeSession",
       "norm_label": "versiontopology"
     },
     {
@@ -1896,8 +2391,8 @@
       "source_location": "L335",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refreshscope",
-      "community": 36,
-      "community_name": "AppHandle",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "refreshscope"
     },
     {
@@ -1907,8 +2402,8 @@
       "source_location": "L384",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refreshworkcounters",
-      "community": 48,
-      "community_name": "record_refresh_work",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "refreshworkcounters"
     },
     {
@@ -1918,8 +2413,8 @@
       "source_location": "L399",
       "_origin": "ast",
       "id": "src_tauri_src_lib_record_refresh_work",
-      "community": 48,
-      "community_name": "record_refresh_work",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "record_refresh_work()"
     },
     {
@@ -1929,8 +2424,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "fnonce",
-      "community": 48,
-      "community_name": "record_refresh_work",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "fnonce"
     },
     {
@@ -1940,8 +2435,8 @@
       "source_location": "L404",
       "_origin": "ast",
       "id": "src_tauri_src_lib_reset_refresh_work_counters",
-      "community": 55,
-      "community_name": "SessionLinkRegistry",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "reset_refresh_work_counters()"
     },
     {
@@ -1951,8 +2446,8 @@
       "source_location": "L409",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refresh_work_counters",
-      "community": 48,
-      "community_name": "record_refresh_work",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "refresh_work_counters()"
     },
     {
@@ -2017,8 +2512,8 @@
       "source_location": "L430",
       "_origin": "ast",
       "id": "src_tauri_src_lib_runtime_cache",
-      "community": 36,
-      "community_name": "AppHandle",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "runtime_cache()"
     },
     {
@@ -2028,8 +2523,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "mutex",
-      "community": 36,
-      "community_name": "AppHandle",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "mutex"
     },
     {
@@ -2039,8 +2534,8 @@
       "source_location": "L435",
       "_origin": "ast",
       "id": "src_tauri_src_lib_registry_operation_mutex",
-      "community": 36,
-      "community_name": "AppHandle",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "registry_operation_mutex()"
     },
     {
@@ -2051,7 +2546,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_with_registry_operation",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "with_registry_operation()"
     },
     {
@@ -2062,7 +2557,7 @@
       "_origin": "ast",
       "id": "t",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "t"
     },
     {
@@ -2160,8 +2655,8 @@
       "source_location": "L484",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sourceupdateinfo_default",
-      "community": 31,
-      "community_name": "ManagedInstance",
+      "community": 1,
+      "community_name": "String",
       "norm_label": ".default()"
     },
     {
@@ -2205,7 +2700,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_usagesnapshot",
       "community": 53,
-      "community_name": "Vec",
+      "community_name": "get_live_usage_sync",
       "norm_label": "usagesnapshot"
     },
     {
@@ -2215,8 +2710,8 @@
       "source_location": "L527",
       "_origin": "ast",
       "id": "src_tauri_src_lib_originalapplicationupdateaction",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "originalapplicationupdateaction"
     },
     {
@@ -2226,8 +2721,8 @@
       "source_location": "L534",
       "_origin": "ast",
       "id": "src_tauri_src_lib_originalapplicationupdateresult",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "originalapplicationupdateresult"
     },
     {
@@ -2237,8 +2732,8 @@
       "source_location": "L540",
       "_origin": "ast",
       "id": "src_tauri_src_lib_originalapplicationupdatetarget",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "originalapplicationupdatetarget"
     },
     {
@@ -2249,7 +2744,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_dashboardstate",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "dashboardstate"
     },
     {
@@ -2292,8 +2787,8 @@
       "source_location": "L575",
       "_origin": "ast",
       "id": "src_tauri_src_lib_updateinstancerequest",
-      "community": 1,
-      "community_name": "String",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "updateinstancerequest"
     },
     {
@@ -2325,8 +2820,8 @@
       "source_location": "L598",
       "_origin": "ast",
       "id": "src_tauri_src_lib_artifacttransferoutcome",
-      "community": 53,
-      "community_name": "Vec",
+      "community": 41,
+      "community_name": "copy_code_session_sync",
       "norm_label": "artifacttransferoutcome"
     },
     {
@@ -2337,7 +2832,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessiontransferresult",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "sessiontransferresult"
     },
     {
@@ -2347,8 +2842,8 @@
       "source_location": "L618",
       "_origin": "ast",
       "id": "src_tauri_src_lib_synchronizemanagedapplicationsrequest",
-      "community": 1,
-      "community_name": "String",
+      "community": 41,
+      "community_name": "copy_code_session_sync",
       "norm_label": "synchronizemanagedapplicationsrequest"
     },
     {
@@ -2358,8 +2853,8 @@
       "source_location": "L625",
       "_origin": "ast",
       "id": "src_tauri_src_lib_synchronizationstatus",
-      "community": 1,
-      "community_name": "String",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "synchronizationstatus"
     },
     {
@@ -2369,8 +2864,8 @@
       "source_location": "L633",
       "_origin": "ast",
       "id": "src_tauri_src_lib_synchronizationitemresult",
-      "community": 1,
-      "community_name": "String",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "synchronizationitemresult"
     },
     {
@@ -2381,7 +2876,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_synchronizemanagedapplicationsresult",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "synchronizemanagedapplicationsresult"
     },
     {
@@ -2391,8 +2886,8 @@
       "source_location": "L650",
       "_origin": "ast",
       "id": "src_tauri_src_lib_setinstanceiconrequest",
-      "community": 53,
-      "community_name": "Vec",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "setinstanceiconrequest"
     },
     {
@@ -2402,8 +2897,8 @@
       "source_location": "L657",
       "_origin": "ast",
       "id": "src_tauri_src_lib_unlinkcodesessionrequest",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "unlinkcodesessionrequest"
     },
     {
@@ -2435,8 +2930,8 @@
       "source_location": "L695",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessionlinkregistry",
-      "community": 55,
-      "community_name": "SessionLinkRegistry",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "sessionlinkregistry"
     },
     {
@@ -2446,8 +2941,8 @@
       "source_location": "L703",
       "_origin": "ast",
       "id": "src_tauri_src_lib_transferprofile",
-      "community": 50,
-      "community_name": "system_info_scoped",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "transferprofile"
     },
     {
@@ -2457,8 +2952,8 @@
       "source_location": "L711",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessionlinkregistry_default",
-      "community": 55,
-      "community_name": "SessionLinkRegistry",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": ".default()"
     },
     {
@@ -2468,8 +2963,8 @@
       "source_location": "L719",
       "_origin": "ast",
       "id": "src_tauri_src_lib_managedpaths",
-      "community": 1,
-      "community_name": "String",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "managedpaths"
     },
     {
@@ -2479,8 +2974,8 @@
       "source_location": "L730",
       "_origin": "ast",
       "id": "src_tauri_src_lib_managedpaths_resolve",
-      "community": 1,
-      "community_name": "String",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": ".resolve()"
     },
     {
@@ -2491,7 +2986,7 @@
       "_origin": "ast",
       "id": "apphandle",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "apphandle"
     },
     {
@@ -2501,8 +2996,8 @@
       "source_location": "L749",
       "_origin": "ast",
       "id": "src_tauri_src_lib_managedpaths_root_for",
-      "community": 1,
-      "community_name": "String",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": ".root_for()"
     },
     {
@@ -2512,8 +3007,8 @@
       "source_location": "L756",
       "_origin": "ast",
       "id": "src_tauri_src_lib_load_registry",
-      "community": 1,
-      "community_name": "String",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "load_registry()"
     },
     {
@@ -2523,8 +3018,8 @@
       "source_location": "L766",
       "_origin": "ast",
       "id": "src_tauri_src_lib_save_registry",
-      "community": 1,
-      "community_name": "String",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "save_registry()"
     },
     {
@@ -2534,8 +3029,8 @@
       "source_location": "L779",
       "_origin": "ast",
       "id": "src_tauri_src_lib_save_session_links",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "save_session_links()"
     },
     {
@@ -2556,8 +3051,8 @@
       "source_location": "L839",
       "_origin": "ast",
       "id": "src_tauri_src_lib_load_session_links",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "load_session_links()"
     },
     {
@@ -2567,8 +3062,8 @@
       "source_location": "L851",
       "_origin": "ast",
       "id": "src_tauri_src_lib_apply_session_links",
-      "community": 55,
-      "community_name": "SessionLinkRegistry",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "apply_session_links()"
     },
     {
@@ -2578,8 +3073,8 @@
       "source_location": "L857",
       "_origin": "ast",
       "id": "src_tauri_src_lib_apply_session_links_to_profile",
-      "community": 55,
-      "community_name": "SessionLinkRegistry",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "apply_session_links_to_profile()"
     },
     {
@@ -2589,8 +3084,8 @@
       "source_location": "L874",
       "_origin": "ast",
       "id": "src_tauri_src_lib_validate_name",
-      "community": 1,
-      "community_name": "String",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "validate_name()"
     },
     {
@@ -2688,8 +3183,8 @@
       "source_location": "L1015",
       "_origin": "ast",
       "id": "src_tauri_src_lib_original_application_update_target",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "original_application_update_target()"
     },
     {
@@ -2721,8 +3216,8 @@
       "source_location": "L1104",
       "_origin": "ast",
       "id": "src_tauri_src_lib_detect_original_profile",
-      "community": 50,
-      "community_name": "system_info_scoped",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "detect_original_profile()"
     },
     {
@@ -2732,8 +3227,8 @@
       "source_location": "L1146",
       "_origin": "ast",
       "id": "src_tauri_src_lib_original_instance_status_with_inventory",
-      "community": 50,
-      "community_name": "system_info_scoped",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "original_instance_status_with_inventory()"
     },
     {
@@ -2743,8 +3238,8 @@
       "source_location": "L1160",
       "_origin": "ast",
       "id": "src_tauri_src_lib_resolve_transfer_profile",
-      "community": 50,
-      "community_name": "system_info_scoped",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "resolve_transfer_profile()"
     },
     {
@@ -2754,8 +3249,8 @@
       "source_location": "L1190",
       "_origin": "ast",
       "id": "src_tauri_src_lib_provider_executable",
-      "community": 31,
-      "community_name": "ManagedInstance",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "provider_executable()"
     },
     {
@@ -2854,7 +3349,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_invalidate_managed_bytes_cache",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "invalidate_managed_bytes_cache()"
     },
     {
@@ -2864,8 +3359,8 @@
       "source_location": "L1439",
       "_origin": "ast",
       "id": "src_tauri_src_lib_version_parts",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 41,
+      "community_name": "copy_code_session_sync",
       "norm_label": "version_parts()"
     },
     {
@@ -2875,8 +3370,8 @@
       "source_location": "L1447",
       "_origin": "ast",
       "id": "src_tauri_src_lib_version_is_newer",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "version_is_newer()"
     },
     {
@@ -2886,8 +3381,8 @@
       "source_location": "L1463",
       "_origin": "ast",
       "id": "src_tauri_src_lib_versions_equal",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "versions_equal()"
     },
     {
@@ -3117,8 +3612,8 @@
       "source_location": "L2023",
       "_origin": "ast",
       "id": "src_tauri_src_lib_copy_provider_application",
-      "community": 1,
-      "community_name": "String",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "copy_provider_application()"
     },
     {
@@ -3128,8 +3623,8 @@
       "source_location": "L2114",
       "_origin": "ast",
       "id": "src_tauri_src_lib_instance_bundle_name",
-      "community": 1,
-      "community_name": "String",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "instance_bundle_name()"
     },
     {
@@ -3139,8 +3634,8 @@
       "source_location": "L2133",
       "_origin": "ast",
       "id": "src_tauri_src_lib_personalize_application_path",
-      "community": 1,
-      "community_name": "String",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "personalize_application_path()"
     },
     {
@@ -3150,8 +3645,8 @@
       "source_location": "L2164",
       "_origin": "ast",
       "id": "src_tauri_src_lib_swap_application_directory",
-      "community": 1,
-      "community_name": "String",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "swap_application_directory()"
     },
     {
@@ -3161,8 +3656,8 @@
       "source_location": "L2188",
       "_origin": "ast",
       "id": "src_tauri_src_lib_rollback_application_directory",
-      "community": 1,
-      "community_name": "String",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "rollback_application_directory()"
     },
     {
@@ -3184,7 +3679,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_read_usage",
       "community": 53,
-      "community_name": "Vec",
+      "community_name": "get_live_usage_sync",
       "norm_label": "read_usage()"
     },
     {
@@ -3195,7 +3690,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_clean_session_text",
       "community": 45,
-      "community_name": "read_code_sessions",
+      "community_name": "CodeSession",
       "norm_label": "clean_session_text()"
     },
     {
@@ -3217,7 +3712,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_parse_code_session",
       "community": 45,
-      "community_name": "read_code_sessions",
+      "community_name": "CodeSession",
       "norm_label": "parse_code_session()"
     },
     {
@@ -3227,8 +3722,8 @@
       "source_location": "L2284",
       "_origin": "ast",
       "id": "src_tauri_src_lib_clean_monitor_state",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "clean_monitor_state()"
     },
     {
@@ -3238,8 +3733,8 @@
       "source_location": "L2295",
       "_origin": "ast",
       "id": "src_tauri_src_lib_latest_artifact_monitor",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "latest_artifact_monitor()"
     },
     {
@@ -3305,7 +3800,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_latest_transcript_context",
       "community": 45,
-      "community_name": "read_code_sessions",
+      "community_name": "CodeSession",
       "norm_label": "latest_transcript_context()"
     },
     {
@@ -3316,7 +3811,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_apply_session_context",
       "community": 45,
-      "community_name": "read_code_sessions",
+      "community_name": "CodeSession",
       "norm_label": "apply_session_context()"
     },
     {
@@ -3326,8 +3821,8 @@
       "source_location": "L2572",
       "_origin": "ast",
       "id": "src_tauri_src_lib_read_code_sessions",
-      "community": 45,
-      "community_name": "read_code_sessions",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "read_code_sessions()"
     },
     {
@@ -3370,8 +3865,8 @@
       "source_location": "L2658",
       "_origin": "ast",
       "id": "src_tauri_src_lib_find_file_named",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "find_file_named()"
     },
     {
@@ -3403,8 +3898,8 @@
       "source_location": "L2723",
       "_origin": "ast",
       "id": "src_tauri_src_lib_update_session_links_after_transfer",
-      "community": 55,
-      "community_name": "SessionLinkRegistry",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "update_session_links_after_transfer()"
     },
     {
@@ -3458,8 +3953,8 @@
       "source_location": "L2875",
       "_origin": "ast",
       "id": "src_tauri_src_lib_artifact_export_roots",
-      "community": 53,
-      "community_name": "Vec",
+      "community": 41,
+      "community_name": "copy_code_session_sync",
       "norm_label": "artifact_export_roots()"
     },
     {
@@ -3480,8 +3975,8 @@
       "source_location": "L2897",
       "_origin": "ast",
       "id": "src_tauri_src_lib_collect_opaque_artifact_files",
-      "community": 53,
-      "community_name": "Vec",
+      "community": 41,
+      "community_name": "copy_code_session_sync",
       "norm_label": "collect_opaque_artifact_files()"
     },
     {
@@ -3491,8 +3986,8 @@
       "source_location": "L2957",
       "_origin": "ast",
       "id": "src_tauri_src_lib_export_local_artifacts",
-      "community": 53,
-      "community_name": "Vec",
+      "community": 41,
+      "community_name": "copy_code_session_sync",
       "norm_label": "export_local_artifacts()"
     },
     {
@@ -3513,8 +4008,8 @@
       "source_location": "L3278",
       "_origin": "ast",
       "id": "src_tauri_src_lib_unlink_code_session_sync",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "unlink_code_session_sync()"
     },
     {
@@ -3524,8 +4019,8 @@
       "source_location": "L3370",
       "_origin": "ast",
       "id": "src_tauri_src_lib_path_size",
-      "community": 48,
-      "community_name": "record_refresh_work",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "path_size()"
     },
     {
@@ -3536,7 +4031,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_process_is_alive",
       "community": 31,
-      "community_name": "ManagedInstance",
+      "community_name": "signal_instance_processes",
       "norm_label": "process_is_alive()"
     },
     {
@@ -3547,7 +4042,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_process_fingerprint",
       "community": 31,
-      "community_name": "ManagedInstance",
+      "community_name": "signal_instance_processes",
       "norm_label": "process_fingerprint()"
     },
     {
@@ -3557,8 +4052,8 @@
       "source_location": "L3409",
       "_origin": "ast",
       "id": "src_tauri_src_lib_processinventoryentry",
-      "community": 50,
-      "community_name": "system_info_scoped",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "processinventoryentry"
     },
     {
@@ -3568,8 +4063,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "osstring",
-      "community": 50,
-      "community_name": "system_info_scoped",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "osstring"
     },
     {
@@ -3579,8 +4074,8 @@
       "source_location": "L3416",
       "_origin": "ast",
       "id": "src_tauri_src_lib_processinventory",
-      "community": 50,
-      "community_name": "system_info_scoped",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "processinventory"
     },
     {
@@ -3590,8 +4085,8 @@
       "source_location": "L3421",
       "_origin": "ast",
       "id": "src_tauri_src_lib_processinventory_capture",
-      "community": 31,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": ".capture()"
     },
     {
@@ -3601,8 +4096,8 @@
       "source_location": "L3447",
       "_origin": "ast",
       "id": "src_tauri_src_lib_processinventory_start_time",
-      "community": 31,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": ".start_time()"
     },
     {
@@ -3612,8 +4107,8 @@
       "source_location": "L3454",
       "_origin": "ast",
       "id": "src_tauri_src_lib_processinventory_application_is_running",
-      "community": 50,
-      "community_name": "system_info_scoped",
+      "community": 1,
+      "community_name": "String",
       "norm_label": ".application_is_running()"
     },
     {
@@ -3624,7 +4119,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_process_snapshot",
       "community": 31,
-      "community_name": "ManagedInstance",
+      "community_name": "signal_instance_processes",
       "norm_label": "process_snapshot()"
     },
     {
@@ -3635,7 +4130,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_identity_matches_instance",
       "community": 31,
-      "community_name": "ManagedInstance",
+      "community_name": "signal_instance_processes",
       "norm_label": "identity_matches_instance()"
     },
     {
@@ -3646,7 +4141,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_refresh_process_identity",
       "community": 31,
-      "community_name": "ManagedInstance",
+      "community_name": "signal_instance_processes",
       "norm_label": "refresh_process_identity()"
     },
     {
@@ -3667,8 +4162,8 @@
       "source_location": "L3563",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refresh_instance_bundle_names",
-      "community": 1,
-      "community_name": "String",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "refresh_instance_bundle_names()"
     },
     {
@@ -3678,8 +4173,8 @@
       "source_location": "L3583",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refresh_instance_statuses",
-      "community": 1,
-      "community_name": "String",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "refresh_instance_statuses()"
     },
     {
@@ -3722,8 +4217,8 @@
       "source_location": "L3625",
       "_origin": "ast",
       "id": "src_tauri_src_lib_managed_bytes",
-      "community": 48,
-      "community_name": "record_refresh_work",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "managed_bytes()"
     },
     {
@@ -3733,8 +4228,8 @@
       "source_location": "L3648",
       "_origin": "ast",
       "id": "src_tauri_src_lib_system_info_scoped",
-      "community": 50,
-      "community_name": "system_info_scoped",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "system_info_scoped()"
     },
     {
@@ -3745,7 +4240,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_dashboard_from_scope",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "dashboard_from_scope()"
     },
     {
@@ -3755,8 +4250,8 @@
       "source_location": "L3736",
       "_origin": "ast",
       "id": "src_tauri_src_lib_dashboard_from_scope_unlocked",
-      "community": 36,
-      "community_name": "AppHandle",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "dashboard_from_scope_unlocked()"
     },
     {
@@ -3767,7 +4262,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_dashboard_from_scope_async",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "dashboard_from_scope_async()"
     },
     {
@@ -3778,7 +4273,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_get_dashboard_state",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "get_dashboard_state()"
     },
     {
@@ -3800,7 +4295,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_get_live_usage",
       "community": 53,
-      "community_name": "Vec",
+      "community_name": "get_live_usage_sync",
       "norm_label": "get_live_usage()"
     },
     {
@@ -3811,7 +4306,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_get_live_usage_sync",
       "community": 53,
-      "community_name": "Vec",
+      "community_name": "get_live_usage_sync",
       "norm_label": "get_live_usage_sync()"
     },
     {
@@ -3822,7 +4317,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_scan_system",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "scan_system()"
     },
     {
@@ -3832,8 +4327,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "webviewwindow",
-      "community": 36,
-      "community_name": "AppHandle",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "webviewwindow"
     },
     {
@@ -3843,8 +4338,8 @@
       "source_location": "L3841",
       "_origin": "ast",
       "id": "src_tauri_src_lib_scan_system_sync",
-      "community": 36,
-      "community_name": "AppHandle",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "scan_system_sync()"
     },
     {
@@ -3855,7 +4350,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_create_instance",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "create_instance()"
     },
     {
@@ -3866,7 +4361,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_update_instance_application",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "update_instance_application()"
     },
     {
@@ -3876,8 +4371,8 @@
       "source_location": "L3923",
       "_origin": "ast",
       "id": "src_tauri_src_lib_update_instance_application_sync",
-      "community": 1,
-      "community_name": "String",
+      "community": 36,
+      "community_name": "Result",
       "norm_label": "update_instance_application_sync()"
     },
     {
@@ -3887,8 +4382,8 @@
       "source_location": "L3930",
       "_origin": "ast",
       "id": "src_tauri_src_lib_update_instance_application_from_source_sync",
-      "community": 1,
-      "community_name": "String",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "update_instance_application_from_source_sync()"
     },
     {
@@ -3899,7 +4394,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_synchronize_managed_applications",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "synchronize_managed_applications()"
     },
     {
@@ -3909,8 +4404,8 @@
       "source_location": "L4122",
       "_origin": "ast",
       "id": "src_tauri_src_lib_synchronize_managed_applications_sync",
-      "community": 1,
-      "community_name": "String",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "synchronize_managed_applications_sync()"
     },
     {
@@ -3921,7 +4416,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_copy_code_session",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "copy_code_session()"
     },
     {
@@ -3932,7 +4427,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_unlink_code_session",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "unlink_code_session()"
     },
     {
@@ -3942,8 +4437,8 @@
       "source_location": "L4308",
       "_origin": "ast",
       "id": "src_tauri_src_lib_create_instance_sync",
-      "community": 1,
-      "community_name": "String",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "create_instance_sync()"
     },
     {
@@ -3954,7 +4449,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_update_instance",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "update_instance()"
     },
     {
@@ -3964,8 +4459,8 @@
       "source_location": "L4385",
       "_origin": "ast",
       "id": "src_tauri_src_lib_update_instance_sync",
-      "community": 1,
-      "community_name": "String",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "update_instance_sync()"
     },
     {
@@ -3976,7 +4471,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_launch_instance",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "launch_instance()"
     },
     {
@@ -3986,8 +4481,8 @@
       "source_location": "L4419",
       "_origin": "ast",
       "id": "src_tauri_src_lib_launch_instance_sync",
-      "community": 31,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "launch_instance_sync()"
     },
     {
@@ -3998,7 +4493,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_stop_instance",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "stop_instance()"
     },
     {
@@ -4008,8 +4503,8 @@
       "source_location": "L4497",
       "_origin": "ast",
       "id": "src_tauri_src_lib_process_start_time",
-      "community": 31,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "process_start_time()"
     },
     {
@@ -4019,8 +4514,8 @@
       "source_location": "L4501",
       "_origin": "ast",
       "id": "src_tauri_src_lib_spawn_process_reaper",
-      "community": 31,
-      "community_name": "ManagedInstance",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "spawn_process_reaper()"
     },
     {
@@ -4030,8 +4525,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "child",
-      "community": 31,
-      "community_name": "ManagedInstance",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "child"
     },
     {
@@ -4042,7 +4537,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_wait_until_instance_stops",
       "community": 31,
-      "community_name": "ManagedInstance",
+      "community_name": "signal_instance_processes",
       "norm_label": "wait_until_instance_stops()"
     },
     {
@@ -4053,7 +4548,7 @@
       "_origin": "ast",
       "id": "duration",
       "community": 31,
-      "community_name": "ManagedInstance",
+      "community_name": "signal_instance_processes",
       "norm_label": "duration"
     },
     {
@@ -4064,7 +4559,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_signal_instance_processes",
       "community": 31,
-      "community_name": "ManagedInstance",
+      "community_name": "signal_instance_processes",
       "norm_label": "signal_instance_processes()"
     },
     {
@@ -4074,8 +4569,8 @@
       "source_location": "L4622",
       "_origin": "ast",
       "id": "src_tauri_src_lib_stop_instance_sync",
-      "community": 1,
-      "community_name": "String",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "stop_instance_sync()"
     },
     {
@@ -4196,7 +4691,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_set_instance_icon",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "set_instance_icon()"
     },
     {
@@ -4218,7 +4713,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_clear_instance_icon",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "clear_instance_icon()"
     },
     {
@@ -4239,8 +4734,8 @@
       "source_location": "L5349",
       "_origin": "ast",
       "id": "src_tauri_src_lib_open_instance_folder",
-      "community": 1,
-      "community_name": "String",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "open_instance_folder()"
     },
     {
@@ -4262,7 +4757,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_delete_instance",
       "community": 36,
-      "community_name": "AppHandle",
+      "community_name": "Result",
       "norm_label": "delete_instance()"
     },
     {
@@ -4272,8 +4767,8 @@
       "source_location": "L5431",
       "_origin": "ast",
       "id": "src_tauri_src_lib_delete_instance_sync",
-      "community": 1,
-      "community_name": "String",
+      "community": 48,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "delete_instance_sync()"
     },
     {
@@ -4283,8 +4778,8 @@
       "source_location": "L5469",
       "_origin": "ast",
       "id": "src_tauri_src_lib_run",
-      "community": 55,
-      "community_name": "SessionLinkRegistry",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "run()"
     },
     {
@@ -4294,7 +4789,7 @@
       "source_location": "L5503",
       "_origin": "ast",
       "id": "src_tauri_src_lib_test_instance",
-      "community": 31,
+      "community": 55,
       "community_name": "ManagedInstance",
       "norm_label": "test_instance()"
     },
@@ -4360,8 +4855,8 @@
       "source_location": "L5605",
       "_origin": "ast",
       "id": "src_tauri_src_lib_light_refresh_executes_one_inventory_and_skips_expensive_work",
-      "community": 55,
-      "community_name": "SessionLinkRegistry",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "light_refresh_executes_one_inventory_and_skips_expensive_work()"
     },
     {
@@ -4460,7 +4955,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_process_fingerprint_binds_application_and_exact_profile_argument",
       "community": 31,
-      "community_name": "ManagedInstance",
+      "community_name": "signal_instance_processes",
       "norm_label": "process_fingerprint_binds_application_and_exact_profile_argument()"
     },
     {
@@ -4481,8 +4976,8 @@
       "source_location": "L5966",
       "_origin": "ast",
       "id": "src_tauri_src_lib_artifact_export_rejects_symlinks_and_depth_escapes",
-      "community": 53,
-      "community_name": "Vec",
+      "community": 41,
+      "community_name": "copy_code_session_sync",
       "norm_label": "artifact_export_rejects_symlinks_and_depth_escapes()"
     },
     {
@@ -4503,7 +4998,7 @@
       "source_location": "L6000",
       "_origin": "ast",
       "id": "src_tauri_src_lib_custom_icon_contract_does_not_modify_the_application_path",
-      "community": 31,
+      "community": 55,
       "community_name": "ManagedInstance",
       "norm_label": "custom_icon_contract_does_not_modify_the_application_path()"
     },
@@ -4536,8 +5031,8 @@
       "source_location": "L6046",
       "_origin": "ast",
       "id": "src_tauri_src_lib_selects_official_update_targets_by_platform_and_architecture",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "selects_official_update_targets_by_platform_and_architecture()"
     },
     {
@@ -4559,7 +5054,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_parses_only_safe_code_session_fields",
       "community": 45,
-      "community_name": "read_code_sessions",
+      "community_name": "CodeSession",
       "norm_label": "parses_only_safe_code_session_fields()"
     },
     {
@@ -4603,7 +5098,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_reads_latest_main_context_without_exposing_transcript_content",
       "community": 45,
-      "community_name": "read_code_sessions",
+      "community_name": "CodeSession",
       "norm_label": "reads_latest_main_context_without_exposing_transcript_content()"
     },
     {
@@ -4625,7 +5120,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_applies_the_latest_model_context_and_clamps_percentage",
       "community": 45,
-      "community_name": "read_code_sessions",
+      "community_name": "CodeSession",
       "norm_label": "applies_the_latest_model_context_and_clamps_percentage()"
     },
     {
@@ -4658,7 +5153,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_clears_context_after_compaction_until_the_next_response",
       "community": 45,
-      "community_name": "read_code_sessions",
+      "community_name": "CodeSession",
       "norm_label": "clears_context_after_compaction_until_the_next_response()"
     },
     {
@@ -4668,8 +5163,8 @@
       "source_location": "L6359",
       "_origin": "ast",
       "id": "src_tauri_src_lib_atomically_creates_and_replaces_session_index",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 1,
+      "community_name": "String",
       "norm_label": "atomically_creates_and_replaces_session_index()"
     },
     {
@@ -4713,7 +5208,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_reads_complete_usage_samples_and_rejects_partial_files",
       "community": 53,
-      "community_name": "Vec",
+      "community_name": "get_live_usage_sync",
       "norm_label": "reads_complete_usage_samples_and_rejects_partial_files()"
     },
     {
@@ -4756,8 +5251,8 @@
       "source_location": "L6503",
       "_origin": "ast",
       "id": "src_tauri_src_lib_tracks_copy_move_and_return_session_lineage",
-      "community": 55,
-      "community_name": "SessionLinkRegistry",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "tracks_copy_move_and_return_session_lineage()"
     },
     {
@@ -4778,8 +5273,8 @@
       "source_location": "L6626",
       "_origin": "ast",
       "id": "src_tauri_src_lib_annotates_a_session_linked_inside_the_original_app",
-      "community": 55,
-      "community_name": "SessionLinkRegistry",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "annotates_a_session_linked_inside_the_original_app()"
     },
     {
@@ -4789,8 +5284,8 @@
       "source_location": "L6666",
       "_origin": "ast",
       "id": "src_tauri_src_lib_swaps_and_rolls_back_application_directory",
-      "community": 1,
-      "community_name": "String",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "swaps_and_rolls_back_application_directory()"
     },
     {
@@ -7033,8 +7528,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "agents_roles_readme",
-      "community": 57,
-      "community_name": "README.md",
+      "community": 56,
+      "community_name": "index.md",
       "norm_label": "roles/readme.md"
     },
     {
@@ -7044,8 +7539,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "agents_roles_readme_agentes_de_desarrollo",
-      "community": 57,
-      "community_name": "README.md",
+      "community": 56,
+      "community_name": "index.md",
       "norm_label": "agentes de desarrollo"
     },
     {
@@ -7539,8 +8034,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "contributing",
-      "community": 57,
-      "community_name": "README.md",
+      "community": 56,
+      "community_name": "index.md",
       "norm_label": "contributing.md"
     },
     {
@@ -7704,8 +8199,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "readme",
-      "community": 57,
-      "community_name": "README.md",
+      "community": 56,
+      "community_name": "index.md",
       "norm_label": "readme.md"
     },
     {
@@ -7902,8 +8397,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_actualizaciones_document",
-      "community": 19,
-      "community_name": "actualizaciones.document.md",
+      "community": 56,
+      "community_name": "index.md",
       "norm_label": "actualizaciones.document.md"
     },
     {
@@ -8023,8 +8518,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_agents_document",
-      "community": 57,
-      "community_name": "README.md",
+      "community": 56,
+      "community_name": "index.md",
       "norm_label": "agents.document.md"
     },
     {
@@ -8111,8 +8606,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_graphify_document",
-      "community": 57,
-      "community_name": "README.md",
+      "community": 56,
+      "community_name": "index.md",
       "norm_label": "graphify.document.md"
     },
     {
@@ -8199,8 +8694,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_hu_hu_0001_integracion_graphify_y_agentes",
-      "community": 20,
-      "community_name": "HU-0001 \u2014 Integrar Graphify y agentes especializados",
+      "community": 56,
+      "community_name": "index.md",
       "norm_label": "hu-0001-integracion-graphify-y-agentes.md"
     },
     {
@@ -8386,8 +8881,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_hu_hu_0002_actualizar_aplicacion_original_y_metadatos_por_modelo_y_proveedor",
-      "community": 19,
-      "community_name": "actualizaciones.document.md",
+      "community": 56,
+      "community_name": "index.md",
       "norm_label": "hu-0002-actualizar-aplicacion-original-y-metadatos-por-modelo-y-proveedor.md"
     },
     {
@@ -8628,8 +9123,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo",
-      "community": 19,
-      "community_name": "actualizaciones.document.md",
+      "community": 56,
+      "community_name": "index.md",
       "norm_label": "hu-0003-transferencias-conscientes-de-artefactos-actualizacion-disponible-y-uso-en-vivo.md"
     },
     {
@@ -8639,8 +9134,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_hu_0003_transferencias_conscientes_de_artefactos_actualizaci\u00f3n_disponible_y_uso_en_vivo",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "hu-0003 \u2014 transferencias conscientes de artefactos, actualizacion disponible y uso en vivo"
     },
     {
@@ -8650,8 +9145,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_metadatos",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "metadatos"
     },
     {
@@ -8661,8 +9156,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_historia_de_usuario",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "historia de usuario"
     },
     {
@@ -8672,8 +9167,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_problema",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "problema"
     },
     {
@@ -8683,8 +9178,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_contexto_y_evidencia_de_graphify",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "contexto y evidencia de graphify"
     },
     {
@@ -8694,8 +9189,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_alcance",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "alcance"
     },
     {
@@ -8705,8 +9200,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_transferencias_y_artefactos",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "transferencias y artefactos"
     },
     {
@@ -8716,8 +9211,8 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_actualizaci\u00f3n_disponible",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "actualizacion disponible"
     },
     {
@@ -8727,8 +9222,8 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_uso_vivo",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "uso vivo"
     },
     {
@@ -8738,8 +9233,8 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_fuera_de_alcance",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "fuera de alcance"
     },
     {
@@ -8749,8 +9244,8 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_criterios_de_aceptaci\u00f3n",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "criterios de aceptacion"
     },
     {
@@ -8760,8 +9255,8 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_verificaci\u00f3n_de_criterios_de_aceptaci\u00f3n",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "verificacion de criterios de aceptacion"
     },
     {
@@ -8771,8 +9266,8 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_dise\u00f1o_t\u00e9cnico_y_contratos",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "diseno tecnico y contratos"
     },
     {
@@ -8782,8 +9277,8 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_casos_l\u00edmite_privacidad_y_plataformas",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "casos limite, privacidad y plataformas"
     },
     {
@@ -8793,8 +9288,8 @@
       "source_location": "L118",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_referencias_oficiales",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "referencias oficiales"
     },
     {
@@ -8804,8 +9299,8 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_plan_de_delegaci\u00f3n",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "plan de delegacion"
     },
     {
@@ -8815,8 +9310,8 @@
       "source_location": "L130",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_plan_y_resultado_de_pruebas",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "plan y resultado de pruebas"
     },
     {
@@ -8826,8 +9321,8 @@
       "source_location": "L141",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_documentaci\u00f3n_afectada",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "documentacion afectada"
     },
     {
@@ -8837,8 +9332,8 @@
       "source_location": "L147",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_bit\u00e1cora_de_implementaci\u00f3n",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "bitacora de implementacion"
     },
     {
@@ -8848,8 +9343,8 @@
       "source_location": "L156",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_resultado_y_riesgos_residuales",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "resultado y riesgos residuales"
     },
     {
@@ -8859,8 +9354,8 @@
       "source_location": "L162",
       "_origin": "ast",
       "id": "docs_hu_hu_0003_transferencias_conscientes_de_artefactos_actualizacion_disponible_y_uso_en_vivo_cierre_de_graphify",
-      "community": 37,
-      "community_name": "HU-0003 \u2014 Transferencias conscientes de artefactos, actualizaci\u00f3n disponible y uso en vivo",
+      "community": 29,
+      "community_name": "HU-0002 \u2014 Actualizar la aplicaci\u00f3n original y mostrar metadatos precisos por modelo y proveedor",
       "norm_label": "cierre de graphify"
     },
     {
@@ -8870,8 +9365,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_hu_hu_0004_sincronizacion_desde_la_instancia_mas_reciente_cierre_robusto_artefactos_locales_e_identidad_visual",
-      "community": 19,
-      "community_name": "actualizaciones.document.md",
+      "community": 56,
+      "community_name": "index.md",
       "norm_label": "hu-0004-sincronizacion-desde-la-instancia-mas-reciente-cierre-robusto-artefactos-locales-e-identidad-visual.md"
     },
     {
@@ -9318,7 +9813,7 @@
       "label": "Resultado y riesgos residuales",
       "file_type": "document",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L171",
+      "source_location": "L172",
       "_origin": "ast",
       "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_resultado_y_riesgos_residuales",
       "community": 40,
@@ -9329,7 +9824,7 @@
       "label": "Referencias primarias",
       "file_type": "document",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L181",
+      "source_location": "L184",
       "_origin": "ast",
       "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_referencias_primarias",
       "community": 40,
@@ -9340,7 +9835,7 @@
       "label": "Cierre de Graphify",
       "file_type": "document",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L186",
+      "source_location": "L189",
       "_origin": "ast",
       "id": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_cierre_de_graphify",
       "community": 40,
@@ -9755,6 +10250,193 @@
       "norm_label": "cierre de graphify"
     },
     {
+      "label": "HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login",
+      "community": 56,
+      "community_name": "index.md",
+      "norm_label": "hu-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md"
+    },
+    {
+      "label": "HU-0008 \u2014 Diagn\u00f3stico A/B del arranque macOS para branding previo al login",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_hu_0008_diagn\u00f3stico_a_b_del_arranque_macos_para_branding_previo_al_login",
+      "community": 50,
+      "community_name": "HU-0008 \u2014 Diagn\u00f3stico A/B del arranque macOS para branding previo al login",
+      "norm_label": "hu-0008 \u2014 diagnostico a/b del arranque macos para branding previo al login"
+    },
+    {
+      "label": "Metadatos",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_metadatos",
+      "community": 50,
+      "community_name": "HU-0008 \u2014 Diagn\u00f3stico A/B del arranque macOS para branding previo al login",
+      "norm_label": "metadatos"
+    },
+    {
+      "label": "Historia de usuario",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_historia_de_usuario",
+      "community": 50,
+      "community_name": "HU-0008 \u2014 Diagn\u00f3stico A/B del arranque macOS para branding previo al login",
+      "norm_label": "historia de usuario"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_problema",
+      "community": 50,
+      "community_name": "HU-0008 \u2014 Diagn\u00f3stico A/B del arranque macOS para branding previo al login",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Contexto y evidencia de Graphify",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_contexto_y_evidencia_de_graphify",
+      "community": 50,
+      "community_name": "HU-0008 \u2014 Diagn\u00f3stico A/B del arranque macOS para branding previo al login",
+      "norm_label": "contexto y evidencia de graphify"
+    },
+    {
+      "label": "Alcance",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_alcance",
+      "community": 50,
+      "community_name": "HU-0008 \u2014 Diagn\u00f3stico A/B del arranque macOS para branding previo al login",
+      "norm_label": "alcance"
+    },
+    {
+      "label": "Fuera de alcance",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L44",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_fuera_de_alcance",
+      "community": 50,
+      "community_name": "HU-0008 \u2014 Diagn\u00f3stico A/B del arranque macOS para branding previo al login",
+      "norm_label": "fuera de alcance"
+    },
+    {
+      "label": "Criterios de aceptaci\u00f3n",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L53",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_criterios_de_aceptaci\u00f3n",
+      "community": 50,
+      "community_name": "HU-0008 \u2014 Diagn\u00f3stico A/B del arranque macOS para branding previo al login",
+      "norm_label": "criterios de aceptacion"
+    },
+    {
+      "label": "Dise\u00f1o t\u00e9cnico y contratos",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L70",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_dise\u00f1o_t\u00e9cnico_y_contratos",
+      "community": 50,
+      "community_name": "HU-0008 \u2014 Diagn\u00f3stico A/B del arranque macOS para branding previo al login",
+      "norm_label": "diseno tecnico y contratos"
+    },
+    {
+      "label": "Casos l\u00edmite, privacidad y plataformas",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L78",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_casos_l\u00edmite_privacidad_y_plataformas",
+      "community": 50,
+      "community_name": "HU-0008 \u2014 Diagn\u00f3stico A/B del arranque macOS para branding previo al login",
+      "norm_label": "casos limite, privacidad y plataformas"
+    },
+    {
+      "label": "Plan de delegaci\u00f3n",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L88",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_plan_de_delegaci\u00f3n",
+      "community": 50,
+      "community_name": "HU-0008 \u2014 Diagn\u00f3stico A/B del arranque macOS para branding previo al login",
+      "norm_label": "plan de delegacion"
+    },
+    {
+      "label": "Plan y resultado de pruebas",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L96",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_plan_y_resultado_de_pruebas",
+      "community": 50,
+      "community_name": "HU-0008 \u2014 Diagn\u00f3stico A/B del arranque macOS para branding previo al login",
+      "norm_label": "plan y resultado de pruebas"
+    },
+    {
+      "label": "Documentaci\u00f3n afectada",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L124",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_documentaci\u00f3n_afectada",
+      "community": 50,
+      "community_name": "HU-0008 \u2014 Diagn\u00f3stico A/B del arranque macOS para branding previo al login",
+      "norm_label": "documentacion afectada"
+    },
+    {
+      "label": "Bit\u00e1cora de implementaci\u00f3n",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L129",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_bit\u00e1cora_de_implementaci\u00f3n",
+      "community": 50,
+      "community_name": "HU-0008 \u2014 Diagn\u00f3stico A/B del arranque macOS para branding previo al login",
+      "norm_label": "bitacora de implementacion"
+    },
+    {
+      "label": "Resultado y riesgos residuales",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L135",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_resultado_y_riesgos_residuales",
+      "community": 50,
+      "community_name": "HU-0008 \u2014 Diagn\u00f3stico A/B del arranque macOS para branding previo al login",
+      "norm_label": "resultado y riesgos residuales"
+    },
+    {
+      "label": "Cierre de Graphify",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L141",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_cierre_de_graphify",
+      "community": 50,
+      "community_name": "HU-0008 \u2014 Diagn\u00f3stico A/B del arranque macOS para branding previo al login",
+      "norm_label": "cierre de graphify"
+    },
+    {
       "label": "index.md",
       "file_type": "document",
       "source_file": "docs/hu/index.md",
@@ -9783,8 +10465,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_instancias_document",
-      "community": 19,
-      "community_name": "actualizaciones.document.md",
+      "community": 56,
+      "community_name": "index.md",
       "norm_label": "instancias.document.md"
     },
     {
@@ -9795,7 +10477,7 @@
       "_origin": "ast",
       "id": "docs_instancias_document_ciclo_de_vida_e_identidad_visual_de_instancias",
       "community": 19,
-      "community_name": "actualizaciones.document.md",
+      "community_name": "Ciclo de vida e identidad visual de instancias",
       "norm_label": "ciclo de vida e identidad visual de instancias"
     },
     {
@@ -9806,7 +10488,7 @@
       "_origin": "ast",
       "id": "docs_instancias_document_inicio_detecci\u00f3n_y_cierre",
       "community": 19,
-      "community_name": "actualizaciones.document.md",
+      "community_name": "Ciclo de vida e identidad visual de instancias",
       "norm_label": "inicio, deteccion y cierre"
     },
     {
@@ -9817,7 +10499,7 @@
       "_origin": "ast",
       "id": "docs_instancias_document_iconos_por_instancia",
       "community": 19,
-      "community_name": "actualizaciones.document.md",
+      "community_name": "Ciclo de vida e identidad visual de instancias",
       "norm_label": "iconos por instancia"
     },
     {
@@ -9828,7 +10510,7 @@
       "_origin": "ast",
       "id": "docs_instancias_document_privacidad_y_l\u00edmites",
       "community": 19,
-      "community_name": "actualizaciones.document.md",
+      "community_name": "Ciclo de vida e identidad visual de instancias",
       "norm_label": "privacidad y limites"
     },
     {
@@ -9915,8 +10597,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_sesiones_document",
-      "community": 19,
-      "community_name": "actualizaciones.document.md",
+      "community": 56,
+      "community_name": "index.md",
       "norm_label": "sesiones.document.md"
     },
     {
@@ -11298,6 +11980,670 @@
       "_origin": "ast",
       "source": "scripts_hu0007_macos_dock_icon_spike_prepare",
       "target": "scripts_hu0007_macos_dock_icon_spike_write_icon_helper",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L48",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_bundle_value",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L254",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_classify_results",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L567",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_cleanup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L156",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_clone_pids",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L375",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_collect_crash_evidence",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L698",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_dry_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_emit_error",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L380",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_failure_cleanup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L227",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_launch_one",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_observation_ms",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L148",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_purge_snapshot_raw",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_repo_icon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_repo_root",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_require_macos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_root_prefix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L401",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_run_diagnostic",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_script_name",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L626",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_self_test",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_sha256_file",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L74",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_snapshot_bundle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L272",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_snapshot_crash_candidates",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_source_app",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_state_prefix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_term_grace_ms",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_tree_hash",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L712",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_usage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L52",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_valid_state_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L161",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_validate_primary_pid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L60",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_validate_state_file",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L288",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_write_crash_parser",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L169",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_write_launcher",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L720",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_sh__entry",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_cleanup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L717",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_sh__entry",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_dry_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L719",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_sh__entry",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_run_diagnostic",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L718",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_sh__entry",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_self_test",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L721",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_sh__entry",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_usage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L570",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_cleanup",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_emit_error",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L27",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_require_macos",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_emit_error",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L403",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_run_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_emit_error",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L667",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_self_test",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_emit_error",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L568",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_cleanup",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_require_macos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L699",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_dry_run",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_require_macos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L402",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_run_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_require_macos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L570",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_cleanup",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_valid_state_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L390",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_failure_cleanup",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_valid_state_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L62",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_validate_state_file",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_valid_state_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L575",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_cleanup",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_validate_state_file",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L426",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_run_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_snapshot_bundle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L492",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_run_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_purge_snapshot_raw",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L605",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_cleanup",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_validate_primary_pid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L245",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_launch_one",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_validate_primary_pid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L441",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_run_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_write_launcher",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L503",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_run_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_launch_one",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L502",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_run_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_snapshot_crash_candidates",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L443",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_run_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_write_crash_parser",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L660",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_self_test",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_write_crash_parser",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/hu0008-macos-launch-ab-diagnostic.sh",
+      "source_location": "L504",
+      "weight": 1.0,
+      "context": "call",
+      "_origin": "ast",
+      "source": "scripts_hu0008_macos_launch_ab_diagnostic_run_diagnostic",
+      "target": "scripts_hu0008_macos_launch_ab_diagnostic_collect_crash_evidence",
       "confidence_score": 1.0
     },
     {
@@ -33062,6 +34408,17 @@
     {
       "relation": "references",
       "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
+      "source_location": "L170",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver",
+      "target": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
       "source_file": "docs/hu/index.md",
       "source_location": "L11",
       "weight": 1.0,
@@ -33140,7 +34497,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L186",
+      "source_location": "L189",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_hu_0005_recuperar_la_respuesta_de_la_interfaz_y_establecer_versionado_semver",
@@ -33261,7 +34618,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L181",
+      "source_location": "L184",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_hu_0005_recuperar_la_respuesta_de_la_interfaz_y_establecer_versionado_semver",
@@ -33272,7 +34629,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L171",
+      "source_location": "L172",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_hu_0005_recuperar_la_respuesta_de_la_interfaz_y_establecer_versionado_semver",
@@ -33755,6 +35112,193 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login",
+      "target": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_hu_0008_diagn\u00f3stico_a_b_del_arranque_macos_para_branding_previo_al_login",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/index.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_index",
+      "target": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_hu_0008_diagn\u00f3stico_a_b_del_arranque_macos_para_branding_previo_al_login",
+      "target": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_alcance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L129",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_hu_0008_diagn\u00f3stico_a_b_del_arranque_macos_para_branding_previo_al_login",
+      "target": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_bit\u00e1cora_de_implementaci\u00f3n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L78",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_hu_0008_diagn\u00f3stico_a_b_del_arranque_macos_para_branding_previo_al_login",
+      "target": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_casos_l\u00edmite_privacidad_y_plataformas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L141",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_hu_0008_diagn\u00f3stico_a_b_del_arranque_macos_para_branding_previo_al_login",
+      "target": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_cierre_de_graphify",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_hu_0008_diagn\u00f3stico_a_b_del_arranque_macos_para_branding_previo_al_login",
+      "target": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_contexto_y_evidencia_de_graphify",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_hu_0008_diagn\u00f3stico_a_b_del_arranque_macos_para_branding_previo_al_login",
+      "target": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_criterios_de_aceptaci\u00f3n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L70",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_hu_0008_diagn\u00f3stico_a_b_del_arranque_macos_para_branding_previo_al_login",
+      "target": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_dise\u00f1o_t\u00e9cnico_y_contratos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L124",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_hu_0008_diagn\u00f3stico_a_b_del_arranque_macos_para_branding_previo_al_login",
+      "target": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_documentaci\u00f3n_afectada",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L44",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_hu_0008_diagn\u00f3stico_a_b_del_arranque_macos_para_branding_previo_al_login",
+      "target": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_fuera_de_alcance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_hu_0008_diagn\u00f3stico_a_b_del_arranque_macos_para_branding_previo_al_login",
+      "target": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_historia_de_usuario",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_hu_0008_diagn\u00f3stico_a_b_del_arranque_macos_para_branding_previo_al_login",
+      "target": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_metadatos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L88",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_hu_0008_diagn\u00f3stico_a_b_del_arranque_macos_para_branding_previo_al_login",
+      "target": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_plan_de_delegaci\u00f3n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L96",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_hu_0008_diagn\u00f3stico_a_b_del_arranque_macos_para_branding_previo_al_login",
+      "target": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_plan_y_resultado_de_pruebas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_hu_0008_diagn\u00f3stico_a_b_del_arranque_macos_para_branding_previo_al_login",
+      "target": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md",
+      "source_location": "L135",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_hu_0008_diagn\u00f3stico_a_b_del_arranque_macos_para_branding_previo_al_login",
+      "target": "docs_hu_hu_0008_diagnostico_ab_del_arranque_macos_para_branding_previo_al_login_resultado_y_riesgos_residuales",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "docs/hu/index.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -34040,5 +35584,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "e3e1191e675d098acb6717a3c2ce83b1b8a45517"
+  "built_at_commit": "93ffba4b381b8330979b557c5ab4a481ad39da65"
 }
