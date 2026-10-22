@@ -1,4 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
+import packageMetadata from "../../package.json";
 import type {
   CodeSession,
   ManagedInstance,
@@ -7,7 +8,10 @@ import type {
   DashboardState,
   InstanceStatus,
   OriginalApplicationUpdateResult,
+  SessionTransferResult,
   SourceUpdateInfo,
+  SynchronizeManagedApplicationsRequest,
+  SynchronizeManagedApplicationsResult,
   UnlinkCodeSessionRequest,
   UpdateInstanceRequest,
   UsageSnapshot,
@@ -78,6 +82,7 @@ let mockInstances: ManagedInstance[] = [
 const mockState = (): DashboardState => ({
   instances: mockInstances,
   system: {
+    appVersion: packageMetadata.version,
     platform: "macos",
     sourcePath: "/Applications/Claude.app",
     sourceName: mockSourceName,
@@ -88,6 +93,14 @@ const mockState = (): DashboardState => ({
       checkedAt: Date.now(),
       stale: false,
       source: "officialFeed",
+    },
+    versionTopology: {
+      latestInstalledVersion: latestMockVersion,
+      latestSource: { kind: "managed", instanceId: "demo-lab", name: "Experimental Lab" },
+      staleInstanceIds: ["demo-work", "demo-personal"],
+      originalBehind: false,
+      canSynchronizeManaged: true,
+      reason: null,
     },
     originalProfilePath: "~/Library/Application Support/Claude",
     originalStatus: mockOriginalStatus,
@@ -181,6 +194,24 @@ export const bridge = {
     return mockState();
   },
 
+  async synchronizeApplications(
+    request: SynchronizeManagedApplicationsRequest,
+  ): Promise<SynchronizeManagedApplicationsResult> {
+    if (isTauri()) return call("synchronize_managed_applications", { request });
+    const results = request.targetInstanceIds.map((instanceId) => {
+      const instance = mockInstances.find((item) => item.id === instanceId);
+      if (!instance) {
+        return { instanceId, status: "failed" as const, fromVersion: null, toVersion: latestMockVersion, message: "La instancia ya no existe." };
+      }
+      if (instance.status !== "stopped") {
+        return { instanceId, status: "failed" as const, fromVersion: instance.sourceVersion, toVersion: latestMockVersion, message: "La instancia debe estar detenida." };
+      }
+      mockInstances = mockInstances.map((item) => item.id === instanceId ? { ...item, sourceVersion: latestMockVersion } : item);
+      return { instanceId, status: "updated" as const, fromVersion: instance.sourceVersion, toVersion: latestMockVersion, message: "Aplicación sincronizada y perfil preservado." };
+    });
+    return { dashboard: mockState(), results };
+  },
+
   async updateOriginalApplication(): Promise<OriginalApplicationUpdateResult> {
     if (isTauri()) return call("update_original_application");
     await new Promise((resolve) => window.setTimeout(resolve, 320));
@@ -221,7 +252,7 @@ export const bridge = {
       .map((instance) => ({ instanceId: instance.id, usage: instance.usage! }));
   },
 
-  async copySession(request: CopyCodeSessionRequest): Promise<DashboardState> {
+  async copySession(request: CopyCodeSessionRequest): Promise<SessionTransferResult> {
     if (isTauri()) return call("copy_code_session", { request });
     const profiles = mockProfiles();
     const source = profiles.find((item) => item.id === request.sourceInstanceId);
@@ -255,6 +286,38 @@ export const bridge = {
         ? sessions.map((existing) => existing.id === session.id ? transferred : existing)
         : [transferred, ...sessions];
     });
+    return {
+      dashboard: mockState(),
+      artifacts: {
+        localCandidates: 0,
+        copied: 0,
+        registered: 0,
+        preservedForManualImport: 0,
+        remoteReferencesOmitted: session.publishedArtifactCount ?? 0,
+        monitorsOmitted: session.artifactMonitor?.artifactCount ?? 0,
+        exportPath: null,
+        warnings: ["Los artefactos remotos deben publicarse de nuevo en el destino."],
+      },
+    };
+  },
+
+  async setInstanceIcon(id: string, bytes: Uint8Array): Promise<DashboardState> {
+    if (isTauri()) return call("set_instance_icon", { request: { id, bytes: Array.from(bytes) } });
+    mockInstances = mockInstances.map((item) => item.id === id ? {
+      ...item,
+      customIcon: {
+        path: `mock://${id}/icon.png`,
+        revision: (item.customIcon?.revision ?? 0) + 1,
+        systemApplied: false,
+        systemMessage: "Modo de demostración: icono visible dentro de Code AI Profiles.",
+      },
+    } : item);
+    return mockState();
+  },
+
+  async clearInstanceIcon(id: string): Promise<DashboardState> {
+    if (isTauri()) return call("clear_instance_icon", { id });
+    mockInstances = mockInstances.map((item) => item.id === id ? { ...item, customIcon: null } : item);
     return mockState();
   },
 

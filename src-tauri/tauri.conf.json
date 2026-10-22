@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Code AI Profiles",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "identifier": "com.braiyan.claudeprofiles",
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -27,7 +27,13 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; connect-src ipc: http://ipc.localhost; img-src 'self' asset: http://asset.localhost data: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data:"
+      "csp": "default-src 'self'; connect-src ipc: http://ipc.localhost; img-src 'self' asset: http://asset.localhost data: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data:",
+      "assetProtocol": {
+        "enable": true,
+        "scope": [
+          "$APPDATA/managed-instances/*/branding/icon.png"
+        ]
+      }
     }
   },
   "bundle": {

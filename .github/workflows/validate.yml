@@ -20,6 +20,14 @@ jobs:
           node-version: 24
           cache: npm
 
+      - name: Verify release versioning
+        run: |
+          npm run release:check
+          npm run test:release
+
+      - name: Test scan controller
+        run: npm run test:scan
+
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
