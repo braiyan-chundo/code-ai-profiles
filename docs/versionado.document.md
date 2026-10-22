@@ -1,8 +1,8 @@
 # Versionado de Code AI Profiles
 
-Documento relacionado con [HU-0005](hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md).
+Documento relacionado con [HU-0005](hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md) y [HU-0006](hu/HU-0006-escaneo-automatico-silencioso-y-ciclo-manual-controlado.md).
 
-Code AI Profiles usa [Semantic Versioning](https://semver.org/lang/es/). La versión vigente del repositorio es `0.2.0`.
+Code AI Profiles usa [Semantic Versioning](https://semver.org/lang/es/). La versión vigente del repositorio es `0.2.1`.
 
 ## Política
 
@@ -20,7 +20,7 @@ Usa una de estas formas desde la raíz del repositorio:
 npm run release:version -- patch
 npm run release:version -- minor
 npm run release:version -- major
-npm run release:version -- 0.2.1
+npm run release:version -- 0.2.2
 ```
 
 La versión exacta debe ser ascendente y tener forma SemVer canónica. La herramienta calcula la siguiente versión o valida la indicada antes de modificar archivos. Si detecta una versión inválida, igual, menor o fuentes que ya discrepan, termina sin dejar una actualización parcial.

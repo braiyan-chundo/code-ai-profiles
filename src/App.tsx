@@ -3,6 +3,12 @@ import { convertFileSrc } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { bridge } from "./lib/bridge";
+import {
+  BACKGROUND_REFRESH_COOLDOWN_MS,
+  createScanController,
+  reconcileManualBusy,
+  type ManualScanView,
+} from "./lib/scan-controller";
 import type {
   ArtifactTransferOutcome,
   CodeSession,
@@ -66,7 +72,7 @@ const EMPTY_STATE: DashboardState = {
   },
 };
 
-interface ScanProgressState {
+interface ScanProgressEvent {
   progress: number;
   label: string;
 }
@@ -218,7 +224,7 @@ function App() {
   const [busy, setBusy] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [scanProgress, setScanProgress] = useState<ScanProgressState | null>(null);
+  const [scanProgress, setScanProgress] = useState<ManualScanView | null>(null);
   const [editor, setEditor] = useState<ManagedInstance | "new" | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ManagedInstance | null>(null);
   const [transfer, setTransfer] = useState<SessionTransferSelection | null>(null);
@@ -231,79 +237,78 @@ function App() {
   const [appearance, setAppearance] = useState<AppearancePreferences>(loadAppearancePreferences);
   const [systemDark, setSystemDark] = useState(() => window.matchMedia("(prefers-color-scheme: dark)").matches);
   const searchRef = useRef<HTMLInputElement>(null);
-  const scanInFlightRef = useRef(false);
-  const scanProgressCloseTimerRef = useRef<number | null>(null);
+  const manualProgressUnlistenRef = useRef<(() => void) | null>(null);
+  const scanListenerLifecycleRef = useRef(0);
   const busyRef = useRef<string | null>(null);
   busyRef.current = busy;
-
-  const closeScanProgressSoon = (delay = 260) => {
-    if (scanProgressCloseTimerRef.current !== null) {
-      window.clearTimeout(scanProgressCloseTimerRef.current);
-    }
-    scanProgressCloseTimerRef.current = window.setTimeout(() => {
-      setScanProgress(null);
-      scanProgressCloseTimerRef.current = null;
-    }, delay);
-  };
-
-  const refresh = async (scan = false) => {
-    if (scan && scanInFlightRef.current) return;
-    if (scan) scanInFlightRef.current = true;
-    setBusy(scan ? "scan" : "refresh");
-    setError(null);
-    if (scan) {
-      if (scanProgressCloseTimerRef.current !== null) {
-        window.clearTimeout(scanProgressCloseTimerRef.current);
-        scanProgressCloseTimerRef.current = null;
-      }
-      setScanProgress({ progress: 0, label: "Iniciando el escaneo…" });
-    }
-    try {
-      const nextState = scan ? await bridge.scan() : await bridge.dashboard();
-      setState(nextState);
-      if (scan) {
-        setScanProgress({ progress: 100, label: "Escaneo completado" });
-        closeScanProgressSoon();
-      }
-    } catch (reason) {
-      if (scan) {
-        setScanProgress({ progress: 100, label: "No se pudo completar el escaneo" });
-        closeScanProgressSoon(900);
-      }
-      setError(friendlyError(reason));
-    } finally {
-      if (scan) scanInFlightRef.current = false;
-      setLoading(false);
-      setBusy(null);
-    }
-  };
-
-  useEffect(() => {
-    if (!bridge.isDesktop()) return;
-    let active = true;
-    let removeListener: (() => void) | undefined;
-    void listen<ScanProgressState>("scan-progress", ({ payload }) => {
-      if (active && scanInFlightRef.current) setScanProgress(payload);
-    }).then((unlisten) => {
-      if (active) removeListener = unlisten;
-      else unlisten();
-    }).catch(() => {
-      // El escaneo sigue mostrando inicio y resultado aunque el WebView no exponga eventos.
+  const scanControllerRef = useRef<ReturnType<typeof createScanController<DashboardState>> | null>(null);
+  if (!scanControllerRef.current) {
+    scanControllerRef.current = createScanController({
+      clock: {
+        now: () => Date.now(),
+        setTimeout: (callback, delay) => window.setTimeout(callback, delay),
+        clearTimeout: (timer) => window.clearTimeout(timer),
+      },
+      runBackground: () => bridge.dashboard(),
+      runManual: async (onProgress) => {
+        const listenerLifecycle = scanListenerLifecycleRef.current;
+        let removeListener: (() => void) | null = null;
+        try {
+          if (bridge.isDesktop()) {
+            try {
+              removeListener = await listen<ScanProgressEvent>("scan-progress", ({ payload }) => {
+                onProgress(payload.progress, payload.label);
+              });
+              if (listenerLifecycle !== scanListenerLifecycleRef.current) {
+                removeListener();
+                removeListener = null;
+              } else {
+                manualProgressUnlistenRef.current = removeListener;
+              }
+            } catch {
+              // El scan conserva sus estados inicial y terminal si el WebView no expone eventos.
+            }
+          }
+          if (listenerLifecycle !== scanListenerLifecycleRef.current) {
+            throw new Error("El ciclo de vida del escaneo manual terminó antes de iniciar.");
+          }
+          return await bridge.scan();
+        } finally {
+          if (manualProgressUnlistenRef.current === removeListener) manualProgressUnlistenRef.current = null;
+          removeListener?.();
+        }
+      },
+      onBackgroundResult: setState,
+      onManualResult: setState,
+      onManualView: (view) => {
+        setScanProgress(view);
+        setBusy((current) => reconcileManualBusy(current, view));
+      },
+      describeError: friendlyError,
     });
-    return () => {
-      active = false;
-      removeListener?.();
-      if (scanProgressCloseTimerRef.current !== null) {
-        window.clearTimeout(scanProgressCloseTimerRef.current);
-        scanProgressCloseTimerRef.current = null;
-      }
-    };
-  }, []);
+  }
+  const scanController = scanControllerRef.current;
+
+  const scanManually = () => {
+    if (loading) return;
+    setError(null);
+    scanController.requestManual();
+  };
 
   useEffect(() => {
     let active = true;
     const load = async () => {
-      await refresh();
+      try {
+        const dashboard = await bridge.dashboard();
+        if (active) setState(dashboard);
+      } catch (reason) {
+        if (active) setError(friendlyError(reason));
+      } finally {
+        if (active) {
+          setLoading(false);
+          scanController.markLoaded();
+        }
+      }
       try {
         const sourceUpdate = await bridge.checkSourceUpdate();
         if (active) {
@@ -318,7 +323,17 @@ function App() {
     };
     void load();
     return () => { active = false; };
-  }, []);
+  }, [scanController]);
+
+  useEffect(() => {
+    scanController.activate();
+    return () => {
+      scanListenerLifecycleRef.current += 1;
+      manualProgressUnlistenRef.current?.();
+      manualProgressUnlistenRef.current = null;
+      scanController.deactivate();
+    };
+  }, [scanController]);
 
   const runningInstanceIds = useMemo(
     () => state.instances.filter((instance) => instance.status === "running").map((instance) => instance.id),
@@ -393,28 +408,18 @@ function App() {
   }, []);
 
   useEffect(() => {
-    let active = true;
-    const scanSilently = async () => {
-      if (!active || document.hidden || scanInFlightRef.current || busyRef.current) return;
-      scanInFlightRef.current = true;
-      try {
-        const nextState = await bridge.scan();
-        if (active) setState(nextState);
-      } catch {
-        // Los escaneos de fondo son silenciosos; el escaneo manual muestra los errores.
-      } finally {
-        scanInFlightRef.current = false;
-      }
+    const refreshSilently = (trigger: "focus" | "interval") => {
+      if (document.hidden || busyRef.current) return;
+      scanController.requestBackground(trigger);
     };
-    const timer = window.setInterval(() => void scanSilently(), 60_000);
-    const handleFocus = () => void scanSilently();
+    const timer = window.setInterval(() => refreshSilently("interval"), BACKGROUND_REFRESH_COOLDOWN_MS);
+    const handleFocus = () => refreshSilently("focus");
     window.addEventListener("focus", handleFocus);
     return () => {
-      active = false;
       window.clearInterval(timer);
       window.removeEventListener("focus", handleFocus);
     };
-  }, []);
+  }, [scanController]);
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
@@ -545,7 +550,7 @@ function App() {
             <div className="action-island">
               <span className="sparkle"><SparklesIcon size={19} /></span>
               <span className="action-divider" />
-              <button className="text-action" onClick={() => void refresh(true)} disabled={busy !== null}>
+              <button className="text-action" onClick={scanManually} disabled={loading || busy !== null}>
                 <RefreshIcon className={busy === "scan" ? "spin" : ""} size={18} />
                 <span>Escanear sistema</span>
               </button>
@@ -601,8 +606,13 @@ function App() {
           </label>
         </section>
 
-        <section className={`content ${scanProgress ? "is-scanning" : ""}`} aria-live="polite">
-          {scanProgress && <ScanProgressPanel {...scanProgress} />}
+        <section className={`content ${scanProgress?.status === "waiting" || scanProgress?.status === "running" ? "is-scanning" : ""}`} aria-live="polite">
+          {scanProgress && (
+            <ScanProgressPanel
+              {...scanProgress}
+              onDismiss={() => scanController.dismissManual(scanProgress.generation)}
+            />
+          )}
           {state.system.sourceUpdate.status === "available" && state.system.sourceUpdate.latestVersion && (
             <div className="source-update-banner">
               <span className="update-banner-icon"><SparklesIcon size={17} /></span>
@@ -759,7 +769,7 @@ function App() {
               sourceFound={Boolean(state.system.sourcePath)}
               onCreate={() => setEditor("new")}
               onClear={() => setQuery("")}
-              onScan={() => void refresh(true)}
+              onScan={scanManually}
             />
           )}
         </section>
@@ -997,18 +1007,45 @@ function App() {
   );
 }
 
-function ScanProgressPanel({ progress, label }: ScanProgressState) {
+function ScanProgressPanel({
+  generation,
+  status,
+  progress,
+  label,
+  error,
+  onDismiss,
+}: ManualScanView & { onDismiss: () => void }) {
+  const terminal = status === "success" || status === "error";
+  const heading = status === "waiting"
+    ? "Escaneo manual en espera"
+    : status === "success"
+      ? "Escaneo completado"
+      : status === "error"
+        ? "Escaneo incompleto"
+        : "Escaneando sistema";
   return (
-    <div className="scan-progress-panel" role="status" aria-label={`${label} ${progress}%`}>
+    <div
+      className={`scan-progress-panel is-${status}`}
+      role={status === "error" ? "alert" : "status"}
+      aria-label={`${label} ${progress}%`}
+      data-scan-generation={generation}
+    >
       <div className="scan-progress-heading">
         <div className="scan-progress-copy">
           <span className="scan-radar"><SearchIcon size={17} /></span>
           <div>
-            <strong>Escaneando sistema</strong>
-            <span>{label}</span>
+            <strong>{heading}</strong>
+            <span>{error ?? label}</span>
           </div>
         </div>
-        <span className="scan-percentage">{progress}%</span>
+        <div className="scan-progress-actions">
+          <span className="scan-percentage">{progress}%</span>
+          {terminal && (
+            <button type="button" onClick={onDismiss} aria-label="Ocultar estado del escaneo">
+              Ocultar
+            </button>
+          )}
+        </div>
       </div>
       <div className="scan-progress-track">
         <span style={{ width: `${progress}%` }} />
