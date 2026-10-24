@@ -373,9 +373,14 @@ impl RefreshScope {
         ..Self::LIGHT
     };
     const VERSIONS: Self = Self {
+        processes: true,
+        bundle_names: false,
         versions: true,
+        usage: false,
+        sessions: false,
         topology: true,
-        ..Self::LIGHT
+        storage: false,
+        force_storage: false,
     };
 }
 
@@ -385,6 +390,7 @@ struct RefreshWorkCounters {
     process_inventories: usize,
     transcript_catalogs: usize,
     version_refreshes: usize,
+    usage_refreshes: usize,
     topology_builds: usize,
     storage_walks: usize,
 }
@@ -525,6 +531,7 @@ struct UsageSnapshot {
 #[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 enum OriginalApplicationUpdateAction {
+    #[cfg_attr(target_os = "macos", allow(dead_code))]
     Download,
     Instructions,
 }
@@ -537,9 +544,17 @@ struct OriginalApplicationUpdateResult {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(target_os = "macos", allow(dead_code))]
 struct OriginalApplicationUpdateTarget {
     action: OriginalApplicationUpdateAction,
     url: &'static str,
+}
+
+#[cfg(target_os = "macos")]
+#[derive(Debug, PartialEq, Eq)]
+struct MacosOriginalLaunch {
+    executable: &'static str,
+    arguments: Vec<std::ffi::OsString>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -1012,15 +1027,12 @@ fn source_display_name(source: &Path) -> Option<String> {
     }
 }
 
+#[cfg_attr(target_os = "macos", allow(dead_code))]
 fn original_application_update_target(
     platform: &str,
     arch: &str,
 ) -> Option<OriginalApplicationUpdateTarget> {
     match (platform, arch) {
-        ("macos", "x86_64" | "aarch64") => Some(OriginalApplicationUpdateTarget {
-            action: OriginalApplicationUpdateAction::Download,
-            url: "https://claude.ai/api/desktop/darwin/universal/dmg/latest/redirect",
-        }),
         ("windows", "x86_64") => Some(OriginalApplicationUpdateTarget {
             action: OriginalApplicationUpdateAction::Download,
             url: "https://claude.ai/api/desktop/win32/x64/setup/latest/redirect",
@@ -1869,6 +1881,9 @@ fn read_source_update_cache(
     }
     let mut result = cache.result;
     result.stale = age > UPDATE_CACHE_FRESH_MS;
+    if result.stale {
+        result.status = SourceUpdateStatus::Unavailable;
+    }
     Some(result)
 }
 
@@ -3549,6 +3564,8 @@ fn refresh_registry_scoped(
         refresh_instance_versions(registry);
     }
     if scope.usage {
+        #[cfg(test)]
+        record_refresh_work(|counters| counters.usage_refreshes += 1);
         refresh_instance_usage(registry);
     }
     scope.sessions.then(|| {
@@ -3645,16 +3662,8 @@ fn managed_bytes(paths: &ManagedPaths, force: bool) -> u64 {
     value
 }
 
-fn system_info_scoped(
-    paths: &ManagedPaths,
-    registry: &Registry,
-    session_links: &SessionLinkRegistry,
-    transcripts: Option<&HashMap<String, PathBuf>>,
-    inventory: Option<&ProcessInventory>,
-    scope: RefreshScope,
-    previous: Option<&SystemInfo>,
-) -> SystemInfo {
-    let mut info = previous.cloned().unwrap_or_else(|| SystemInfo {
+fn system_info_seed(previous: Option<&SystemInfo>) -> SystemInfo {
+    previous.cloned().unwrap_or_else(|| SystemInfo {
         app_version: env!("CARGO_PKG_VERSION").to_string(),
         platform: platform_name(),
         source_path: None,
@@ -3674,7 +3683,19 @@ fn system_info_scoped(
         original_code_sessions: Vec::new(),
         free_bytes: None,
         managed_bytes: 0,
-    });
+    })
+}
+
+fn system_info_scoped(
+    paths: &ManagedPaths,
+    registry: &Registry,
+    session_links: &SessionLinkRegistry,
+    transcripts: Option<&HashMap<String, PathBuf>>,
+    inventory: Option<&ProcessInventory>,
+    scope: RefreshScope,
+    previous: Option<&SystemInfo>,
+) -> SystemInfo {
+    let mut info = system_info_seed(previous);
     info.app_version = env!("CARGO_PKG_VERSION").to_string();
 
     if scope.versions || scope.topology {
@@ -3730,28 +3751,74 @@ fn dashboard_from_scope(
     app: &AppHandle,
     requested_scope: RefreshScope,
 ) -> Result<DashboardState, String> {
-    with_registry_operation(|| dashboard_from_scope_unlocked(app, requested_scope))
+    with_registry_operation(|| dashboard_from_scope_unlocked(app, requested_scope, true))
+}
+
+fn dashboard_from_exact_scope(
+    app: &AppHandle,
+    requested_scope: RefreshScope,
+) -> Result<DashboardState, String> {
+    with_registry_operation(|| dashboard_from_scope_unlocked(app, requested_scope, false))
+}
+
+fn effective_refresh_scope(
+    requested_scope: RefreshScope,
+    has_previous_dashboard: bool,
+    allow_full_bootstrap: bool,
+) -> RefreshScope {
+    if !has_previous_dashboard && allow_full_bootstrap {
+        RefreshScope::FULL
+    } else {
+        requested_scope
+    }
+}
+
+fn preserve_unrequested_instance_state(
+    registry: &mut Registry,
+    previous: Option<&DashboardState>,
+    scope: RefreshScope,
+) {
+    let Some(previous) = previous else {
+        return;
+    };
+    for instance in &mut registry.instances {
+        if let Some(previous_instance) = previous
+            .instances
+            .iter()
+            .find(|candidate| candidate.id == instance.id)
+        {
+            if !scope.sessions {
+                instance.code_sessions = previous_instance.code_sessions.clone();
+            }
+            if !scope.usage {
+                instance.usage = previous_instance.usage.clone();
+            }
+        }
+    }
 }
 
 fn dashboard_from_scope_unlocked(
     app: &AppHandle,
     requested_scope: RefreshScope,
+    allow_full_bootstrap: bool,
 ) -> Result<DashboardState, String> {
     let paths = ManagedPaths::resolve(app)?;
     let previous = runtime_cache()
         .lock()
         .ok()
         .and_then(|cache| cache.dashboard.clone());
-    let scope = if previous.is_some() {
-        requested_scope
-    } else {
-        RefreshScope::FULL
-    };
+    let scope = effective_refresh_scope(requested_scope, previous.is_some(), allow_full_bootstrap);
     let mut registry = load_registry(&paths)?;
+    preserve_unrequested_instance_state(&mut registry, previous.as_ref(), scope);
     let inventory = scope.processes.then(ProcessInventory::capture);
     let transcripts = refresh_registry_scoped(&mut registry, scope, inventory.as_ref());
-    let session_links = load_session_links(&paths)?;
-    apply_session_links(&mut registry, &session_links);
+    let session_links = if scope.sessions {
+        let links = load_session_links(&paths)?;
+        apply_session_links(&mut registry, &links);
+        links
+    } else {
+        SessionLinkRegistry::default()
+    };
     save_registry(&paths, &registry)?;
     let system = system_info_scoped(
         &paths,
@@ -3782,6 +3849,16 @@ async fn dashboard_from_scope_async(
         .map_err(|error| format!("{operation} terminó inesperadamente: {error}"))?
 }
 
+async fn dashboard_from_exact_scope_async(
+    app: AppHandle,
+    scope: RefreshScope,
+    operation: &'static str,
+) -> Result<DashboardState, String> {
+    tauri::async_runtime::spawn_blocking(move || dashboard_from_exact_scope(&app, scope))
+        .await
+        .map_err(|error| format!("{operation} terminó inesperadamente: {error}"))?
+}
+
 #[tauri::command]
 async fn get_dashboard_state(app: AppHandle) -> Result<DashboardState, String> {
     dashboard_from_scope_async(app, RefreshScope::FULL, "La carga").await
@@ -3794,6 +3871,12 @@ async fn check_source_update(app: AppHandle) -> Result<SourceUpdateInfo, String>
         .map_err(|error| {
             format!("La comprobación de actualización terminó inesperadamente: {error}")
         })?
+}
+
+#[tauri::command]
+async fn refresh_versions(app: AppHandle) -> Result<DashboardState, String> {
+    invalidate_application_cache();
+    dashboard_from_exact_scope_async(app, RefreshScope::VERSIONS, "El refresco de versiones").await
 }
 
 #[tauri::command]
@@ -5374,46 +5457,92 @@ fn open_instance_folder(app: AppHandle, id: String) -> Result<(), String> {
 }
 
 #[tauri::command]
-fn update_original_application() -> Result<OriginalApplicationUpdateResult, String> {
-    require_provider_source(detect_provider_source())?;
-
-    let platform = platform_name();
-    let target =
-        original_application_update_target(&platform, std::env::consts::ARCH).ok_or_else(|| {
-            "La actualización oficial no está soportada en esta plataforma.".to_string()
-        })?;
+fn update_original_application(app: AppHandle) -> Result<OriginalApplicationUpdateResult, String> {
+    let source = require_provider_source(detect_provider_source())?;
 
     #[cfg(target_os = "macos")]
-    let status = Command::new("/usr/bin/open").arg(target.url).status();
-    #[cfg(target_os = "windows")]
-    let status = Command::new("rundll32.exe")
-        .args(["url.dll,FileProtocolHandler", target.url])
-        .status();
-    #[cfg(target_os = "linux")]
-    let status = Command::new("xdg-open").arg(target.url).status();
-    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
-    let status: Result<std::process::ExitStatus, std::io::Error> = unreachable!();
-
-    let status = status
-        .map_err(|error| format!("No se pudo abrir el canal oficial de actualización: {error}"))?;
-    if !status.success() {
-        return Err(format!(
-            "El sistema no pudo abrir el canal oficial de actualización (código {}).",
-            status
-        ));
+    {
+        let paths = ManagedPaths::resolve(&app)?;
+        return launch_macos_original_application_with(&paths, &source, |launch| {
+            let status = Command::new(launch.executable)
+                .args(&launch.arguments)
+                .status()
+                .map_err(|error| format!("No se pudo abrir la aplicación original: {error}"))?;
+            if status.success() {
+                Ok(())
+            } else {
+                Err(format!(
+                    "El sistema no pudo abrir la aplicación original (código {status})."
+                ))
+            }
+        });
     }
 
-    let message = match target.action {
-        OriginalApplicationUpdateAction::Download => {
-            "Se abrió la descarga oficial. Ejecuta el instalador para actualizar la aplicación original; las instancias permanecen intactas."
+    #[cfg(not(target_os = "macos"))]
+    {
+        let _ = source;
+        let _ = app;
+        let platform = platform_name();
+        let target = original_application_update_target(&platform, std::env::consts::ARCH)
+            .ok_or_else(|| {
+                "La actualización oficial no está soportada en esta plataforma.".to_string()
+            })?;
+
+        #[cfg(target_os = "windows")]
+        let status = Command::new("rundll32.exe")
+            .args(["url.dll,FileProtocolHandler", target.url])
+            .status();
+        #[cfg(target_os = "linux")]
+        let status = Command::new("xdg-open").arg(target.url).status();
+        #[cfg(not(any(target_os = "windows", target_os = "linux")))]
+        let status: Result<std::process::ExitStatus, std::io::Error> = unreachable!();
+
+        let status = status.map_err(|error| {
+            format!("No se pudo abrir el canal oficial de actualización: {error}")
+        })?;
+        if !status.success() {
+            return Err(format!(
+                "El sistema no pudo abrir el canal oficial de actualización (código {}).",
+                status
+            ));
         }
-        OriginalApplicationUpdateAction::Instructions => {
-            "Se abrieron las instrucciones oficiales para actualizar Claude Desktop en Linux; las instancias permanecen intactas."
-        }
-    };
+
+        let message = match target.action {
+            OriginalApplicationUpdateAction::Download => {
+                "Se abrió la descarga oficial. Ejecuta el instalador para actualizar la aplicación original; las instancias permanecen intactas."
+            }
+            OriginalApplicationUpdateAction::Instructions => {
+                "Se abrieron las instrucciones oficiales para actualizar Claude Desktop en Linux; las instancias permanecen intactas."
+            }
+        };
+        Ok(OriginalApplicationUpdateResult {
+            action: target.action,
+            message: message.to_string(),
+        })
+    }
+}
+
+#[cfg(target_os = "macos")]
+fn launch_macos_original_application_with(
+    paths: &ManagedPaths,
+    detected_source: &Path,
+    launch: impl FnOnce(&MacosOriginalLaunch) -> Result<(), String>,
+) -> Result<OriginalApplicationUpdateResult, String> {
+    let source = fs::canonicalize(detected_source)
+        .map_err(|error| format!("No se pudo validar la ruta original detectada: {error}"))?;
+    if path_is_within(&source, &paths.instances) {
+        return Err("La ruta detectada pertenece a una instancia administrada.".to_string());
+    }
+    validate_source(&source)?;
+    validate_provider_identity_uncached(&source, &source)?;
+    launch(&MacosOriginalLaunch {
+        executable: "/usr/bin/open",
+        arguments: vec!["-n".into(), "-a".into(), source.into_os_string()],
+    })?;
     Ok(OriginalApplicationUpdateResult {
-        action: target.action,
-        message: message.to_string(),
+        action: OriginalApplicationUpdateAction::Instructions,
+        message: "Se abrió exclusivamente la aplicación original. En Claude, elige Claude > Check for Updates; las instancias permanecen intactas."
+            .to_string(),
     })
 }
 
@@ -5476,6 +5605,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             get_dashboard_state,
             check_source_update,
+            refresh_versions,
             get_live_usage,
             scan_system,
             create_instance,
@@ -5499,6 +5629,18 @@ pub fn run() {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn test_managed_paths(root: &Path) -> ManagedPaths {
+        ManagedPaths {
+            app_data: root.to_path_buf(),
+            instances: root.join("managed-instances"),
+            registry: root.join("instances.json"),
+            session_backups: root.join("session-transfer-backups"),
+            session_links: root.join("session-links.json"),
+            source_update_cache: root.join("source-update-cache.json"),
+            artifact_exports: root.join("artifact-exports"),
+        }
+    }
 
     fn test_instance(root: &Path) -> ManagedInstance {
         ManagedInstance {
@@ -5619,9 +5761,114 @@ mod tests {
                 process_inventories: 1,
                 transcript_catalogs: 0,
                 version_refreshes: 0,
+                usage_refreshes: 1,
                 topology_builds: 0,
                 storage_walks: 0,
             }
+        );
+    }
+
+    #[test]
+    fn versions_refresh_preserves_sessions_and_skips_profile_and_storage_work() {
+        let root = env::temp_dir().join(format!("code-ai-versions-refresh-{}", Uuid::new_v4()));
+        fs::create_dir_all(root.join("managed-instances")).unwrap();
+        let session = CodeSession {
+            id: "local_96812ba4-6864-40d5-a70a-0470f244022c".to_string(),
+            title: "Session sentinel".to_string(),
+            model: None,
+            effort: None,
+            completed_turns: 1,
+            created_at: None,
+            last_activity_at: None,
+            is_archived: false,
+            context_tokens: None,
+            context_window_tokens: None,
+            context_percent: None,
+            published_artifact_count: 0,
+            artifact_monitor: None,
+            transfer: None,
+            cli_session_id: None,
+        };
+        let usage = UsageStats {
+            session_percent: Some(11.0),
+            weekly_percent: Some(22.0),
+            captured_at: Some(33),
+        };
+        let mut previous_instance = test_instance(&root);
+        previous_instance.code_sessions = vec![session.clone()];
+        previous_instance.usage = Some(usage.clone());
+        let previous_system = SystemInfo {
+            app_version: env!("CARGO_PKG_VERSION").to_string(),
+            platform: platform_name(),
+            source_path: None,
+            source_name: None,
+            source_version: None,
+            source_update: SourceUpdateInfo::default(),
+            version_topology: VersionTopology {
+                latest_installed_version: None,
+                latest_source: None,
+                stale_instance_ids: Vec::new(),
+                original_behind: false,
+                can_synchronize_managed: false,
+                reason: None,
+            },
+            original_profile_path: Some("/private/not-read".to_string()),
+            original_status: InstanceStatus::Stopped,
+            original_code_sessions: vec![session.clone()],
+            free_bytes: Some(44),
+            managed_bytes: 55,
+        };
+        let previous = DashboardState {
+            instances: vec![previous_instance.clone()],
+            system: previous_system.clone(),
+        };
+        let mut registry = Registry {
+            version: REGISTRY_VERSION,
+            instances: vec![test_instance(&root)],
+        };
+        registry.instances[0].id = previous_instance.id.clone();
+        preserve_unrequested_instance_state(&mut registry, Some(&previous), RefreshScope::VERSIONS);
+
+        reset_refresh_work_counters();
+        let inventory = ProcessInventory::capture();
+        let transcripts =
+            refresh_registry_scoped(&mut registry, RefreshScope::VERSIONS, Some(&inventory));
+        let system = system_info_seed(Some(&previous_system));
+
+        assert!(transcripts.is_none());
+        assert_eq!(registry.instances[0].code_sessions[0].id, session.id);
+        assert_eq!(
+            registry.instances[0].usage.as_ref().unwrap().captured_at,
+            usage.captured_at
+        );
+        assert_eq!(system.original_code_sessions[0].title, session.title);
+        assert_eq!(
+            refresh_work_counters(),
+            RefreshWorkCounters {
+                process_inventories: 1,
+                transcript_catalogs: 0,
+                version_refreshes: 1,
+                usage_refreshes: 0,
+                topology_builds: 0,
+                storage_walks: 0,
+            }
+        );
+        assert!(!RefreshScope::VERSIONS.bundle_names);
+        assert!(!RefreshScope::VERSIONS.usage);
+        assert!(!RefreshScope::VERSIONS.sessions);
+        assert!(!RefreshScope::VERSIONS.storage);
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn versions_refresh_never_promotes_a_cold_cache_to_full_scope() {
+        assert_eq!(
+            effective_refresh_scope(RefreshScope::VERSIONS, false, false),
+            RefreshScope::VERSIONS
+        );
+        assert_eq!(
+            effective_refresh_scope(RefreshScope::VERSIONS, false, true),
+            RefreshScope::FULL
         );
     }
 
@@ -6044,14 +6291,7 @@ int main(int argc, const char **argv) {
 
     #[test]
     fn selects_official_update_targets_by_platform_and_architecture() {
-        for arch in ["x86_64", "aarch64"] {
-            let target = original_application_update_target("macos", arch).unwrap();
-            assert_eq!(target.action, OriginalApplicationUpdateAction::Download);
-            assert_eq!(
-                target.url,
-                "https://claude.ai/api/desktop/darwin/universal/dmg/latest/redirect"
-            );
-        }
+        assert_eq!(original_application_update_target("macos", "aarch64"), None);
 
         assert_eq!(
             original_application_update_target("windows", "x86_64"),
@@ -6081,6 +6321,49 @@ int main(int argc, const char **argv) {
     }
 
     #[test]
+    fn source_update_cache_is_bound_to_installed_version_and_stale_is_unavailable() {
+        let root = env::temp_dir().join(format!("code-ai-update-cache-{}", Uuid::new_v4()));
+        fs::create_dir_all(&root).unwrap();
+        let paths = test_managed_paths(&root);
+        let fresh = SourceUpdateInfo {
+            status: SourceUpdateStatus::Current,
+            latest_version: Some("2.0.0".to_string()),
+            checked_at: Some(Utc::now().timestamp_millis()),
+            stale: false,
+            source: Some(SourceUpdateSource::OfficialFeed),
+        };
+        save_source_update_cache(&paths, "macos", "2.0.0", &fresh).unwrap();
+
+        assert_eq!(
+            read_source_update_cache(&paths, "macos", "2.0.0", UPDATE_CACHE_FRESH_MS)
+                .unwrap()
+                .status,
+            SourceUpdateStatus::Current
+        );
+        assert!(
+            read_source_update_cache(&paths, "macos", "2.0.1", UPDATE_CACHE_STALE_MS).is_none()
+        );
+
+        let stale = SourceUpdateInfo {
+            status: SourceUpdateStatus::Available,
+            latest_version: Some("2.1.0".to_string()),
+            checked_at: Some(
+                Utc::now()
+                    .timestamp_millis()
+                    .saturating_sub(UPDATE_CACHE_FRESH_MS + 1_000),
+            ),
+            stale: false,
+            source: Some(SourceUpdateSource::OfficialFeed),
+        };
+        save_source_update_cache(&paths, "macos", "2.0.0", &stale).unwrap();
+        let cached =
+            read_source_update_cache(&paths, "macos", "2.0.0", UPDATE_CACHE_STALE_MS).unwrap();
+        assert!(cached.stale);
+        assert_eq!(cached.status, SourceUpdateStatus::Unavailable);
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
     fn requires_a_detected_source_before_updating_the_original_application() {
         let source = PathBuf::from("/Applications/Claude.app");
         assert_eq!(require_provider_source(Some(source.clone())), Ok(source));
@@ -6088,6 +6371,67 @@ int main(int argc, const char **argv) {
             require_provider_source(None),
             Err("No se encontró la instalación original de la aplicación compatible.".to_string())
         );
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn macos_update_launcher_receives_only_the_validated_exact_original_path() {
+        use std::cell::RefCell;
+
+        let root = env::temp_dir().join(format!("code-ai-update-launch-{}", Uuid::new_v4()));
+        let original = root.join("Original.app");
+        fs::create_dir_all(&root).unwrap();
+        write_signed_fixture_bundle(&original);
+        let paths = test_managed_paths(&root);
+        fs::create_dir_all(&paths.instances).unwrap();
+        let launched = RefCell::new(None);
+
+        let result = launch_macos_original_application_with(&paths, &original, |launch| {
+            launched.replace(Some(MacosOriginalLaunch {
+                executable: launch.executable,
+                arguments: launch.arguments.clone(),
+            }));
+            Ok(())
+        })
+        .unwrap();
+
+        assert_eq!(
+            launched.into_inner(),
+            Some(MacosOriginalLaunch {
+                executable: "/usr/bin/open",
+                arguments: vec![
+                    "-n".into(),
+                    "-a".into(),
+                    fs::canonicalize(&original).unwrap().into_os_string(),
+                ],
+            })
+        );
+        assert_eq!(result.action, OriginalApplicationUpdateAction::Instructions);
+        assert!(result.message.contains("Claude > Check for Updates"));
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn macos_update_launcher_rejects_a_managed_application_without_launching() {
+        use std::cell::Cell;
+
+        let root = env::temp_dir().join(format!("code-ai-update-managed-{}", Uuid::new_v4()));
+        let paths = test_managed_paths(&root);
+        let managed = paths.instances.join("fixture/application/Managed.app");
+        fs::create_dir_all(managed.join("Contents/MacOS")).unwrap();
+        fs::write(managed.join("Contents/MacOS/Claude"), b"fixture").unwrap();
+        let launched = Cell::new(false);
+
+        let error = launch_macos_original_application_with(&paths, &managed, |_| {
+            launched.set(true);
+            Ok(())
+        })
+        .unwrap_err();
+
+        assert!(error.contains("instancia administrada"));
+        assert!(!launched.get());
+        fs::remove_dir_all(root).unwrap();
     }
 
     #[test]

@@ -12,5 +12,6 @@ Este índice es administrado por el agente `document`. Cada ID es secuencial, ú
 | [HU-0006](HU-0006-escaneo-automatico-silencioso-y-ciclo-manual-controlado.md) | Done | Escaneo automático silencioso y ciclo manual controlado | 2026-10-13 |
 | [HU-0007](HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md) | Done | Spike de icono de Dock previo al primer inicio de sesión | 2026-10-14 |
 | [HU-0008](HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md) | Done | Diagnóstico A/B del arranque macOS para branding previo al login | 2026-10-17 |
+| [HU-0009](HU-0009-estado-oficial-de-actualizacion-y-refresco-de-versiones.md) | Done | Estado oficial de actualización y refresco de versiones | 2026-10-23 |
 
 Estados permitidos: `Draft`, `Ready`, `In Progress`, `Blocked`, `Review`, `Done`, `Cancelled`.

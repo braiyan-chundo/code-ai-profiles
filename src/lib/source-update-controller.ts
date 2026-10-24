@@ -1,0 +1,272 @@
+import type { DashboardState, SourceUpdateInfo, SystemInfo, VersionTopology } from "../types";
+
+export type SourceInstallationIdentity = Pick<SystemInfo, "sourcePath" | "sourceVersion">;
+
+export function sourceInstallationIdentity(system: SystemInfo): SourceInstallationIdentity {
+  return { sourcePath: system.sourcePath, sourceVersion: system.sourceVersion };
+}
+
+export function mergeSourceUpdateForInstallation(
+  current: DashboardState,
+  expected: SourceInstallationIdentity,
+  sourceUpdate: SourceUpdateInfo,
+): DashboardState {
+  if (
+    current.system.sourcePath !== expected.sourcePath
+    || current.system.sourceVersion !== expected.sourceVersion
+  ) return current;
+  return { ...current, system: { ...current.system, sourceUpdate } };
+}
+
+export type SourceUpdatePresentationKind = "available" | "local-ahead" | "uncertain";
+
+export interface SourceUpdatePresentation {
+  kind: SourceUpdatePresentationKind;
+  title: string;
+  detail: string;
+  actionLabel: string;
+}
+
+export function sourceUpdatePresentation(
+  sourceUpdate: SourceUpdateInfo,
+  topology: VersionTopology,
+  appName: string,
+): SourceUpdatePresentation | null {
+  const fresh = !sourceUpdate.stale && sourceUpdate.checkedAt !== null && sourceUpdate.source !== null;
+
+  if (fresh && sourceUpdate.status === "available" && sourceUpdate.latestVersion) {
+    return {
+      kind: "available",
+      title: `Actualización oficial disponible para ${appName}`,
+      detail: `La comprobación oficial informa que la versión ${sourceUpdate.latestVersion} está disponible.`,
+      actionLabel: "Ver actualización",
+    };
+  }
+
+  if (fresh && sourceUpdate.status === "current") {
+    if (!topology.originalBehind) return null;
+    const localVersion = topology.latestInstalledVersion
+      ? ` (${topology.latestInstalledVersion})`
+      : "";
+    return {
+      kind: "local-ahead",
+      title: "La original está al día según la comprobación oficial",
+      detail: `Una instancia usa una compilación local superior${localVersion}. Esto no confirma una actualización oficial adicional.`,
+      actionLabel: "Comprobar actualización",
+    };
+  }
+
+  return {
+    kind: "uncertain",
+    title: "No se pudo confirmar el estado de actualización",
+    detail: sourceUpdate.stale
+      ? "La información oficial disponible no es reciente. Puedes abrir el flujo oficial para comprobarla de forma segura."
+      : "La comprobación oficial no está disponible en este momento. Puedes abrir el flujo oficial de forma segura.",
+    actionLabel: "Comprobar actualización",
+  };
+}
+
+interface HandoffIntent {
+  generation: number;
+  lifecycle: number;
+  handoffConfirmed: boolean;
+  departed: boolean;
+  returned: boolean;
+  refreshAttempts: number;
+}
+
+interface SourceUpdateControllerOptions<T> {
+  runRefresh: () => Promise<T>;
+  onRefreshResult: (result: T) => void;
+  runOfficialCheck?: (refreshResult: T) => Promise<SourceUpdateInfo>;
+  onOfficialCheckResult?: (sourceUpdate: SourceUpdateInfo, refreshResult: T) => void;
+}
+
+export interface SourceUpdateController {
+  runHandoff: <T>(handoff: () => Promise<T>) => Promise<T>;
+  handleBlur: () => void;
+  handleFocus: () => void;
+  handleVisibility: (hidden: boolean) => void;
+  hasPendingRefresh: () => boolean;
+  blocksGeneralRefresh: (trigger: "focus" | "interval") => boolean;
+  activate: () => void;
+  deactivate: () => void;
+  dispose: () => void;
+}
+
+const MAX_REFRESH_ATTEMPTS_PER_HANDOFF = 2;
+
+export function createSourceUpdateController<T>(
+  options: SourceUpdateControllerOptions<T>,
+): SourceUpdateController {
+  let active = true;
+  let disposed = false;
+  let lifecycle = 0;
+  let generation = 0;
+  let intent: HandoffIntent | null = null;
+  let refreshOwner: { generation: number; lifecycle: number } | null = null;
+  let suppressNextGeneralFocus = false;
+
+  const isCurrent = (candidate: HandoffIntent) => (
+    !disposed
+    && active
+    && intent === candidate
+    && lifecycle === candidate.lifecycle
+    && generation === candidate.generation
+  );
+
+  const isCurrentGeneration = (candidate: HandoffIntent) => (
+    !disposed
+    && active
+    && lifecycle === candidate.lifecycle
+    && generation === candidate.generation
+  );
+
+  const checkOfficialStatus = (candidate: HandoffIntent, refreshResult: T) => {
+    if (!options.runOfficialCheck || !options.onOfficialCheckResult) return;
+    let checkPromise: Promise<SourceUpdateInfo>;
+    try {
+      checkPromise = Promise.resolve(options.runOfficialCheck(refreshResult));
+    } catch {
+      return;
+    }
+    void checkPromise.then((sourceUpdate) => {
+      if (isCurrentGeneration(candidate)) {
+        options.onOfficialCheckResult?.(sourceUpdate, refreshResult);
+      }
+    }).catch(() => {
+      // La topología local ya se aplicó; la metadata oficial conserva su estado neutral.
+    });
+  };
+
+  const requestRefresh = (candidate: HandoffIntent) => {
+    if (
+      !isCurrent(candidate)
+      || !candidate.handoffConfirmed
+      || refreshOwner !== null
+      || candidate.refreshAttempts >= MAX_REFRESH_ATTEMPTS_PER_HANDOFF
+    ) return false;
+
+    candidate.refreshAttempts += 1;
+    const owner = { generation: candidate.generation, lifecycle: candidate.lifecycle };
+    refreshOwner = owner;
+    let refreshPromise: Promise<T>;
+    try {
+      refreshPromise = Promise.resolve(options.runRefresh());
+    } catch (reason) {
+      refreshPromise = Promise.reject(reason);
+    }
+    void refreshPromise.then((result) => {
+      if (!isCurrent(candidate)) return;
+      intent = null;
+      options.onRefreshResult(result);
+      checkOfficialStatus(candidate, result);
+    }).catch(() => {
+      if (!isCurrent(candidate)) return;
+      if (candidate.refreshAttempts >= MAX_REFRESH_ATTEMPTS_PER_HANDOFF) intent = null;
+    }).finally(() => {
+      if (
+        refreshOwner?.generation === owner.generation
+        && refreshOwner.lifecycle === owner.lifecycle
+      ) {
+        refreshOwner = null;
+        const queued = intent;
+        if (
+          queued
+          && queued.generation !== owner.generation
+          && queued.handoffConfirmed
+          && queued.returned
+          && queued.refreshAttempts === 0
+        ) requestRefresh(queued);
+      }
+    });
+    return true;
+  };
+
+  const registerDeparture = () => {
+    if (!intent || !isCurrent(intent)) return;
+    intent.departed = true;
+  };
+
+  const registerReturn = () => {
+    if (!intent || !isCurrent(intent)) return;
+    if (!intent.handoffConfirmed && !intent.departed) return;
+    intent.returned = true;
+    suppressNextGeneralFocus = true;
+    if (intent.handoffConfirmed) requestRefresh(intent);
+  };
+
+  return {
+    async runHandoff<TResult>(handoff: () => Promise<TResult>): Promise<TResult> {
+      if (disposed || !active) throw new Error("El controlador de actualización no está activo.");
+      generation += 1;
+      const candidate: HandoffIntent = {
+        generation,
+        lifecycle,
+        handoffConfirmed: false,
+        departed: false,
+        returned: false,
+        refreshAttempts: 0,
+      };
+      intent = candidate;
+      try {
+        const result = await handoff();
+        if (isCurrent(candidate)) {
+          candidate.handoffConfirmed = true;
+          if (candidate.returned) requestRefresh(candidate);
+        }
+        return result;
+      } catch (reason) {
+        if (isCurrent(candidate)) {
+          intent = null;
+          suppressNextGeneralFocus = false;
+        }
+        throw reason;
+      }
+    },
+
+    handleBlur() {
+      registerDeparture();
+    },
+
+    handleFocus() {
+      registerReturn();
+    },
+
+    handleVisibility(hidden) {
+      if (hidden) registerDeparture();
+      else registerReturn();
+    },
+
+    hasPendingRefresh() {
+      return intent !== null;
+    },
+
+    blocksGeneralRefresh(trigger) {
+      if (trigger === "focus" && suppressNextGeneralFocus) {
+        suppressNextGeneralFocus = false;
+        return true;
+      }
+      return intent !== null;
+    },
+
+    activate() {
+      if (!disposed) active = true;
+    },
+
+    deactivate() {
+      if (disposed || !active) return;
+      active = false;
+      lifecycle += 1;
+      generation += 1;
+      intent = null;
+      suppressNextGeneralFocus = false;
+    },
+
+    dispose() {
+      if (disposed) return;
+      this.deactivate();
+      disposed = true;
+    },
+  };
+}

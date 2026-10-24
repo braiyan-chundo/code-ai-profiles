@@ -28,6 +28,9 @@ jobs:
       - name: Test scan controller
         run: npm run test:scan
 
+      - name: Test source update controller
+        run: npm run test:update
+
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"

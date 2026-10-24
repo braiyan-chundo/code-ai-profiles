@@ -52,7 +52,7 @@ export interface CodeSession {
   transfer?: SessionTransferInfo | null;
 }
 
-export type SourceUpdateStatus = "current" | "available" | "unavailable";
+export type SourceUpdateStatus = "current" | "available" | "unavailable" | "unknown" | "error";
 export type SourceUpdateSource = "officialFeed" | "aptCache";
 
 export interface SourceUpdateInfo {
