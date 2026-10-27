@@ -1940,8 +1940,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "src_tauri_src_lib_registry",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 35,
+      "community_name": "system_info_scoped",
       "norm_label": "registry"
     },
     {
@@ -1951,8 +1951,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "vec",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "vec"
     },
     {
@@ -1962,8 +1962,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "managedinstance",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 35,
+      "community_name": "system_info_scoped",
       "norm_label": "managedinstance"
     },
     {
@@ -1973,8 +1973,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "default",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 55,
+      "community_name": "ManagedPaths",
       "norm_label": "default"
     },
     {
@@ -1984,8 +1984,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "src_tauri_src_lib_registry_default",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 57,
+      "community_name": ".default",
       "norm_label": ".default()"
     },
     {
@@ -1995,8 +1995,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "self",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 57,
+      "community_name": ".default",
       "norm_label": "self"
     },
     {
@@ -2017,8 +2017,8 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "src_tauri_src_lib_managedinstance",
-      "community": 3,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "managedinstance"
     },
     {
@@ -2039,7 +2039,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "option",
-      "community": 53,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "option"
     },
@@ -2050,8 +2050,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "managedprocessidentity",
-      "community": 3,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "managedprocessidentity"
     },
     {
@@ -2061,8 +2061,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "customicon",
-      "community": 3,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "customicon"
     },
     {
@@ -2072,8 +2072,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "instancestatus",
-      "community": 3,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "instancestatus"
     },
     {
@@ -2083,8 +2083,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "usagestats",
-      "community": 3,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "usagestats"
     },
     {
@@ -2094,8 +2094,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "codesession",
-      "community": 3,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "codesession"
     },
     {
@@ -2106,7 +2106,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_providerprovenance",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "providerprovenance"
     },
     {
@@ -2116,8 +2116,8 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "src_tauri_src_lib_managedprocessidentity",
-      "community": 3,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "managedprocessidentity"
     },
     {
@@ -2128,7 +2128,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_customicon",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "customicon"
     },
     {
@@ -2138,8 +2138,8 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "src_tauri_src_lib_accountplan",
-      "community": 3,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "accountplan"
     },
     {
@@ -2149,8 +2149,8 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "src_tauri_src_lib_instancestatus",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 35,
+      "community_name": "system_info_scoped",
       "norm_label": "instancestatus"
     },
     {
@@ -2160,7 +2160,7 @@
       "source_location": "L145",
       "_origin": "ast",
       "id": "src_tauri_src_lib_usagestats",
-      "community": 53,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "usagestats"
     },
@@ -2171,8 +2171,8 @@
       "source_location": "L153",
       "_origin": "ast",
       "id": "src_tauri_src_lib_codesession",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 60,
+      "community_name": "SessionLinkRegistry",
       "norm_label": "codesession"
     },
     {
@@ -2182,8 +2182,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "artifactmonitorsummary",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 60,
+      "community_name": "SessionLinkRegistry",
       "norm_label": "artifactmonitorsummary"
     },
     {
@@ -2193,8 +2193,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "sessiontransferinfo",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 60,
+      "community_name": "SessionLinkRegistry",
       "norm_label": "sessiontransferinfo"
     },
     {
@@ -2204,7 +2204,7 @@
       "source_location": "L177",
       "_origin": "ast",
       "id": "src_tauri_src_lib_artifactmonitorsummary",
-      "community": 53,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "artifactmonitorsummary"
     },
@@ -2237,7 +2237,7 @@
       "source_location": "L200",
       "_origin": "ast",
       "id": "src_tauri_src_lib_codesessiondocument",
-      "community": 53,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "codesessiondocument"
     },
@@ -2248,8 +2248,8 @@
       "source_location": "L217",
       "_origin": "ast",
       "id": "src_tauri_src_lib_transcriptentry",
-      "community": 53,
-      "community_name": "Option",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "transcriptentry"
     },
     {
@@ -2270,8 +2270,8 @@
       "source_location": "L228",
       "_origin": "ast",
       "id": "src_tauri_src_lib_artifactmonitorentry",
-      "community": 53,
-      "community_name": "Option",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "artifactmonitorentry"
     },
     {
@@ -2281,8 +2281,8 @@
       "source_location": "L233",
       "_origin": "ast",
       "id": "src_tauri_src_lib_transcriptmessage",
-      "community": 53,
-      "community_name": "Option",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "transcriptmessage"
     },
     {
@@ -2292,8 +2292,8 @@
       "source_location": "L239",
       "_origin": "ast",
       "id": "src_tauri_src_lib_transcriptusage",
-      "community": 53,
-      "community_name": "Option",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "transcriptusage"
     },
     {
@@ -2303,8 +2303,8 @@
       "source_location": "L251",
       "_origin": "ast",
       "id": "src_tauri_src_lib_transcriptusageiteration",
-      "community": 53,
-      "community_name": "Option",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "transcriptusageiteration"
     },
     {
@@ -2369,8 +2369,8 @@
       "source_location": "L319",
       "_origin": "ast",
       "id": "src_tauri_src_lib_systeminfo",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 35,
+      "community_name": "system_info_scoped",
       "norm_label": "systeminfo"
     },
     {
@@ -2380,8 +2380,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "sourceupdateinfo",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 35,
+      "community_name": "system_info_scoped",
       "norm_label": "sourceupdateinfo"
     },
     {
@@ -2391,8 +2391,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "versiontopology",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 35,
+      "community_name": "system_info_scoped",
       "norm_label": "versiontopology"
     },
     {
@@ -2446,8 +2446,8 @@
       "source_location": "L410",
       "_origin": "ast",
       "id": "src_tauri_src_lib_reset_refresh_work_counters",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 57,
+      "community_name": ".default",
       "norm_label": "reset_refresh_work_counters()"
     },
     {
@@ -2578,8 +2578,8 @@
       "source_location": "L455",
       "_origin": "ast",
       "id": "src_tauri_src_lib_versiontopology",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "versiontopology"
     },
     {
@@ -2589,8 +2589,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "versionsource",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "versionsource"
     },
     {
@@ -2600,8 +2600,8 @@
       "source_location": "L466",
       "_origin": "ast",
       "id": "src_tauri_src_lib_versionsource",
-      "community": 48,
-      "community_name": "String",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "versionsource"
     },
     {
@@ -2611,8 +2611,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "versionsourcekind",
-      "community": 48,
-      "community_name": "String",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "versionsourcekind"
     },
     {
@@ -2633,8 +2633,8 @@
       "source_location": "L481",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sourceupdateinfo",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 55,
+      "community_name": "ManagedPaths",
       "norm_label": "sourceupdateinfo"
     },
     {
@@ -2644,8 +2644,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "sourceupdatestatus",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 55,
+      "community_name": "ManagedPaths",
       "norm_label": "sourceupdatestatus"
     },
     {
@@ -2655,8 +2655,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "sourceupdatesource",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 55,
+      "community_name": "ManagedPaths",
       "norm_label": "sourceupdatesource"
     },
     {
@@ -2666,8 +2666,8 @@
       "source_location": "L490",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sourceupdateinfo_default",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 57,
+      "community_name": ".default",
       "norm_label": ".default()"
     },
     {
@@ -2699,8 +2699,8 @@
       "source_location": "L518",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sourceupdatecache",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 55,
+      "community_name": "ManagedPaths",
       "norm_label": "sourceupdatecache"
     },
     {
@@ -2754,8 +2754,8 @@
       "source_location": "L555",
       "_origin": "ast",
       "id": "src_tauri_src_lib_macosoriginallaunch",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "macosoriginallaunch"
     },
     {
@@ -2765,8 +2765,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "osstring",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "osstring"
     },
     {
@@ -2853,8 +2853,8 @@
       "source_location": "L613",
       "_origin": "ast",
       "id": "src_tauri_src_lib_artifacttransferoutcome",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "artifacttransferoutcome"
     },
     {
@@ -2875,8 +2875,8 @@
       "source_location": "L633",
       "_origin": "ast",
       "id": "src_tauri_src_lib_synchronizemanagedapplicationsrequest",
-      "community": 48,
-      "community_name": "String",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "synchronizemanagedapplicationsrequest"
     },
     {
@@ -2963,8 +2963,8 @@
       "source_location": "L710",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessionlinkregistry",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 60,
+      "community_name": "SessionLinkRegistry",
       "norm_label": "sessionlinkregistry"
     },
     {
@@ -2974,8 +2974,8 @@
       "source_location": "L718",
       "_origin": "ast",
       "id": "src_tauri_src_lib_transferprofile",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 35,
+      "community_name": "system_info_scoped",
       "norm_label": "transferprofile"
     },
     {
@@ -2985,8 +2985,8 @@
       "source_location": "L726",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessionlinkregistry_default",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 57,
+      "community_name": ".default",
       "norm_label": ".default()"
     },
     {
@@ -3062,8 +3062,8 @@
       "source_location": "L794",
       "_origin": "ast",
       "id": "src_tauri_src_lib_save_session_links",
-      "community": 48,
-      "community_name": "String",
+      "community": 41,
+      "community_name": "copy_code_session_sync",
       "norm_label": "save_session_links()"
     },
     {
@@ -3084,8 +3084,8 @@
       "source_location": "L854",
       "_origin": "ast",
       "id": "src_tauri_src_lib_load_session_links",
-      "community": 48,
-      "community_name": "String",
+      "community": 41,
+      "community_name": "copy_code_session_sync",
       "norm_label": "load_session_links()"
     },
     {
@@ -3095,8 +3095,8 @@
       "source_location": "L866",
       "_origin": "ast",
       "id": "src_tauri_src_lib_apply_session_links",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 60,
+      "community_name": "SessionLinkRegistry",
       "norm_label": "apply_session_links()"
     },
     {
@@ -3106,8 +3106,8 @@
       "source_location": "L872",
       "_origin": "ast",
       "id": "src_tauri_src_lib_apply_session_links_to_profile",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 60,
+      "community_name": "SessionLinkRegistry",
       "norm_label": "apply_session_links_to_profile()"
     },
     {
@@ -3128,8 +3128,8 @@
       "source_location": "L903",
       "_origin": "ast",
       "id": "src_tauri_src_lib_platform_name",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 57,
+      "community_name": ".default",
       "norm_label": "platform_name()"
     },
     {
@@ -3139,7 +3139,7 @@
       "source_location": "L916",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sanitize_source_name",
-      "community": 53,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "sanitize_source_name()"
     },
@@ -3150,7 +3150,7 @@
       "source_location": "L922",
       "_origin": "ast",
       "id": "src_tauri_src_lib_readable_source_stem",
-      "community": 53,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "readable_source_stem()"
     },
@@ -3162,7 +3162,7 @@
       "_origin": "ast",
       "id": "path",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "path"
     },
     {
@@ -3172,7 +3172,7 @@
       "source_location": "L939",
       "_origin": "ast",
       "id": "src_tauri_src_lib_source_name_from_metadata",
-      "community": 53,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "source_name_from_metadata()"
     },
@@ -3184,7 +3184,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_bundle_value",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macos_bundle_value()"
     },
     {
@@ -3194,7 +3194,7 @@
       "source_location": "L965",
       "_origin": "ast",
       "id": "src_tauri_src_lib_linux_desktop_name",
-      "community": 53,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "linux_desktop_name()"
     },
@@ -3205,7 +3205,7 @@
       "source_location": "L982",
       "_origin": "ast",
       "id": "src_tauri_src_lib_source_display_name",
-      "community": 53,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "source_display_name()"
     },
@@ -3249,8 +3249,8 @@
       "source_location": "L1116",
       "_origin": "ast",
       "id": "src_tauri_src_lib_detect_original_profile",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 35,
+      "community_name": "system_info_scoped",
       "norm_label": "detect_original_profile()"
     },
     {
@@ -3260,8 +3260,8 @@
       "source_location": "L1158",
       "_origin": "ast",
       "id": "src_tauri_src_lib_original_instance_status_with_inventory",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 35,
+      "community_name": "system_info_scoped",
       "norm_label": "original_instance_status_with_inventory()"
     },
     {
@@ -3271,8 +3271,8 @@
       "source_location": "L1172",
       "_origin": "ast",
       "id": "src_tauri_src_lib_resolve_transfer_profile",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 35,
+      "community_name": "system_info_scoped",
       "norm_label": "resolve_transfer_profile()"
     },
     {
@@ -3283,7 +3283,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_provider_executable",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "provider_executable()"
     },
     {
@@ -3293,8 +3293,8 @@
       "source_location": "L1214",
       "_origin": "ast",
       "id": "src_tauri_src_lib_linux_provider_installation",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "linux_provider_installation()"
     },
     {
@@ -3304,7 +3304,7 @@
       "source_location": "L1229",
       "_origin": "ast",
       "id": "src_tauri_src_lib_normalize_linux_version",
-      "community": 53,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "normalize_linux_version()"
     },
@@ -3315,8 +3315,8 @@
       "source_location": "L1249",
       "_origin": "ast",
       "id": "src_tauri_src_lib_validate_source",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "validate_source()"
     },
     {
@@ -3326,7 +3326,7 @@
       "source_location": "L1296",
       "_origin": "ast",
       "id": "src_tauri_src_lib_source_version",
-      "community": 53,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "source_version()"
     },
@@ -3338,7 +3338,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_metadata_stamp",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "metadata_stamp()"
     },
     {
@@ -3349,7 +3349,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_application_fingerprint",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "application_fingerprint()"
     },
     {
@@ -3359,8 +3359,8 @@
       "source_location": "L1422",
       "_origin": "ast",
       "id": "src_tauri_src_lib_cached_source_version",
-      "community": 1,
-      "community_name": "Path",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "cached_source_version()"
     },
     {
@@ -3392,8 +3392,8 @@
       "source_location": "L1451",
       "_origin": "ast",
       "id": "src_tauri_src_lib_version_parts",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "version_parts()"
     },
     {
@@ -3403,8 +3403,8 @@
       "source_location": "L1459",
       "_origin": "ast",
       "id": "src_tauri_src_lib_version_is_newer",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "version_is_newer()"
     },
     {
@@ -3414,8 +3414,8 @@
       "source_location": "L1475",
       "_origin": "ast",
       "id": "src_tauri_src_lib_versions_equal",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "versions_equal()"
     },
     {
@@ -3425,8 +3425,8 @@
       "source_location": "L1479",
       "_origin": "ast",
       "id": "src_tauri_src_lib_path_is_within",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "path_is_within()"
     },
     {
@@ -3437,7 +3437,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_team_identifier",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macos_team_identifier()"
     },
     {
@@ -3448,7 +3448,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_code_hash",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macos_code_hash()"
     },
     {
@@ -3459,7 +3459,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_validate_provider_identity_uncached",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "validate_provider_identity_uncached()"
     },
     {
@@ -3470,7 +3470,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_windows_signer_subject",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "windows_signer_subject()"
     },
     {
@@ -3481,7 +3481,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_validate_provider_identity",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "validate_provider_identity()"
     },
     {
@@ -3492,7 +3492,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_fingerprint_label",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "fingerprint_label()"
     },
     {
@@ -3503,7 +3503,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_validate_managed_provenance",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "validate_managed_provenance()"
     },
     {
@@ -3513,8 +3513,8 @@
       "source_location": "L1668",
       "_origin": "ast",
       "id": "src_tauri_src_lib_validate_managed_application_source",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "validate_managed_application_source()"
     },
     {
@@ -3524,8 +3524,8 @@
       "source_location": "L1700",
       "_origin": "ast",
       "id": "src_tauri_src_lib_validate_managed_application",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "validate_managed_application()"
     },
     {
@@ -3535,8 +3535,8 @@
       "source_location": "L1721",
       "_origin": "ast",
       "id": "src_tauri_src_lib_build_version_topology",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "build_version_topology()"
     },
     {
@@ -3546,8 +3546,8 @@
       "source_location": "L1833",
       "_origin": "ast",
       "id": "src_tauri_src_lib_valid_release_version",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "valid_release_version()"
     },
     {
@@ -3557,8 +3557,8 @@
       "source_location": "L1842",
       "_origin": "ast",
       "id": "src_tauri_src_lib_update_feed_target",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "update_feed_target()"
     },
     {
@@ -3590,8 +3590,8 @@
       "source_location": "L1890",
       "_origin": "ast",
       "id": "src_tauri_src_lib_save_source_update_cache",
-      "community": 48,
-      "community_name": "String",
+      "community": 55,
+      "community_name": "ManagedPaths",
       "norm_label": "save_source_update_cache()"
     },
     {
@@ -3601,8 +3601,8 @@
       "source_location": "L1906",
       "_origin": "ast",
       "id": "src_tauri_src_lib_check_official_update_feed",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "check_official_update_feed()"
     },
     {
@@ -3612,8 +3612,8 @@
       "source_location": "L1964",
       "_origin": "ast",
       "id": "src_tauri_src_lib_parse_apt_policy",
-      "community": 53,
-      "community_name": "Option",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "parse_apt_policy()"
     },
     {
@@ -3689,8 +3689,8 @@
       "source_location": "L2203",
       "_origin": "ast",
       "id": "src_tauri_src_lib_rollback_application_directory",
-      "community": 48,
-      "community_name": "String",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "rollback_application_directory()"
     },
     {
@@ -3711,7 +3711,7 @@
       "source_location": "L2229",
       "_origin": "ast",
       "id": "src_tauri_src_lib_read_usage",
-      "community": 53,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "read_usage()"
     },
@@ -3722,8 +3722,8 @@
       "source_location": "L2249",
       "_origin": "ast",
       "id": "src_tauri_src_lib_clean_session_text",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 41,
+      "community_name": "copy_code_session_sync",
       "norm_label": "clean_session_text()"
     },
     {
@@ -3744,8 +3744,8 @@
       "source_location": "L2272",
       "_origin": "ast",
       "id": "src_tauri_src_lib_parse_code_session",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 60,
+      "community_name": "SessionLinkRegistry",
       "norm_label": "parse_code_session()"
     },
     {
@@ -3755,7 +3755,7 @@
       "source_location": "L2299",
       "_origin": "ast",
       "id": "src_tauri_src_lib_clean_monitor_state",
-      "community": 53,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "clean_monitor_state()"
     },
@@ -3766,7 +3766,7 @@
       "source_location": "L2310",
       "_origin": "ast",
       "id": "src_tauri_src_lib_latest_artifact_monitor",
-      "community": 53,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "latest_artifact_monitor()"
     },
@@ -3777,8 +3777,8 @@
       "source_location": "L2356",
       "_origin": "ast",
       "id": "src_tauri_src_lib_collect_code_session_files",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "collect_code_session_files()"
     },
     {
@@ -3887,8 +3887,8 @@
       "source_location": "L2643",
       "_origin": "ast",
       "id": "src_tauri_src_lib_profile_identity",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "profile_identity()"
     },
     {
@@ -3898,8 +3898,8 @@
       "source_location": "L2673",
       "_origin": "ast",
       "id": "src_tauri_src_lib_find_file_named",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 43,
+      "community_name": "PathBuf",
       "norm_label": "find_file_named()"
     },
     {
@@ -3909,8 +3909,8 @@
       "source_location": "L2698",
       "_origin": "ast",
       "id": "src_tauri_src_lib_atomic_replace_file",
-      "community": 48,
-      "community_name": "String",
+      "community": 41,
+      "community_name": "copy_code_session_sync",
       "norm_label": "atomic_replace_file()"
     },
     {
@@ -3920,8 +3920,8 @@
       "source_location": "L2730",
       "_origin": "ast",
       "id": "src_tauri_src_lib_restore_optional_file",
-      "community": 48,
-      "community_name": "String",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "restore_optional_file()"
     },
     {
@@ -3986,8 +3986,8 @@
       "source_location": "L2890",
       "_origin": "ast",
       "id": "src_tauri_src_lib_artifact_export_roots",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "artifact_export_roots()"
     },
     {
@@ -4008,8 +4008,8 @@
       "source_location": "L2912",
       "_origin": "ast",
       "id": "src_tauri_src_lib_collect_opaque_artifact_files",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "collect_opaque_artifact_files()"
     },
     {
@@ -4019,8 +4019,8 @@
       "source_location": "L2972",
       "_origin": "ast",
       "id": "src_tauri_src_lib_export_local_artifacts",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "export_local_artifacts()"
     },
     {
@@ -4041,8 +4041,8 @@
       "source_location": "L3293",
       "_origin": "ast",
       "id": "src_tauri_src_lib_unlink_code_session_sync",
-      "community": 48,
-      "community_name": "String",
+      "community": 41,
+      "community_name": "copy_code_session_sync",
       "norm_label": "unlink_code_session_sync()"
     },
     {
@@ -4074,8 +4074,8 @@
       "source_location": "L3415",
       "_origin": "ast",
       "id": "src_tauri_src_lib_process_fingerprint",
-      "community": 3,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "process_fingerprint()"
     },
     {
@@ -4085,8 +4085,8 @@
       "source_location": "L3424",
       "_origin": "ast",
       "id": "src_tauri_src_lib_processinventoryentry",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "processinventoryentry"
     },
     {
@@ -4096,8 +4096,8 @@
       "source_location": "L3431",
       "_origin": "ast",
       "id": "src_tauri_src_lib_processinventory",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 35,
+      "community_name": "system_info_scoped",
       "norm_label": "processinventory"
     },
     {
@@ -4118,8 +4118,8 @@
       "source_location": "L3462",
       "_origin": "ast",
       "id": "src_tauri_src_lib_processinventory_start_time",
-      "community": 48,
-      "community_name": "String",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": ".start_time()"
     },
     {
@@ -4129,8 +4129,8 @@
       "source_location": "L3469",
       "_origin": "ast",
       "id": "src_tauri_src_lib_processinventory_application_is_running",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 35,
+      "community_name": "system_info_scoped",
       "norm_label": ".application_is_running()"
     },
     {
@@ -4140,8 +4140,8 @@
       "source_location": "L3478",
       "_origin": "ast",
       "id": "src_tauri_src_lib_process_snapshot",
-      "community": 3,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "process_snapshot()"
     },
     {
@@ -4151,8 +4151,8 @@
       "source_location": "L3503",
       "_origin": "ast",
       "id": "src_tauri_src_lib_identity_matches_instance",
-      "community": 3,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "identity_matches_instance()"
     },
     {
@@ -4162,8 +4162,8 @@
       "source_location": "L3521",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refresh_process_identity",
-      "community": 3,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "refresh_process_identity()"
     },
     {
@@ -4206,8 +4206,8 @@
       "source_location": "L3617",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refresh_instance_versions",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "refresh_instance_versions()"
     },
     {
@@ -4217,8 +4217,8 @@
       "source_location": "L3628",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refresh_instance_usage",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 35,
+      "community_name": "system_info_scoped",
       "norm_label": "refresh_instance_usage()"
     },
     {
@@ -4250,8 +4250,8 @@
       "source_location": "L3665",
       "_origin": "ast",
       "id": "src_tauri_src_lib_system_info_seed",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 57,
+      "community_name": ".default",
       "norm_label": "system_info_seed()"
     },
     {
@@ -4261,8 +4261,8 @@
       "source_location": "L3689",
       "_origin": "ast",
       "id": "src_tauri_src_lib_system_info_scoped",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 35,
+      "community_name": "system_info_scoped",
       "norm_label": "system_info_scoped()"
     },
     {
@@ -4591,8 +4591,8 @@
       "source_location": "L4580",
       "_origin": "ast",
       "id": "src_tauri_src_lib_process_start_time",
-      "community": 48,
-      "community_name": "String",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "process_start_time()"
     },
     {
@@ -4624,8 +4624,8 @@
       "source_location": "L4597",
       "_origin": "ast",
       "id": "src_tauri_src_lib_wait_until_instance_stops",
-      "community": 3,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "wait_until_instance_stops()"
     },
     {
@@ -4635,8 +4635,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "duration",
-      "community": 3,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "duration"
     },
     {
@@ -4680,7 +4680,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_clone_directory",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "clone_directory()"
     },
     {
@@ -4691,7 +4691,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_set_macos_workspace_icon",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "set_macos_workspace_icon()"
     },
     {
@@ -4702,7 +4702,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_apply_macos_custom_icon",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "apply_macos_custom_icon()"
     },
     {
@@ -4713,7 +4713,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macosupdatebrandingoutcome",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macosupdatebrandingoutcome"
     },
     {
@@ -4724,7 +4724,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_apply_macos_branding_after_update",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "apply_macos_branding_after_update()"
     },
     {
@@ -4735,7 +4735,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_restore_macos_workspace_icon_after_failure",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "restore_macos_workspace_icon_after_failure()"
     },
     {
@@ -4746,7 +4746,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_clear_macos_custom_icon",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "clear_macos_custom_icon()"
     },
     {
@@ -4767,8 +4767,8 @@
       "source_location": "L5112",
       "_origin": "ast",
       "id": "src_tauri_src_lib_apply_external_icon_best_effort",
-      "community": 48,
-      "community_name": "String",
+      "community": 55,
+      "community_name": "ManagedPaths",
       "norm_label": "apply_external_icon_best_effort()"
     },
     {
@@ -4877,8 +4877,8 @@
       "source_location": "L5598",
       "_origin": "ast",
       "id": "src_tauri_src_lib_run",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 57,
+      "community_name": ".default",
       "norm_label": "run()"
     },
     {
@@ -4899,8 +4899,8 @@
       "source_location": "L5645",
       "_origin": "ast",
       "id": "src_tauri_src_lib_test_instance",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 57,
+      "community_name": ".default",
       "norm_label": "test_instance()"
     },
     {
@@ -4910,8 +4910,8 @@
       "source_location": "L5673",
       "_origin": "ast",
       "id": "src_tauri_src_lib_macossignaturesnapshot",
-      "community": 1,
-      "community_name": "Path",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "macossignaturesnapshot"
     },
     {
@@ -4922,7 +4922,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_normalized_codesign_diagnostic",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "normalized_codesign_diagnostic()"
     },
     {
@@ -4933,7 +4933,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_codesign_verification",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "codesign_verification()"
     },
     {
@@ -4944,7 +4944,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_designated_requirement",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macos_designated_requirement()"
     },
     {
@@ -4955,7 +4955,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_signature_snapshot",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macos_signature_snapshot()"
     },
     {
@@ -4965,8 +4965,8 @@
       "source_location": "L5747",
       "_origin": "ast",
       "id": "src_tauri_src_lib_light_refresh_executes_one_inventory_and_skips_expensive_work",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 57,
+      "community_name": ".default",
       "norm_label": "light_refresh_executes_one_inventory_and_skips_expensive_work()"
     },
     {
@@ -4976,8 +4976,8 @@
       "source_location": "L5772",
       "_origin": "ast",
       "id": "src_tauri_src_lib_versions_refresh_preserves_sessions_and_skips_profile_and_storage_work",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 57,
+      "community_name": ".default",
       "norm_label": "versions_refresh_preserves_sessions_and_skips_profile_and_storage_work()"
     },
     {
@@ -4998,8 +4998,8 @@
       "source_location": "L5876",
       "_origin": "ast",
       "id": "src_tauri_src_lib_application_fingerprint_changes_when_managed_bytes_change",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "application_fingerprint_changes_when_managed_bytes_change()"
     },
     {
@@ -5010,7 +5010,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_write_signed_fixture_bundle",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "write_signed_fixture_bundle()"
     },
     {
@@ -5021,7 +5021,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_branding_fixture_verifies_launches_and_preserves_profile_bytes",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macos_branding_fixture_verifies_launches_and_preserves_profile_bytes()"
     },
     {
@@ -5032,7 +5032,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_update_keeps_new_bundle_when_workspace_icon_is_strict_incompatible",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macos_update_keeps_new_bundle_when_workspace_icon_is_strict_incompatible()"
     },
     {
@@ -5043,7 +5043,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_ui_only_icon_rollback_clears_workspace_metadata",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macos_ui_only_icon_rollback_clears_workspace_metadata()"
     },
     {
@@ -5054,7 +5054,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_provider_clone_dock_visual_spike",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macos_provider_clone_dock_visual_spike()"
     },
     {
@@ -5086,8 +5086,8 @@
       "source_location": "L6189",
       "_origin": "ast",
       "id": "src_tauri_src_lib_process_fingerprint_binds_application_and_exact_profile_argument",
-      "community": 3,
-      "community_name": "ManagedInstance",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "process_fingerprint_binds_application_and_exact_profile_argument()"
     },
     {
@@ -5108,8 +5108,8 @@
       "source_location": "L6213",
       "_origin": "ast",
       "id": "src_tauri_src_lib_artifact_export_rejects_symlinks_and_depth_escapes",
-      "community": 41,
-      "community_name": "copy_code_session_sync",
+      "community": 53,
+      "community_name": "Vec",
       "norm_label": "artifact_export_rejects_symlinks_and_depth_escapes()"
     },
     {
@@ -5130,8 +5130,8 @@
       "source_location": "L6247",
       "_origin": "ast",
       "id": "src_tauri_src_lib_custom_icon_contract_does_not_modify_the_application_path",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 57,
+      "community_name": ".default",
       "norm_label": "custom_icon_contract_does_not_modify_the_application_path()"
     },
     {
@@ -5196,8 +5196,8 @@
       "source_location": "L6378",
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_update_launcher_receives_only_the_validated_exact_original_path",
-      "community": 1,
-      "community_name": "Path",
+      "community": 55,
+      "community_name": "ManagedPaths",
       "norm_label": "macos_update_launcher_receives_only_the_validated_exact_original_path()"
     },
     {
@@ -5218,8 +5218,8 @@
       "source_location": "L6438",
       "_origin": "ast",
       "id": "src_tauri_src_lib_parses_only_safe_code_session_fields",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 60,
+      "community_name": "SessionLinkRegistry",
       "norm_label": "parses_only_safe_code_session_fields()"
     },
     {
@@ -5251,7 +5251,7 @@
       "source_location": "L6517",
       "_origin": "ast",
       "id": "src_tauri_src_lib_summarizes_artifact_monitors_without_exposing_identifiers_or_content",
-      "community": 53,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "summarizes_artifact_monitors_without_exposing_identifiers_or_content()"
     },
@@ -5306,8 +5306,8 @@
       "source_location": "L6652",
       "_origin": "ast",
       "id": "src_tauri_src_lib_recognizes_the_official_linux_electron_layout_through_a_symlink",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "recognizes_the_official_linux_electron_layout_through_a_symlink()"
     },
     {
@@ -5328,8 +5328,8 @@
       "source_location": "L6703",
       "_origin": "ast",
       "id": "src_tauri_src_lib_atomically_creates_and_replaces_session_index",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 41,
+      "community_name": "copy_code_session_sync",
       "norm_label": "atomically_creates_and_replaces_session_index()"
     },
     {
@@ -5372,7 +5372,7 @@
       "source_location": "L6765",
       "_origin": "ast",
       "id": "src_tauri_src_lib_reads_complete_usage_samples_and_rejects_partial_files",
-      "community": 53,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "reads_complete_usage_samples_and_rejects_partial_files()"
     },
@@ -5383,8 +5383,8 @@
       "source_location": "L6787",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refresh_usage_keeps_the_last_good_snapshot_on_partial_data",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 35,
+      "community_name": "system_info_scoped",
       "norm_label": "refresh_usage_keeps_the_last_good_snapshot_on_partial_data()"
     },
     {
@@ -5438,8 +5438,8 @@
       "source_location": "L6970",
       "_origin": "ast",
       "id": "src_tauri_src_lib_annotates_a_session_linked_inside_the_original_app",
-      "community": 43,
-      "community_name": "PathBuf",
+      "community": 60,
+      "community_name": "SessionLinkRegistry",
       "norm_label": "annotates_a_session_linked_inside_the_original_app()"
     },
     {
@@ -5449,8 +5449,8 @@
       "source_location": "L7010",
       "_origin": "ast",
       "id": "src_tauri_src_lib_swaps_and_rolls_back_application_directory",
-      "community": 48,
-      "community_name": "String",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "swaps_and_rolls_back_application_directory()"
     },
     {
@@ -7869,7 +7869,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "agents_roles_readme",
-      "community": 35,
+      "community": 34,
       "community_name": "README.md",
       "norm_label": "roles/readme.md"
     },
@@ -7880,7 +7880,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "agents_roles_readme_agentes_de_desarrollo",
-      "community": 35,
+      "community": 34,
       "community_name": "README.md",
       "norm_label": "agentes de desarrollo"
     },
@@ -8288,7 +8288,7 @@
       "_origin": "ast",
       "id": "changelog",
       "community": 52,
-      "community_name": "[0.2.0] - 2026-10-11",
+      "community_name": "Changelog",
       "norm_label": "changelog.md"
     },
     {
@@ -8299,19 +8299,19 @@
       "_origin": "ast",
       "id": "changelog_changelog",
       "community": 52,
-      "community_name": "[0.2.0] - 2026-10-11",
+      "community_name": "Changelog",
       "norm_label": "changelog"
     },
     {
-      "label": "[0.2.1] - 2026-10-13",
+      "label": "[0.2.2] - 2026-10-27",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
       "source_location": "L7",
       "_origin": "ast",
-      "id": "changelog_0_2_1_2026_10_13",
+      "id": "changelog_0_2_2_2026_10_27",
       "community": 52,
-      "community_name": "[0.2.0] - 2026-10-11",
-      "norm_label": "[0.2.1] - 2026-10-13"
+      "community_name": "Changelog",
+      "norm_label": "[0.2.2] - 2026-10-27"
     },
     {
       "label": "Fixed",
@@ -8321,51 +8321,84 @@
       "_origin": "ast",
       "id": "changelog_fixed",
       "community": 52,
-      "community_name": "[0.2.0] - 2026-10-11",
+      "community_name": "Changelog",
       "norm_label": "fixed"
     },
     {
       "label": "Changed",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L16",
+      "source_location": "L15",
       "_origin": "ast",
       "id": "changelog_changed",
       "community": 52,
-      "community_name": "[0.2.0] - 2026-10-11",
+      "community_name": "Changelog",
+      "norm_label": "changed"
+    },
+    {
+      "label": "[0.2.1] - 2026-10-13",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "changelog_0_2_1_2026_10_13",
+      "community": 52,
+      "community_name": "Changelog",
+      "norm_label": "[0.2.1] - 2026-10-13"
+    },
+    {
+      "label": "Fixed",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "changelog_fixed_22",
+      "community": 52,
+      "community_name": "Changelog",
+      "norm_label": "fixed"
+    },
+    {
+      "label": "Changed",
+      "file_type": "document",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "changelog_changed_29",
+      "community": 52,
+      "community_name": "Changelog",
       "norm_label": "changed"
     },
     {
       "label": "[0.2.0] - 2026-10-11",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L20",
+      "source_location": "L33",
       "_origin": "ast",
       "id": "changelog_0_2_0_2026_10_11",
       "community": 52,
-      "community_name": "[0.2.0] - 2026-10-11",
+      "community_name": "Changelog",
       "norm_label": "[0.2.0] - 2026-10-11"
     },
     {
       "label": "Added",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L24",
+      "source_location": "L37",
       "_origin": "ast",
       "id": "changelog_added",
       "community": 52,
-      "community_name": "[0.2.0] - 2026-10-11",
+      "community_name": "Changelog",
       "norm_label": "added"
     },
     {
       "label": "Changed",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L31",
+      "source_location": "L44",
       "_origin": "ast",
-      "id": "changelog_changed_31",
+      "id": "changelog_changed_44",
       "community": 52,
-      "community_name": "[0.2.0] - 2026-10-11",
+      "community_name": "Changelog",
       "norm_label": "changed"
     },
     {
@@ -8375,7 +8408,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "contributing",
-      "community": 35,
+      "community": 34,
       "community_name": "README.md",
       "norm_label": "contributing.md"
     },
@@ -8540,7 +8573,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "readme",
-      "community": 35,
+      "community": 34,
       "community_name": "README.md",
       "norm_label": "readme.md"
     },
@@ -8859,7 +8892,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_agents_document",
-      "community": 35,
+      "community": 34,
       "community_name": "README.md",
       "norm_label": "agents.document.md"
     },
@@ -8947,7 +8980,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_graphify_document",
-      "community": 35,
+      "community": 34,
       "community_name": "README.md",
       "norm_label": "graphify.document.md"
     },
@@ -8959,7 +8992,7 @@
       "_origin": "ast",
       "id": "docs_graphify_document_grafo_de_conocimiento_con_graphify",
       "community": 34,
-      "community_name": "Grafo de conocimiento con Graphify",
+      "community_name": "README.md",
       "norm_label": "grafo de conocimiento con graphify"
     },
     {
@@ -8970,7 +9003,7 @@
       "_origin": "ast",
       "id": "docs_graphify_document_prop\u00f3sito",
       "community": 34,
-      "community_name": "Grafo de conocimiento con Graphify",
+      "community_name": "README.md",
       "norm_label": "proposito"
     },
     {
@@ -8981,7 +9014,7 @@
       "_origin": "ast",
       "id": "docs_graphify_document_artefactos_versionados",
       "community": 34,
-      "community_name": "Grafo de conocimiento con Graphify",
+      "community_name": "README.md",
       "norm_label": "artefactos versionados"
     },
     {
@@ -8992,7 +9025,7 @@
       "_origin": "ast",
       "id": "docs_graphify_document_instalaci\u00f3n",
       "community": 34,
-      "community_name": "Grafo de conocimiento con Graphify",
+      "community_name": "README.md",
       "norm_label": "instalacion"
     },
     {
@@ -9003,7 +9036,7 @@
       "_origin": "ast",
       "id": "docs_graphify_document_comandos",
       "community": 34,
-      "community_name": "Grafo de conocimiento con Graphify",
+      "community_name": "README.md",
       "norm_label": "comandos"
     },
     {
@@ -9014,7 +9047,7 @@
       "_origin": "ast",
       "id": "docs_graphify_document_privacidad",
       "community": 34,
-      "community_name": "Grafo de conocimiento con Graphify",
+      "community_name": "README.md",
       "norm_label": "privacidad"
     },
     {
@@ -9025,7 +9058,7 @@
       "_origin": "ast",
       "id": "docs_graphify_document_regla_de_cierre",
       "community": 34,
-      "community_name": "Grafo de conocimiento con Graphify",
+      "community_name": "README.md",
       "norm_label": "regla de cierre"
     },
     {
@@ -10984,6 +11017,193 @@
       "id": "docs_hu_hu_0009_estado_oficial_de_actualizacion_y_refresco_de_versiones_cierre_de_graphify",
       "community": 36,
       "community_name": "HU-0009 \u2014 Estado oficial de actualizaci\u00f3n y refresco de versiones",
+      "norm_label": "cierre de graphify"
+    },
+    {
+      "label": "HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2",
+      "community": 56,
+      "community_name": "index.md",
+      "norm_label": "hu-0010-publicar-fix-de-actualizacion-como-0-2-2.md"
+    },
+    {
+      "label": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_hu_0010_publicar_el_fix_de_actualizaci\u00f3n_como_versi\u00f3n_0_2_2",
+      "community": 3,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "norm_label": "hu-0010 \u2014 publicar el fix de actualizacion como version 0.2.2"
+    },
+    {
+      "label": "Metadatos",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_metadatos",
+      "community": 3,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "norm_label": "metadatos"
+    },
+    {
+      "label": "Historia de usuario",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_historia_de_usuario",
+      "community": 3,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "norm_label": "historia de usuario"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_problema",
+      "community": 3,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Contexto y evidencia de Graphify",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_contexto_y_evidencia_de_graphify",
+      "community": 3,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "norm_label": "contexto y evidencia de graphify"
+    },
+    {
+      "label": "Alcance",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_alcance",
+      "community": 3,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "norm_label": "alcance"
+    },
+    {
+      "label": "Fuera de alcance",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L38",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_fuera_de_alcance",
+      "community": 3,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "norm_label": "fuera de alcance"
+    },
+    {
+      "label": "Criterios de aceptaci\u00f3n",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L46",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_criterios_de_aceptaci\u00f3n",
+      "community": 3,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "norm_label": "criterios de aceptacion"
+    },
+    {
+      "label": "Dise\u00f1o t\u00e9cnico y contratos",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L57",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_dise\u00f1o_t\u00e9cnico_y_contratos",
+      "community": 3,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "norm_label": "diseno tecnico y contratos"
+    },
+    {
+      "label": "Casos l\u00edmite, privacidad y plataformas",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L63",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_casos_l\u00edmite_privacidad_y_plataformas",
+      "community": 3,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "norm_label": "casos limite, privacidad y plataformas"
+    },
+    {
+      "label": "Plan de delegaci\u00f3n",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L70",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_plan_de_delegaci\u00f3n",
+      "community": 3,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "norm_label": "plan de delegacion"
+    },
+    {
+      "label": "Plan y resultado de pruebas",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L76",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_plan_y_resultado_de_pruebas",
+      "community": 3,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "norm_label": "plan y resultado de pruebas"
+    },
+    {
+      "label": "Documentaci\u00f3n afectada",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L88",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_documentaci\u00f3n_afectada",
+      "community": 3,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "norm_label": "documentacion afectada"
+    },
+    {
+      "label": "Bit\u00e1cora de implementaci\u00f3n",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L95",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_bit\u00e1cora_de_implementaci\u00f3n",
+      "community": 3,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "norm_label": "bitacora de implementacion"
+    },
+    {
+      "label": "Resultado y riesgos residuales",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L102",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_resultado_y_riesgos_residuales",
+      "community": 3,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "norm_label": "resultado y riesgos residuales"
+    },
+    {
+      "label": "Cierre de Graphify",
+      "file_type": "document",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L106",
+      "_origin": "ast",
+      "id": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_cierre_de_graphify",
+      "community": 3,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
       "norm_label": "cierre de graphify"
     },
     {
@@ -34632,7 +34852,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L20",
+      "source_location": "L33",
       "weight": 1.0,
       "_origin": "ast",
       "source": "changelog_changelog",
@@ -34643,7 +34863,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L7",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "changelog_changelog",
@@ -34654,10 +34874,21 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L16",
+      "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "changelog_0_2_1_2026_10_13",
+      "source": "changelog_changelog",
+      "target": "changelog_0_2_2_2026_10_27",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "changelog_0_2_2_2026_10_27",
       "target": "changelog_changed",
       "confidence_score": 1.0
     },
@@ -34668,7 +34899,7 @@
       "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "changelog_0_2_1_2026_10_13",
+      "source": "changelog_0_2_2_2026_10_27",
       "target": "changelog_fixed",
       "confidence_score": 1.0
     },
@@ -34676,7 +34907,29 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L24",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "changelog_0_2_1_2026_10_13",
+      "target": "changelog_changed_29",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "changelog_0_2_1_2026_10_13",
+      "target": "changelog_fixed_22",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
       "source": "changelog_0_2_0_2026_10_11",
@@ -34687,11 +34940,11 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L31",
+      "source_location": "L44",
       "weight": 1.0,
       "_origin": "ast",
       "source": "changelog_0_2_0_2026_10_11",
-      "target": "changelog_changed_31",
+      "target": "changelog_changed_44",
       "confidence_score": 1.0
     },
     {
@@ -37535,6 +37788,204 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2",
+      "target": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_hu_0010_publicar_el_fix_de_actualizaci\u00f3n_como_versi\u00f3n_0_2_2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/index.md",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_index",
+      "target": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/versionado.document.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_versionado_document",
+      "target": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_hu_0010_publicar_el_fix_de_actualizaci\u00f3n_como_versi\u00f3n_0_2_2",
+      "target": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_alcance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L95",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_hu_0010_publicar_el_fix_de_actualizaci\u00f3n_como_versi\u00f3n_0_2_2",
+      "target": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_bit\u00e1cora_de_implementaci\u00f3n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L63",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_hu_0010_publicar_el_fix_de_actualizaci\u00f3n_como_versi\u00f3n_0_2_2",
+      "target": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_casos_l\u00edmite_privacidad_y_plataformas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L106",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_hu_0010_publicar_el_fix_de_actualizaci\u00f3n_como_versi\u00f3n_0_2_2",
+      "target": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_cierre_de_graphify",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_hu_0010_publicar_el_fix_de_actualizaci\u00f3n_como_versi\u00f3n_0_2_2",
+      "target": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_contexto_y_evidencia_de_graphify",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L46",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_hu_0010_publicar_el_fix_de_actualizaci\u00f3n_como_versi\u00f3n_0_2_2",
+      "target": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_criterios_de_aceptaci\u00f3n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L57",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_hu_0010_publicar_el_fix_de_actualizaci\u00f3n_como_versi\u00f3n_0_2_2",
+      "target": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_dise\u00f1o_t\u00e9cnico_y_contratos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L88",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_hu_0010_publicar_el_fix_de_actualizaci\u00f3n_como_versi\u00f3n_0_2_2",
+      "target": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_documentaci\u00f3n_afectada",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_hu_0010_publicar_el_fix_de_actualizaci\u00f3n_como_versi\u00f3n_0_2_2",
+      "target": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_fuera_de_alcance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_hu_0010_publicar_el_fix_de_actualizaci\u00f3n_como_versi\u00f3n_0_2_2",
+      "target": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_historia_de_usuario",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_hu_0010_publicar_el_fix_de_actualizaci\u00f3n_como_versi\u00f3n_0_2_2",
+      "target": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_metadatos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L70",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_hu_0010_publicar_el_fix_de_actualizaci\u00f3n_como_versi\u00f3n_0_2_2",
+      "target": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_plan_de_delegaci\u00f3n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L76",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_hu_0010_publicar_el_fix_de_actualizaci\u00f3n_como_versi\u00f3n_0_2_2",
+      "target": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_plan_y_resultado_de_pruebas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_hu_0010_publicar_el_fix_de_actualizaci\u00f3n_como_versi\u00f3n_0_2_2",
+      "target": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "source_location": "L102",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_hu_0010_publicar_el_fix_de_actualizaci\u00f3n_como_versi\u00f3n_0_2_2",
+      "target": "docs_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2_resultado_y_riesgos_residuales",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "docs/hu/index.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -37864,5 +38315,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "e425cc993d7a001b1a16e23937efc51a777a72be"
+  "built_at_commit": "c4ca35e9ecee122b41adfc3b242875984d847ea7"
 }

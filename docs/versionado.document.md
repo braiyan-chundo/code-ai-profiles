@@ -1,8 +1,8 @@
 # Versionado de Code AI Profiles
 
-Documento relacionado con [HU-0005](hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md) y [HU-0006](hu/HU-0006-escaneo-automatico-silencioso-y-ciclo-manual-controlado.md).
+Documento relacionado con [HU-0005](hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md), [HU-0006](hu/HU-0006-escaneo-automatico-silencioso-y-ciclo-manual-controlado.md) y [HU-0010](hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md).
 
-Code AI Profiles usa [Semantic Versioning](https://semver.org/lang/es/). La versión vigente del repositorio es `0.2.1`.
+Code AI Profiles usa [Semantic Versioning](https://semver.org/lang/es/). La versión preparada en el repositorio es `0.2.2`.
 
 ## Política
 

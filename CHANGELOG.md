@@ -4,6 +4,19 @@ Todos los cambios relevantes de este proyecto se documentan en este archivo.
 
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.2.2] - 2026-10-27
+
+### Fixed
+
+- La diferencia entre una instancia local con versión superior y la instalación original ya no se presenta por sí sola como una actualización oficial disponible.
+- Al volver del flujo de actualización de la aplicación original, se refrescan únicamente la versión y la topología; el proceso no abre un escaneo manual ni relee sesiones, uso o almacenamiento.
+- En macOS, el handoff valida y abre exclusivamente la aplicación original, y guía a usar `Claude > Check for Updates` en lugar de abrir un DMG fijo.
+
+### Changed
+
+- La comprobación oficial queda ligada a la versión instalada y sus resultados tardíos no reemplazan la información de otra instalación.
+- La validación continua incluye las pruebas del controlador de actualización.
+
 ## [0.2.1] - 2026-10-13
 
 ### Fixed

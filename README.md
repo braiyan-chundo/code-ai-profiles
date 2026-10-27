@@ -64,7 +64,7 @@ cargo test --manifest-path src-tauri/Cargo.toml
 
 ## Versionado
 
-El repositorio usa Semantic Versioning y actualmente está en `0.2.1`. Para preparar una versión compatible, una funcionalidad o un cambio incompatible, ejecuta:
+El repositorio usa Semantic Versioning y actualmente está en `0.2.2`. Para preparar una versión compatible, una funcionalidad o un cambio incompatible, ejecuta:
 
 ```bash
 npm run release:version -- patch
@@ -121,7 +121,7 @@ src-tauri/target/release/bundle/macos/Code AI Profiles.app
 src-tauri/target/release/bundle/dmg/*.dmg
 ```
 
-La entrega local verificada de `0.2.1` para Apple Silicon es `src-tauri/target/release/bundle/dmg/Code AI Profiles_0.2.1_aarch64.dmg`. Pasó build, verificación del DMG y verificación estricta de la app; el binario es `arm64`. Está firmada ad-hoc y no está notarizada, por lo que macOS puede requerir clic derecho → **Abrir**. Este artefacto local no implica una publicación o GitHub Release.
+Como referencia histórica, la entrega local de Apple Silicon `0.2.1` fue verificada. La generación de `0.2.2` se realiza únicamente después de que el merge protegido llegue a `main`; la ruta esperada del DMG y la `.app`, su hash y su verificación se reportan junto con ese artefacto. Un paquete local puede estar firmado ad-hoc y no estar notarizado, por lo que macOS puede requerir clic derecho → **Abrir**. Un artefacto local no implica una publicación o GitHub Release.
 
 ### Windows x64
 
@@ -180,7 +180,7 @@ Code AI Profiles/
 - En Windows se copia el directorio de la aplicación y cada proceso recibe su propio directorio de datos.
 - En Linux se crea un lanzador hacia el binario instalado para conservar su sandbox y permitir que el gestor de paquetes actualice el ejecutable compartido.
 
-La actualización de la aplicación original y la sincronización de instancias son operaciones separadas. Code AI Profiles abre la descarga oficial en macOS/Windows o las instrucciones apt en Linux para que el usuario complete la actualización; nunca sobrescribe la original. Después del escaneo, una instalación gestionada válida que tenga la mayor versión puede sincronizar otras instancias detenidas sin tocar sus perfiles. En Linux, las instancias siguen el binario actualizado por el gestor de paquetes. Consulta [la guía de actualizaciones](docs/actualizaciones.document.md).
+La actualización de la aplicación original y la sincronización de instancias son operaciones separadas. En macOS, Code AI Profiles valida y abre exclusivamente la aplicación original; dentro de ella el usuario elige `Claude > Check for Updates`. En Windows abre la descarga oficial y en Linux las instrucciones apt. Nunca sobrescribe la original. Al volver del handoff, refresca únicamente versiones y topología, sin escaneo manual ni lectura de sesiones. Después, una instalación gestionada válida con la mayor versión puede sincronizar otras instancias detenidas sin tocar sus perfiles. Consulta [la guía de actualizaciones](docs/actualizaciones.document.md).
 
 ## Sesiones y contexto
 

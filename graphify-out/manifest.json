@@ -1,7 +1,7 @@
 {
   "package.json": {
-    "mtime": 1792757450.9935527,
-    "ast_hash": "f2d01e608e3ff8cccea649b2366ac622",
+    "mtime": 1793124076.1491957,
+    "ast_hash": "c5a361ee7a65aab6f52db79ce91a90b1",
     "semantic_hash": ""
   },
   "scripts/graphify.mjs": {
@@ -30,8 +30,8 @@
     "semantic_hash": "a85314b3cde4f5d5b64d48e0c7b18194"
   },
   "src-tauri/tauri.conf.json": {
-    "mtime": 1792648655.1144085,
-    "ast_hash": "5c41928001b34798e54eefd0bfdcc4d7",
+    "mtime": 1793124076.150575,
+    "ast_hash": "9a79585a4ae996b808fbdbfe70a731fa",
     "semantic_hash": ""
   },
   "src-tauri/tauri.linux.conf.json": {
@@ -150,8 +150,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1792648655.1080143,
-    "ast_hash": "a8032e935af0dcfb29612a1301ffae48",
+    "mtime": 1793124230.482623,
+    "ast_hash": "37083b0a7fa311b0a6cb709a56a7065e",
     "semantic_hash": ""
   },
   "code.html": {
@@ -175,8 +175,8 @@
     "semantic_hash": ""
   },
   "docs/hu/index.md": {
-    "mtime": 1792815400.3558269,
-    "ast_hash": "86a09e43e05006062b802ee2a611ac3d",
+    "mtime": 1793137764.06702,
+    "ast_hash": "3544186c1de7f220f1df764a0e41c20b",
     "semantic_hash": ""
   },
   "index.html": {
@@ -225,8 +225,8 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1792648655.1077578,
-    "ast_hash": "52b72645fcb24dade209deed4b8a62fd",
+    "mtime": 1793124148.8208578,
+    "ast_hash": "403be5ddee20c99c61e8bb73ec5c9f33",
     "semantic_hash": ""
   },
   "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md": {
@@ -240,8 +240,8 @@
     "semantic_hash": ""
   },
   "docs/versionado.document.md": {
-    "mtime": 1792648655.1094527,
-    "ast_hash": "00e485c393e43b7836194c563eb7b69c",
+    "mtime": 1793124148.8439977,
+    "ast_hash": "44c05701cc44d34beca38b5b0cd2de22",
     "semantic_hash": ""
   },
   "src/lib/scan-controller.ts": {
@@ -297,6 +297,11 @@
   "graphify-out/memory/query_20261023_120821_implement_hu_0009_official_update_state_and_direct.md": {
     "mtime": 1792757301.9452333,
     "ast_hash": "e0faf62abc290b64d3bb9ec5ac8e1104",
+    "semantic_hash": ""
+  },
+  "docs/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md": {
+    "mtime": 1793137764.0444179,
+    "ast_hash": "4b9b681d99b436dc244a1b932409eb20",
     "semantic_hash": ""
   }
 }

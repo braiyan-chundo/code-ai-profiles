@@ -13,5 +13,6 @@ Este índice es administrado por el agente `document`. Cada ID es secuencial, ú
 | [HU-0007](HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md) | Done | Spike de icono de Dock previo al primer inicio de sesión | 2026-10-14 |
 | [HU-0008](HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md) | Done | Diagnóstico A/B del arranque macOS para branding previo al login | 2026-10-17 |
 | [HU-0009](HU-0009-estado-oficial-de-actualizacion-y-refresco-de-versiones.md) | Done | Estado oficial de actualización y refresco de versiones | 2026-10-23 |
+| [HU-0010](HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md) | Review | Publicar el fix de actualización como versión 0.2.2 | 2026-10-27 |
 
 Estados permitidos: `Draft`, `Ready`, `In Progress`, `Blocked`, `Review`, `Done`, `Cancelled`.
