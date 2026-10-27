@@ -1,0 +1,131 @@
+{
+  "version": 4,
+  "proyecto": {
+    "nombre": "Code AI Profiles",
+    "slug": "code-ai-profiles",
+    "resumen": "Aplicación de escritorio open source (Apache-2.0) hecha con Tauri 2, React 19 + Vite y Rust para administrar perfiles aislados de una aplicación de IA compatible instalada en el equipo. Cada perfil conserva sus propios datos y puede ejecutarse en paralelo con los demás. El dashboard unifica estado, versión, uso de sesión y semanal, sesiones locales y contexto estimado, y permite copiar, mover y devolver sesiones entre perfiles detenidos, sincronizar instancias con la instalación más reciente y abrir el canal oficial de actualización. Funciona en macOS (Apple Silicon), Windows x64 y Linux x64/ARM64; los instaladores se compilan en GitHub Actions. Todo es local: no hay servidor propio, telemetría ni producción con hosts. Un solo mantenedor aprueba, decide el método y autoriza las salidas. No hay cliente con contrato ni alcance cerrado.",
+    "idiomas": {
+      "interfaz": "español",
+      "codigo": "inglés",
+      "documentacion": "español"
+    }
+  },
+  "figuras": {
+    "aprueba": "Braiyan Rodriguez (mantenedor)",
+    "metodo": "Braiyan Rodriguez (mantenedor)",
+    "salidas": "Braiyan Rodriguez (mantenedor)",
+    "cliente": "Proyecto open source propio, sin cliente contratante",
+    "canal": "directo, en la conversación con Claude"
+  },
+  "perfil": "S",
+  "fase": "desarrollo",
+  "ajustes": {
+    "propuesta": "no",
+    "alcance": "off",
+    "agentes": [
+      "architect",
+      "backend",
+      "frontend"
+    ],
+    "enfoque": "tecnico",
+    "diseno": "off",
+    "revisionTecnica": "siempre",
+    "grafo": "graphify",
+    "pruebas": {
+      "timeoutMin": 15
+    }
+  },
+  "agentes": {
+    "architect": {
+      "nombre": "architect",
+      "color": "orange",
+      "modelo": "opus"
+    },
+    "backend": {
+      "nombre": "backend",
+      "color": "blue",
+      "modelo": "sonnet"
+    },
+    "frontend": {
+      "nombre": "frontend",
+      "color": "green",
+      "modelo": "sonnet"
+    }
+  },
+  "rasgos": {
+    "interfaz": true,
+    "variasApps": false,
+    "dinero": false,
+    "datosPersonales": false,
+    "tiempoReal": false,
+    "colas": false,
+    "sinConexion": false,
+    "lienzo": false,
+    "paqueteDeContratos": false
+  },
+  "repos": [
+    {
+      "nombre": "code-ai-profiles",
+      "ruta": ".",
+      "tipo": "otro"
+    }
+  ],
+  "territorios": {
+    "backend": [
+      "src-tauri/**",
+      "scripts/**",
+      "Cargo.toml",
+      "Cargo.lock",
+      "src/types.ts",
+      "src/lib/bridge.ts"
+    ],
+    "frontend": [
+      "src/**",
+      "tests/**",
+      "index.html",
+      "vite.config.ts",
+      "tsconfig.json",
+      "tsconfig.node.json",
+      "package.json",
+      "package-lock.json"
+    ]
+  },
+  "stack": {
+    "gestor": "npm",
+    "motor": null,
+    "packs": [
+      "frontend-react-vite"
+    ],
+    "comandos": {
+      "code-ai-profiles": {
+        "tipos": "npx tsc --noEmit -p tsconfig.json",
+        "build": "npm run build",
+        "relacionadas": "npm run test:scan && npm run test:update && npm run test:release",
+        "suite": "npm run test:scan && npm run test:update && npm run test:release && cargo test --manifest-path src-tauri/Cargo.toml"
+      }
+    }
+  },
+  "historias": {
+    "maxCriterios": 6
+  },
+  "gatesPropios": [
+    {
+      "nombre": "grafo versionado al día",
+      "comando": "npm run graph:check",
+      "cuando": "codigo",
+      "nivel": "aviso"
+    },
+    {
+      "nombre": "versiones sincronizadas",
+      "comando": "npm run release:check",
+      "cuando": "codigo",
+      "nivel": "aviso"
+    }
+  ],
+  "codigo": {
+    "enlaces": "archivo",
+    "archivoDeEnlaces": "src/lib/links",
+    "modulos": []
+  },
+  "primerNumero": 10
+}

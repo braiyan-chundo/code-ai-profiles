@@ -1,0 +1,143 @@
+{
+  "$comentario": "Plantilla de .metodo/config.json. La escribe Claude en el arranque con las respuestas de la conversación. Es la fuente de verdad del proyecto: agentes, comandos, hooks y scripts la leen. Ver configuracion.md.",
+  "version": 4,
+  "proyecto": {
+    "nombre": "<Nombre del proyecto>",
+    "slug": "<slug-sin-espacios>",
+    "resumen": "<El resumen confirmado en el arranque, diez líneas como máximo>",
+    "idiomas": {
+      "interfaz": "español",
+      "codigo": "inglés",
+      "documentacion": "español"
+    }
+  },
+  "figuras": {
+    "aprueba": "<Quien aprueba el producto>",
+    "metodo": "<Quien decide el método>",
+    "salidas": "<Quien autoriza push, publicación y despliegue>",
+    "cliente": "<Quien contrató>",
+    "canal": "directo, en la conversación con Claude"
+  },
+  "perfil": "M",
+  "fase": "desarrollo",
+  "ajustes": {},
+  "agentes": {
+    "product-owner": {
+      "nombre": "po",
+      "color": "purple",
+      "modelo": "sonnet"
+    },
+    "architect": {
+      "nombre": "arquitecto",
+      "color": "orange",
+      "modelo": "opus"
+    },
+    "explorador": {
+      "nombre": "explorador",
+      "color": "cyan",
+      "modelo": "haiku"
+    },
+    "data": {
+      "nombre": "datos",
+      "color": "yellow",
+      "modelo": "opus"
+    },
+    "product-design": {
+      "nombre": "ux",
+      "color": "pink",
+      "modelo": "opus"
+    },
+    "backend": {
+      "nombre": "backend",
+      "color": "blue",
+      "modelo": "sonnet"
+    },
+    "frontend": {
+      "nombre": "frontend",
+      "color": "green",
+      "modelo": "sonnet"
+    },
+    "fullstack": {
+      "nombre": "fullstack",
+      "color": "blue",
+      "modelo": "sonnet"
+    },
+    "qa": {
+      "nombre": "qa",
+      "color": "cyan",
+      "modelo": "sonnet"
+    },
+    "devops": {
+      "nombre": "devops",
+      "color": "yellow",
+      "modelo": "sonnet"
+    },
+    "seguridad": {
+      "nombre": "seguridad",
+      "color": "red",
+      "modelo": "opus"
+    }
+  },
+  "rasgos": {
+    "interfaz": true,
+    "variasApps": false,
+    "dinero": false,
+    "datosPersonales": false,
+    "tiempoReal": false,
+    "colas": false,
+    "sinConexion": false,
+    "lienzo": false,
+    "paqueteDeContratos": false
+  },
+  "repos": [
+    {
+      "nombre": "<app>-api",
+      "ruta": "<app>-api",
+      "tipo": "api",
+      "puerto": 3000
+    },
+    {
+      "nombre": "<app>-web",
+      "ruta": "<app>-web",
+      "tipo": "app",
+      "puerto": 5173,
+      "puertoCompilada": 4173
+    }
+  ],
+  "stack": {
+    "gestor": "pnpm",
+    "motor": "mongodb",
+    "packs": [
+      "backend-nestjs",
+      "frontend-react-vite",
+      "persistencia-mongodb"
+    ],
+    "comandos": {
+      "$comentario": "Opcional por repo: lo que falte sale del pack de su capa (pack.json → comandos)."
+    }
+  },
+  "alcance": {
+    "archivo": "docs/producto/alcance.md",
+    "nombre": "alcance",
+    "contrato": "sin contrato escrito",
+    "clausula": "acuerdo de cambio de alcance",
+    "entregas": [
+      1
+    ],
+    "areas": [
+      "fundacional"
+    ],
+    "$comentario": "Solo si alcance no es off. areas: nombres de área para el frontmatter de las historias; los ítems se numeran A.<n>.<m>. coberturaCompleta: true cuando ya se abrieron historias para todo el alcance (el gate pasa a exigirla si gates.alcance es bloqueo).",
+    "coberturaCompleta": false
+  },
+  "historias": {
+    "$comentario": "El tamaño de una historia (metodo.md §4b): el gate avisa si pasa de maxCriterios.",
+    "maxCriterios": 6
+  },
+  "codigo": {
+    "$comentario": "Se SUMA a los valores por defecto de config.mjs (excepciones, carpetas de prueba, extensiones). localhost no es excepción.",
+    "enlaces": "archivo",
+    "archivoDeEnlaces": "src/config/links",
+    "modulos": []
+  }
+}

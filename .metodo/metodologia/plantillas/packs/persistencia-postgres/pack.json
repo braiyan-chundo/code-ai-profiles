@@ -1,0 +1,21 @@
+{
+  "nombre": "persistencia-postgres",
+  "tipo": "persistencia",
+  "roles": [
+    "architect",
+    "data",
+    "backend",
+    "fullstack"
+  ],
+  "siempre": [
+    "data"
+  ],
+  "skills": [
+    "persistencia-postgres"
+  ],
+  "fuentes": [
+    "https://www.postgresql.org/docs/current/"
+  ],
+  "version": "0.1.0",
+  "probado-en": []
+}

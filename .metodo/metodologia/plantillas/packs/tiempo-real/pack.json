@@ -1,0 +1,16 @@
+{
+  "nombre": "tiempo-real",
+  "tipo": "dominio",
+  "roles": [
+    "backend",
+    "frontend",
+    "fullstack"
+  ],
+  "siempre": [],
+  "skills": [
+    "tiempo-real"
+  ],
+  "version": "0.1.0",
+  "origen": "skill de tiempo real de la v3",
+  "probado-en": []
+}

@@ -78,7 +78,7 @@ npm run release:check
 
 ## Desarrollo asistido por IA y Graphify
 
-El repositorio incluye cuatro agentes de desarrollo: `architect`, `backend`, `frontend` y `document`. Sus instrucciones neutrales viven en [`.agents/roles/`](.agents/roles/README.md) y Codex dispone de adaptadores con modelos independientes en [`.codex/agents/`](.codex/agents/). Toda feature o fix requiere una HU única en [`docs/hu/`](docs/hu/index.md).
+El repositorio sigue la metodología agéntica v4 (perfil S) con tres agentes: `architect`, `backend` y `frontend`. La configuración vive en [`.metodo/config.json`](.metodo/config.json) y el contrato generado está en [`AGENTS.md`](AGENTS.md). Toda feature o fix es una historia en [`hu/`](hu/INDEX.md) y se trabaja con `/hu-new`, `/hu-work`, `/hu-close` y `/fix`. Las historias y los roles anteriores se archivaron en [`docs/archivo/previo/`](docs/archivo/previo/) ([ADR-0001](docs/decisiones/ADR-0001-adopcion-metodologia-v4.md)).
 
 Graphify mantiene un grafo local del código que debe consultarse antes del análisis y actualizarse al cerrar cada iteración. Instala la versión fijada por el proyecto y genera o actualiza sus artefactos:
 
@@ -93,7 +93,7 @@ Antes de enviar cambios, comprueba que el grafo versionado coincide con el códi
 npm run graph:check
 ```
 
-El grafo se extrae localmente mediante AST y no requiere claves ni envía el código a un modelo externo. Consulta [la documentación del flujo de agentes](docs/agents.document.md) y [la integración de Graphify](docs/graphify.document.md).
+El grafo se extrae localmente mediante AST y no requiere claves ni envía el código a un modelo externo. Consulta [la integración de Graphify](docs/graphify.document.md).
 
 ## Crear cada versión
 

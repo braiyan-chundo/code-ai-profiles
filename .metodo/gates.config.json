@@ -1,0 +1,16 @@
+{
+  "grafo": {
+    "repos": [
+      "."
+    ],
+    "apps": [],
+    "api": ".",
+    "paquetes": {},
+    "salida": "graphify-out",
+    "coberturaMinima": 0.75,
+    "alDiaTambien": [
+      "hu",
+      "docs"
+    ]
+  }
+}

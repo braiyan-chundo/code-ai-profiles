@@ -14,3 +14,7 @@ docs/screenshots/
 # Avoid indexing the same third-party Graphify skill twice.
 .agents/skills/graphify/
 .codex/skills/graphify/
+
+# Metodología v4: gobierno generado, fuera del grafo del producto.
+.metodo/
+.claude/
