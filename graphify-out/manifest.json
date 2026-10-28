@@ -10,9 +10,9 @@
     "semantic_hash": ""
   },
   "src-tauri/build.rs": {
-    "mtime": 1784433109.6357908,
-    "ast_hash": "1be34a5c61c2c35365de3dab14298f0b",
-    "semantic_hash": "1be34a5c61c2c35365de3dab14298f0b"
+    "mtime": 1793214357.572449,
+    "ast_hash": "d7a605872f0ad2a37c4b2e82bc23479a",
+    "semantic_hash": ""
   },
   "src-tauri/capabilities/default.json": {
     "mtime": 1784574604.6735594,
@@ -20,9 +20,9 @@
     "semantic_hash": "dca85abae9a1b384a67b37f98b2f05ea"
   },
   "src-tauri/src/lib.rs": {
-    "mtime": 1792757615.576046,
-    "ast_hash": "0e41fc2e955fd8b3d525551cac5d0989",
-    "semantic_hash": "0e41fc2e955fd8b3d525551cac5d0989"
+    "mtime": 1793215211.075172,
+    "ast_hash": "d8e29046d7d72893df76f86c4ad37b9f",
+    "semantic_hash": ""
   },
   "src-tauri/src/main.rs": {
     "mtime": 1784574604.233991,
@@ -45,9 +45,9 @@
     "semantic_hash": "4ef37201944f5f99cbc3aba02a781215"
   },
   "src/lib/bridge.ts": {
-    "mtime": 1792757490.1674497,
-    "ast_hash": "4f27aa9635d84bb547a767f204d95840",
-    "semantic_hash": "4f27aa9635d84bb547a767f204d95840"
+    "mtime": 1793214091.8519902,
+    "ast_hash": "f0f4060670bc97d7278269fc2ce48551",
+    "semantic_hash": ""
   },
   "src/main.tsx": {
     "mtime": 1793211133.7062972,
@@ -55,9 +55,9 @@
     "semantic_hash": ""
   },
   "src/types.ts": {
-    "mtime": 1792757490.1393204,
-    "ast_hash": "68af02fca15a567927fd0c5e24ce1576",
-    "semantic_hash": "68af02fca15a567927fd0c5e24ce1576"
+    "mtime": 1793214040.6709118,
+    "ast_hash": "ed6b553f19e3c50ef0337018aa419165",
+    "semantic_hash": ""
   },
   "src/vite-env.d.ts": {
     "mtime": 1784564730.9157422,
@@ -330,7 +330,7 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793213976.4792724,
+    "mtime": 1793215333.015059,
     "ast_hash": "93eae92323311a4a9cd38d1b10bcb2f3",
     "semantic_hash": ""
   },
@@ -1645,8 +1645,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/seguimiento.md": {
-    "mtime": 1793213976.4784696,
-    "ast_hash": "384c806becd3d59fb8378baee8c16fa2",
+    "mtime": 1793215333.0144782,
+    "ast_hash": "a50eeb3a4cc3a71390ce4ae8e651c0e2",
     "semantic_hash": ""
   },
   "docs/arquitectura/backend.md": {
@@ -1672,6 +1672,16 @@
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/briefs/frontend.md": {
     "mtime": 1793213833.6857412,
     "ast_hash": "6baccc79e3900b7253daf9e0c473c6c8",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/config.rs": {
+    "mtime": 1793214416.866535,
+    "ast_hash": "240ede2a667f7532701c99d974d2931e",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/original_update.rs": {
+    "mtime": 1793215140.9088402,
+    "ast_hash": "f607142496acc9a212178d17ae1d60b3",
     "semantic_hash": ""
   }
 }
