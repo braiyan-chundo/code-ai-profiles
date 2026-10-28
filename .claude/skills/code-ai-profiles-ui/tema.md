@@ -1,8 +1,9 @@
 # Tema del design system
 
-Puente entre shadcn/ui y los tokens de la app. Vive en `src/styles/ui-theme.css`; solo lo importa
-`src/showcase/showcase.css` (`index.css` no). Cada `--ui-*` lleva en el archivo un comentario con la regla de la
-app de la que sale.
+Puente entre shadcn/ui y los tokens de la app. Los tokens viven en `src/styles/tokens.css` (HU-0016: sustituye a
+`base.css`, `theme-light.css`, `animations.css` y `responsive.css`) y el puente, en `src/styles/ui-theme.css`. Los
+importan las dos entradas, `src/styles/index.css` (la app) y `src/showcase/showcase.css`, en el mismo orden. Cada
+`--ui-*` lleva en el archivo un comentario con la regla de la app de la que sale (aunque ese CSS ya se haya retirado).
 
 ## Reglas
 
@@ -17,8 +18,12 @@ app de la que sale.
   pintar; `body` sigue transparente.
 - Las variables de shadcn se declaran en `:root, .theme-dark, .theme-light`: una custom property se resuelve en el
   elemento que la declara, y un `.theme-light` dentro de `:root` no heredaría valores claros.
-- `showcase.css` importa `base.css` y `theme-light.css` con `layer(base)`: dentro de la capa `base`, ganan al
-  preflight y pierden ante las utilidades.
+- `tokens.css` se importa con `layer(base)` en las dos entradas: dentro de la capa `base`, gana al preflight y pierde
+  ante las utilidades. No hay CSS sin capa: la app se pinta con utilidades y el catálogo.
+- Oscuro, la base, en `:root, .theme-dark`; claro en `.theme-light`, **después**. Así una muestra con `theme-dark` o
+  `theme-light` dentro del otro tema toma sus propios tokens (las miniaturas de tema de `AppearanceDialog`).
+- `--session-*` (tamaño del texto de sesiones) va en `:root` y cambia con `:root[data-session-text=compact|large]`.
+  Se usa como `text-(length:--session-title-size)` o `h-(--session-track-height)`.
 
 ## Mapa
 
@@ -37,7 +42,7 @@ app de la que sale.
 | `--ring`, `--sidebar-ring` | `var(--primary)` | foco de la app |
 | `--sidebar-primary` | `var(--primary-bright)` | #ff5f35 |
 | `--chart-1` a `--chart-5` | `--primary`, `--primary-soft`, `--primary-bright`, `--muted`, `--quiet` | |
-| `--radius` | `14px` | botones de `.modal-actions` |
+| `--radius` | `14px` | `rounded-lg` (botones y tarjetas de opción) |
 
 Tokens `--ui-*` que la app añadió (HU-0016): `--ui-window*` (el marco de la ventana), `--ui-window-close` (cerrar de
 Windows), `--ui-success` (#84ab8c → #3f7a52 en claro) y `--ui-warning` (#cf9a5e → #94601f), que dan `text-success`,
@@ -45,13 +50,14 @@ Windows), `--ui-success` (#84ab8c → #3f7a52 en claro) y `--ui-warning` (#cf9a5
 
 `@theme inline` añade: `--color-primary` = `--primary-bright`; `--color-muted` = `--surface-soft`;
 `--color-muted-foreground` = `--muted`; `--color-primary-text` = `--ui-primary-text`; `--color-overlay` =
-`--ui-overlay` (el velo de `.modal-backdrop`); `--font-sans` y `--font-heading` = Inter; `--font-mono` = JetBrains
+`--ui-overlay` (el velo de los diálogos); `--font-sans` y `--font-heading` = Inter; `--font-mono` = JetBrains
 Mono; `--radius-sm/md/lg/xl/2xl/3xl/4xl` = 9, 12, `var(--radius)`, 16, 20, 26 y 32 px.
 
 ## Añadir un `--ui-*`
 
-1. Solo si la app no tiene ya un token con ese valor. Busca primero en `base.css` y `theme-light.css`.
+1. Solo si la app no tiene ya un token con ese valor. Busca primero en `tokens.css`.
 2. Declara el valor oscuro en `:root, .theme-dark` y el claro en `.theme-light`, con un comentario que diga de
-   qué regla de la app sale. **No** toques `src/styles/base.css` ni `theme-light.css`.
+   qué regla de la app sale. Un token de la propia app (`--surface`, `--line`…) va en `tokens.css`, con su valor
+   claro.
 3. Si hace falta una utilidad, mapéala en `@theme inline` (`--color-<nombre>: var(--ui-<nombre>)`).
 4. Actualiza este mapa y la ficha de los componentes que lo usen.

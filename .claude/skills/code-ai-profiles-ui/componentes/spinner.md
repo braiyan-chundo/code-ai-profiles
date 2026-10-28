@@ -8,10 +8,10 @@ Rueda que indica que algo está en curso.
 
 **Sí**
 - Indicar que algo está en curso, dentro de un botón o junto a un texto.
+- En la app (HU-0016): los botones de confirmar de los diálogos mientras corre la operación, con `aria-hidden` (el texto del botón ya dice qué pasa).
 
 **No**
-- Carga de listas: `Skeleton`. En las pantallas actuales: `LoadingCards`.
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
+- Carga de listas o páginas: `Skeleton` (`PageSkeleton`).
 
 ## Importación
 

@@ -8,10 +8,10 @@ Ventana modal para una tarea corta.
 
 **Sí**
 - Una tarea corta que bloquea el resto: renombrar, editar un campo.
+- En la app (HU-0016): `AppearanceDialog`, `InstanceEditor`, `SessionTransferDialog`, `ApplicationUpdateDialog` y `OriginalApplicationUpdateDialog`, montados por `DialogHost`.
 
 **No**
-- En las pantallas actuales: `ModalFrame` y los diálogos de `DialogHost`. Para confirmar: `AlertDialog`.
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
+- Para confirmar una acción: `AlertDialog`.
 
 ## Importación
 

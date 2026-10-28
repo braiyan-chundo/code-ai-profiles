@@ -8,10 +8,10 @@ Muestra una tecla o un atajo de teclado.
 
 **Sí**
 - Mostrar un atajo de teclado dentro de un botón, un tooltip o un menú.
+- En la app (HU-0016): el atajo ⌘F / Ctrl F del buscador del sidebar.
 
 **No**
 - Para código: usa `CodeBlock`. La app ya tiene `<kbd>` propio en la búsqueda (`.search-pill kbd`).
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
 
 ## Importación
 

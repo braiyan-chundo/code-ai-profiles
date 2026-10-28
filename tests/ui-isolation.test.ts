@@ -1,11 +1,12 @@
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, posix, resolve } from "node:path";
 import test from "node:test";
 
 // HU-0016: Tailwind y el catálogo shadcn/ui entran en la app. Estas pruebas vigilan las fronteras que quedan:
 // dos entradas de CSS, el showcase fuera de la app, el catálogo sin dominio, sin cookies ni atajos globales del
-// sidebar, y los listeners de `focus`, `blur` y `visibilitychange` solo donde los ordena DashboardRuntime (R-1).
+// sidebar, los listeners de `focus`, `blur` y `visibilitychange` solo donde los ordena DashboardRuntime (R-1) y,
+// desde el paso 7, que no vuelvan el CSS propio ni los iconos propios.
 
 const root = resolve(import.meta.dirname, "..");
 const src = join(root, "src");
@@ -82,6 +83,13 @@ const KEYDOWN_LISTENER = /addEventListener\(\s*["']keydown["']/;
 
 // 8. R-1: los listeners de ventana que ordena DashboardRuntime.
 const WINDOW_FOCUS_LISTENER = /addEventListener\(\s*["'](focus|blur|visibilitychange)["']/;
+// 10. Los únicos .css de src/ tras retirar el CSS propio (paso 7).
+const CSS_FILES = ["showcase/showcase.css", "styles/index.css", "styles/tokens.css", "styles/ui-theme.css"];
+
+// 11. Nadie importa el antiguo components/Icons (relativo o con `@/`).
+const importsIcons = (local: string, source: string) =>
+  specifiers(source).filter((s) => /^components\/Icons(\.tsx)?$/.test(target(local, s) ?? ""));
+
 const FOCUS_OWNERS = [
   "features/instances/useLiveUsage.ts",
   "features/scan/useBackgroundRefresh.ts",
@@ -217,9 +225,29 @@ test("9 · canario: cada detector marca fugas sintéticas, también con rutas de
   assert.ok(!WINDOW_FOCUS_LISTENER.test('window.addEventListener("focusin", f)'));
   assert.ok(!WINDOW_FOCUS_LISTENER.test('media.addEventListener("change", f)'));
 
+  // 11
+  assert.ok(importsIcons("features\\x\\y.tsx", 'import { XIcon } from "../../components/Icons";').length > 0);
+  assert.ok(importsIcons("components/x.tsx", 'import { A } from "./Icons";').length > 0);
+  assert.ok(importsIcons("app/x.tsx", 'import { A } from "@/components/Icons";').length > 0);
+  assert.deepEqual(importsIcons("app/x.tsx", 'import { XIcon } from "lucide-react";'), []);
+
   // Rutas de Windows
   assert.equal(toPosix("features\\scan\\useBackgroundRefresh.ts"), FOCUS_OWNERS[1]);
   assert.equal(target("features\\scan\\x.ts", "../../lib/bridge"), "lib/bridge");
   assert.equal(target("components\\ui\\x.tsx", "@/hooks/use-mobile"), "hooks/use-mobile");
   assert.equal(target("x.ts", "react"), null);
+});
+
+test("10 · los .css de src/ son solo index.css, tokens.css, ui-theme.css y showcase.css", () => {
+  const css = walk(src).map((path) => toPosix(path.slice(src.length + 1))).filter((local) => local.endsWith(".css")).sort();
+  assert.deepEqual(css, CSS_FILES, "el CSS propio se retiró en HU-0016: una pieza nueva usa el catálogo y las utilidades");
+});
+
+test("11 · components/Icons.tsx no existe: los iconos son de lucide y la marca vive en BrandMark", () => {
+  assert.ok(!existsSync(join(src, "components", "Icons.tsx")), "volvió src/components/Icons.tsx");
+  assert.ok(existsSync(join(src, "components", "BrandMark.tsx")), "falta src/components/BrandMark.tsx");
+  for (const { local, source } of code) {
+    const leaks = importsIcons(local, source);
+    assert.deepEqual(leaks, [], `src/${local} importa ${leaks.join(", ")}`);
+  }
 });

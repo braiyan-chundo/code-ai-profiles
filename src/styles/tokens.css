@@ -1,0 +1,74 @@
+/*
+ * Los tokens de la app (HU-0016, paso 7). Sustituye a base.css, theme-light.css, animations.css y responsive.css.
+ * Lo importan src/styles/index.css (la app) y src/showcase/showcase.css, los dos con layer(base): gana al preflight y
+ * pierde ante las utilidades. ui-theme.css traduce estos tokens a los de shadcn.
+ *
+ * - Oscuro, la base: en :root y en .theme-dark (una muestra .theme-dark dentro del tema claro, como la de Apariencia,
+ *   también los toma). Claro: en .theme-light, DESPUÉS, para ganar a :root en <html class="theme-light">.
+ * - El tema y el tamaño del texto van en <html> (A-3): los portales de Radix (diálogos, menús) los heredan.
+ * - body es transparente: el fondo lo pinta el marco del shell (las esquinas redondeadas de Windows).
+ * - Todo color nuevo lleva su valor claro. Lo que la app no tiene como token va como --ui-* en ui-theme.css.
+ */
+
+:root,
+.theme-dark {
+  color: #e8e4e2;
+  --surface: #151615;
+  --surface-raised: rgba(33, 34, 33, 0.9);
+  --surface-soft: rgba(255, 255, 255, 0.045);
+  --line: rgba(255, 255, 255, 0.09);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --text: #e8e4e2;
+  --muted: #aaa19e;
+  --quiet: #726b68;
+  --primary: #ff8d6c;
+  --primary-bright: #ff5f35;
+  --primary-soft: #ffb19b;
+  --danger: #ef7e70;
+}
+
+.theme-light {
+  color: #2e2926;
+  --surface: #f3efeb;
+  --surface-raised: rgba(255, 255, 255, 0.92);
+  --surface-soft: rgba(63, 46, 39, 0.055);
+  --line: rgba(66, 48, 40, 0.11);
+  --line-strong: rgba(66, 48, 40, 0.17);
+  --text: #2e2926;
+  --muted: #746b67;
+  --quiet: #9b928d;
+  --danger: #be4f42;
+}
+
+/* Tamaño del texto de sesiones (A-3): en <html>, para que también lo hereden los diálogos en portales. */
+:root {
+  --session-title-size: 12px;
+  --session-meta-size: 9px;
+  --session-context-size: 8px;
+  --session-hint-size: 8px;
+  --session-badge-size: 7px;
+  --session-row-height: 104px;
+  --session-track-height: 4px;
+}
+:root[data-session-text="compact"] { --session-title-size: 10px; --session-meta-size: 7px; --session-context-size: 7px; --session-hint-size: 6px; --session-badge-size: 6px; --session-row-height: 90px; --session-track-height: 3px; }
+:root[data-session-text="large"] { --session-title-size: 14px; --session-meta-size: 11px; --session-context-size: 10px; --session-hint-size: 9px; --session-badge-size: 8px; --session-row-height: 120px; --session-track-height: 5px; }
+
+:root {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  background: transparent;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background: transparent;
+}

@@ -8,10 +8,10 @@ Etiqueta, control, descripción y error de un campo de formulario.
 
 **Sí**
 - Cualquier campo de formulario con etiqueta, ayuda y error.
+- En la app (HU-0016): los formularios de los diálogos: `InstanceEditor`, `AppearanceDialog` y `SessionTransferDialog` (tarjetas de opción con `FieldLabel` > `Field`).
 
 **No**
 - Un control suelto sin etiqueta visible: pon `aria-label`. Los formularios actuales usan `.form-field` (`instance-editor.css`).
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
 
 ## Importación
 

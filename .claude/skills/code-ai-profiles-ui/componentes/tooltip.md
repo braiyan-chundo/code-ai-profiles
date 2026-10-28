@@ -8,10 +8,10 @@ Texto breve que explica un control.
 
 **Sí**
 - Explicar un control de solo icono o dar un atajo.
+- En la app (HU-0016): un solo `TooltipProvider` en `AppShell`; los tooltips del sidebar plegado.
 
 **No**
 - Información imprescindible o textos largos: `Popover`. **Necesita `TooltipProvider`** arriba.
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
 
 ## Importación
 

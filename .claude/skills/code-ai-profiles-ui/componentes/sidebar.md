@@ -8,10 +8,10 @@ Navegación lateral que se contrae a iconos.
 
 **Sí**
 - Navegación lateral que se contrae a iconos.
+- En la app (HU-0016): `AppShell` y `AppSidebar` (HU-0016): `collapsible="icon"`, 260 px, controlado por la preferencia `sidebar`. El marco lleva `transform`.
 
 **No**
-- La ventana actual no tiene barra lateral: `Titlebar` y `Toolbar` son propios. **Requiere un contenedor con `transform`** si no ocupa toda la ventana.
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
+- Un segundo sidebar: la app tiene uno, en `AppShell`. **Requiere un contenedor con `transform`** si no ocupa toda la ventana.
 
 ## Importación
 

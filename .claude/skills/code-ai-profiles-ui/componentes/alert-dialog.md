@@ -8,10 +8,10 @@ Modal que exige confirmar o cancelar una acción.
 
 **Sí**
 - Confirmar una acción que no se puede deshacer o que el usuario debe decidir.
+- En la app (HU-0016): `DeleteInstanceDialog` y `UnlinkSessionDialog`.
 
 **No**
-- En las pantallas actuales: `ConfirmDialog`. Para formularios: `Dialog`.
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
+- Para formularios: `Dialog`.
 
 ## Importación
 

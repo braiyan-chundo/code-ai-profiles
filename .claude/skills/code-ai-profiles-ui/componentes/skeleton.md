@@ -8,10 +8,10 @@ Marcador de posición mientras carga el contenido.
 
 **Sí**
 - Reservar el sitio de un contenido que carga.
+- En la app (HU-0016): `PageSkeleton` (la carga de una página).
 
 **No**
-- En las pantallas actuales: `LoadingCards`.
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
+- La carga de una página entera: `PageSkeleton` (`src/app/layout`), que ya lo compone.
 
 ## Importación
 
