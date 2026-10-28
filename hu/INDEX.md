@@ -2,7 +2,7 @@
 
 > Generado por `node .metodo/scripts/hu.mjs index`. **No se edita a mano.**
 
-7 historias · ◻ en-espera: 2 · ◐ en-proceso: 1 · ◼ terminada: 4 · ✕ descartada: 0
+8 historias · ◻ en-espera: 2 · ◐ en-proceso: 2 · ◼ terminada: 4 · ✕ descartada: 0
 
 | | Historia | Área | Fase | Repos | Reglas |
 | --- | --- | --- | --- | --- | --- |
@@ -13,3 +13,4 @@
 | ◼ | [HU-0014](HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md) Design system con shadcn y showcase local | interfaz | cierre | code-ai-profiles | — |
 | ◼ | [HU-0015](HU-0015-frontend-escalable-componentes-features-/hu.md) Frontend escalable: componentes, features y router | interfaz | cierre | code-ai-profiles | — |
 | ◼ | [HU-0016](HU-0016-rediseno-con-sidebar-dashboard-y-pagina-/hu.md) Rediseño con sidebar, dashboard y página por instancia | interfaz | cierre | code-ai-profiles | — |
+| ◐ | [HU-0017](HU-0017-descargar-e-instalar-la-original-en-maco/hu.md) Descargar e instalar la original en macOS | actualizaciones | requisitos | code-ai-profiles | — |
