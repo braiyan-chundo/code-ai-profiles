@@ -114,6 +114,7 @@ Ninguna: es el código del registro `radix-vega` (2026-10-28) tal como se descar
 
 ## Qué no hacer
 
+- No adoptarlo sin decidir qué hace con la persistencia: `sidebar.tsx` escribe la cookie `sidebar_state` (7 días, `path=/`) y registra el atajo global Cmd/Ctrl+B en `window`. En el showcase es inocuo; en la app la cookie quedaría en los datos del webview, así que la historia que lo adopte la quita o la justifica.
 - No ponerlo sin contenedor con `transform` dentro de un marco: su `position: fixed` se sale.
 - No regenerar con `pnpm exec shadcn add sidebar --overwrite`: es código propio y se perderían los ajustes.
 
