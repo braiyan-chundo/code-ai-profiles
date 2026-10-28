@@ -14,3 +14,5 @@ export {
   outdatedInstances,
   runningInstanceIds,
 } from "./dashboard-selectors";
+export { DashboardProvider } from "./DashboardProvider";
+export { useDashboard, type DashboardContextValue } from "./dashboard-context";

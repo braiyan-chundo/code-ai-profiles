@@ -44,11 +44,6 @@
     "ast_hash": "4ef37201944f5f99cbc3aba02a781215",
     "semantic_hash": "4ef37201944f5f99cbc3aba02a781215"
   },
-  "src/App.tsx": {
-    "mtime": 1793168547.7437599,
-    "ast_hash": "2f08266f216028bdec9369c007320b52",
-    "semantic_hash": ""
-  },
   "src/components/Icons.tsx": {
     "mtime": 1784516056.9907844,
     "ast_hash": "51f16f9089a695e79d1d57e1428a0e13",
@@ -60,8 +55,8 @@
     "semantic_hash": "4f27aa9635d84bb547a767f204d95840"
   },
   "src/main.tsx": {
-    "mtime": 1793167297.10135,
-    "ast_hash": "28150b8e110be303cf40ab91bd671af4",
+    "mtime": 1793168709.9822278,
+    "ast_hash": "5d04470684cd521700e0b5753bd3d6cb",
     "semantic_hash": ""
   },
   "src/types.ts": {
@@ -560,8 +555,8 @@
     "semantic_hash": ""
   },
   "src/features/dashboard/index.ts": {
-    "mtime": 1793168528.4983974,
-    "ast_hash": "b0961b8de9eed6ad106a1cfa7ba92430",
+    "mtime": 1793168693.235191,
+    "ast_hash": "ac3ae12cefe963ffa64728d8a1a6397a",
     "semantic_hash": ""
   },
   "src/features/instances/InstanceCard.tsx": {
@@ -637,6 +632,26 @@
   "src/features/updates/index.ts": {
     "mtime": 1793168528.496196,
     "ast_hash": "5d5b3327938f2bd3981ce53e40f6aed5",
+    "semantic_hash": ""
+  },
+  "src/app/App.tsx": {
+    "mtime": 1793168709.980066,
+    "ast_hash": "6f0bdd32d6841d5ce350da43cf6879c8",
+    "semantic_hash": ""
+  },
+  "src/app/AppView.tsx": {
+    "mtime": 1793168723.1867487,
+    "ast_hash": "9ef818664b06bf8f6ab12292ea03e94a",
+    "semantic_hash": ""
+  },
+  "src/features/dashboard/DashboardProvider.tsx": {
+    "mtime": 1793168693.2331624,
+    "ast_hash": "4e963a25cccf7415df4446d7895f4dbb",
+    "semantic_hash": ""
+  },
+  "src/features/dashboard/dashboard-context.ts": {
+    "mtime": 1793168693.2310514,
+    "ast_hash": "c0f133f1946c64e91600bdab504683df",
     "semantic_hash": ""
   }
 }

@@ -1,24 +1,23 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { listen } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { bridge } from "./lib/bridge";
+import { bridge } from "../lib/bridge";
 import {
   BACKGROUND_REFRESH_COOLDOWN_MS,
   createScanController,
   reconcileManualBusy,
   type ManualScanView,
-} from "./lib/scan-controller";
+} from "../lib/scan-controller";
 import {
   createSourceUpdateController,
   mergeSourceUpdateForInstallation,
   sourceInstallationIdentity,
   sourceUpdatePresentation,
-} from "./lib/source-update-controller";
-import { formatBytes } from "./lib/format";
-import { friendlyError } from "./lib/errors";
-import { resolveRuntimePlatform, shortcutModifierLabel } from "./lib/platform";
+} from "../lib/source-update-controller";
+import { formatBytes } from "../lib/format";
+import { friendlyError } from "../lib/errors";
+import { resolveRuntimePlatform, shortcutModifierLabel } from "../lib/platform";
 import {
-  EMPTY_DASHBOARD,
   countCodeSessions,
   countRunning,
   filterInstances,
@@ -26,32 +25,33 @@ import {
   originalAppName as selectOriginalAppName,
   outdatedInstances as selectOutdatedInstances,
   runningInstanceIds as selectRunningInstanceIds,
-} from "./features/dashboard";
+  useDashboard,
+} from "../features/dashboard";
 import {
   SessionTransferDialog,
   transferNotice,
   unlinkDialogCopy,
   type SessionTransferSelection,
   type SessionUnlinkSelection,
-} from "./features/sessions";
-import { InstanceCard, InstanceEditor, applyLiveUsage } from "./features/instances";
+} from "../features/sessions";
+import { InstanceCard, InstanceEditor, applyLiveUsage } from "../features/instances";
 import {
   AppearanceDialog,
   loadAppearancePreferences,
   resolveTheme,
   saveAppearancePreferences,
   type AppearancePreferences,
-} from "./features/appearance";
+} from "../features/appearance";
 import {
   ApplicationUpdateDialog,
   OriginalApplicationUpdateDialog,
   summarizeSynchronization,
   synchronizeLabel as describeSynchronizeLabel,
-} from "./features/updates";
-import { ScanProgressPanel } from "./features/scan";
-import { OriginalAppSection } from "./features/original-app";
-import type { DashboardState, ManagedInstance, SessionProfile } from "./types";
-import { ORIGINAL_INSTANCE_ID } from "./types";
+} from "../features/updates";
+import { ScanProgressPanel } from "../features/scan";
+import { OriginalAppSection } from "../features/original-app";
+import type { DashboardState, ManagedInstance, SessionProfile } from "../types";
+import { ORIGINAL_INSTANCE_ID } from "../types";
 import {
   AlertIcon,
   CloudIcon,
@@ -62,23 +62,39 @@ import {
   SettingsIcon,
   SparklesIcon,
   XIcon,
-} from "./components/Icons";
-import { ConfirmDialog } from "./components/ConfirmDialog";
-import { EmptyState } from "./components/EmptyState";
-import { LoadingCards } from "./components/LoadingCards";
-import { Metric } from "./components/Metric";
+} from "../components/Icons";
+import { ConfirmDialog } from "../components/ConfirmDialog";
+import { EmptyState } from "../components/EmptyState";
+import { LoadingCards } from "../components/LoadingCards";
+import { Metric } from "../components/Metric";
 
 interface ScanProgressEvent {
   progress: number;
   label: string;
 }
 
-function App() {
-  const [state, setState] = useState<DashboardState>(EMPTY_DASHBOARD);
-  const [loading, setLoading] = useState(true);
-  const [busy, setBusy] = useState<string | null>(null);
+function AppView() {
+  const {
+    dashboard: state,
+    loading,
+    busy,
+    error,
+    notice,
+    iconPreviews,
+    busyRef,
+    replaceDashboard,
+    updateDashboard,
+    setBusy,
+    updateBusy,
+    setError,
+    setNotice,
+    clearFeedback,
+    finishLoading,
+    storeIconPreview,
+    removeIconPreview,
+    runAction,
+  } = useDashboard();
   const [query, setQuery] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [scanProgress, setScanProgress] = useState<ManualScanView | null>(null);
   const [editor, setEditor] = useState<ManagedInstance | "new" | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ManagedInstance | null>(null);
@@ -86,16 +102,12 @@ function App() {
   const [unlinkTarget, setUnlinkTarget] = useState<SessionUnlinkSelection | null>(null);
   const [updateTargets, setUpdateTargets] = useState<ManagedInstance[] | null>(null);
   const [originalUpdateOpen, setOriginalUpdateOpen] = useState(false);
-  const [notice, setNotice] = useState<string | null>(null);
-  const [iconPreviews, setIconPreviews] = useState<Record<string, string>>({});
   const [appearanceOpen, setAppearanceOpen] = useState(false);
   const [appearance, setAppearance] = useState<AppearancePreferences>(loadAppearancePreferences);
   const [systemDark, setSystemDark] = useState(() => window.matchMedia("(prefers-color-scheme: dark)").matches);
   const searchRef = useRef<HTMLInputElement>(null);
   const manualProgressUnlistenRef = useRef<(() => void) | null>(null);
   const scanListenerLifecycleRef = useRef(0);
-  const busyRef = useRef<string | null>(null);
-  busyRef.current = busy;
   const scanControllerRef = useRef<ReturnType<typeof createScanController<DashboardState>> | null>(null);
   if (!scanControllerRef.current) {
     scanControllerRef.current = createScanController({
@@ -133,11 +145,11 @@ function App() {
           removeListener?.();
         }
       },
-      onBackgroundResult: setState,
-      onManualResult: setState,
+      onBackgroundResult: replaceDashboard,
+      onManualResult: replaceDashboard,
       onManualView: (view) => {
         setScanProgress(view);
-        setBusy((current) => reconcileManualBusy(current, view));
+        updateBusy((current) => reconcileManualBusy(current, view));
       },
       describeError: friendlyError,
     });
@@ -147,11 +159,11 @@ function App() {
   if (!sourceUpdateControllerRef.current) {
     sourceUpdateControllerRef.current = createSourceUpdateController({
       runRefresh: () => bridge.refreshVersions(),
-      onRefreshResult: setState,
+      onRefreshResult: replaceDashboard,
       runOfficialCheck: () => bridge.checkSourceUpdate(),
       onOfficialCheckResult: (sourceUpdate, refreshedDashboard) => {
         const expected = sourceInstallationIdentity(refreshedDashboard.system);
-        setState((current) => mergeSourceUpdateForInstallation(current, expected, sourceUpdate));
+        updateDashboard((current) => mergeSourceUpdateForInstallation(current, expected, sourceUpdate));
       },
     });
   }
@@ -170,12 +182,12 @@ function App() {
       try {
         const dashboard = await bridge.dashboard();
         expected = sourceInstallationIdentity(dashboard.system);
-        if (active) setState(dashboard);
+        if (active) replaceDashboard(dashboard);
       } catch (reason) {
         if (active) setError(friendlyError(reason));
       } finally {
         if (active) {
-          setLoading(false);
+          finishLoading();
           scanController.markLoaded();
         }
       }
@@ -183,7 +195,7 @@ function App() {
       try {
         const sourceUpdate = await bridge.checkSourceUpdate();
         if (active) {
-          setState((current) => mergeSourceUpdateForInstallation(current, expected, sourceUpdate));
+          updateDashboard((current) => mergeSourceUpdateForInstallation(current, expected, sourceUpdate));
         }
       } catch {
         // La detección remota nunca bloquea la carga del dashboard.
@@ -236,7 +248,7 @@ function App() {
         const snapshots = await bridge.liveUsage(runningInstanceIds);
         if (!active || !snapshots.length) return;
         const byId = new Map(snapshots.map((snapshot) => [snapshot.instanceId, snapshot.usage]));
-        setState((current) => applyLiveUsage(current, byId));
+        updateDashboard((current) => applyLiveUsage(current, byId));
       } catch {
         // Una lectura parcial conserva la última captura válida.
       }
@@ -259,7 +271,7 @@ function App() {
         const expected = sourceIdentityRef.current;
         const sourceUpdate = await bridge.checkSourceUpdate();
         if (active) {
-          setState((current) => mergeSourceUpdateForInstallation(current, expected, sourceUpdate));
+          updateDashboard((current) => mergeSourceUpdateForInstallation(current, expected, sourceUpdate));
         }
       } catch {
         // La última metadata válida permanece visible desde la caché backend.
@@ -351,18 +363,6 @@ function App() {
     },
     ...state.instances,
   ], [originalAppName, state.instances, state.system.originalCodeSessions, state.system.originalStatus]);
-
-  const runAction = async (key: string, action: () => Promise<DashboardState>) => {
-    setBusy(key);
-    setError(null);
-    try {
-      setState(await action());
-    } catch (reason) {
-      setError(friendlyError(reason));
-    } finally {
-      setBusy(null);
-    }
-  };
 
   const windowAction = async (action: "close" | "minimize" | "maximize") => {
     if (!bridge.isDesktop()) return;
@@ -475,8 +475,7 @@ function App() {
               </div>
               <button
                 onClick={() => {
-                  setError(null);
-                  setNotice(null);
+                  clearFeedback();
                   setOriginalUpdateOpen(true);
                 }}
                 disabled={busy !== null || !state.system.sourcePath}
@@ -500,8 +499,7 @@ function App() {
               </div>
               <button
                 onClick={() => {
-                  setError(null);
-                  setNotice(null);
+                  clearFeedback();
                   setUpdateTargets(outdatedInstances);
                 }}
                 disabled={busy !== null || !state.system.versionTopology.canSynchronizeManaged}
@@ -541,18 +539,15 @@ function App() {
                   autoExpand={Boolean(query)}
                   busy={busy !== null}
                   onUpdate={() => {
-                    setError(null);
-                    setNotice(null);
+                    clearFeedback();
                     setOriginalUpdateOpen(true);
                   }}
                   onTransfer={(session) => {
-                    setError(null);
-                    setNotice(null);
+                    clearFeedback();
                     setTransfer({ source: transferProfiles[0], session });
                   }}
                   onUnlink={(session) => {
-                    setError(null);
-                    setNotice(null);
+                    clearFeedback();
                     setUnlinkTarget({ instance: transferProfiles[0], session });
                   }}
                 />
@@ -579,13 +574,11 @@ function App() {
                         onEdit={() => setEditor(instance)}
                         onDelete={() => setDeleteTarget(instance)}
                         onTransfer={(session) => {
-                          setError(null);
-                          setNotice(null);
+                          clearFeedback();
                           setTransfer({ source: instance, session });
                         }}
                         onUnlink={(session) => {
-                          setError(null);
-                          setNotice(null);
+                          clearFeedback();
                           setUnlinkTarget({ instance, session });
                         }}
                       />
@@ -651,19 +644,15 @@ function App() {
                 : next.instances.find((instance) => instance.id === editor.id);
               if (changedInstance && iconChange.remove && changedInstance.customIcon) {
                 next = await bridge.clearInstanceIcon(changedInstance.id);
-                setIconPreviews((current) => {
-                  const updated = { ...current };
-                  delete updated[changedInstance.id];
-                  return updated;
-                });
+                removeIconPreview(changedInstance.id);
               }
               if (changedInstance && iconChange.bytes) {
                 next = await bridge.setInstanceIcon(changedInstance.id, iconChange.bytes);
                 if (iconChange.previewUrl) {
-                  setIconPreviews((current) => ({ ...current, [changedInstance.id]: iconChange.previewUrl! }));
+                  storeIconPreview(changedInstance.id, iconChange.previewUrl!);
                 }
               }
-              setState(next);
+              replaceDashboard(next);
               setEditor(null);
             } catch (reason) {
               setError(friendlyError(reason));
@@ -701,8 +690,7 @@ function App() {
             const target = transferProfiles.find((instance) => instance.id === targetId);
             if (!target) return;
             setBusy(`transfer:${transfer.session.id}`);
-            setError(null);
-            setNotice(null);
+            clearFeedback();
             try {
               const result = await bridge.copySession({
                 sourceInstanceId: transfer.source.id,
@@ -711,7 +699,7 @@ function App() {
                 mode,
                 includeLocalArtifacts,
               });
-              setState(result.dashboard);
+              replaceDashboard(result.dashboard);
               setNotice(transferNotice(mode, transfer.session.title, transfer.source.name, target.name, result.artifacts));
               setTransfer(null);
             } catch (reason) {
@@ -737,14 +725,13 @@ function App() {
             onCancel={() => setUnlinkTarget(null)}
             onConfirm={async () => {
               setBusy(`unlink:${unlinkTarget.session.id}`);
-              setError(null);
-              setNotice(null);
+              clearFeedback();
               try {
                 const nextState = await bridge.unlinkSession({
                   instanceId: unlinkTarget.instance.id,
                   sessionId: unlinkTarget.session.id,
                 });
-                setState(nextState);
+                replaceDashboard(nextState);
                 setNotice(copy.notice);
                 setUnlinkTarget(null);
               } catch (reason) {
@@ -771,14 +758,13 @@ function App() {
           onConfirm={async () => {
             const targets = updateTargets.filter((instance) => instance.status === "stopped");
             setBusy("update-applications");
-            setError(null);
-            setNotice(null);
+            clearFeedback();
             try {
               const result = await bridge.synchronizeApplications({
                 source: latestSource,
                 targetInstanceIds: targets.map((instance) => instance.id),
               });
-              setState(result.dashboard);
+              replaceDashboard(result.dashboard);
               const summary = summarizeSynchronization(result.results);
               if (summary.notice) setNotice(summary.notice);
               if (summary.error) setError(summary.error);
@@ -802,8 +788,7 @@ function App() {
           onClose={() => setOriginalUpdateOpen(false)}
           onConfirm={async () => {
             setBusy("update-original");
-            setError(null);
-            setNotice(null);
+            clearFeedback();
             try {
               const result = await sourceUpdateController.runHandoff(() => bridge.updateOriginalApplication());
               setNotice(result.message);
@@ -821,4 +806,4 @@ function App() {
   );
 }
 
-export default App;
+export default AppView;
