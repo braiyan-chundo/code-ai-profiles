@@ -7,12 +7,13 @@ Dispara una acción: seis variantes y ocho tamaños.
 ## Cuándo sí / cuándo no
 
 **Sí**
-- Una acción nueva en una superficie que ya use Tailwind: guardar, copiar, abrir.
+- Cualquier acción: guardar, copiar, abrir, detener.
 - Botones de solo icono (`size="icon*"`).
+- En la app (HU-0016): todas las acciones de la app: cabeceras de página, sidebar, avisos, sesiones y diálogos. Primaria (`default`, el naranja), `outline` para Cancelar, `destructive` para borrar, `ghost` para iconos de fila.
 
 **No**
-- En las pantallas actuales: siguen `.primary-action`, `.secondary-button` y `.destructive-button` (`src/components/buttons.css`, `shell.css`).
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
+- Navegar: `Link` de React Router (en el sidebar, `SidebarMenuButton asChild`).
+- Confirmar dentro de un `AlertDialog` asíncrono: `Button` sí, pero no `AlertDialogAction` (cierra antes de marcar `busy`).
 
 ## Importación
 

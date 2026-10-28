@@ -8,10 +8,10 @@ Mensaje destacado dentro de la página.
 
 **Sí**
 - Un mensaje destacado dentro de la página (información o error).
+- En la app (HU-0016): `NoticeAlert` (avisos de actualización, sincronización, error, resultado y progreso del escaneo) y las notas de los diálogos (editor, transferir, sincronizar, original). El tono va en el `Alert` (`text-warning`, `text-success`, `text-primary-text`), no en el icono.
 
 **No**
-- En las pantallas actuales: los avisos `feedback-banners`. Mensajes que desaparecen: `sonner`.
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
+- Un aviso de la app con icono, título y acción: `NoticeAlert` (`src/components`), que ya lo compone. Mensajes que desaparecen: `sonner`, que la app no monta (A-13).
 
 ## Importación
 

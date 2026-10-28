@@ -11,7 +11,7 @@ Lista de acciones que se abre desde un botón.
 
 **No**
 - Elegir un valor de formulario: `Select`. Una barra de menús: `Menubar`.
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
+- Hoy no lo usa ninguna pantalla de la app (sí el showcase). Si una lo adopta, se usa con el tema de `ui-theme.css`, sin CSS propio.
 
 ## Importación
 

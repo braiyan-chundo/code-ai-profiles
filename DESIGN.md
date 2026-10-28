@@ -153,3 +153,30 @@ We use a **highly rounded** geometric language.
 - **Instance Management Toggles:** A custom pill-shaped track. When "On," the track should use the Primary color; when "Off," it should blend into the glass background with only a stroke visible.
 - **"Add Session" Modal:** Should appear as a centered floating pane. Use a heavy backdrop blur (20px) on the content behind it to pull focus. The primary action button should be the only element using a solid, non-transparent color.
 - **Iconography:** Use line-based icons with a consistent 1.5pt stroke weight. Rounded ends on all paths.
+
+## Cómo se aplica en Code AI Profiles
+
+Desde HU-0016 la app se construye con el catálogo shadcn/ui de `src/components/ui` (código propio, Tailwind 4) y no
+hay CSS propio. Esta guía describe la identidad; los valores reales que la app usa son estos:
+
+- **Tokens**: `src/styles/tokens.css`. Oscuro, la base: superficie `#151615`, texto `#e8e4e2`, apagado `#aaa19e`,
+  tenue `#726b68`, terracota `#ff8d6c` (texto y foco) y `#ff5f35` (relleno de la acción primaria), peligro `#ef7e70`;
+  líneas y superficies elevadas en blanco translúcido. Claro: superficie `#f3efeb`, texto `#2e2926`, líneas en tierra
+  translúcida. Lo que no es un token de la app (el marco de la ventana, el velo y el fondo de los diálogos, el verde y
+  el ámbar del contexto de sesión) va como `--ui-*` en `src/styles/ui-theme.css`, con su valor claro.
+- **Temas**: oscuro, claro y del sistema, aplicados con `theme-dark` o `theme-light` en `<html>`; diálogos, menús y
+  tooltips los heredan.
+- **Tipografía**: Inter para la interfaz y JetBrains Mono para datos técnicos (versiones, rutas, modelos, contexto,
+  etiquetas en mayúsculas con tracking). Ambas locales (`@fontsource`). Geist no se usa.
+- **Radios**: 9 px (chips), 12 px (controles), 14 px (botones y tarjetas de opción), 16 px (tarjetas), 20 px (la
+  ventana en Windows) y 26 px (diálogos): `rounded-sm` a `rounded-3xl` en `ui-theme.css`.
+- **Disposición**: sidebar de 260 px plegable a iconos, contenido de hasta 1200 px con márgenes de 38 px (25 px por
+  debajo de 1070 px), ventana mínima de 980×680.
+- **Profundidad**: el marco de la ventana es un degradado con borde interior; los diálogos flotan sobre un velo con
+  desenfoque de 18 px. La acción primaria es el único relleno sólido de color.
+- **Iconos**: lucide (trazo fino, extremos redondeados) y la marca propia (`BrandMark`), que también es el icono por
+  defecto de una instancia.
+- **Densidad de sesiones**: compacta, cómoda o grande, con las variables `--session-*`.
+
+El detalle del puente con shadcn está en la skill `code-ai-profiles-ui` (`tema.md`) y el de construcción, en
+`code-ai-profiles-frontend-react-vite`.

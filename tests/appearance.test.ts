@@ -27,18 +27,43 @@ test("la clave de almacenamiento no cambia", () => {
 });
 
 test("sin preferencias guardadas devuelve las de por defecto", () => {
-  assert.deepEqual(loadAppearancePreferences(memoryStorage().storage), { theme: "system", sessionTextSize: "comfortable" });
+  assert.deepEqual(loadAppearancePreferences(memoryStorage().storage), { theme: "system", sessionTextSize: "comfortable", sidebar: "expanded" });
   assert.deepEqual(loadAppearancePreferences(stored(null)), DEFAULT_APPEARANCE);
 });
 
 test("unas preferencias válidas se leen tal cual", () => {
-  assert.deepEqual(loadAppearancePreferences(stored({ theme: "light", sessionTextSize: "large" })), { theme: "light", sessionTextSize: "large" });
-  assert.deepEqual(loadAppearancePreferences(stored({ theme: "dark", sessionTextSize: "compact" })), { theme: "dark", sessionTextSize: "compact" });
+  assert.deepEqual(
+    loadAppearancePreferences(stored({ theme: "light", sessionTextSize: "large", sidebar: "collapsed" })),
+    { theme: "light", sessionTextSize: "large", sidebar: "collapsed" },
+  );
+  assert.deepEqual(
+    loadAppearancePreferences(stored({ theme: "dark", sessionTextSize: "compact", sidebar: "expanded" })),
+    { theme: "dark", sessionTextSize: "compact", sidebar: "expanded" },
+  );
+});
+
+test("sidebar: válido, inválido y ausente (A-5); una versión anterior sin el campo se despliega", () => {
+  assert.equal(loadAppearancePreferences(stored({ theme: "dark", sidebar: "collapsed" })).sidebar, "collapsed");
+  assert.equal(loadAppearancePreferences(stored({ theme: "dark", sidebar: "expanded" })).sidebar, "expanded");
+  for (const invalid of ["hidden", true, 0, null, { open: false }]) {
+    const loaded = loadAppearancePreferences(stored({ theme: "light", sessionTextSize: "large", sidebar: invalid }));
+    assert.deepEqual(loaded, { theme: "light", sessionTextSize: "large", sidebar: "expanded" }, `sidebar: ${JSON.stringify(invalid)}`);
+  }
+  assert.deepEqual(
+    loadAppearancePreferences(stored({ theme: "light", sessionTextSize: "large" })),
+    { theme: "light", sessionTextSize: "large", sidebar: "expanded" },
+  );
 });
 
 test("cada campo inválido cae a su valor por defecto sin tocar el otro", () => {
-  assert.deepEqual(loadAppearancePreferences(stored({ theme: "sepia", sessionTextSize: "large" })), { theme: "system", sessionTextSize: "large" });
-  assert.deepEqual(loadAppearancePreferences(stored({ theme: "light", sessionTextSize: 14 })), { theme: "light", sessionTextSize: "comfortable" });
+  assert.deepEqual(
+    loadAppearancePreferences(stored({ theme: "sepia", sessionTextSize: "large", sidebar: "collapsed" })),
+    { theme: "system", sessionTextSize: "large", sidebar: "collapsed" },
+  );
+  assert.deepEqual(
+    loadAppearancePreferences(stored({ theme: "light", sessionTextSize: 14, sidebar: "collapsed" })),
+    { theme: "light", sessionTextSize: "comfortable", sidebar: "collapsed" },
+  );
   assert.deepEqual(loadAppearancePreferences(stored({ other: true })), DEFAULT_APPEARANCE);
 });
 
@@ -57,9 +82,10 @@ test("si getItem lanza, devuelve las de por defecto", () => {
 
 test("save guarda el JSON en la misma clave", () => {
   const { storage, values } = memoryStorage();
-  saveAppearancePreferences({ theme: "dark", sessionTextSize: "large" }, storage);
-  assert.equal(values.get(APPEARANCE_STORAGE_KEY), JSON.stringify({ theme: "dark", sessionTextSize: "large" }));
-  assert.deepEqual(loadAppearancePreferences(storage), { theme: "dark", sessionTextSize: "large" });
+  const preferences = { theme: "dark", sessionTextSize: "large", sidebar: "collapsed" } as const;
+  saveAppearancePreferences(preferences, storage);
+  assert.equal(values.get(APPEARANCE_STORAGE_KEY), JSON.stringify(preferences));
+  assert.deepEqual(loadAppearancePreferences(storage), preferences);
 });
 
 test("save traga el error si el almacenamiento falla", () => {

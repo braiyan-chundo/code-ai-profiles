@@ -1,4 +1,6 @@
-import { AlertIcon, SparklesIcon } from "../../components/Icons";
+import { SparklesIcon, TriangleAlertIcon } from "lucide-react";
+import { NoticeAlert } from "../../components/NoticeAlert";
+import { Button } from "../../components/ui/button";
 import { sourceUpdatePresentation } from "../../lib/source-update-controller";
 import { originalAppName as selectOriginalAppName, useDashboard } from "../dashboard";
 
@@ -12,20 +14,24 @@ export function SourceUpdateBanner({ onUpdate }: { onUpdate: () => void }) {
   );
   if (loading || !state.system.sourcePath || !officialUpdate) return null;
   return (
-    <div className={`source-update-banner source-update-${officialUpdate.kind}`}>
-      <span className="update-banner-icon">
-        {officialUpdate.kind === "available" ? <SparklesIcon size={17} /> : <AlertIcon size={17} />}
-      </span>
-      <div>
-        <strong>{officialUpdate.title}</strong>
-        <span>{officialUpdate.detail}</span>
-      </div>
-      <button
-        onClick={onUpdate}
-        disabled={busy !== null || !state.system.sourcePath}
-      >
-        {officialUpdate.actionLabel}
-      </button>
-    </div>
+    <NoticeAlert
+      role="status"
+      data-kind={officialUpdate.kind}
+      icon={
+        officialUpdate.kind === "available" ? (
+          <SparklesIcon aria-hidden="true" className="text-primary-text" />
+        ) : (
+          <TriangleAlertIcon aria-hidden="true" className="text-warning" />
+        )
+      }
+      title={officialUpdate.title}
+      action={
+        <Button variant="outline" size="sm" onClick={onUpdate} disabled={busy !== null || !state.system.sourcePath}>
+          {officialUpdate.actionLabel}
+        </Button>
+      }
+    >
+      {officialUpdate.detail}
+    </NoticeAlert>
   );
 }

@@ -8,10 +8,10 @@ Mensaje cuando no hay nada que mostrar.
 
 **Sí**
 - Cuando una lista o sección no tiene nada que mostrar.
+- En la app (HU-0016): `EmptyState` (sin fuente, sin instancias, sin coincidencias) y el vacío de `SessionList`.
 
 **No**
-- En las pantallas actuales: `EmptyState`.
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
+- Un vacío de página de la app: usa `EmptyState` (`src/components/EmptyState.tsx`), que ya lo compone.
 
 ## Importación
 

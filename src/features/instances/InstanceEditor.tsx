@@ -1,7 +1,14 @@
 import { useState, type FormEvent } from "react";
 import type { CreateInstanceRequest, DashboardState, ManagedInstance } from "../../types";
-import { AlertIcon, ChevronIcon, CloudIcon, HardDriveIcon, PlusIcon, RefreshIcon } from "../../components/Icons";
-import { ModalFrame } from "../../components/ModalFrame";
+import { ChevronDownIcon, HardDriveIcon, ImageUpIcon, InfoIcon, PlusIcon } from "lucide-react";
+import { BrandMark } from "../../components/BrandMark";
+import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert";
+import { Button } from "../../components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../components/ui/dialog";
+import { Field, FieldError, FieldLabel } from "../../components/ui/field";
+import { Input } from "../../components/ui/input";
+import { Spinner } from "../../components/ui/spinner";
+import { cn } from "../../lib/utils";
 import { iconDimensionsError, iconFileError } from "./icon-validation";
 import { managedIconSource } from "./instance-icon";
 import type { InstanceIconChange } from "./instance-types";
@@ -70,107 +77,151 @@ export function InstanceEditor({
   };
 
   return (
-    <ModalFrame
-      title={isNew ? "Nueva instancia" : "Editar instancia"}
-      subtitle={isNew ? "Un perfil local completamente independiente" : "Actualiza el nombre visible de este perfil"}
-      onClose={busy ? () => undefined : onClose}
-    >
-      <form className="editor-form" onSubmit={(event) => void submit(event)}>
-        <label className="form-field">
-          <span>Nombre del perfil</span>
-          <input autoFocus value={name} onChange={(event) => setName(event.target.value)} maxLength={64} required placeholder="Ej. Trabajo, Personal, Cliente A" />
-        </label>
+    <Dialog open onOpenChange={(open) => { if (!open && !busy) onClose(); }}>
+      <DialogContent aria-busy={busy} closeDisabled={busy}>
+        <DialogHeader>
+          <DialogTitle>{isNew ? "Nueva instancia" : "Editar instancia"}</DialogTitle>
+          <DialogDescription>
+            {isNew ? "Un perfil local completamente independiente" : "Actualiza el nombre visible de este perfil"}
+          </DialogDescription>
+        </DialogHeader>
 
-        <section className="instance-icon-editor" aria-labelledby="instance-icon-heading">
-          <div className="instance-icon-preview">
-            {iconPreviewUrl || (!removeIcon && currentIconUrl)
-              ? <img src={iconPreviewUrl ?? currentIconUrl!} alt="Vista previa del icono de la instancia" />
-              : <CloudIcon size={30} />}
-          </div>
-          <div className="instance-icon-copy">
-            <strong id="instance-icon-heading">Icono de la instancia</strong>
-            <span>Se guarda fuera de la aplicación compatible para sobrevivir a futuras sincronizaciones.</span>
-            <div className="instance-icon-actions">
-              <label className="secondary-button file-picker-button">
-                <input
-                  type="file"
-                  accept="image/png,image/jpeg"
-                  onChange={(event) => {
-                    const file = event.currentTarget.files?.[0] ?? null;
-                    event.currentTarget.value = "";
-                    void selectIcon(file);
-                  }}
-                  disabled={busy}
-                />
-                {iconPreviewUrl || instance?.customIcon ? "Reemplazar imagen" : "Seleccionar imagen"}
-              </label>
-              {(iconPreviewUrl || instance?.customIcon) && !removeIcon && (
-                <button
-                  type="button"
-                  className="text-danger-button"
-                  disabled={busy}
-                  onClick={() => {
-                    setIconBytes(null);
-                    setIconPreviewUrl(null);
-                    setRemoveIcon(true);
-                    setIconError(null);
-                  }}
-                >
-                  Quitar
-                </button>
-              )}
-            </div>
-            {iconError && <span className="field-error" role="alert">{iconError}</span>}
-          </div>
-        </section>
+        <form className="grid gap-5" onSubmit={(event) => void submit(event)}>
+          <Field>
+            <FieldLabel htmlFor="instance-name" className="text-xs">Nombre del perfil</FieldLabel>
+            <Input
+              id="instance-name"
+              autoFocus
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              maxLength={64}
+              required
+              placeholder="Ej. Trabajo, Personal, Cliente A"
+              className="h-11 rounded-lg px-3.5"
+            />
+          </Field>
 
-        <div className="icon-platform-note">
-          <AlertIcon size={17} />
-          <p>
-            {platform === "macos"
-              ? "Al guardar, Code AI Profiles intentará aplicar el icono al Dock y verificará la copia administrada. El resultado aparecerá aquí cuando termine."
-              : platform === "windows"
-                ? "En Windows el ejecutable conserva su icono oficial; la imagen personalizada identifica la instancia dentro de Code AI Profiles."
-                : "En Linux se intenta aplicar el icono al launcher; Wayland o el compositor pueden conservar el icono oficial."}
-          </p>
-        </div>
-        {instance?.customIcon && !removeIcon && (
-          <p className={`icon-application-result ${instance.customIcon.systemApplied ? "is-applied" : "is-limited"}`}>
-            {platform === "macos" && (
-              <strong>{instance.customIcon.systemApplied ? "Dock aplicado. " : "No se aplicó al Dock. "}</strong>
-            )}
-            {instance.customIcon.systemMessage}
-          </p>
-        )}
-
-        {isNew && (
-          <>
-            <div className="isolation-note">
-              <span className="note-icon"><HardDriveIcon size={20} /></span>
-              <div>
-                <strong>Copia aislada + perfil independiente</strong>
-                <p>La primera creación puede tardar. macOS intenta usar una copia APFS eficiente, Windows crea una copia administrada y Linux reutiliza el binario instalado con un perfil aislado.</p>
+          <section
+            aria-labelledby="instance-icon-heading"
+            className="grid grid-cols-[74px_minmax(0,1fr)] items-center gap-3.5 rounded-xl border bg-(--surface-soft) p-3.5"
+          >
+            <span className="grid size-[74px] place-items-center overflow-hidden rounded-[22px] border border-(--line-strong) bg-secondary text-primary-text">
+              {iconPreviewUrl || (!removeIcon && currentIconUrl)
+                ? <img src={iconPreviewUrl ?? currentIconUrl!} alt="Vista previa del icono de la instancia" className="size-full object-cover" />
+                : <BrandMark size={30} />}
+            </span>
+            <div className="grid min-w-0 gap-1.5">
+              <strong id="instance-icon-heading" className="text-xs font-semibold">Icono de la instancia</strong>
+              <span className="text-[11px] leading-snug text-muted-foreground">
+                Se guarda fuera de la aplicación compatible para sobrevivir a futuras sincronizaciones.
+              </span>
+              <div className="mt-1 flex flex-wrap gap-2">
+                <Button asChild variant="outline" size="sm" aria-disabled={busy} className="cursor-pointer text-xs has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50 aria-disabled:pointer-events-none aria-disabled:opacity-50">
+                  <label>
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg"
+                      className="sr-only"
+                      onChange={(event) => {
+                        const file = event.currentTarget.files?.[0] ?? null;
+                        event.currentTarget.value = "";
+                        void selectIcon(file);
+                      }}
+                      disabled={busy}
+                    />
+                    <ImageUpIcon />
+                    {iconPreviewUrl || instance?.customIcon ? "Reemplazar imagen" : "Seleccionar imagen"}
+                  </label>
+                </Button>
+                {(iconPreviewUrl || instance?.customIcon) && !removeIcon && (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    disabled={busy}
+                    onClick={() => {
+                      setIconBytes(null);
+                      setIconPreviewUrl(null);
+                      setRemoveIcon(true);
+                      setIconError(null);
+                    }}
+                  >
+                    Quitar
+                  </Button>
+                )}
               </div>
+              {iconError && <FieldError className="text-[11px]">{iconError}</FieldError>}
             </div>
-            <button className="advanced-toggle" type="button" onClick={() => setAdvanced(!advanced)}>
-              <ChevronIcon className={advanced ? "open" : ""} size={16} /> Opciones avanzadas
-            </button>
-            {advanced && (
-              <label className="form-field advanced-field">
-                <span>Ruta de la aplicación compatible</span>
-                <input value={customSource} onChange={(event) => setCustomSource(event.target.value)} required placeholder="/Applications/Compatible App.app" />
-              </label>
-            )}
-          </>
-        )}
+          </section>
 
-        <div className="modal-actions">
-          <button className="secondary-button" type="button" onClick={onClose} disabled={busy}>Cancelar</button>
-          <button className="primary-action modal-primary" type="submit" disabled={busy || !name.trim()}>
-            {busy ? <><RefreshIcon className="spin" size={17} /> {isNew ? "Creando copia…" : "Guardando…"}</> : isNew ? <><PlusIcon size={17} /> Crear instancia</> : "Guardar cambios"}
-          </button>
-        </div>
-      </form>
-    </ModalFrame>
+          <Alert className="border-primary/15 bg-primary/5 text-primary-text">
+            <InfoIcon />
+            <AlertDescription className="text-[11px] leading-relaxed">
+              {platform === "macos"
+                ? "Al guardar, Code AI Profiles intentará aplicar el icono al Dock y verificará la copia administrada. El resultado aparecerá aquí cuando termine."
+                : platform === "windows"
+                  ? "En Windows el ejecutable conserva su icono oficial; la imagen personalizada identifica la instancia dentro de Code AI Profiles."
+                  : "En Linux se intenta aplicar el icono al launcher; Wayland o el compositor pueden conservar el icono oficial."}
+            </AlertDescription>
+          </Alert>
+          {instance?.customIcon && !removeIcon && (
+            <p
+              data-applied={instance.customIcon.systemApplied}
+              className="-mt-2 px-0.5 font-mono text-[10px] leading-snug text-muted-foreground data-[applied=true]:text-success"
+            >
+              {platform === "macos" && (
+                <strong>{instance.customIcon.systemApplied ? "Dock aplicado. " : "No se aplicó al Dock. "}</strong>
+              )}
+              {instance.customIcon.systemMessage}
+            </p>
+          )}
+
+          {isNew && (
+            <>
+              <Alert className="border-primary/15 bg-primary/5 text-primary-text">
+                <HardDriveIcon />
+                <AlertTitle className="text-xs text-foreground">Copia aislada + perfil independiente</AlertTitle>
+                <AlertDescription className="text-[11px] leading-relaxed">
+                  La primera creación puede tardar. macOS intenta usar una copia APFS eficiente, Windows crea una copia administrada y Linux reutiliza el binario instalado con un perfil aislado.
+                </AlertDescription>
+              </Alert>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="-my-1 w-fit px-1.5 text-xs text-muted-foreground"
+                aria-expanded={advanced}
+                aria-controls="instance-source-field"
+                onClick={() => setAdvanced(!advanced)}
+              >
+                <ChevronDownIcon className={cn("transition-transform", advanced && "rotate-180")} /> Opciones avanzadas
+              </Button>
+              {advanced && (
+                <Field id="instance-source-field" className="animate-in fade-in-0">
+                  <FieldLabel htmlFor="instance-source" className="text-xs">Ruta de la aplicación compatible</FieldLabel>
+                  <Input
+                    id="instance-source"
+                    value={customSource}
+                    onChange={(event) => setCustomSource(event.target.value)}
+                    required
+                    placeholder="/Applications/Compatible App.app"
+                    className="h-11 rounded-lg px-3.5 font-mono text-xs md:text-xs"
+                  />
+                </Field>
+              )}
+            </>
+          )}
+
+          <DialogFooter>
+            <Button type="button" variant="outline" size="lg" onClick={onClose} disabled={busy}>Cancelar</Button>
+            <Button type="submit" size="lg" className="min-w-36" disabled={busy || !name.trim()}>
+              {busy
+                ? <><Spinner aria-hidden="true" /> {isNew ? "Creando copia…" : "Guardando…"}</>
+                : isNew ? <><PlusIcon /> Crear instancia</> : "Guardar cambios"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

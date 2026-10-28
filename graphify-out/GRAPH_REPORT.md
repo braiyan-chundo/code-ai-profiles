@@ -1,16 +1,16 @@
 # Graph Report - Code AI Profiles  (2026-10-28)
 
 ## Corpus Check
-- 303 files · ~147,566 words
+- 321 files · ~164,440 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2185 nodes · 4920 edges · 141 communities (124 shown, 17 thin omitted)
-- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 7 edges (avg confidence: 0.71)
+- 2286 nodes · 5321 edges · 139 communities (121 shown, 18 thin omitted)
+- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.68)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `232d3250`
+- Built from commit: `e70b58ae`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -18,7 +18,7 @@
 - Result
 - useDashboard
 - scripts
-- Icons.tsx
+- sections/attachment.tsx
 - lib.rs
 - Solución
 - types.ts
@@ -30,7 +30,7 @@
 - release-version.mjs
 - Brief · HU-0015 · frontend
 - update_instance_application_from_source_sync
-- DashboardRuntime.tsx
+- useScanRuntime.ts
 - graphify.mjs
 - permissions
 - HU-0010 — Publicar el fix de actualización como versión 0.2.2
@@ -44,7 +44,7 @@
 - HU-0003 — Transferencias conscientes de artefactos, actualización disponible y uso en vivo
 - HU-0004 — Sincronización desde la instancia más reciente, cierre robusto, artefactos locales e identidad visual
 - app
-- updates/index.ts
+- sessions/index.ts
 - HU-0005 — Recuperar la respuesta de la interfaz y establecer versionado SemVer
 - dashboard/index.ts
 - vite-env.d.ts
@@ -74,7 +74,7 @@
 - ADR-0001 · Adopción de la metodología v4
 - Versionado de Code AI Profiles
 - Stack de Code AI Profiles
-- sections/alert-dialog.tsx
+- source-update-controller.ts
 - Análisis
 - Invariantes de Code AI Profiles
 - Reglas de negocio de Code AI Profiles
@@ -83,8 +83,8 @@
 - HU-0011-adopcion-v4/seguimiento.md
 - HU-0012-icono-distintivo-en-el-dock-de-macos/seguimiento.md
 - HU-0013-describir-lo-construido-reglas-arquitect/seguimiento.md
-- format.test.ts
-- sections/hover-card.tsx
+- sections/navigation-menu.tsx
+- Rediseño con sidebar, dashboard y página por instancia
 - Design system con shadcn y showcase local
 - Frontend escalable: componentes, features y router
 - .resolve
@@ -97,45 +97,45 @@
 - String
 - package.json
 - Verificación · HU-0015 · Frontend escalable: componentes, features y router
-- AppProviders.tsx
+- format.test.ts
 - Brief · HU-0014 · frontend
-- source-update-controller.ts
-- Sample
+- sections/hover-card.tsx
+- AppearanceDialog.tsx
 - sections/dropdown-menu.tsx
+- AppSidebar.tsx
 - ui/sidebar.tsx
-- catalog.ts
 - ui/combobox.tsx
 - ShowcaseSection.tsx
-- sections/alert.tsx
-- sections/questionnaire.tsx
-- sections/item.tsx
-- sections/menubar.tsx
-- ui/carousel.tsx
+- SessionTransferDialog.tsx
+- ui/button.tsx
+- ui/command.tsx
 - sections/context-menu.tsx
+- ui/carousel.tsx
+- sections/scroll-area.tsx
 - sections/trace.tsx
 - ManagedInstance
-- sections/attachment.tsx
-- ui/chart.tsx
+- updates/index.ts
+- react
 - sections/table.tsx
 - sections/direction.tsx
-- sections/drawer.tsx
+- AppProviders.tsx
 - sections/select.tsx
 - sections/sheet.tsx
-- sections/code-block.tsx
-- sections/navigation-menu.tsx
+- ui/input.tsx
+- runtime_cache
 - sections/pagination.tsx
-- sections/card.tsx
-- sections/empty.tsx
+- Solución
+- Revisión técnica · HU-0016 · Rediseño con sidebar, dashboard y página por instancia
 - sections/popover.tsx
 - highlighter.tsx
 - sections/accordion.tsx
 - sections/input-otp.tsx
 - sections/marker.tsx
 - Revisión técnica · HU-0014 · Design system con shadcn y showcase local
-- runtime_cache
+- Brief · HU-0016 · frontend
 - ui-isolation.test.ts
-- react
-- cmdk
+- Verificación · HU-0016 · Rediseño con sidebar, dashboard y página por instancia
+- Alcance
 - date-fns
 - @fontsource/jetbrains-mono
 - react-day-picker
@@ -143,20 +143,19 @@
 - react-router
 - @shadcn/react
 - shiki
-- sections/tooltip.tsx
+- sections/kbd.tsx
+- cmdk
 - Verificación · HU-0014 · Design system con shadcn y showcase local
-- Titlebar.tsx
-- sections/native-select.tsx
-- sections/resizable.tsx
-- ui/button.tsx
-- Alcance
+- catalog.ts
+- InstanceEditor.tsx
+- HU-0016-rediseno-con-sidebar-dashboard-y-pagina-/seguimiento.md
 - Ciclo de vida e identidad visual de instancias
 
 ## God Nodes (most connected - your core abstractions)
 1. `Block()` - 64 edges
 2. `Sample()` - 60 edges
-3. `useDashboard()` - 46 edges
-4. `Button()` - 35 edges
+3. `Button()` - 52 edges
+4. `useDashboard()` - 48 edges
 5. `copy_code_session_sync()` - 30 edges
 6. `update_instance_application_from_source_sync()` - 28 edges
 7. `DashboardState` - 25 edges
@@ -171,31 +170,31 @@
   src/components/ui/carousel.tsx → package.json
 - `useCarousel()` --references--> `react`  [EXTRACTED]
   src/components/ui/carousel.tsx → package.json
-- `ChartContainer()` --references--> `react`  [EXTRACTED]
-  src/components/ui/chart.tsx → package.json
-- `ChartTooltipContent()` --references--> `react`  [EXTRACTED]
-  src/components/ui/chart.tsx → package.json
+- `CodeBlockCopyButton()` --references--> `react`  [EXTRACTED]
+  src/components/ui/code-block.tsx → package.json
+- `useComboboxAnchor()` --references--> `react`  [EXTRACTED]
+  src/components/ui/combobox.tsx → package.json
 
 ## Import Cycles
 - None detected.
 
-## Communities (141 total, 17 thin omitted)
+## Communities (139 total, 18 thin omitted)
 
 ### Community 0 - "Result"
 Cohesion: 0.19
 Nodes (35): AppHandle, D, Error, Result, check_source_update(), clear_instance_icon(), copy_code_session(), create_instance() (+27 more)
 
 ### Community 1 - "useDashboard"
-Cohesion: 0.18
-Nodes (18): AppShell(), DialogHost(), Statusbar(), ConfirmDialog(), useAppearance(), useDashboard(), useRuntimePlatform(), DeleteInstanceDialog() (+10 more)
+Cohesion: 0.15
+Nodes (22): AppShell(), SIDEBAR_STYLE, AppSidebar(), DialogHost(), FeedbackArea(), PageContent(), PageHeader(), PageSkeleton() (+14 more)
 
 ### Community 2 - "scripts"
 Cohesion: 0.09
 Nodes (22): scripts, build, build:linux, build:macos, build:windows, dev, graph:build, graph:check (+14 more)
 
-### Community 3 - "Icons.tsx"
-Cohesion: 0.10
-Nodes (33): EmptyState(), AlertIcon(), ChevronIcon(), ClockIcon(), CloudIcon(), CodeSessionIcon(), EditIcon(), FolderIcon() (+25 more)
+### Community 3 - "sections/attachment.tsx"
+Cohesion: 0.21
+Nodes (12): Attachment(), AttachmentAction(), AttachmentActions(), AttachmentContent(), AttachmentDescription(), AttachmentGroup(), AttachmentMedia(), attachmentMediaVariants (+4 more)
 
 ### Community 4 - "lib.rs"
 Cohesion: 0.05
@@ -207,7 +206,7 @@ Nodes (31): Arquitectura del frontend, Añadir una feature, Añadir una pantalla
 
 ### Community 6 - "types.ts"
 Cohesion: 0.08
-Nodes (43): DialogsContext, DialogsContextValue, Setter, describeArtifactOutcome(), transferNotice(), unlinkDialogCopy, SessionTransferSelection, SessionUnlinkSelection (+35 more)
+Nodes (27): call(), isTauri(), mockInstances, mockOriginalSessions, now, friendlyError(), ArtifactMonitorSummary, CopyCodeSessionRequest (+19 more)
 
 ### Community 7 - "bundle"
 Cohesion: 0.06
@@ -241,9 +240,9 @@ Nodes (3): Ajuste del orquestador (2026-10-28), Brief · HU-0015 · frontend, Ve
 Cohesion: 0.11
 Nodes (40): Default, SourceUpdateSource, SourceUpdateStatus, build_version_topology(), cached_source_version(), check_official_update_feed(), check_source_update_sync(), copy_provider_application() (+32 more)
 
-### Community 15 - "DashboardRuntime.tsx"
-Cohesion: 0.14
-Nodes (24): DashboardRuntime(), SearchIcon(), ScanContext, ScanContextValue, ScanProgressPanel(), useBackgroundRefresh(), ScanProgressEvent, ScanRuntime (+16 more)
+### Community 15 - "useScanRuntime.ts"
+Cohesion: 0.15
+Nodes (21): ScanContext, ScanContextValue, ScanProgressPanel(), useBackgroundRefresh(), ScanProgressEvent, ScanRuntime, useScanLifecycle(), useScanRuntime() (+13 more)
 
 ### Community 16 - "graphify.mjs"
 Cohesion: 0.13
@@ -297,17 +296,17 @@ Nodes (16): Bitácora de implementación, Casos límite, privacidad y plataforma
 Cohesion: 0.40
 Nodes (4): app, macOSPrivateApi, windows, $schema
 
-### Community 29 - "updates/index.ts"
-Cohesion: 0.29
-Nodes (9): ApplicationUpdateDialog(), SourceUpdateContext, SourceUpdateContextValue, useSourceUpdate(), SynchronizeBanner(), summarizeSynchronization(), SynchronizationSummary, synchronizeLabel() (+1 more)
+### Community 29 - "sessions/index.ts"
+Cohesion: 0.15
+Nodes (21): DialogsContext, DialogsContextValue, Setter, InstanceDetailProps, describeArtifactOutcome(), transferNotice(), unlinkDialogCopy, SessionTransferSelection (+13 more)
 
 ### Community 30 - "HU-0005 — Recuperar la respuesta de la interfaz y establecer versionado SemVer"
 Cohesion: 0.10
 Nodes (21): Alcance, Bitácora de implementación, Casos límite, privacidad y plataformas, Cierre de Graphify, Contexto y evidencia de Graphify, Criterios de aceptación, Decisión pendiente para el Dock, Diseño técnico y contratos (+13 more)
 
 ### Community 31 - "dashboard/index.ts"
-Cohesion: 0.14
-Nodes (25): PanelRoute(), Toolbar(), LoadingCards(), Metric(), DashboardContext, DashboardContextValue, countCodeSessions(), countRunning() (+17 more)
+Cohesion: 0.13
+Nodes (25): SummaryCards(), DashboardContext, DashboardContextValue, countCodeSessions(), countRunning(), filterInstances(), findInstance(), matchesOriginalApp() (+17 more)
 
 ### Community 36 - "HU-0009 — Estado oficial de actualización y refresco de versiones"
 Cohesion: 0.11
@@ -362,8 +361,8 @@ Cohesion: 0.18
 Nodes (10): Compactación y ausencia de datos, Cálculo y señales visuales, Mantenimiento de modelos y aliases, Origen y alcance del dato, Privacidad, Referencias oficiales, Sesiones y estimación de contexto, Transferencia de sesiones, artefactos y monitores (+2 more)
 
 ### Community 49 - "DESIGN.md"
-Cohesion: 0.20
-Nodes (8): Brand & Style, Colors, Components, Elevation & Depth, Layout & Spacing, Shapes, Typography, Guías de diseño · Code AI Profiles
+Cohesion: 0.18
+Nodes (9): Brand & Style, Colors, Components, Cómo se aplica en Code AI Profiles, Elevation & Depth, Layout & Spacing, Shapes, Typography (+1 more)
 
 ### Community 52 - "Code AI Profiles · cómo trabajamos"
 Cohesion: 0.22
@@ -405,9 +404,9 @@ Nodes (5): Actualizar una versión, Política, Publicación, Verificar consisten
 Cohesion: 0.40
 Nodes (4): Las reglas que impone cada pieza, Módulo de configuración de cada app, Repos, Stack de Code AI Profiles
 
-### Community 62 - "sections/alert-dialog.tsx"
-Cohesion: 0.23
-Nodes (11): AlertDialog(), AlertDialogAction(), AlertDialogCancel(), AlertDialogContent(), AlertDialogDescription(), AlertDialogFooter(), AlertDialogHeader(), AlertDialogMedia() (+3 more)
+### Community 62 - "source-update-controller.ts"
+Cohesion: 0.18
+Nodes (18): DashboardRuntime(), useInitialLoad(), useSourceUpdatePolling(), useSourceUpdateController(), bridge, createSourceUpdateController(), HandoffIntent, mergeSourceUpdateForInstallation() (+10 more)
 
 ### Community 63 - "Análisis"
 Cohesion: 0.40
@@ -425,13 +424,13 @@ Nodes (3): Cómo se escribe una regla, Dominios, Reglas de negocio de Code AI Pr
 Cohesion: 0.50
 Nodes (3): Autorización previa, Resumen, Verificación
 
-### Community 72 - "format.test.ts"
-Cohesion: 0.20
-Nodes (12): InstanceCard(), OriginalAppSection(), formatModelName(), formatSessionTime(), formatTokenCount(), sessionContextLevel, SessionContextMeter(), formatBytes() (+4 more)
+### Community 72 - "sections/navigation-menu.tsx"
+Cohesion: 0.30
+Nodes (8): NavigationMenu(), NavigationMenuContent(), NavigationMenuItem(), NavigationMenuLink(), NavigationMenuList(), NavigationMenuTrigger(), navigationMenuTriggerStyle, NavigationMenuSection()
 
-### Community 73 - "sections/hover-card.tsx"
-Cohesion: 0.23
-Nodes (10): Avatar(), AvatarBadge(), AvatarFallback(), AvatarGroup(), AvatarGroupCount(), HoverCard(), HoverCardContent(), HoverCardTrigger() (+2 more)
+### Community 73 - "Rediseño con sidebar, dashboard y página por instancia"
+Cohesion: 0.11
+Nodes (18): AC-01 · Sidebar con todo lo navegable, AC-02 · Dashboard con el resumen global, AC-03 · Página de cada instancia, AC-04 · Página de la aplicación original, AC-05 · Con los componentes del catálogo y el aspecto de la app, AC-06 · No se pierde nada, Alcance, Cierre (+10 more)
 
 ### Community 74 - "Design system con shadcn y showcase local"
 Cohesion: 0.12
@@ -450,8 +449,8 @@ Cohesion: 0.09
 Nodes (21): Aislamiento de Tailwind, Ajustes a los componentes del registro (lista cerrada), Análisis, Archivos, Arquitectura · HU-0014 · Design system con shadcn y showcase local, Briefs y orden, Catálogo (63, registro `radix-vega`, 2026-10-28), Decisiones (A-n) y desvíos de las ★ (+13 more)
 
 ### Community 80 - "appearance/index.ts"
-Cohesion: 0.23
-Nodes (16): AppearanceContext, AppearanceContextValue, APPEARANCE_STORAGE_KEY, AppearancePreferences, AppTheme, DEFAULT_APPEARANCE, loadAppearancePreferences(), PreferencesStorage (+8 more)
+Cohesion: 0.22
+Nodes (17): AppearanceContext, AppearanceContextValue, APPEARANCE_STORAGE_KEY, AppearancePreferences, AppTheme, DEFAULT_APPEARANCE, loadAppearancePreferences(), PreferencesStorage (+9 more)
 
 ### Community 81 - "devDependencies"
 Cohesion: 0.10
@@ -473,65 +472,65 @@ Nodes (5): name, packageManager, private, type, version
 Cohesion: 0.29
 Nodes (6): Comprobaciones, Decisiones tomadas por defecto (★, revisables al probar), Guía de prueba, Qué se entregó, Veredicto, Verificación · HU-0015 · Frontend escalable: componentes, features y router
 
-### Community 86 - "AppProviders.tsx"
-Cohesion: 0.29
-Nodes (5): App(), AppProviders(), DialogsProvider(), RouteErrorBoundary(), router
+### Community 86 - "format.test.ts"
+Cohesion: 0.16
+Nodes (15): formatModelName(), formatSessionTime(), formatTokenCount(), sessionContextLevel, LEVEL_BAR, LEVEL_TEXT, SessionContextMeter(), SessionItem() (+7 more)
 
 ### Community 87 - "Brief · HU-0014 · frontend"
 Cohesion: 0.25
 Nodes (7): Archivos, Brief · HU-0014 · frontend, Entrega, No toques, Pasos (los de § Secuencia; un commit por paso con el trailer `HU: HU-0014`), Pruebas, Si dudas
 
-### Community 88 - "source-update-controller.ts"
-Cohesion: 0.17
-Nodes (19): useInitialLoad(), SourceUpdateBanner(), useSourceUpdatePolling(), useSourceUpdateController(), bridge, createSourceUpdateController(), HandoffIntent, mergeSourceUpdateForInstallation() (+11 more)
+### Community 88 - "sections/hover-card.tsx"
+Cohesion: 0.23
+Nodes (10): Avatar(), AvatarBadge(), AvatarFallback(), AvatarGroup(), AvatarGroupCount(), HoverCard(), HoverCardContent(), HoverCardTrigger() (+2 more)
 
-### Community 89 - "Sample"
-Cohesion: 0.15
-Nodes (21): Checkbox(), Field(), FieldContent(), FieldDescription(), FieldError(), FieldGroup(), FieldLabel(), FieldLegend() (+13 more)
+### Community 89 - "AppearanceDialog.tsx"
+Cohesion: 0.16
+Nodes (18): Field(), FieldContent(), FieldDescription(), FieldError(), FieldGroup(), FieldLabel(), FieldLegend(), FieldSeparator() (+10 more)
 
 ### Community 90 - "sections/dropdown-menu.tsx"
 Cohesion: 0.11
 Nodes (28): Breadcrumb(), BreadcrumbEllipsis(), BreadcrumbItem(), BreadcrumbLink(), BreadcrumbList(), BreadcrumbPage(), BreadcrumbSeparator(), ButtonGroup() (+20 more)
 
-### Community 91 - "ui/sidebar.tsx"
-Cohesion: 0.10
-Nodes (21): Sidebar(), SidebarContent(), SidebarContext, SidebarContextProps, SidebarFooter(), SidebarGroup(), SidebarGroupContent(), SidebarGroupLabel() (+13 more)
+### Community 91 - "AppSidebar.tsx"
+Cohesion: 0.14
+Nodes (19): Sidebar(), SidebarContent(), SidebarFooter(), SidebarGroup(), SidebarGroupContent(), SidebarGroupLabel(), SidebarHeader(), SidebarInput() (+11 more)
 
-### Community 92 - "catalog.ts"
-Cohesion: 0.09
-Nodes (23): AspectRatio(), Progress(), Slider(), Spinner(), CatalogEntry, AspectRatioSection(), BadgeSection(), variants (+15 more)
+### Community 92 - "ui/sidebar.tsx"
+Cohesion: 0.16
+Nodes (8): SidebarContext, SidebarContextProps, SidebarProvider(), Tooltip(), TooltipContent(), TooltipTrigger(), useIsMobile(), TooltipSection()
 
 ### Community 93 - "ui/combobox.tsx"
-Cohesion: 0.06
-Nodes (42): ComboboxChip(), ComboboxChips(), ComboboxChipsInput(), ComboboxContent(), ComboboxEmpty(), ComboboxInput(), ComboboxItem(), ComboboxList() (+34 more)
+Cohesion: 0.10
+Nodes (23): ComboboxChip(), ComboboxChips(), ComboboxChipsInput(), ComboboxContent(), ComboboxEmpty(), ComboboxInput(), ComboboxItem(), ComboboxList() (+15 more)
 
 ### Community 94 - "ShowcaseSection.tsx"
-Cohesion: 0.10
-Nodes (20): ScrollArea(), ScrollBar(), Separator(), Toaster(), ToggleGroup(), ToggleGroupContext, ToggleGroupItem(), Toggle() (+12 more)
+Cohesion: 0.14
+Nodes (15): Toaster(), ToggleGroup(), ToggleGroupContext, ToggleGroupItem(), Toggle(), toggleVariants, TooltipProvider(), catalog (+7 more)
 
-### Community 95 - "sections/alert.tsx"
-Cohesion: 0.43
-Nodes (6): Alert(), AlertAction(), AlertDescription(), AlertTitle(), alertVariants, AlertSection()
+### Community 95 - "SessionTransferDialog.tsx"
+Cohesion: 0.20
+Nodes (15): Alert(), AlertAction(), AlertDescription(), AlertTitle(), alertVariants, Dialog(), DialogClose(), DialogContent() (+7 more)
 
-### Community 96 - "sections/questionnaire.tsx"
-Cohesion: 0.19
-Nodes (16): Questionnaire(), QuestionnaireActions(), QuestionnaireChoice(), QuestionnaireChoiceDescription(), QuestionnaireChoices(), QuestionnaireDescription(), QuestionnaireInput(), QuestionnaireItem() (+8 more)
+### Community 96 - "ui/button.tsx"
+Cohesion: 0.06
+Nodes (56): AlertDialog(), AlertDialogAction(), AlertDialogCancel(), AlertDialogContent(), AlertDialogDescription(), AlertDialogFooter(), AlertDialogHeader(), AlertDialogMedia() (+48 more)
 
-### Community 97 - "sections/item.tsx"
-Cohesion: 0.23
-Nodes (13): Item(), ItemActions(), ItemContent(), ItemDescription(), ItemFooter(), ItemGroup(), ItemHeader(), ItemMedia() (+5 more)
+### Community 97 - "ui/command.tsx"
+Cohesion: 0.27
+Nodes (10): Command(), CommandDialog(), CommandEmpty(), CommandGroup(), CommandInput(), CommandItem(), CommandList(), CommandSeparator() (+2 more)
 
-### Community 98 - "sections/menubar.tsx"
-Cohesion: 0.18
-Nodes (14): Menubar(), MenubarCheckboxItem(), MenubarContent(), MenubarItem(), MenubarMenu(), MenubarRadioGroup(), MenubarRadioItem(), MenubarSeparator() (+6 more)
+### Community 98 - "sections/context-menu.tsx"
+Cohesion: 0.09
+Nodes (28): ContextMenu(), ContextMenuCheckboxItem(), ContextMenuContent(), ContextMenuItem(), ContextMenuLabel(), ContextMenuRadioGroup(), ContextMenuRadioItem(), ContextMenuSeparator() (+20 more)
 
 ### Community 99 - "ui/carousel.tsx"
 Cohesion: 0.18
 Nodes (15): Carousel(), CarouselApi, CarouselContent(), CarouselContext, CarouselContextProps, CarouselItem(), CarouselNext(), CarouselOptions (+7 more)
 
-### Community 100 - "sections/context-menu.tsx"
-Cohesion: 0.20
-Nodes (14): ContextMenu(), ContextMenuCheckboxItem(), ContextMenuContent(), ContextMenuItem(), ContextMenuLabel(), ContextMenuRadioGroup(), ContextMenuRadioItem(), ContextMenuSeparator() (+6 more)
+### Community 100 - "sections/scroll-area.tsx"
+Cohesion: 0.29
+Nodes (6): ScrollArea(), ScrollBar(), Separator(), etiquetas, ScrollAreaSection(), SeparatorSection()
 
 ### Community 101 - "sections/trace.tsx"
 Cohesion: 0.22
@@ -541,25 +540,25 @@ Nodes (13): Collapsible(), CollapsibleContent(), CollapsibleTrigger(), Trace(), 
 Cohesion: 0.19
 Nodes (15): CodeSession, CustomIcon, InstanceStatus, ManagedProcessIdentity, AccountPlan, identity_matches_instance(), ManagedInstance, ManagedProcessIdentity (+7 more)
 
-### Community 103 - "sections/attachment.tsx"
-Cohesion: 0.21
-Nodes (12): Attachment(), AttachmentAction(), AttachmentActions(), AttachmentContent(), AttachmentDescription(), AttachmentGroup(), AttachmentMedia(), attachmentMediaVariants (+4 more)
+### Community 103 - "updates/index.ts"
+Cohesion: 0.17
+Nodes (16): NoticeAlert(), ApplicationUpdateDialog(), originalUpdateChannel, OriginalApplicationUpdateDialog(), SourceUpdateContext, SourceUpdateContextValue, useSourceUpdate(), SourceUpdateBanner() (+8 more)
 
-### Community 104 - "ui/chart.tsx"
-Cohesion: 0.19
-Nodes (13): ChartConfig, ChartContainer(), ChartContext, ChartContextProps, ChartLegendContent(), ChartTooltipContent(), getPayloadConfigFromPayload(), INITIAL_DIMENSION (+5 more)
+### Community 104 - "react"
+Cohesion: 0.16
+Nodes (16): react, react, ChartConfig, ChartContainer(), ChartContext, ChartContextProps, ChartLegendContent(), ChartTooltipContent() (+8 more)
 
 ### Community 105 - "sections/table.tsx"
-Cohesion: 0.23
-Nodes (12): Badge(), badgeVariants, Table(), TableBody(), TableCaption(), TableCell(), TableFooter(), TableHead() (+4 more)
+Cohesion: 0.29
+Nodes (10): Table(), TableBody(), TableCaption(), TableCell(), TableFooter(), TableHead(), TableHeader(), TableRow() (+2 more)
 
 ### Community 106 - "sections/direction.tsx"
 Cohesion: 0.24
 Nodes (8): DirectionProvider(), Tabs(), TabsContent(), TabsList(), tabsListVariants, TabsTrigger(), DirectionSection(), TabsSection()
 
-### Community 107 - "sections/drawer.tsx"
-Cohesion: 0.23
-Nodes (10): Drawer(), DrawerClose(), DrawerContent(), DrawerDescription(), DrawerFooter(), DrawerHeader(), DrawerTitle(), DrawerTrigger() (+2 more)
+### Community 107 - "AppProviders.tsx"
+Cohesion: 0.31
+Nodes (5): App(), AppProviders(), DialogsProvider(), RouteErrorBoundary(), router
 
 ### Community 108 - "sections/select.tsx"
 Cohesion: 0.23
@@ -569,25 +568,25 @@ Nodes (9): Select(), SelectContent(), SelectGroup(), SelectItem(), SelectLabel()
 Cohesion: 0.23
 Nodes (10): Sheet(), SheetClose(), SheetContent(), SheetDescription(), SheetFooter(), SheetHeader(), SheetTitle(), SheetTrigger() (+2 more)
 
-### Community 110 - "sections/code-block.tsx"
-Cohesion: 0.28
-Nodes (11): CodeBlock(), CodeBlockActions(), CodeBlockContent(), CodeBlockCopyButton(), CodeBlockFooter(), CodeBlockHeader(), CodeBlockLine(), codeBlockLineVariants (+3 more)
+### Community 110 - "ui/input.tsx"
+Cohesion: 0.36
+Nodes (4): Checkbox(), Input(), InputSection(), LabelSection()
 
-### Community 111 - "sections/navigation-menu.tsx"
-Cohesion: 0.30
-Nodes (8): NavigationMenu(), NavigationMenuContent(), NavigationMenuItem(), NavigationMenuLink(), NavigationMenuList(), NavigationMenuTrigger(), navigationMenuTriggerStyle, NavigationMenuSection()
+### Community 111 - "runtime_cache"
+Cohesion: 0.29
+Nodes (7): FnOnce, Mutex, managed_bytes(), path_size(), record_refresh_work(), registry_operation_mutex(), runtime_cache()
 
 ### Community 112 - "sections/pagination.tsx"
 Cohesion: 0.31
 Nodes (9): Pagination(), PaginationContent(), PaginationEllipsis(), PaginationItem(), PaginationLink(), PaginationLinkProps, PaginationNext(), PaginationPrevious() (+1 more)
 
-### Community 113 - "sections/card.tsx"
-Cohesion: 0.36
-Nodes (8): Card(), CardAction(), CardContent(), CardDescription(), CardFooter(), CardHeader(), CardTitle(), CardSection()
+### Community 113 - "Solución"
+Cohesion: 0.11
+Nodes (18): Análisis, Arquitectura · HU-0016 · Rediseño con sidebar, dashboard y página por instancia, Briefs y orden, Componentes del catálogo por pantalla (orientativo; las fichas de `code-ai-profiles-ui` mandan), CSS, Decisiones (A-n) y desvíos de las ★, Estructura resultante, Impacto (+10 more)
 
-### Community 114 - "sections/empty.tsx"
-Cohesion: 0.36
-Nodes (8): Empty(), EmptyContent(), EmptyDescription(), EmptyHeader(), EmptyMedia(), emptyMediaVariants, EmptyTitle(), EmptySection()
+### Community 114 - "Revisión técnica · HU-0016 · Rediseño con sidebar, dashboard y página por instancia"
+Cohesion: 0.29
+Nodes (6): Documentos de arquitectura, Las desviaciones de E3, Los siete puntos pedidos, Método, Observaciones (nada bloquea), Revisión técnica · HU-0016 · Rediseño con sidebar, dashboard y página por instancia
 
 ### Community 115 - "sections/popover.tsx"
 Cohesion: 0.33
@@ -613,69 +612,61 @@ Nodes (5): Marker(), MarkerContent(), MarkerIcon(), markerVariants, MarkerSectio
 Cohesion: 0.25
 Nodes (7): Documentos de arquitectura, Lo que comprobé y está bien, Los cinco puntos pedidos, Método, Observaciones, Revisión técnica · HU-0014 · Design system con shadcn y showcase local, Segunda vuelta · `0dc0a6d..283649f` · PASS
 
-### Community 121 - "runtime_cache"
-Cohesion: 0.29
-Nodes (7): FnOnce, Mutex, managed_bytes(), path_size(), record_refresh_work(), registry_operation_mutex(), runtime_cache()
+### Community 121 - "Brief · HU-0016 · frontend"
+Cohesion: 0.22
+Nodes (8): Archivos (comprobados), Brief · HU-0016 · frontend, No toques, Pasos (los de § Secuencia; un commit por paso, trailer `HU: HU-0016`), Pruebas, Si dudas, Skills, Variables de entorno nuevas
 
 ### Community 122 - "ui-isolation.test.ts"
-Cohesion: 0.31
-Nodes (6): findLeaks(), isExcluded(), root, specifiers(), src, toPosix()
+Cohesion: 0.18
+Nodes (15): catalogLeaks(), code, CSS_ENTRIES, CSS_FILES, cssImports(), files, FOCUS_OWNERS, importsIcons() (+7 more)
 
-### Community 123 - "react"
+### Community 123 - "Verificación · HU-0016 · Rediseño con sidebar, dashboard y página por instancia"
+Cohesion: 0.29
+Nodes (6): Comprobaciones, Decisiones tomadas por defecto (★, revisables al probar), Guía de prueba, Qué se entregó, Veredicto, Verificación · HU-0016 · Rediseño con sidebar, dashboard y página por instancia
+
+### Community 124 - "Alcance"
 Cohesion: 0.40
-Nodes (5): react, react, SidebarMenuSkeleton(), SidebarProvider(), useIsMobile()
+Nodes (5): Alcance, Artefactos locales con soporte seguro, Identidad visual e icono, Lifecycle robusto, Topología y sincronización de versiones
 
-### Community 133 - "sections/tooltip.tsx"
-Cohesion: 0.26
-Nodes (8): Kbd(), KbdGroup(), Tooltip(), TooltipContent(), TooltipProvider(), TooltipTrigger(), KbdSection(), TooltipSection()
+### Community 132 - "sections/kbd.tsx"
+Cohesion: 0.60
+Nodes (3): Kbd(), KbdGroup(), KbdSection()
 
 ### Community 134 - "Verificación · HU-0014 · Design system con shadcn y showcase local"
 Cohesion: 0.29
 Nodes (6): Comprobaciones, Decisiones tomadas por defecto (★, revisables al probar), Guía de prueba, Qué se entregó, Veredicto, Verificación · HU-0014 · Design system con shadcn y showcase local
 
-### Community 135 - "Titlebar.tsx"
-Cohesion: 0.48
-Nodes (5): Titlebar(), windowAction, useDialogs(), SettingsIcon(), useScan()
+### Community 136 - "catalog.ts"
+Cohesion: 0.08
+Nodes (30): AspectRatio(), NativeSelect(), NativeSelectOptGroup(), NativeSelectOption(), NativeSelectProps, ResizableHandle(), ResizablePanel(), ResizablePanelGroup() (+22 more)
 
-### Community 136 - "sections/native-select.tsx"
-Cohesion: 0.43
-Nodes (5): NativeSelect(), NativeSelectOptGroup(), NativeSelectOption(), NativeSelectProps, NativeSelectSection()
+### Community 138 - "InstanceEditor.tsx"
+Cohesion: 0.06
+Nodes (57): UsageRanking(), BrandMark(), BrandMarkProps, Badge(), badgeVariants, Card(), CardAction(), CardContent() (+49 more)
 
-### Community 137 - "sections/resizable.tsx"
-Cohesion: 0.43
-Nodes (4): ResizableHandle(), ResizablePanel(), ResizablePanelGroup(), ResizableSection()
-
-### Community 138 - "ui/button.tsx"
-Cohesion: 0.60
-Nodes (4): Button(), buttonVariants, Calendar(), CalendarDayButton()
-
-### Community 139 - "Alcance"
-Cohesion: 0.40
-Nodes (5): Alcance, Artefactos locales con soporte seguro, Identidad visual e icono, Lifecycle robusto, Topología y sincronización de versiones
-
-### Community 140 - "Ciclo de vida e identidad visual de instancias"
+### Community 143 - "Ciclo de vida e identidad visual de instancias"
 Cohesion: 0.40
 Nodes (4): Ciclo de vida e identidad visual de instancias, Iconos por instancia, Inicio, detección y cierre, Privacidad y límites
 
 ## Knowledge Gaps
-- **700 isolated node(s):** `name`, `private`, `version`, `type`, `packageManager` (+695 more)
+- **760 isolated node(s):** `name`, `private`, `version`, `type`, `packageManager` (+755 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **17 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **18 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `FolderIcon()` connect `Icons.tsx` to `ui/sidebar.tsx`?**
-  _High betweenness centrality (0.048) - this node is a cross-community bridge._
-- **Why does `Block()` connect `catalog.ts` to `sections/tooltip.tsx`, `sections/native-select.tsx`, `sections/resizable.tsx`, `sections/message-scroller.tsx`, `sections/alert-dialog.tsx`, `sections/hover-card.tsx`, `Sample`, `sections/dropdown-menu.tsx`, `ui/sidebar.tsx`, `ui/combobox.tsx`, `ShowcaseSection.tsx`, `sections/alert.tsx`, `sections/questionnaire.tsx`, `sections/item.tsx`, `sections/menubar.tsx`, `ui/carousel.tsx`, `sections/context-menu.tsx`, `sections/trace.tsx`, `sections/attachment.tsx`, `ui/chart.tsx`, `sections/table.tsx`, `sections/direction.tsx`, `sections/drawer.tsx`, `sections/select.tsx`, `sections/sheet.tsx`, `sections/code-block.tsx`, `sections/navigation-menu.tsx`, `sections/pagination.tsx`, `sections/card.tsx`, `sections/empty.tsx`, `sections/popover.tsx`, `sections/accordion.tsx`, `sections/input-otp.tsx`, `sections/marker.tsx`?**
-  _High betweenness centrality (0.042) - this node is a cross-community bridge._
-- **Why does `SettingsIcon()` connect `Titlebar.tsx` to `ui/sidebar.tsx`, `Icons.tsx`?**
-  _High betweenness centrality (0.041) - this node is a cross-community bridge._
+- **Why does `Button()` connect `ui/button.tsx` to `useDashboard`, `sections/attachment.tsx`, `sections/kbd.tsx`, `catalog.ts`, `InstanceEditor.tsx`, `useScanRuntime.ts`, `sections/message-scroller.tsx`, `dashboard/index.ts`, `sections/hover-card.tsx`, `AppearanceDialog.tsx`, `sections/dropdown-menu.tsx`, `AppSidebar.tsx`, `ui/sidebar.tsx`, `ui/combobox.tsx`, `SessionTransferDialog.tsx`, `ui/command.tsx`, `ui/carousel.tsx`, `sections/trace.tsx`, `updates/index.ts`, `sections/direction.tsx`, `sections/sheet.tsx`, `sections/pagination.tsx`, `sections/popover.tsx`?**
+  _High betweenness centrality (0.034) - this node is a cross-community bridge._
+- **Why does `Block()` connect `catalog.ts` to `sections/attachment.tsx`, `sections/kbd.tsx`, `InstanceEditor.tsx`, `sections/message-scroller.tsx`, `sections/navigation-menu.tsx`, `sections/hover-card.tsx`, `AppearanceDialog.tsx`, `sections/dropdown-menu.tsx`, `AppSidebar.tsx`, `ui/sidebar.tsx`, `ui/combobox.tsx`, `ShowcaseSection.tsx`, `SessionTransferDialog.tsx`, `ui/button.tsx`, `ui/command.tsx`, `sections/context-menu.tsx`, `ui/carousel.tsx`, `sections/scroll-area.tsx`, `sections/trace.tsx`, `react`, `sections/table.tsx`, `sections/direction.tsx`, `sections/select.tsx`, `sections/sheet.tsx`, `ui/input.tsx`, `sections/pagination.tsx`, `sections/popover.tsx`, `sections/accordion.tsx`, `sections/input-otp.tsx`, `sections/marker.tsx`?**
+  _High betweenness centrality (0.022) - this node is a cross-community bridge._
+- **Why does `Sample()` connect `catalog.ts` to `sections/attachment.tsx`, `sections/kbd.tsx`, `InstanceEditor.tsx`, `sections/message-scroller.tsx`, `sections/navigation-menu.tsx`, `sections/hover-card.tsx`, `AppearanceDialog.tsx`, `sections/dropdown-menu.tsx`, `ui/sidebar.tsx`, `ui/combobox.tsx`, `ShowcaseSection.tsx`, `SessionTransferDialog.tsx`, `ui/button.tsx`, `ui/command.tsx`, `sections/context-menu.tsx`, `ui/carousel.tsx`, `sections/scroll-area.tsx`, `sections/trace.tsx`, `react`, `sections/direction.tsx`, `sections/select.tsx`, `sections/sheet.tsx`, `ui/input.tsx`, `sections/pagination.tsx`, `sections/popover.tsx`, `sections/accordion.tsx`, `sections/input-otp.tsx`, `sections/marker.tsx`?**
+  _High betweenness centrality (0.018) - this node is a cross-community bridge._
 - **What connects `name`, `private`, `version` to the rest of the system?**
-  _700 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _760 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `scripts` be split into smaller, more focused modules?**
   _Cohesion score 0.09090909090909091 - nodes in this community are weakly interconnected._
-- **Should `Icons.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.09608843537414966 - nodes in this community are weakly interconnected._
 - **Should `lib.rs` be split into smaller, more focused modules?**
   _Cohesion score 0.04814814814814815 - nodes in this community are weakly interconnected._
+- **Should `Solución` be split into smaller, more focused modules?**
+  _Cohesion score 0.06060606060606061 - nodes in this community are weakly interconnected._

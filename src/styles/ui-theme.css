@@ -1,32 +1,49 @@
 /*
- * Puente shadcn -> tokens de la app (HU-0014). Solo lo importa src/showcase/showcase.css:
- * index.css NO lo importa, así que la app no lo carga. Los valores de shadcn salen de los tokens
- * de base.css y theme-light.css; lo que la app no tiene como token va como --ui-* (A-4).
+ * Puente shadcn -> tokens de la app (HU-0014). Lo importan src/styles/index.css (la app, desde HU-0016) y
+ * src/showcase/showcase.css. Los valores de shadcn salen de los tokens de tokens.css; lo que la app no tiene como
+ * token va como --ui-* (A-4). El tema va en <html> (HU-0016, A-3), así que los portales lo heredan.
  * No se declaran --primary ni --muted (A-3): ya son tokens de la app y significan otra cosa
  * (--muted es un color de texto aquí y un fondo en shadcn); se mapean en @theme inline.
  */
 
 @custom-variant dark (&:where(.theme-dark, .theme-dark *));
 
-/* Lo que la app no tiene como token. Oscuro (la base) y claro, con la regla de la que sale cada uno. */
+/* Lo que la app no tiene como token. Oscuro (la base) y claro, con la regla heredada de la que sale cada uno
+   (su CSS se retiró en HU-0016; el valor se conserva). */
 :root,
 .theme-dark {
-  /* .primary-action { color: white } (src/app/layout/shell.css) */
+  /* .primary-action { color: white } (el antiguo shell.css) */
   --ui-on-primary: #fff;
-  /* texto naranja en oscuro: el token --primary (base.css) */
+  /* texto naranja en oscuro: el token --primary (tokens.css) */
   --ui-primary-text: var(--primary);
-  /* inicio del degradado de .modal-card (src/components/modal.css) */
+  /* inicio del degradado de .modal-card (el antiguo modal.css): el fondo de diálogos y menús */
   --ui-popover: rgba(43, 44, 43, 0.98);
-  /* .modal-backdrop (src/components/modal.css) */
+  /* .modal-backdrop (el antiguo modal.css): el velo de los diálogos */
   --ui-overlay: rgba(5, 6, 5, 0.58);
+  /* HU-0016: el marco de la ventana, de la antigua .app-window (shell.css): degradado, borde y sombra */
+  --ui-window: linear-gradient(145deg, rgba(28, 29, 28, 0.985), rgba(16, 17, 16, 0.99));
+  --ui-window-border: rgba(255, 255, 255, 0.11);
+  --ui-window-shadow: 0 40px 100px rgba(0, 0, 0, 0.56), inset 0 1px 0 rgba(255, 255, 255, 0.045);
+  /* HU-0016: el botón de cerrar de Windows al pasar el ratón (.platform-windows .window-dot.close:hover) */
+  --ui-window-close: #c42b1c;
+  /* HU-0016: contexto «normal» y «elevado» de una sesión (.session-context.context-normal / .context-elevated, el antiguo session-list.css) */
+  --ui-success: #84ab8c;
+  --ui-warning: #cf9a5e;
 }
 .theme-light {
-  /* .theme-light .original-badge (theme-light.css): 4,6:1 sobre #f3efeb */
+  /* .theme-light .original-badge (el antiguo theme-light.css): 4,6:1 sobre #f3efeb */
   --ui-primary-text: #9c5947;
-  /* inicio del degradado de .theme-light .modal-card (theme-light.css) */
+  /* inicio del degradado de .theme-light .modal-card (el antiguo theme-light.css) */
   --ui-popover: rgba(255, 253, 251, 0.995);
-  /* .theme-light .modal-backdrop (theme-light.css) */
+  /* .theme-light .modal-backdrop (el antiguo theme-light.css) */
   --ui-overlay: rgba(67, 50, 43, 0.3);
+  /* .theme-light .app-window (el antiguo theme-light.css) */
+  --ui-window: linear-gradient(145deg, rgba(249, 247, 244, 0.995), rgba(235, 229, 224, 0.995));
+  --ui-window-border: rgba(68, 46, 38, 0.14);
+  --ui-window-shadow: 0 40px 100px rgba(75, 54, 45, 0.22), inset 0 1px rgba(255, 255, 255, 0.8);
+  /* los mismos dos, más oscuros: 4,5:1 o más sobre #f3efeb */
+  --ui-success: #3f7a52;
+  --ui-warning: #94601f;
 }
 
 /* Variables de shadcn. Se declaran en los tres selectores: una custom property se resuelve en el
@@ -64,7 +81,7 @@
   --sidebar-accent-foreground: var(--text);
   --sidebar-border: var(--line);
   --sidebar-ring: var(--primary);
-  /* botones de .modal-actions */
+  /* rounded-lg: botones y tarjetas de opción (el de los antiguos .modal-actions) */
   --radius: 14px;
 }
 
@@ -92,6 +109,9 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-overlay: var(--ui-overlay);
+  /* Estados de un medidor: sin riesgo (verde) y con aviso (ámbar). El rojo es --destructive */
+  --color-success: var(--ui-success);
+  --color-warning: var(--ui-warning);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -106,10 +126,10 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* base.css */
+  /* tokens.css */
   --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-heading: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  /* appearance.css e instance-editor.css */
+  /* la fuente mono de sesiones, versiones y etiquetas */
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
   /* chips 9, cierre 13, acciones 14, tarjetas 16 (DESIGN.md), ventana 20, modal 26 */

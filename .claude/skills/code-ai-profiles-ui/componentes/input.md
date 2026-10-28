@@ -8,10 +8,10 @@ Entrada de una línea con sus tipos nativos.
 
 **Sí**
 - Texto de una línea: nombre, búsqueda, correo.
+- En la app (HU-0016): `InstanceEditor` y, a través de `SidebarInput`, el buscador del sidebar.
 
 **No**
 - Varias líneas: `Textarea`. Con iconos o botones dentro: `InputGroup`. Código de un solo uso: `InputOTP`.
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
 
 ## Importación
 

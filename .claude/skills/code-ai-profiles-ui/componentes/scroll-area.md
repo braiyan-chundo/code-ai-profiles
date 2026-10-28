@@ -10,8 +10,8 @@ Zona desplazable con barras propias.
 - Una zona con scroll con barras que combinan con el tema.
 
 **No**
-- En las pantallas actuales, `.content` ya hace scroll.
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
+- El cuerpo de una página: `PageContent` ya hace scroll.
+- Hoy no lo usa ninguna pantalla de la app (sí el showcase). Si una lo adopta, se usa con el tema de `ui-theme.css`, sin CSS propio.
 
 ## Importación
 

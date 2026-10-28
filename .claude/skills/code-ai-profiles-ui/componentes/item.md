@@ -8,10 +8,10 @@ Fila con icono, título, descripción y acciones.
 
 **Sí**
 - Filas de lista con icono, título, descripción y acciones.
+- En la app (HU-0016): `SessionItem`/`SessionList` (filas de sesión), `UsageRanking` y la lista de `ApplicationUpdateDialog`.
 
 **No**
 - Tablas de datos: `Table`.
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
 
 ## Importación
 

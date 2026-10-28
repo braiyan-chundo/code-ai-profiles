@@ -1,26 +1,32 @@
-@import "./base.css";
-@import "../app/layout/shell.css";
-@import "../app/routes/panel/toolbar.css";
-@import "../app/routes/panel/content.css";
-@import "../features/original-app/original-app.css";
-@import "../features/instances/instance-list.css";
-@import "../features/scan/scan.css";
-@import "../features/updates/update-banners.css";
-@import "../features/instances/instance-card.css";
-@import "../features/sessions/session-list.css";
-@import "../features/dashboard/feedback-banners.css";
-@import "../app/layout/statusbar.css";
-@import "../components/empty-state.css";
-@import "../components/buttons.css";
-@import "../components/loading-cards.css";
-@import "../components/modal.css";
-@import "../features/instances/instance-editor.css";
-@import "../components/modal-actions.css";
-@import "../features/appearance/appearance.css";
-@import "../components/confirm-dialog.css";
-@import "../features/updates/application-update-dialog.css";
-@import "../features/updates/original-update-dialog.css";
-@import "../features/sessions/session-transfer-dialog.css";
-@import "./animations.css";
-@import "./theme-light.css";
-@import "./responsive.css";
+/*
+ * La entrada de CSS de la app y de Tailwind (HU-0016). Todos los @import van primero, y su orden es la cascada:
+ * Tailwind con su preflight, las animaciones del catálogo, los tokens de la app en la capa base y el puente a shadcn.
+ * No hay CSS propio fuera de las capas: la app se pinta con las utilidades y el catálogo de src/components/ui.
+ */
+@import "tailwindcss" source(none);
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "./tokens.css" layer(base);
+@import "./ui-theme.css";
+
+@source "../app";
+@source "../features";
+@source "../components";
+@source "../hooks";
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  /* Sin fondo (A-3): body sigue transparente y el fondo lo pinta el marco del shell (ventana de Windows). */
+  body { @apply text-foreground; }
+  .theme-dark { color-scheme: dark; }
+  .theme-light { color-scheme: light; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

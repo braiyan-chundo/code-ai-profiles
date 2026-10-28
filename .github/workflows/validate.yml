@@ -45,7 +45,7 @@ jobs:
       - name: Test result messages and icon validation
         run: pnpm test:messages
 
-      - name: Test design system isolation
+      - name: Test UI boundaries
         run: pnpm test:ui
 
       - name: Test Graphify query cache isolation
@@ -76,8 +76,8 @@ jobs:
       - name: Build frontend
         run: pnpm build
 
-      - name: Verify the bundle has no Tailwind or showcase
-        run: '! grep -rqE "tailwindcss|--tw-" dist && test ! -e dist/showcase.html'
+      - name: Verify the bundle has no showcase or sidebar cookie
+        run: 'test ! -e dist/showcase.html && ! grep -rq "sidebar_state" dist'
 
       - name: Run Rust tests
         run: cargo test --manifest-path src-tauri/Cargo.toml

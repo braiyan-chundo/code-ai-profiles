@@ -31,11 +31,13 @@ Aplicación de escritorio open source creada con Tauri, React y Rust para admini
 
 ## Plataformas
 
-| Plataforma | Arquitectura | Paquetes | Estado |
+| Plataforma | Arquitectura | Paquetes | Mínimo |
 | --- | --- | --- | --- |
-| macOS | Apple Silicon | `.app`, `.dmg` | Compatible |
-| Windows | x64 | `.msi`, `.exe` NSIS | Compatible |
-| Linux | x64 y ARM64 | `.deb`, `.AppImage` | Compatible |
+| macOS | Apple Silicon | `.app`, `.dmg` | macOS 13.3 o posterior |
+| Windows | x64 | `.msi`, `.exe` NSIS | WebView2 |
+| Linux | x64 y ARM64 | `.deb`, `.AppImage` | WebKitGTK 2.40 o posterior |
+
+La interfaz necesita un motor web de nivel Safari 16.4. En Ubuntu 22.04 eso es el WebKitGTK de `jammy-updates` (`libwebkit2gtk-4.1-0`): el 2.36 con que salió no basta. El `.deb` usa el WebKitGTK del sistema y el `.AppImage` lleva el del runner. Si el motor no basta, la app lo avisa al abrirse.
 
 Los instaladores de cada plataforma se compilan en runners nativos mediante [`.github/workflows/build-desktop.yml`](.github/workflows/build-desktop.yml). Los paquetes generados aún no están firmados ni notarizados.
 
@@ -143,7 +145,7 @@ src-tauri\target\release\bundle\nsis\*.exe
 
 ### Linux x64 o ARM64
 
-En Ubuntu/Debian instala las dependencias usadas por el CI:
+Necesitas WebKitGTK 2.40 o posterior (en Ubuntu 22.04, con `jammy-updates` activado). En Ubuntu/Debian instala las dependencias usadas por el CI:
 
 ```bash
 sudo apt-get update

@@ -8,10 +8,10 @@ Navegación lateral que se contrae a iconos.
 
 **Sí**
 - Navegación lateral que se contrae a iconos.
+- En la app (HU-0016): `AppShell` y `AppSidebar` (HU-0016): `collapsible="icon"`, 260 px, controlado por la preferencia `sidebar`. El marco lleva `transform`.
 
 **No**
-- La ventana actual no tiene barra lateral: `Titlebar` y `Toolbar` son propios. **Requiere un contenedor con `transform`** si no ocupa toda la ventana.
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
+- Un segundo sidebar: la app tiene uno, en `AppShell`. **Requiere un contenedor con `transform`** si no ocupa toda la ventana.
 
 ## Importación
 
@@ -99,7 +99,7 @@ export function Ejemplo() {
 
 ## Accesibilidad
 
-`SidebarTrigger` con `aria-label` en español. Atajo de teclado propio para alternar. En ventanas estrechas usa `use-mobile` (768 px) y se vuelve un `Sheet`.
+`SidebarTrigger` con `aria-label` en español. Sin atajo de teclado propio (ajuste 2). En ventanas estrechas usa `use-mobile` (768 px) y se vuelve un `Sheet`.
 
 ## Tokens que usa
 
@@ -110,11 +110,19 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 ## Diferencias con el registro
 
-Ninguna: es el código del registro `radix-vega` (2026-10-28) tal como se descargó.
+HU-0016 (A-4), sobre el código del registro `radix-vega` (2026-10-28):
+
+1. **Sin cookie**: `setOpen` ya no escribe la cookie de estado (`sidebar_state`, 7 días, `path=/`). Quien lo
+   use controla `open`/`onOpenChange`; la app guarda el estado en sus preferencias de apariencia (A-5).
+2. **Sin atajo global**: fuera el `keydown` de Cmd/Ctrl+B en `window`, que chocaba con los atajos de la app.
+3. **Textos en español**: «Alternar barra lateral» en `SidebarTrigger` (`sr-only`) y `SidebarRail` (`aria-label` y
+   `title`), y «Barra lateral» / «Muestra la barra lateral.» en la cabecera `sr-only` del `Sheet` móvil.
+
+`pnpm test:ui` (prueba 7) vigila que no vuelvan la cookie ni el `keydown`.
 
 ## Qué no hacer
 
-- No adoptarlo sin decidir qué hace con la persistencia: `sidebar.tsx` escribe la cookie `sidebar_state` (7 días, `path=/`) y registra el atajo global Cmd/Ctrl+B en `window`. En el showcase es inocuo; en la app la cookie quedaría en los datos del webview, así que la historia que lo adopte la quita o la justifica.
+- No devolverle la cookie ni el atajo global (ajustes 1 y 2): la persistencia va controlada desde fuera.
 - No ponerlo sin contenedor con `transform` dentro de un marco: su `position: fixed` se sale.
 - No regenerar con `pnpm exec shadcn add sidebar --overwrite`: es código propio y se perderían los ajustes.
 

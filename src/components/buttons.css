@@ -1,5 +1,0 @@
-.secondary-button { min-height: 44px; color: #d8d2cf; background: rgba(255, 255, 255, 0.045); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: none; }
-.secondary-button:hover:not(:disabled) { background: rgba(255, 255, 255, 0.075); border-color: rgba(255, 255, 255, 0.15); }
-.destructive-button { min-height: 44px; color: #ffd9d2; background: rgba(203, 70, 48, 0.16); border: 1px solid rgba(239, 126, 112, 0.24); box-shadow: none; }
-.destructive-button:hover:not(:disabled) { background: rgba(203, 70, 48, 0.24); }
-

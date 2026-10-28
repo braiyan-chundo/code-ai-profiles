@@ -1,5 +1,9 @@
-import { CloudIcon, PlusIcon, RefreshIcon, SearchIcon } from "./Icons";
+import { PlusIcon, RefreshCwIcon, SearchIcon } from "lucide-react";
+import { Button } from "./ui/button";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "./ui/empty";
+import { BrandMark } from "./BrandMark";
 
+/** Lo que se ve cuando no hay nada que mostrar: sin coincidencias, sin aplicación compatible o sin instancias. */
 export function EmptyState({
   searching,
   sourceFound,
@@ -15,27 +19,37 @@ export function EmptyState({
 }) {
   if (searching) {
     return (
-      <div className="empty-state">
-        <div className="empty-icon"><SearchIcon size={29} /></div>
-        <h2>Sin coincidencias</h2>
-        <p>No hay perfiles que coincidan con la búsqueda actual.</p>
-        <button className="secondary-button" onClick={onClear}>Limpiar búsqueda</button>
-      </div>
+      <Empty className="rounded-xl border border-dashed bg-(--surface-soft)">
+        <EmptyHeader>
+          <EmptyMedia variant="icon"><SearchIcon /></EmptyMedia>
+          <EmptyTitle>Sin coincidencias</EmptyTitle>
+          <EmptyDescription>No hay perfiles que coincidan con la búsqueda actual.</EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
+          <Button variant="outline" onClick={onClear}>Limpiar búsqueda</Button>
+        </EmptyContent>
+      </Empty>
     );
   }
 
   return (
-    <div className="empty-state">
-      <div className="empty-icon"><CloudIcon size={34} /></div>
-      <h2>{sourceFound ? "Crea tu primer perfil aislado" : "No se detectó una aplicación compatible"}</h2>
-      <p>
-        {sourceFound
-          ? "Code AI Profiles creará una copia administrada y un directorio de datos independiente. Cada perfil podrá iniciar sesión con una cuenta distinta."
-          : "Instala una aplicación compatible y vuelve a escanear el sistema."}
-      </p>
-      <button className={sourceFound ? "primary-action" : "secondary-button"} onClick={sourceFound ? onCreate : onScan}>
-        {sourceFound ? <><PlusIcon size={17} /> Nueva instancia</> : <><RefreshIcon size={17} /> Escanear de nuevo</>}
-      </button>
-    </div>
+    <Empty className="rounded-xl border border-dashed bg-(--surface-soft)">
+      <EmptyHeader>
+        <EmptyMedia variant="icon"><BrandMark /></EmptyMedia>
+        <EmptyTitle>{sourceFound ? "Crea tu primer perfil aislado" : "No se detectó una aplicación compatible"}</EmptyTitle>
+        <EmptyDescription>
+          {sourceFound
+            ? "Code AI Profiles creará una copia administrada y un directorio de datos independiente. Cada perfil podrá iniciar sesión con una cuenta distinta."
+            : "Instala una aplicación compatible y vuelve a escanear el sistema."}
+        </EmptyDescription>
+      </EmptyHeader>
+      <EmptyContent>
+        {sourceFound ? (
+          <Button size="lg" onClick={onCreate} className="px-4"><PlusIcon /> Nueva instancia</Button>
+        ) : (
+          <Button variant="outline" size="lg" onClick={onScan} className="px-4"><RefreshCwIcon /> Escanear de nuevo</Button>
+        )}
+      </EmptyContent>
+    </Empty>
   );
 }

@@ -1,4 +1,6 @@
-import { RefreshIcon } from "../../components/Icons";
+import { RefreshCwIcon } from "lucide-react";
+import { NoticeAlert } from "../../components/NoticeAlert";
+import { Button } from "../../components/ui/button";
 import type { ManagedInstance } from "../../types";
 import { useDashboard } from "../dashboard";
 import { synchronizeLabel as describeSynchronizeLabel } from "./update-messages";
@@ -18,24 +20,26 @@ export function SynchronizeBanner({
     state.system.versionTopology.latestInstalledVersion,
   );
   return (
-    <div className="update-banner">
-      <span className="update-banner-icon"><RefreshIcon size={17} /></span>
-      <div>
-        <strong>{synchronizeLabel}</strong>
-        <span>
-          {state.system.versionTopology.canSynchronizeManaged
-            ? outdatedInstances.length === 1
-              ? `${outdatedInstances[0].name} usa una versión anterior.`
-              : `${outdatedInstances.length} instancias usan una versión anterior.`
-            : state.system.versionTopology.reason ?? "No hay una fuente local válida para sincronizar."}
-        </span>
-      </div>
-      <button
-        onClick={onSynchronize}
-        disabled={busy !== null || !state.system.versionTopology.canSynchronizeManaged}
-      >
-        Sincronizar
-      </button>
-    </div>
+    <NoticeAlert
+      role="status"
+      icon={<RefreshCwIcon aria-hidden="true" className="text-primary-text" />}
+      title={synchronizeLabel}
+      action={
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onSynchronize}
+          disabled={busy !== null || !state.system.versionTopology.canSynchronizeManaged}
+        >
+          Sincronizar
+        </Button>
+      }
+    >
+      {state.system.versionTopology.canSynchronizeManaged
+        ? outdatedInstances.length === 1
+          ? `${outdatedInstances[0].name} usa una versión anterior.`
+          : `${outdatedInstances.length} instancias usan una versión anterior.`
+        : state.system.versionTopology.reason ?? "No hay una fuente local válida para sincronizar."}
+    </NoticeAlert>
   );
 }

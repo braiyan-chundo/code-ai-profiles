@@ -6,31 +6,59 @@ description: Catálogo shadcn/ui de Code AI Profiles (63 componentes en src/comp
 # Design system · shadcn/ui
 
 El catálogo vive en `src/components/ui/` (HU-0014): **código propio** descargado del registro `radix-vega`
-(shadcn 4.22.1, 2026-10-28) y estilizado con los tokens de la app. **Hoy solo lo usa el showcase**
-(`pnpm dev` → `http://127.0.0.1:1420/showcase.html`, sin Tailwind en `/` ni en `dist/`). Las pantallas
-actuales siguen con el CSS de `src/styles/` y `src/components/`. Una pantalla adopta estos componentes solo
-con una historia que cargue Tailwind en la app, sin restilizar lo existente ni duplicar primitivas.
+(shadcn 4.22.1, 2026-10-28) y estilizado con los tokens de la app. **Desde HU-0016 es la interfaz de la app**: Tailwind
+se carga en `src/styles/index.css`, el CSS propio se retiró y las pantallas se componen con estos componentes y
+utilidades. El showcase (`pnpm dev` → `http://127.0.0.1:1420/showcase.html`) enseña los 63 con los mismos tokens; no
+entra en `dist/`.
 
 ## Cuándo usar cada cosa
 
-- **CSS propio** (`DESIGN.md`, `src/styles/`, `src/components/`): todo lo que ya existe y lo que se construye
-  hoy en la app. Antes de crear nada, mira `ModalFrame`, `ConfirmDialog`, `EmptyState`, `LoadingCards`, `Metric`.
-- **`components/ui`**: el showcase y, cuando una historia lo autorice, las superficies nuevas.
-- Un componente que falta en el catálogo no se inventa: viene del registro (`pnpm exec shadcn add <id>`).
+1. **Una pieza de la app que ya lo resuelve** (abajo): úsala antes de componer otra vez el catálogo.
+2. **Un componente del catálogo**, con clases de Tailwind sobre los tokens. Si el ajuste es el aspecto de la app
+   en todos los usos (el radio de un modal, su scroll), va **en el componente**, con su línea en «Diferencias con el
+   registro» de la ficha; si es de una pantalla, en su `className`.
+3. Un componente que falta no se inventa: viene del registro (`pnpm exec shadcn add <id>`). Ni CSS propio, ni otra
+   librería de componentes o de iconos (lucide, más `BrandMark`).
+
+## Piezas de la app sobre el catálogo
+
+| Pieza | Dónde | Para qué |
+| --- | --- | --- |
+| `BrandMark` | `src/components` | La marca (nube) y el icono por defecto de una instancia |
+| `EmptyState` | `src/components` | Vacíos de página: sin fuente, sin instancias, sin coincidencias (`Empty`) |
+| `NoticeAlert` | `src/components` | Un aviso con icono, título, acción y pie (`Alert`) |
+| `PageHeader`, `PageContent`, `PageSkeleton` | `src/app/layout` | La barra, el cuerpo con scroll y la carga de una página |
+| `InstanceAvatar`, `InstanceStatusBadge` | `features/instances` | Icono con punto de estado; el estado con sus palabras |
+| `UsageMeter`, `UsageBar` | `features/instances` | Uso de sesión y semanal (`Card`/`Progress`) |
+| `SessionItem`, `SessionList`, `SessionContextMeter` | `features/sessions` | Una sesión, la lista y su contexto (`Item`) |
 
 ## Cómo se usa
 
-Importa desde `@/components/ui/<id>` (alias `@` → `src`, solo para este código; la app usa imports relativos).
-Los componentes usan `cn` del paquete `cn`, `class-variance-authority`, `radix-ui` y `lucide-react`.
-Una pieza nueva de la interfaz lleva textos en español y `aria-label` en los botones de solo icono. Los
-textos por defecto de algunos componentes salen en inglés (spinner, carousel, cierre del diálogo): pásalos tú.
+Dentro de `components/ui` se importa con `@/components/ui/<id>`; en la app, con imports relativos
+(`../../components/ui/button`). Los componentes usan `cn` del paquete `cn`, `class-variance-authority`, `radix-ui` y
+`lucide-react`. Textos en español y `aria-label` en los botones de solo icono. Los textos por defecto que salen en
+inglés (spinner, carousel) se pasan o se ocultan (`<Spinner aria-hidden="true" />` dentro de un botón con texto).
+
+## Patrones de la app
+
+- **Diálogos** (A-12): `Dialog` para tareas y `AlertDialog` para confirmar, montados por `DialogHost` con su bandera
+  y `open` fijo. `onOpenChange={(open) => { if (!open && !busy) onClose(); }}` guarda a la vez Escape, la X y el clic
+  fuera; `closeDisabled={busy}` deshabilita la X. En un `AlertDialog` asíncrono, confirmar es un `Button`, nunca
+  `AlertDialogAction` (cerraría antes de marcar `busy`). Ningún `keydown` global para Escape.
+- **Tarjetas de opción**: `RadioGroup` > `FieldLabel htmlFor` > `Field orientation="horizontal"` > `RadioGroupItem` +
+  `FieldContent`. La elegida toma borde y tinte solos (`has-data-checked`).
+- **Avisos**: el tono va en el `Alert` (`text-warning`, `text-success`, `text-primary-text`): su regla
+  `*:[svg]:text-current` gana a cualquier color puesto en el icono.
+- **Medidores**: `Progress` con `aria-valuenow` a mano (ficha de `progress`) y el color del indicador con
+  `[&>[data-slot=progress-indicator]]:bg-…`.
+- **Sin** `Toaster` (sonner) ni toast de Radix: registran `visibilitychange`, `focus` y `blur` (R-1, A-13).
 
 ## El tema
 
-Los tokens de shadcn (`--background`, `--border`…) salen de los de la app (`--surface`, `--line`…) en
-`src/styles/ui-theme.css`, que solo importa `src/showcase/showcase.css`. `--primary` y `--muted` **no** se
-redeclaran (A-3). El tema se aplica con `theme-dark` o `theme-light` en `<html>` (A-9). Detalle y cómo añadir
-un `--ui-*`: [`tema.md`](tema.md).
+Los tokens de shadcn (`--background`, `--border`…) salen de los de la app (`--surface`, `--line`…), declarados en
+`src/styles/tokens.css`, a través de `src/styles/ui-theme.css`. `--primary` y `--muted` **no** se redeclaran (A-3).
+El tema se aplica con `theme-dark` o `theme-light` en `<html>` (A-9), así que los portales lo heredan. Detalle y
+cómo añadir un `--ui-*`: [`tema.md`](tema.md).
 
 ## Añadir o actualizar un componente
 
@@ -41,7 +69,8 @@ un `--ui-*`: [`tema.md`](tema.md).
    `rg -n "next-themes|IconPlaceholder|@/registry|var\(--muted\)" src/components/ui src/hooks` salga vacío.
 4. Añade su sección (`src/showcase/sections/<id>.tsx`), su línea en `src/showcase/catalog.ts`, su ficha
    `componentes/<id>.md` y su fila en el índice de abajo.
-5. `pnpm build` y `pnpm test:ui`. `dist/` no debe cambiar.
+5. `pnpm build` y `pnpm test:ui`. El CSS de `dist/` crece aunque ninguna pantalla lo use (`@source "../components"`
+   lo incluye): anota el tamaño.
 
 ## Índice
 

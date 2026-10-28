@@ -8,10 +8,10 @@ Marca o desmarca una opción, con estado indeterminado.
 
 **Sí**
 - Marcar una o varias opciones independientes.
+- En la app (HU-0016): «Incluir copias locales de artefactos» en `SessionTransferDialog`.
 
 **No**
 - Para activar un ajuste al instante: `Switch`. Para una sola opción entre varias: `RadioGroup`.
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
 
 ## Importación
 

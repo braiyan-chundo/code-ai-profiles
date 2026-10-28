@@ -11,7 +11,7 @@ Notificaciones temporales (toast).
 
 **No**
 - Errores que exigen acción: `Alert`. En la app, el aviso actual (`notice`) del dashboard.
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
+- **En la app, nunca** (HU-0016, A-13): `Toaster` registra `visibilitychange` en `document` y rompería el orden de `DashboardRuntime` (R-1). Los avisos van en línea, con `NoticeAlert`. Solo vive en el showcase.
 
 ## Importación
 

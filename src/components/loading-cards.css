@@ -1,4 +1,0 @@
-.skeleton-card { display: grid; grid-template-columns: 80px 1fr 1fr; align-items: center; gap: 28px; height: 154px; padding: 25px; background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.055); border-radius: 29px; }
-.skeleton-card span { display: block; height: 40px; background: linear-gradient(90deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.025)); background-size: 200% 100%; border-radius: 12px; animation: shimmer 1.6s infinite; }
-.skeleton-card span:first-child { width: 80px; height: 80px; border-radius: 25px; }
-

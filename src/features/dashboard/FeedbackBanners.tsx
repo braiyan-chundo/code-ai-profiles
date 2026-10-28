@@ -1,4 +1,6 @@
-import { AlertIcon, SparklesIcon, XIcon } from "../../components/Icons";
+import { SparklesIcon, TriangleAlertIcon, XIcon } from "lucide-react";
+import { NoticeAlert } from "../../components/NoticeAlert";
+import { Button } from "../../components/ui/button";
 import { useDashboard } from "./dashboard-context";
 
 /** El error y el aviso de la última operación, cada uno con su botón de cerrar. */
@@ -7,18 +9,28 @@ export function FeedbackBanners() {
   return (
     <>
       {error && (
-        <div className="error-banner">
-          <AlertIcon size={19} />
-          <span>{error}</span>
-          <button onClick={() => setError(null)} aria-label="Cerrar error"><XIcon size={16} /></button>
-        </div>
+        <NoticeAlert
+          variant="destructive"
+          icon={<TriangleAlertIcon aria-hidden="true" />}
+          title={error}
+          action={
+            <Button variant="ghost" size="icon-sm" onClick={() => setError(null)} aria-label="Cerrar error">
+              <XIcon />
+            </Button>
+          }
+        />
       )}
       {notice && (
-        <div className="notice-banner">
-          <SparklesIcon size={19} />
-          <span>{notice}</span>
-          <button onClick={() => setNotice(null)} aria-label="Cerrar aviso"><XIcon size={16} /></button>
-        </div>
+        <NoticeAlert
+          role="status"
+          icon={<SparklesIcon aria-hidden="true" />}
+          title={notice}
+          action={
+            <Button variant="ghost" size="icon-sm" onClick={() => setNotice(null)} aria-label="Cerrar aviso">
+              <XIcon />
+            </Button>
+          }
+        />
       )}
     </>
   );

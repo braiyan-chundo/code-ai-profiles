@@ -8,10 +8,10 @@ Contenedor con cabecera, contenido y pie.
 
 **Sí**
 - Agrupar contenido relacionado con cabecera, cuerpo y pie.
+- En la app (HU-0016): `InstanceDetail`, `OriginalDetail`, `UsageMeter`, `SummaryCards` y `UsageRanking`.
 
 **No**
-- En las pantallas actuales: `.instance-card`, `.original-app-card`. Estadísticas: `Metric`.
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
+- Una fila de lista: `Item`. Un aviso: `Alert`.
 
 ## Importación
 

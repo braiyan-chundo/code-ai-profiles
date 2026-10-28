@@ -32,6 +32,38 @@ export function matchesOriginalApp(system: SystemInfo, appName: string, query: s
     .some((value) => value!.toLocaleLowerCase().includes(term));
 }
 
+/**
+ * La instancia de `#/instancias/<id>` (HU-0016, A-9). `undefined` si el id no existe, si se borró o si falta en la URL:
+ * la página entonces vuelve al dashboard.
+ */
+export function findInstance(instances: ManagedInstance[], id: string | undefined): ManagedInstance | undefined {
+  if (!id) return undefined;
+  return instances.find((instance) => instance.id === id);
+}
+
+/** El mayor de los dos porcentajes de uso de una instancia, o `null` si no tiene ninguno. */
+function peakUsage(instance: ManagedInstance): number | null {
+  const values = [instance.usage?.sessionPercent, instance.usage?.weeklyPercent].filter(
+    (value): value is number => typeof value === "number",
+  );
+  return values.length ? Math.max(...values) : null;
+}
+
+/**
+ * Las instancias de más a menos uso (HU-0016, A-15): por el mayor de sus dos porcentajes, las que no tienen dato al
+ * final y, si empatan, por nombre. Devuelve un array nuevo.
+ */
+export function usageRanking(instances: ManagedInstance[]): ManagedInstance[] {
+  return [...instances].sort((a, b) => {
+    const usageA = peakUsage(a);
+    const usageB = peakUsage(b);
+    if (usageA == null && usageB != null) return 1;
+    if (usageA != null && usageB == null) return -1;
+    if (usageA != null && usageB != null && usageA !== usageB) return usageB - usageA;
+    return a.name.localeCompare(b.name, "es");
+  });
+}
+
 export function countRunning(instances: ManagedInstance[]): number {
   return instances.filter((instance) => instance.status === "running").length;
 }

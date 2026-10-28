@@ -8,10 +8,10 @@ Marca corta de estado o categoría.
 
 **Sí**
 - Una marca corta de estado o categoría.
+- En la app (HU-0016): `InstanceStatusBadge` (Ejecutándose, Detenido, No disponible, Deteniendo…), Archivada/Movida/Copia en `SessionList`, «Actualización disponible» e icono en `InstanceDetail`, y el recuento de `UsageRanking`.
 
 **No**
-- En las pantallas actuales: `.instance-state`, `.original-badge`.
-- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
+- El estado de una instancia: `InstanceStatusBadge` (`features/instances`), que ya lo compone.
 
 ## Importación
 

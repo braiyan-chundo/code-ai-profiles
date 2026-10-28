@@ -1,11 +1,11 @@
-/* src/showcase/showcase.css: la única entrada de Tailwind (HU-0014).
+/* src/showcase/showcase.css: la entrada de Tailwind del showcase (HU-0014); la de la app es styles/index.css (HU-0016).
+   Los dos usan los mismos tokens (styles/tokens.css) y el mismo puente (styles/ui-theme.css).
    Tras cualquier `shadcn add`, la CLI reescribe variables aquí: se descartan con
    `git checkout -- src/showcase/showcase.css` (redefinirían --primary y --muted, A-3). */
 @import "tailwindcss" source(none);
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "../styles/base.css" layer(base);
-@import "../styles/theme-light.css" layer(base);
+@import "../styles/tokens.css" layer(base);
 @import "../styles/ui-theme.css";
 @source "../components/ui";
 @source "../hooks";
