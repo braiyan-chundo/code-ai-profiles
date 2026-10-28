@@ -95,7 +95,10 @@ Son propios, en `components/Icons.tsx`: un `export const XIcon = (props) => <Ico
   banderas independientes y Escape). Estado local de una pieza: `useState` en la pieza. Sin librería de estado.
 - **Efectos de toda la app**: un hook `use…Runtime` llamado desde `app/providers/DashboardRuntime.tsx`,
   que fija el orden. El `focus` de la actualización oficial va **antes** que el del refresco en segundo
-  plano (lo consume). Ningún otro componente registra `focus`, `blur` ni `visibilitychange`.
+  plano (lo consume). Ningún otro componente registra `focus`, `blur` ni `visibilitychange`. Si un hook
+  crea un controlador y además registra un efecto, se parte en dos (`useScanRuntime`/`useScanLifecycle`)
+  para que el orden de registro no cambie, y sus efectos solo dependen de valores estables (acciones del
+  store, refs): una dependencia nueva vuelve a registrar el listener en cada render.
 - **Controladores puros** en `lib/*-controller.ts` para tiempo, reintentos o carreras: reciben el reloj
   y las llamadas a Rust, no importan React, se crean una vez (ref perezoso, encima del router) y
   descartan resultados viejos por `generation`.

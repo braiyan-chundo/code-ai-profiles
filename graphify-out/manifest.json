@@ -335,7 +335,7 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793170260.420306,
+    "mtime": 1793170738.484621,
     "ast_hash": "080994c5f5b9a36d1cd6cbe6d729e5be",
     "semantic_hash": ""
   },
@@ -395,8 +395,8 @@
     "semantic_hash": ""
   },
   "docs/arquitectura/frontend.md": {
-    "mtime": 1793167039.7296586,
-    "ast_hash": "d58e152e67f49066ee8a805cfa35e4f5",
+    "mtime": 1793170611.993013,
+    "ast_hash": "d2252c1173eaace9f6ab55c9a6625345",
     "semantic_hash": ""
   },
   "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md": {
@@ -420,8 +420,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/seguimiento.md": {
-    "mtime": 1793170260.4197392,
-    "ast_hash": "d390508acbf512de59be6e8c8094ed72",
+    "mtime": 1793170738.48412,
+    "ast_hash": "944e675a452ccdd31a3a71f915ed8dfd",
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/briefs/frontend.md": {
@@ -817,6 +817,11 @@
   "src/features/updates/SynchronizeBanner.tsx": {
     "mtime": 1793169522.8672426,
     "ast_hash": "c9c66fb2efb8b0b6ee8229e192dec5cc",
+    "semantic_hash": ""
+  },
+  "hu/HU-0015-frontend-escalable-componentes-features-/revision-tecnica.md": {
+    "mtime": 1793170706.4018564,
+    "ast_hash": "14a3e8d6aaaffa90959ebd4223a0889c",
     "semantic_hash": ""
   }
 }

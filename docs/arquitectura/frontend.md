@@ -37,8 +37,8 @@ Las entradas marcadas con (HU-0014) están reservadas: no existen hasta que esa 
 | Feature | Qué contiene |
 | --- | --- |
 | `dashboard` | El **núcleo de datos**: `dashboard-store.ts` (reducer puro), `dashboard-selectors.ts`, `DashboardProvider`, `useDashboard`, la carga inicial, la plataforma en uso y los banners de error y aviso |
-| `scan` | Controlador de escaneo en ejecución (`useScanRuntime`), refresco en segundo plano, `useScan`, `ScanProgressPanel` |
-| `updates` | Actualización oficial de la original y sincronización de instancias: controlador, sondeo, `useSourceUpdate`, banners, diálogos, textos |
+| `scan` | Controlador de escaneo (`useScanRuntime` lo crea en el render; `useScanLifecycle` es su efecto), refresco en segundo plano, `useScan`, `ScanProgressPanel` |
+| `updates` | Actualización oficial de la original y sincronización de instancias: controlador (`useSourceUpdateController` lo crea; `useSourceUpdateRuntime` registra `blur`, `focus` y `visibilitychange`), sondeo de 6 h, `useSourceUpdate`, banners, diálogos, textos |
 | `instances` | Tarjeta, medidores, sección de instancias, editor, borrado, uso en vivo, icono personalizado |
 | `sessions` | Formato y contexto de sesiones, transferencia, desvinculación, perfiles de transferencia |
 | `original-app` | La sección de la aplicación original |
@@ -56,10 +56,12 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 
 - `app/` puede importar todo. Nada importa de `app/`.
 - Una feature importa de otra **solo por su `index.ts`** y nunca en ciclo. Hoy: `instances` y
-  `original-app` usan `sessions`; todas usan `dashboard`.
+  `original-app` usan `sessions`; `scan`, `updates`, `instances` y `sessions` usan `dashboard`; `appearance` no
+  importa ninguna.
 - Dentro de una feature, imports relativos directos (no a través de su propio `index.ts`).
 - `components/` no conoce el dominio: recibe props, no usa `useDashboard`.
-- `lib/` no importa React, el DOM ni features.
+- `lib/` no importa React ni features. Solo `bridge.ts` toca `window` (detección de Tauri y esperas del mock);
+  los demás módulos reciben del llamador lo que necesitan del entorno (`navigator.platform`, el reloj).
 - `invoke` **solo** en `lib/bridge.ts`. Las otras APIs de Tauri, siempre detrás de `bridge.isDesktop()`, viven en tres
   sitios: `listen` en `features/scan/useScanRuntime.ts`, `getCurrentWindow` en `app/layout/window-actions.ts` y
   `convertFileSrc` en `features/instances/instance-icon.ts`.
@@ -78,7 +80,7 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 | Datos que vienen de Rust | el store de `features/dashboard` (o, si son de otra pantalla, la feature de esa pantalla), siempre vía `bridge` |
 | Lógica sin React (formato, textos, validación, selectores, reducer) | un `.ts` puro en la feature o en `lib/`, con su prueba |
 | Lógica con tiempo, reintentos o carreras | un controlador puro en `lib/*-controller.ts`, con el reloj y las llamadas inyectados |
-| Un efecto que vive lo que vive la app | un hook `use…Runtime` en su feature, llamado desde `app/providers/DashboardRuntime.tsx` |
+| Un efecto que vive lo que vive la app | un hook en su feature, llamado desde `app/providers/DashboardRuntime.tsx` en su turno. Si además crea un controlador, el controlador se crea en un hook sin efectos (render) y el efecto va en otro, para que el orden lo fije la llamada al efecto |
 | Un diálogo | el componente en su feature; su bandera en `DialogsProvider`; se pinta en `app/layout/DialogHost.tsx` |
 | Un icono | `components/Icons.tsx` |
 | Una URL fija | el archivo de enlaces (`src/lib/links.ts`, cuando haga falta); nunca en un componente |
@@ -107,11 +109,17 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 - **Resultados viejos.** Los controladores descartan por `generation` y por ciclo de vida. Los efectos con
   `await` usan su bandera `active`. El listener `scan-progress` comprueba su ciclo con un ref antes de usar el
   payload.
-- **Orden de los efectos de ejecución.** `DashboardRuntime` los llama en un orden fijo: carga inicial → ciclo
-  del escaneo → ciclo de la actualización oficial → uso en vivo → sondeo de 6 h → refresco en segundo plano. El
-  listener de `focus` de la actualización tiene que registrarse **antes** que el del refresco en segundo plano:
-  el primero marca `suppressNextGeneralFocus` y el segundo lo consume. Ningún otro componente registra `focus`,
-  `blur` ni `visibilitychange`.
+- **Orden de los efectos de ejecución.** `DashboardRuntime` crea primero los dos controladores en el render
+  (`useScanRuntime`, `useSourceUpdateController`) y después llama a los efectos en un orden fijo:
+  `useInitialLoad` → `useScanLifecycle` → `useSourceUpdateRuntime` → `useLiveUsage` → `useSourceUpdatePolling` →
+  `useBackgroundRefresh`. El listener de `focus` de la actualización tiene que registrarse **antes** que el del
+  refresco en segundo plano: el primero marca `suppressNextGeneralFocus` y el segundo lo consume. Ningún otro
+  componente registra `focus`, `blur` ni `visibilitychange`. Fuera de `DashboardRuntime` solo hay listeners de
+  otro tipo: `keydown` de Escape en `DialogsProvider`, `keydown` de Ctrl/⌘ F en `app/routes/panel/Toolbar.tsx` y
+  `change` de `prefers-color-scheme` en `AppearanceProvider`.
+- **Dependencias de esos efectos.** Solo valores estables (los controladores, refs, las acciones del store) o la
+  clave de instancias en ejecución del uso en vivo. Un efecto que se vuelve a ejecutar vuelve a registrar su
+  listener al final de la cola, y eso puede invertir el orden de `focus`.
 - **Los controladores se crean una sola vez** (`useRef` perezoso) encima del router: navegar no los recrea.
 - `localStorage` solo guarda las preferencias de apariencia (`code-ai-profiles:appearance`), validadas campo a
   campo al leerlas.
@@ -128,6 +136,11 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
   propia la decide una historia.
 - La URL nunca lleva nombres, rutas de disco, títulos de sesión ni nada del contenido de un perfil. A lo sumo, un ID opaco
   de instancia.
+- **Coste.** El modo datos (`createHashRouter` + `RouterProvider`) pesa unos 33 kB gzip en el JS de entrada
+  (medido en HU-0015: de 85,0 a 119,6 kB). Las dependencias `cookie` y `set-cookie-parser` se instalan pero no
+  llegan al bundle. Importar `RouterProvider` desde `react-router` en vez de `react-router/dom` no ahorra nada.
+  El modo declarativo (`<HashRouter>` + `<Routes>`) pesaría unos 15 kB, pero pierde `lazy` y `errorElement` por ruta;
+  cambiarlo exige otra decisión (★ D-3 de la HU-0015).
 
 ### Añadir una pantalla
 
