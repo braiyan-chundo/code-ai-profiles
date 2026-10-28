@@ -2,7 +2,7 @@
 id: HU-0017
 titulo: "Descargar e instalar la original en macOS"
 estado: en-proceso
-fase: implementacion
+fase: verificacion
 area: actualizaciones
 entrega: 1
 prioridad: media

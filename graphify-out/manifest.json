@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793217285.7978923,
-    "ast_hash": "93eae92323311a4a9cd38d1b10bcb2f3",
+    "mtime": 1793217319.0333734,
+    "ast_hash": "f6c53c15081396f84b97e4d0ff845f5e",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -1640,13 +1640,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/hu.md": {
-    "mtime": 1793213976.4699292,
-    "ast_hash": "fd21cc3241772a1a19011594284aba95",
+    "mtime": 1793217318.9883087,
+    "ast_hash": "f7c9741c20b8851c0cf2a523471d461f",
     "semantic_hash": ""
   },
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/seguimiento.md": {
-    "mtime": 1793217285.797127,
-    "ast_hash": "d5c2e7ea2de9e7be61b0bc77836867e3",
+    "mtime": 1793217319.032721,
+    "ast_hash": "dace6014f7825c42087ef69489f4b73f",
     "semantic_hash": ""
   },
   "docs/arquitectura/backend.md": {
@@ -1702,6 +1702,11 @@
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/revision-tecnica.md": {
     "mtime": 1793216647.182133,
     "ast_hash": "f2fdcc6955d058925a8d0bed0adc02ab",
+    "semantic_hash": ""
+  },
+  "hu/HU-0017-descargar-e-instalar-la-original-en-maco/verificacion.md": {
+    "mtime": 1793217307.8795483,
+    "ast_hash": "24dd754307642f8f5185fdee00081f3d",
     "semantic_hash": ""
   }
 }
