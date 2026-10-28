@@ -1,3 +1,18 @@
-/* src/showcase/showcase.css: la única entrada de Tailwind (HU-0014). Versión mínima del paso 1. */
+/* src/showcase/showcase.css: la única entrada de Tailwind (HU-0014).
+   Tras cualquier `shadcn add`, la CLI reescribe variables aquí: se descartan con
+   `git checkout -- src/showcase/showcase.css` (redefinirían --primary y --muted, A-3). */
 @import "tailwindcss" source(none);
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "../styles/base.css" layer(base);
+@import "../styles/theme-light.css" layer(base);
+@import "../styles/ui-theme.css";
+@source "../components/ui";
+@source "../hooks";
 @source "./";
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground; }
+  .theme-dark { color-scheme: dark; }
+  .theme-light { color-scheme: light; }
+}
