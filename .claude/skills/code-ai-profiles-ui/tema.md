@@ -13,8 +13,8 @@ app de la que sale.
 - **`bg-primary` es `--primary-bright`**, el relleno de `.primary-action` (naranja con texto blanco, 3,0:1). El
   naranja de **texto** es `text-primary-text` (`--ui-primary-text`: `--primary` en oscuro, #9c5947 en claro).
 - **A-9**: la clase `theme-dark` o `theme-light` va en `<html>`, para que los portales de Radix (que cuelgan de
-  `body`) hereden el tema. **R-5, para la historia que adopte los componentes**: en la app, `.theme-light` está en
-  `.desktop-shell`, así que los portales saldrían en oscuro; hará falta el `container` del portal o la clase en `<html>`.
+  `body`) hereden el tema. En la app la pone `AppearanceProvider` (HU-0016, A-3), con `data-session-text`, antes de
+  pintar; `body` sigue transparente.
 - Las variables de shadcn se declaran en `:root, .theme-dark, .theme-light`: una custom property se resuelve en el
   elemento que la declara, y un `.theme-light` dentro de `:root` no heredaría valores claros.
 - `showcase.css` importa `base.css` y `theme-light.css` con `layer(base)`: dentro de la capa `base`, ganan al

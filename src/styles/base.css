@@ -37,6 +37,10 @@ body {
   height: 100%;
   padding: 0;
   isolation: isolate;
+}
+
+/* Tamaño del texto de sesiones (HU-0016, A-3): en <html>, para que también lo hereden los diálogos en portales. */
+:root {
   --session-title-size: 12px;
   --session-meta-size: 9px;
   --session-context-size: 8px;
@@ -45,6 +49,5 @@ body {
   --session-row-height: 104px;
   --session-track-height: 4px;
 }
-.session-text-compact { --session-title-size: 10px; --session-meta-size: 7px; --session-context-size: 7px; --session-hint-size: 6px; --session-badge-size: 6px; --session-row-height: 90px; --session-track-height: 3px; }
-.session-text-large { --session-title-size: 14px; --session-meta-size: 11px; --session-context-size: 10px; --session-hint-size: 9px; --session-badge-size: 8px; --session-row-height: 120px; --session-track-height: 5px; }
-
+:root[data-session-text="compact"] { --session-title-size: 10px; --session-meta-size: 7px; --session-context-size: 7px; --session-hint-size: 6px; --session-badge-size: 6px; --session-row-height: 90px; --session-track-height: 3px; }
+:root[data-session-text="large"] { --session-title-size: 14px; --session-meta-size: 11px; --session-context-size: 10px; --session-hint-size: 9px; --session-badge-size: 8px; --session-row-height: 120px; --session-track-height: 5px; }

@@ -1,4 +1,14 @@
-@import "./base.css";
+/*
+ * La entrada de Tailwind de la app (HU-0016, A-2). Todos los @import van primero, y su orden es la cascada.
+ * Durante la convivencia (pasos 1 a 6), el CSS heredado va SIN capa y gana a Tailwind en sus propias clases;
+ * cada paso borra lo que deja sin uso y el paso 7 lo retira todo (tokens.css sustituye a base.css).
+ */
+@import "tailwindcss" source(none);
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "./base.css" layer(base);
+@import "./ui-theme.css";
+/* Legado sin capa (A-2): los mismos @import de antes y en el mismo orden. */
 @import "../app/layout/shell.css";
 @import "../app/routes/panel/toolbar.css";
 @import "../app/routes/panel/content.css";
@@ -24,3 +34,16 @@
 @import "./animations.css";
 @import "./theme-light.css";
 @import "./responsive.css";
+
+@source "../app";
+@source "../features";
+@source "../components";
+@source "../hooks";
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  /* Sin fondo (A-3): body sigue transparente y el fondo lo pinta la raíz del shell (ventana de Windows). */
+  body { @apply text-foreground; }
+  .theme-dark { color-scheme: dark; }
+  .theme-light { color-scheme: light; }
+}

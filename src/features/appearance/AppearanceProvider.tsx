@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState, type ReactNode } from "react";
 import { AppearanceContext, type AppearanceContextValue } from "./appearance-context";
 import {
   loadAppearancePreferences,
@@ -24,6 +24,20 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const resolvedTheme = resolveTheme(appearance.theme, systemDark);
+  const sessionTextSize = appearance.sessionTextSize;
+
+  // HU-0016 (A-3): el tema y el tamaño del texto van en <html>, antes de pintar, para que los hereden también
+  // los menús, diálogos y tooltips que Radix pinta en `body`. `body` sigue transparente (ventana de Windows).
+  useLayoutEffect(() => {
+    const root = document.documentElement;
+    root.classList.add(`theme-${resolvedTheme}`);
+    root.dataset.sessionText = sessionTextSize;
+    return () => {
+      root.classList.remove(`theme-${resolvedTheme}`);
+      delete root.dataset.sessionText;
+    };
+  }, [resolvedTheme, sessionTextSize]);
+
   const value = useMemo<AppearanceContextValue>(
     () => ({ preferences: appearance, setPreferences: setAppearance, resolvedTheme }),
     [appearance, resolvedTheme],

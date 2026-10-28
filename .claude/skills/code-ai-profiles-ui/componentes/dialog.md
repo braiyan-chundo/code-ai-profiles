@@ -80,7 +80,7 @@ Abierto o cerrado (`open`/`onOpenChange` o con trigger). Contenido largo: el cue
 
 ## Accesibilidad
 
-`DialogTitle` y `DialogDescription` son obligatorios para lectores de pantalla (si no se ven, con `sr-only`). Foco atrapado y Escape cierra. El botón de cierre trae `sr-only` en inglés ("Close").
+`DialogTitle` y `DialogDescription` son obligatorios para lectores de pantalla (si no se ven, con `sr-only`). Foco atrapado y Escape cierra. El botón de cierre trae `sr-only` «Cerrar» (ajuste 2).
 
 ## Tokens que usa
 
@@ -93,10 +93,13 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 Ajuste 1 (velo): `bg-black/10 … backdrop-blur-xs` pasa a `bg-overlay … backdrop-blur-[18px]`, el velo de `.modal-backdrop`.
 
+Ajuste 2 (HU-0016, A-4): `Close` → `Cerrar` en el `sr-only` de la X de `DialogContent` y en el botón de
+`DialogFooter showCloseButton`.
+
 ## Qué no hacer
 
 - No abrir un diálogo dentro de otro.
-- El portal va a `body`: en la app, `.theme-light` está en `.desktop-shell` (R-5), así que hará falta `container` o la clase en `<html>`.
+- No darle un `container` dentro del shell: el portal va a `body` y hereda el tema de `<html>` (HU-0016, A-3).
 - No regenerar con `pnpm exec shadcn add dialog --overwrite`: es código propio y se perderían los ajustes.
 
 ## En el showcase

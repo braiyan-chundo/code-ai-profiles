@@ -82,6 +82,8 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 Ajuste 1 (velo): `bg-black/10 … backdrop-blur-xs` pasa a `bg-overlay … backdrop-blur-[18px]`, el velo de `.modal-backdrop`.
 
+Ajuste 2 (HU-0016, A-4): `Close` → `Cerrar` en el `sr-only` de la X de `SheetContent`.
+
 ## Qué no hacer
 
 - No usarlo como navegación permanente: es `Sidebar`.

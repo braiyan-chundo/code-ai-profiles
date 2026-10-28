@@ -11,4 +11,5 @@ export {
   type AppTheme,
   type ResolvedTheme,
   type SessionTextSize,
+  type SidebarState,
 } from "./appearance-preferences";

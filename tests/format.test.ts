@@ -3,6 +3,7 @@ import test from "node:test";
 import { friendlyError } from "../src/lib/errors.ts";
 import { formatBytes, formatCaptureTime } from "../src/lib/format.ts";
 import { resolveRuntimePlatform, shortcutModifierLabel } from "../src/lib/platform.ts";
+import { isWebviewSupported, UNSUPPORTED_WEBVIEW_MESSAGE, type CssSupports } from "../src/lib/webview-support.ts";
 import {
   formatModelName,
   formatSessionTime,
@@ -106,4 +107,25 @@ test("shortcutModifierLabel: ⌘ en Mac y Ctrl en el resto", () => {
   assert.equal(shortcutModifierLabel("MacIntel"), "⌘");
   assert.equal(shortcutModifierLabel("Win32"), "Ctrl");
   assert.equal(shortcutModifierLabel("Linux aarch64"), "Ctrl");
+});
+
+test("isWebviewSupported: hacen falta las capas en cascada y color-mix (A-16)", () => {
+  const LayerRule = class {};
+  const queries: Array<[string, string]> = [];
+  const css = (colorMix: boolean): CssSupports => ({
+    supports: (property, value) => {
+      queries.push([property, value]);
+      return colorMix && value.startsWith("color-mix(");
+    },
+  });
+  assert.equal(isWebviewSupported(css(true), LayerRule), true, "los dos presentes");
+  assert.deepEqual(queries[0], ["color", "color-mix(in srgb, red, red)"]);
+  assert.equal(isWebviewSupported(css(true), undefined), false, "sin capas");
+  assert.equal(isWebviewSupported(css(false), LayerRule), false, "sin color-mix");
+  assert.equal(isWebviewSupported(css(false), undefined), false, "sin ninguno");
+  assert.equal(isWebviewSupported(undefined, LayerRule), false, "sin CSS");
+  const throwing: CssSupports = { supports: () => { throw new SyntaxError("bad"); } };
+  assert.equal(isWebviewSupported(throwing, LayerRule), false, "si CSS.supports lanza");
+  assert.match(UNSUPPORTED_WEBVIEW_MESSAGE, /libwebkit2gtk-4\.1-0 a 2\.40/);
+  assert.doesNotMatch(UNSUPPORTED_WEBVIEW_MESSAGE, /https?:/, "sin enlaces");
 });

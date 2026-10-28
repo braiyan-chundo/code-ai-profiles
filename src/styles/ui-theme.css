@@ -1,7 +1,7 @@
 /*
- * Puente shadcn -> tokens de la app (HU-0014). Solo lo importa src/showcase/showcase.css:
- * index.css NO lo importa, así que la app no lo carga. Los valores de shadcn salen de los tokens
- * de base.css y theme-light.css; lo que la app no tiene como token va como --ui-* (A-4).
+ * Puente shadcn -> tokens de la app (HU-0014). Lo importan src/styles/index.css (la app, desde HU-0016) y
+ * src/showcase/showcase.css. Los valores de shadcn salen de los tokens de base.css y theme-light.css; lo que la
+ * app no tiene como token va como --ui-* (A-4). El tema va en <html> (HU-0016, A-3), así que los portales lo heredan.
  * No se declaran --primary ni --muted (A-3): ya son tokens de la app y significan otra cosa
  * (--muted es un color de texto aquí y un fondo en shadcn); se mapean en @theme inline.
  */
