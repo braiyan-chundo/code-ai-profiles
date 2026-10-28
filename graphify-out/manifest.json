@@ -135,8 +135,8 @@
     "semantic_hash": ""
   },
   "docs/actualizaciones.document.md": {
-    "mtime": 1792815400.376967,
-    "ast_hash": "54f673ae03582635c50792b45f45d0de",
+    "mtime": 1793217145.2066343,
+    "ast_hash": "1065b4267b69e930acb6e41a9b4cfe1f",
     "semantic_hash": ""
   },
   "docs/sesiones.document.md": {
@@ -330,7 +330,7 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793216687.6594446,
+    "mtime": 1793217285.7978923,
     "ast_hash": "93eae92323311a4a9cd38d1b10bcb2f3",
     "semantic_hash": ""
   },
@@ -510,8 +510,8 @@
     "semantic_hash": ""
   },
   "tests/result-messages.test.ts": {
-    "mtime": 1793215632.7953997,
-    "ast_hash": "c1f2668294c7a9387c759e65e29a6449",
+    "mtime": 1793217110.0346742,
+    "ast_hash": "90b434f9a9e7c1d0d832772e81a6e602",
     "semantic_hash": ""
   },
   "src/components/EmptyState.tsx": {
@@ -1645,8 +1645,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/seguimiento.md": {
-    "mtime": 1793216687.6586978,
-    "ast_hash": "90775ef8a14a44debd65b488c5926de4",
+    "mtime": 1793217285.797127,
+    "ast_hash": "d5c2e7ea2de9e7be61b0bc77836867e3",
     "semantic_hash": ""
   },
   "docs/arquitectura/backend.md": {
@@ -1680,8 +1680,8 @@
     "semantic_hash": ""
   },
   "src-tauri/src/original_update.rs": {
-    "mtime": 1793215140.9088402,
-    "ast_hash": "f607142496acc9a212178d17ae1d60b3",
+    "mtime": 1793217026.5904818,
+    "ast_hash": "69c96f722971baff0054f807137d0e0c",
     "semantic_hash": ""
   },
   "src/features/updates/OriginalInstallPanel.tsx": {
@@ -1690,8 +1690,8 @@
     "semantic_hash": ""
   },
   "src/features/updates/original-install.ts": {
-    "mtime": 1793215632.7948294,
-    "ast_hash": "7fce445da7efa31a73245d756b7851a1",
+    "mtime": 1793217246.0166686,
+    "ast_hash": "9d1a39379a5081d18adf9b1b27ba1b99",
     "semantic_hash": ""
   },
   "src/features/updates/usePendingSynchronization.ts": {
