@@ -20,7 +20,7 @@
 .theme-light .original-app-card { background: linear-gradient(120deg, rgba(255, 253, 251, 0.95), rgba(235, 228, 223, 0.95)); border-color: rgba(155, 85, 65, 0.2); box-shadow: 0 15px 34px rgba(83, 58, 48, 0.09), inset 0 1px rgba(255, 255, 255, 0.8); }
 .theme-light .original-symbol, .theme-light .instance-symbol { color: #a55f4d; background: linear-gradient(145deg, rgba(185, 103, 80, 0.09), rgba(255, 255, 255, 0.6)); border-color: rgba(124, 82, 69, 0.17); box-shadow: inset 0 1px rgba(255, 255, 255, 0.75), 0 12px 28px rgba(89, 62, 52, 0.1); }
 .theme-light .original-symbol > span, .theme-light .symbol-status { border-color: #f1ebe6; }
-.theme-light .original-identity h2, .theme-light .instance-identity h2, .theme-light .empty-state h2 { color: #322c29; }
+.theme-light .original-identity h2, .theme-light .instance-identity h2 { color: #322c29; }
 .theme-light .original-identity > div > span, .theme-light .path, .theme-light .version { color: #776c67; }
 .theme-light .original-summary-metrics > div { background: rgba(75, 54, 46, 0.045); border-color: rgba(75, 54, 46, 0.1); }
 .theme-light .original-summary-metrics small { color: #7e736e; }
@@ -74,7 +74,6 @@
 .theme-light .original-update-boundary { color: #52725a; background: rgba(65, 118, 77, 0.06); border-color: rgba(65, 118, 77, 0.15); }
 .theme-light .original-update-next-step { color: #a35d48; background: rgba(75, 54, 46, 0.035); border-color: rgba(75, 54, 46, 0.11); }
 .theme-light .update-profile-note, .theme-light .transfer-warning { color: #675e59; background: rgba(75, 54, 46, 0.035); border-color: rgba(75, 54, 46, 0.11); }
-.theme-light .empty-state p { color: #786e69; }
 .theme-light .update-banner, .theme-light .source-update-banner { color: #645a56; background: rgba(250, 246, 242, 0.96); border-color: rgba(156, 83, 61, 0.17); box-shadow: 0 10px 25px rgba(76, 54, 45, 0.1); }
 .theme-light .scan-progress-actions button { color: #6e5a53; background: rgba(75, 54, 46, 0.045); border-color: rgba(75, 54, 46, 0.12); }
 .theme-light .scan-progress-actions button:hover { color: #3d302c; background: rgba(75, 54, 46, 0.08); }
