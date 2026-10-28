@@ -54,6 +54,8 @@ pnpm install --frozen-lockfile
 pnpm tauri dev
 ```
 
+El catálogo de componentes (shadcn/ui con el tema de la app) se ve en local con `pnpm dev`, en `http://127.0.0.1:1420/showcase.html`. No entra en el build ni en los instaladores.
+
 Verifica el frontend y las pruebas de Rust:
 
 ```bash

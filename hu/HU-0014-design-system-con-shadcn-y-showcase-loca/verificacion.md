@@ -79,4 +79,8 @@ Regresión: la app en `/` y en escritorio sin cambios visibles.
 
 ## Veredicto
 
-Pendiente de la persona.
+2026-10-28 · Braiyan Rodriguez (mantenedor), tras revisar `/showcase.html` con `pnpm dev`:
+
+> «Aprobado, cierra»
+
+**Aprobada.** Las ★ quedan como estaban, incluidos el botón principal con texto blanco y el catálogo completo.

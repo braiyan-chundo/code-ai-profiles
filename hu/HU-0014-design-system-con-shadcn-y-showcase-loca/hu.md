@@ -1,8 +1,8 @@
 ---
 id: HU-0014
 titulo: "Design system con shadcn y showcase local"
-estado: en-proceso
-fase: verificacion
+estado: terminada
+fase: cierre
 area: interfaz
 entrega: 1
 prioridad: media
@@ -134,23 +134,36 @@ claro. Esa es una apreciación visual que solo hace la persona.
 
 ## Definición de Terminado
 
-- [ ] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
-- [ ] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
-- [ ] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
-- [ ] Revisión técnica pasada, si la historia es riesgosa
-- [ ] La persona probó y aprobó; su veredicto está en `verificacion.md`
-- [ ] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
-- [ ] Commits en cada repo tocado con `HU: HU-0014`. **Sin push, sin publicar, sin desplegar**
-- [ ] Lo que solo comprueba una persona, declarado como pendiente humano
+- [x] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
+- [x] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
+- [x] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
+- [x] Revisión técnica pasada, si la historia es riesgosa
+- [x] La persona probó y aprobó; su veredicto está en `verificacion.md`
+- [x] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
+- [x] Commits en cada repo tocado con `HU: HU-0014`. **Sin push, sin publicar, sin desplegar**
+- [x] Lo que solo comprueba una persona, declarado como pendiente humano
 
 ## Cierre
 
-Fecha, quién cerró y sobre qué veredicto.
+2026-10-28, cerrada por el orquestador sobre el veredicto «Aprobado, cierra» de Braiyan Rodriguez.
 
-SHA por repositorio, con una línea de qué hace cada uno:
+SHA por repositorio, con una línea de qué hace cada uno (code-ai-profiles, rama `hu-0014-design-system`):
+- `f78dc4e`: Tailwind 4 y shadcn solo en `pnpm dev`, alias `@/`, `components.json` y la entrada `showcase.html`.
+- `24d0ef5`, `ce5dc92`: 63 componentes en `src/components/ui` y el tema `src/styles/ui-theme.css`.
+- `252b843`: el showcase.
+- `f0ac287`, `da8012b`: skill `code-ai-profiles-ui` con 63 fichas; reglas y skill de frontend.
+- `b70217d`, `283649f`: `test:ui` y la guarda de `dist/` en CI (R-1).
+- `aaf5602`, `2de3ff4`, `0dc0a6d`, `232d325` y el de cierre: historia, arquitectura, comandos del método, revisión técnica, verificación, CHANGELOG, README y guías de diseño.
 
-★ aceptadas tal como estaban:
+★ aceptadas tal como estaban: D-1 a D-5, más el botón principal con texto blanco (3,0:1) y el catálogo completo de 63 componentes.
 
 Pendientes humanos (nadie los vio; no se dan por hechos):
+- Hover, foco y teclado dentro de las superposiciones, y `prefers-reduced-motion`.
+- El showcase dentro de `pnpm tauri dev` y en Windows y Linux; `test:ui` no se ha corrido en Windows.
 
-Deuda declarada:
+Deuda declarada (de la revisión técnica, para la historia que adopte el catálogo en la app):
+- Tailwind en la app: preflight, base de navegadores frente al WebKit de macOS 12 y Ubuntu 22.04 (R-6), y el tema claro en las superposiciones, que Radix pinta en `body`.
+- `sidebar` guarda la cookie `sidebar_state` y registra Cmd/Ctrl+B global (R-5): quitarlo o justificarlo al adoptarlo.
+- CI instala 569 paquetes (357 MB) frente a 136 (R-4).
+- `pnpm tauri dev` preempaqueta también las dependencias del showcase (R-3).
+- R-7 (sacar `src/showcase/sections/` del grafo), R-8 (`cn` importado del paquete) y R-9 (`@import url(x)` sin comillas en `test:ui`).
