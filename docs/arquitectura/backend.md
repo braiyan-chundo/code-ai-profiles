@@ -31,7 +31,11 @@ Hay dos salidas, y ninguna lleva cookies, credenciales ni identificadores (el `d
 | Destino | Cuándo | Límites |
 | --- | --- | --- |
 | Feed oficial (`CAP_UPDATE_FEED_URL`) | Comprobación de versión (caché de 6 h) y antes de instalar | 5 s, sin redirecciones, 256 KiB |
-| Host del paquete (`CAP_UPDATE_DOWNLOAD_HOSTS`) | Solo cuando la persona pulsa «Descargar e instalar» | `https`, host exacto, hasta 3 redirecciones a hosts permitidos, `size` del feed como tope, 15 s de conexión, 60 s sin bytes, 30 min en total, cancelable |
+| Host del paquete (`CAP_UPDATE_DOWNLOAD_HOSTS`) | Solo cuando la persona pulsa «Descargar e instalar» | `https_only`, host exacto, sin `Referer`, hasta 3 redirecciones a hosts permitidos, `size` del feed como tope (lee `size + 1` como mucho), 15 s de conexión, 60 s sin bytes, 30 min en total, cancelable |
+
+En `reqwest::blocking` 0.13, `ClientBuilder::timeout` se aplica a la espera de la respuesta y a **cada lectura**
+por separado (`blocking/response.rs`, `impl Read`). Por eso funciona como plazo «sin bytes». El plazo total lo
+vigila el bucle de `stream_to_file`.
 
 Una salida nueva necesita una historia y el sí del mantenedor.
 
@@ -39,16 +43,26 @@ Una salida nueva necesita una historia y el sí del mantenedor.
 
 Es la única excepción a «la original no se toca», y solo por la acción explícita de la persona:
 
-- Antes de tocar nada se verifica el paquete: tamaño, `sha256`, zip sin rutas que escapen, symlinks internos,
-  *designated requirement* y TeamIdentifier de la instalada, Gatekeeper, bundle id y versión.
-- El preparado se hace en `<padre>/.code-ai-profiles-original-<uuid>/` (modo `0700`, en el mismo volumen). El
-  intercambio usa `renamex_np(RENAME_SWAP)`; si el volumen no lo admite, dos `rename` con `previous/`. La nueva se
-  valida después y, si falla, se vuelve a la anterior.
+- Antes de tocar nada se verifica la instalada y el paquete:
+  - La instalada: `codesign --verify --deep --strict`, TeamIdentifier presente y *designated requirement*
+    explícito. Una firma ad hoc (`# designated => cdhash …`) se rechaza.
+  - El paquete: tamaño, `sha256`, `zipinfo -1`/`-t` (una raíz `<X>.app/`, sin `..` ni rutas absolutas, ≤ 100 000
+    entradas, descomprimido ≤ min(8·size, 4 GiB)), `ditto -x -k`, symlinks relativos e internos, sin archivos
+    especiales, `-R=<requisito de la instalada>` con `--deep`, mismo TeamIdentifier, Gatekeeper, bundle id y versión.
+- El preparado se hace en `<padre>/.code-ai-profiles-original-<uuid>/` (modo `0700`, en el mismo volumen), con un
+  cerrojo `.lock` (`fs2`). El paquete se descarga en `<app_data>/original-update/<uuid>/`, también con su cerrojo.
+- El intercambio usa `renamex_np(RENAME_SWAP)`. Si el volumen no lo admite (`ENOTSUP`/`EINVAL`), se hacen dos
+  `rename` con la anterior en `previous/`, y lo rechazado va a `failed/`. La nueva se valida en su sitio con
+  `codesign --verify --strict -R=<requisito>`, versión y bundle id; si falla, se vuelve a la anterior.
+- Si también falla la vuelta atrás, se escribe la marca `rollback-failed` y la carpeta se conserva entera: ni la
+  limpieza ni la recuperación la tocan. El mensaje dice dónde está la anterior.
 - Nunca se pide privilegio. Una original de otro usuario o del sistema se rechaza.
 - Con un proceso cuyo ejecutable está dentro del bundle no se instala. Se comprueba de nuevo justo antes del
   intercambio, dentro de `with_registry_operation`.
-- Los temporales se borran siempre. `recover_original_update_leftovers` corre en `setup`: devuelve `previous/` si
-  falta la original y solo toca directorios propios con ese prefijo exacto.
+- Los temporales se borran siempre (`Drop`). `recover_original_update_leftovers` corre en `setup` y al empezar cada
+  instalación. Solo toca directorios del usuario actual, que no sean symlinks, con el nombre exacto
+  (`.code-ai-profiles-original-<uuid en minúsculas>` o `<uuid>` en las descargas) y cuyo cerrojo nadie tenga.
+  Devuelve `previous/` si falta la original. Si no puede devolverla, no borra nada.
 - Una sola operación a la vez. Mientras dura, el handoff «Actualizar original» la rechaza.
 
 ## Progreso hacia la interfaz

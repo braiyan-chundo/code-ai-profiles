@@ -194,8 +194,9 @@ original en curso.». El handoff `update_original_application` también lo recha
   `useBackgroundRefresh`. No registra listeners de ventana (R-1 intacta). Reacciona a cambios del store: con
   `!loading`, `busy === null`, `originalInstall === null` y un vuelo propio libre, calcula con una función pura
   `pendingSyncPlan(pendingSyncIds, dashboard)` → `{ ready, drop }`:
-  `ready` = pendientes `stopped` que siguen en `staleInstanceIds`; `drop` = las que ya no existen o ya no están
-  por detrás. Quita `drop`. Si hay `ready`, `latestSource` y `canSynchronizeManaged`: `busy =
+  `ready` = pendientes `stopped` que siguen en `staleInstanceIds`; `drop` = las que ya no existen o, **solo si la
+  topología tiene fuente** (`latestSource !== null`), ya no están por detrás; sin fuente (p. ej. la original abierta)
+  esperan (corrección de la revisión técnica, R-1). Quita `drop`. Si hay `ready`, `latestSource` y `canSynchronizeManaged`: `busy =
   "update-applications"`, `bridge.synchronizeApplications`, `replaceDashboard`, aviso con
   `summarizeSynchronization` («Sincronización pendiente: …») y quita `ready` del pendiente **pase lo que pase**
   (una que falla no reintenta en bucle; queda en «Sincronizar instancias»).
@@ -299,4 +300,5 @@ Verificación de cierre: `pnpm build`, `cargo test --manifest-path src-tauri/Car
 
 ## Revisión técnica
 
-Pendiente (después de implementar, antes de la prueba humana).
+`revision-tecnica.md` · 2026-10-28 · SHA `bf52878` · **PASS** sin bloqueos; R-1 (olvido de pendientes con la
+original abierta) conviene corregirla antes de la prueba humana; R-2…R-10 son observaciones.

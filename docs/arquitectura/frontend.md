@@ -62,7 +62,8 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 
 - `app/` puede importar todo. Nada importa de `app/`.
 - Una feature importa de otra **solo por su `index.ts`** y nunca en ciclo. Hoy: `instances` y
-  `original-app` usan `sessions`; `scan`, `updates`, `instances` y `sessions` usan `dashboard`; `appearance` no
+  `original-app` usan `sessions`; `original-app` usa además el tipo `OriginalInstallAvailability` de `updates`
+  (HU-0017, solo `import type`); `scan`, `updates`, `instances` y `sessions` usan `dashboard`; `appearance` no
   importa ninguna.
 - Dentro de una feature, imports relativos directos (no a través de su propio `index.ts`).
 - `components/` no conoce el dominio: recibe props, no usa `useDashboard`.
@@ -127,6 +128,9 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 - **Instalación de la original (HU-0017).** El store guarda también `originalInstall` (el último progreso, o `null`)
   y `pendingSyncIds` (las instancias que estaban en marcha al instalar). Ninguno de los dos es persistente: al
   cerrar la app, una pendiente vuelve a ser una instancia por detrás, como cualquier otra.
+  `installOriginal` pone `busy = "install-original"` durante todo el flujo, y deja de pintar el progreso del
+  `Channel` en cuanto llega la respuesta. La barra sin medida es `Progress` con `value=100` y `animate-pulse`. La
+  acción no tiene diálogo: el botón ya es la confirmación.
 - **Operación en curso.** `busy` es una clave (`scan`, `create`, `update`, `launch:<id>`, `stop:<id>`,
   `delete:<id>`, `transfer:<sessionId>`, `unlink:<sessionId>`, `update-applications`, `update-original`,
   `install-original`) que
