@@ -72,11 +72,14 @@ export function Ejemplo() {
 
 ## Variantes y tamaños
 
-`DialogContent` `showCloseButton` (por defecto, con X). Piezas: `DialogHeader`, `DialogFooter`, `DialogTitle`, `DialogDescription`, `DialogClose`.
+`DialogContent` `showCloseButton` (por defecto, con X) y `closeDisabled` (deshabilita la X mientras corre la operación;
+ajuste 3). Piezas: `DialogHeader`, `DialogFooter`, `DialogTitle`, `DialogDescription`, `DialogClose`.
 
 ## Estados
 
-Abierto o cerrado (`open`/`onOpenChange` o con trigger). Contenido largo: el cuerpo hace scroll.
+Abierto o cerrado (`open`/`onOpenChange` o con trigger). Contenido largo: `DialogContent` hace scroll dentro de la
+ventana (ajuste 3). Con una operación en curso, la app lo monta con `open` fijo y un `onOpenChange` que no cierra si hay
+`busy`: así Escape, la X y el clic fuera quedan guardados igual que «Cancelar» (HU-0016, A-12).
 
 ## Accesibilidad
 
@@ -95,6 +98,12 @@ Ajuste 1 (velo): `bg-black/10 … backdrop-blur-xs` pasa a `bg-overlay … backd
 
 Ajuste 2 (HU-0016, A-4): `Close` → `Cerrar` en el `sr-only` de la X de `DialogContent` y en el botón de
 `DialogFooter showCloseButton`.
+
+Ajuste 3 (HU-0016, A-12): el aspecto del modal de la app. `DialogContent` pasa de `rounded-xl p-6 sm:max-w-md` a
+`rounded-3xl p-7 sm:max-w-[580px]` (radio 26, relleno 28 y ancho 580 del antiguo `.modal-card`) y gana
+`max-h-[calc(100%-2rem)] overflow-y-auto`, para que un diálogo largo quepa en 980×680. Prop nueva `closeDisabled`, que
+deshabilita la X. `DialogTitle` pasa de `leading-none font-medium` a `text-[22px] leading-tight font-semibold
+tracking-[-0.035em]` y `DialogDescription`, de `text-sm` a `text-xs` (los del antiguo `.modal-header`).
 
 ## Qué no hacer
 

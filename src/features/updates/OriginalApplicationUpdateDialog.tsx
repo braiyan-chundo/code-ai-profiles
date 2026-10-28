@@ -1,6 +1,9 @@
 import type { DashboardState } from "../../types";
-import { HardDriveIcon, RefreshIcon, SparklesIcon } from "../../components/Icons";
-import { ModalFrame } from "../../components/ModalFrame";
+import { HardDriveIcon, RefreshCwIcon, SparklesIcon } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert";
+import { Button } from "../../components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../components/ui/dialog";
+import { Spinner } from "../../components/ui/spinner";
 import { originalUpdateChannel } from "./original-update-channel";
 
 export function OriginalApplicationUpdateDialog({
@@ -21,42 +24,50 @@ export function OriginalApplicationUpdateDialog({
   const platformDetails = originalUpdateChannel(platform, appName);
 
   return (
-    <ModalFrame
-      title={`Actualizar ${appName}`}
-      subtitle={`Versión actual ${version ?? "no disponible"} · ${platformDetails.label}`}
-      onClose={busy ? () => undefined : onClose}
-      closeDisabled={busy}
-    >
-      <div className="original-update-summary">
-        <span><RefreshIcon size={21} /></span>
-        <div>
-          <small>CANAL OFICIAL</small>
-          <strong>{platformDetails.channel}</strong>
-          <p>{platformDetails.handoff}</p>
+    <Dialog open onOpenChange={(open) => { if (!open && !busy) onClose(); }}>
+      <DialogContent aria-busy={busy} closeDisabled={busy}>
+        <DialogHeader>
+          <DialogTitle className="pr-8 break-words">Actualizar {appName}</DialogTitle>
+          <DialogDescription>Versión actual {version ?? "no disponible"} · {platformDetails.label}</DialogDescription>
+        </DialogHeader>
+
+        <div className="grid gap-3">
+          <div className="flex items-start gap-3.5 rounded-xl border border-primary/15 bg-primary/5 p-4">
+            <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary-text">
+              <RefreshCwIcon className="size-5" />
+            </span>
+            <div className="grid min-w-0 gap-1">
+              <small className="font-mono text-[9px] font-semibold tracking-[0.1em] text-muted-foreground uppercase">Canal oficial</small>
+              <strong className="text-[13px] font-semibold">{platformDetails.channel}</strong>
+              <p className="text-[11px] leading-relaxed text-muted-foreground">{platformDetails.handoff}</p>
+            </div>
+          </div>
+
+          <Alert className="border-success/25 bg-success/5 text-success">
+            <HardDriveIcon />
+            <AlertTitle className="text-xs">Tus perfiles y sesiones no se tocan</AlertTitle>
+            <AlertDescription className="text-[11px] leading-relaxed">
+              Esta acción no escribe ni sustituye instancias administradas. Solo entrega la original al actualizador, descarga o documentación oficial de la plataforma.
+            </AlertDescription>
+          </Alert>
+
+          <Alert className="text-primary-text">
+            <SparklesIcon />
+            <AlertDescription className="text-[11px] leading-relaxed">
+              Cuando vuelvas a esta ventana, se refrescarán únicamente las versiones y su topología. No se iniciará un escaneo manual ni se consultarán sesiones.
+            </AlertDescription>
+          </Alert>
         </div>
-      </div>
 
-      <div className="original-update-boundary">
-        <HardDriveIcon size={19} />
-        <div>
-          <strong>Tus perfiles y sesiones no se tocan</strong>
-        <p>Esta acción no escribe ni sustituye instancias administradas. Solo entrega la original al actualizador, descarga o documentación oficial de la plataforma.</p>
-        </div>
-      </div>
-
-      <div className="original-update-next-step">
-        <SparklesIcon size={18} />
-        <p>Cuando vuelvas a esta ventana, se refrescarán únicamente las versiones y su topología. No se iniciará un escaneo manual ni se consultarán sesiones.</p>
-      </div>
-
-      <div className="modal-actions original-update-actions">
-        <button className="secondary-button" onClick={onClose} disabled={busy}>Cancelar</button>
-        <button className="primary-action modal-primary" onClick={() => void onConfirm()} disabled={busy}>
-          {busy
-            ? <><RefreshIcon className="spin" size={17} /> Abriendo canal oficial…</>
-            : <><RefreshIcon size={17} /> {platformDetails.action}</>}
-        </button>
-      </div>
-    </ModalFrame>
+        <DialogFooter>
+          <Button variant="outline" size="lg" onClick={onClose} disabled={busy}>Cancelar</Button>
+          <Button size="lg" className="min-w-36" onClick={() => void onConfirm()} disabled={busy}>
+            {busy
+              ? <><Spinner aria-hidden="true" /> Abriendo canal oficial…</>
+              : <><RefreshCwIcon /> {platformDetails.action}</>}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

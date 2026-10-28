@@ -1,4 +1,5 @@
-:root {
+:root,
+.theme-dark {
   color: #e8e4e2;
   background: transparent;
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;

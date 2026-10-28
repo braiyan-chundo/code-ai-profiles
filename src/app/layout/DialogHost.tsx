@@ -11,8 +11,9 @@ import { ApplicationUpdateDialog, OriginalApplicationUpdateDialog, useUpdateActi
 import { useDialogs } from "../providers/dialogs-context";
 
 /**
- * Los diálogos, dentro de `.desktop-shell` y después de `<main>` (`.theme-light .modal-backdrop` lo necesita), en
- * este orden: apariencia, editor, borrar, transferir, desvincular, sincronizar y original.
+ * Los siete diálogos, montados con su bandera de `useDialogs()` y en este orden: apariencia, editor, borrar, transferir,
+ * desvincular, sincronizar y original. Son `Dialog` y `AlertDialog` del catálogo (HU-0016, A-12): su portal cuelga de
+ * `body` y toma el tema de `<html>` (A-3). Cada uno recibe su `busy`, que guarda Escape, la X y el clic fuera.
  */
 export function DialogHost() {
   const { dashboard: state, busy } = useDashboard();

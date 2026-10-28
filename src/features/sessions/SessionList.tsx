@@ -1,8 +1,10 @@
+import type { ComponentProps, ReactNode } from "react";
 import { ArrowRightLeftIcon, ClockIcon, TerminalSquareIcon, UnlinkIcon } from "lucide-react";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia } from "../../components/ui/empty";
 import { Item, ItemActions, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from "../../components/ui/item";
+import { cn } from "../../lib/utils";
 import type { CodeSession } from "../../types";
 import { SessionContextMeter } from "./SessionContextMeter";
 import { formatModelName, formatSessionTime } from "./session-format";
@@ -39,54 +41,69 @@ export function SessionList({
   return (
     <ItemGroup className="gap-2.5">
       {sessions.map((session) => (
-        <Item key={session.id} role="listitem" variant="outline" size="sm" title={session.title} className="flex-nowrap bg-(--surface-soft)">
-          <ItemMedia variant="icon" className="size-8 rounded-lg border border-border bg-muted text-muted-foreground">
-            <TerminalSquareIcon />
-          </ItemMedia>
-          <ItemContent className="min-w-0 gap-1.5">
-            <ItemTitle className="block max-w-full truncate text-(length:--session-title-size) font-semibold">
-              {session.title}
-            </ItemTitle>
-            <ItemDescription className="line-clamp-none flex flex-wrap items-center gap-x-1.5 font-mono text-(length:--session-meta-size)">
-              <span>{formatModelName(session.model)}</span>
-              <Separator />
-              <span>{session.completedTurns} {session.completedTurns === 1 ? "turno" : "turnos"}</span>
-              <Separator />
-              <span>{formatSessionTime(session.lastActivityAt)}</span>
-            </ItemDescription>
-            <SessionContextMeter session={session} />
-          </ItemContent>
-          <ItemActions className="shrink-0 gap-1.5 self-center">
-            {session.isArchived && <SessionBadge>Archivada</SessionBadge>}
-            {session.transfer && (
-              <SessionBadge tone={session.transfer.mode}>{session.transfer.mode === "move" ? "Movida" : "Copia"}</SessionBadge>
-            )}
+        <SessionItem key={session.id} session={session} role="listitem">
+          {session.isArchived && <SessionBadge>Archivada</SessionBadge>}
+          {session.transfer && (
+            <SessionBadge tone={session.transfer.mode}>{session.transfer.mode === "move" ? "Movida" : "Copia"}</SessionBadge>
+          )}
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            disabled={disabled}
+            onClick={() => onTransfer(session)}
+            title="Transferir sesión a otro perfil"
+            aria-label={`Transferir “${session.title}” a otro perfil`}
+          >
+            <ArrowRightLeftIcon />
+          </Button>
+          {session.transfer && (
             <Button
               variant="ghost"
               size="icon-sm"
               disabled={disabled}
-              onClick={() => onTransfer(session)}
-              title="Transferir sesión a otro perfil"
-              aria-label={`Transferir “${session.title}” a otro perfil`}
+              onClick={() => onUnlink(session)}
+              title={session.transfer.mode === "move" ? "Devolver a la instancia de origen" : "Desvincular esta copia"}
+              aria-label={session.transfer.mode === "move" ? `Devolver “${session.title}” a su origen` : `Desvincular copia de “${session.title}”`}
             >
-              <ArrowRightLeftIcon />
+              <UnlinkIcon />
             </Button>
-            {session.transfer && (
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                disabled={disabled}
-                onClick={() => onUnlink(session)}
-                title={session.transfer.mode === "move" ? "Devolver a la instancia de origen" : "Desvincular esta copia"}
-                aria-label={session.transfer.mode === "move" ? `Devolver “${session.title}” a su origen` : `Desvincular copia de “${session.title}”`}
-              >
-                <UnlinkIcon />
-              </Button>
-            )}
-          </ItemActions>
-        </Item>
+          )}
+        </SessionItem>
       ))}
     </ItemGroup>
+  );
+}
+
+/**
+ * Una sesión: título, modelo, turnos, actividad y contexto, con el tamaño de `--session-*`. `children` son sus
+ * acciones a la derecha. La usan `SessionList` y la vista previa de `AppearanceDialog`.
+ */
+export function SessionItem({
+  session,
+  children,
+  className,
+  ...props
+}: Omit<ComponentProps<typeof Item>, "children"> & { session: CodeSession; children?: ReactNode }) {
+  return (
+    <Item variant="outline" size="sm" title={session.title} className={cn("flex-nowrap bg-(--surface-soft)", className)} {...props}>
+      <ItemMedia variant="icon" className="size-8 rounded-lg border border-border bg-muted text-muted-foreground">
+        <TerminalSquareIcon />
+      </ItemMedia>
+      <ItemContent className="min-w-0 gap-1.5">
+        <ItemTitle className="block max-w-full truncate text-(length:--session-title-size) font-semibold">
+          {session.title}
+        </ItemTitle>
+        <ItemDescription className="line-clamp-none flex flex-wrap items-center gap-x-1.5 font-mono text-(length:--session-meta-size)">
+          <span>{formatModelName(session.model)}</span>
+          <Separator />
+          <span>{session.completedTurns} {session.completedTurns === 1 ? "turno" : "turnos"}</span>
+          <Separator />
+          <span>{formatSessionTime(session.lastActivityAt)}</span>
+        </ItemDescription>
+        <SessionContextMeter session={session} />
+      </ItemContent>
+      {children && <ItemActions className="shrink-0 gap-1.5 self-center">{children}</ItemActions>}
+    </Item>
   );
 }
 

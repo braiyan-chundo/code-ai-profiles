@@ -1,6 +1,91 @@
-import { CodeSessionIcon } from "../../components/Icons";
-import { ModalFrame } from "../../components/ModalFrame";
-import type { AppearancePreferences, AppTheme, SessionTextSize } from "./appearance-preferences";
+import { useState, type ReactNode } from "react";
+import { Button } from "../../components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../components/ui/dialog";
+import { Field, FieldContent, FieldDescription, FieldLabel, FieldLegend, FieldSet, FieldTitle } from "../../components/ui/field";
+import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
+import { cn } from "../../lib/utils";
+import type { CodeSession } from "../../types";
+import { SessionItem } from "../sessions";
+import type { AppearancePreferences, AppTheme, ResolvedTheme, SessionTextSize } from "./appearance-preferences";
+
+const THEMES: Array<{ value: AppTheme; label: string; description: string }> = [
+  { value: "system", label: "Sistema", description: "Sigue macOS, Windows o Linux" },
+  { value: "light", label: "Claro", description: "Mayor luminosidad" },
+  { value: "dark", label: "Oscuro", description: "Menor brillo" },
+];
+const SIZES: Array<{ value: SessionTextSize; label: string; sample: string }> = [
+  { value: "compact", label: "Compacto", sample: "text-[11px]" },
+  { value: "comfortable", label: "Cómodo", sample: "text-[15px]" },
+  { value: "large", label: "Grande", sample: "text-[19px]" },
+];
+
+/** Una sesión de ejemplo para la vista previa (contexto elevado): no sale de ningún perfil. La actividad es la de abrir el diálogo. */
+const PREVIEW_SESSION: CodeSession = {
+  id: "appearance-preview",
+  title: "Vista previa de una sesión",
+  model: "opus-4-8",
+  effort: null,
+  completedTurns: 24,
+  createdAt: null,
+  lastActivityAt: null,
+  isArchived: false,
+  contextTokens: 720_000,
+  contextWindowTokens: 1_000_000,
+  contextPercent: 72,
+};
+
+/** La tarjeta de una opción: el radio, su título y su descripción, con el borde y el tinte de la elegida. */
+function ChoiceCard({ id, value, title, description, children }: {
+  id: string;
+  value: string;
+  title: string;
+  description?: string;
+  children?: ReactNode;
+}) {
+  return (
+    <FieldLabel htmlFor={id} className="min-w-0 *:data-[slot=field]:p-2.5">
+      <Field orientation="horizontal" className="flex-wrap gap-2.5">
+        {children}
+        <RadioGroupItem value={value} id={id} />
+        <FieldContent className="min-w-0 gap-0.5">
+          <FieldTitle className="text-xs">{title}</FieldTitle>
+          {description && <FieldDescription className="truncate text-[11px]">{description}</FieldDescription>}
+        </FieldContent>
+      </Field>
+    </FieldLabel>
+  );
+}
+
+/**
+ * Una ventana en miniatura pintada con los tokens del tema que muestra: lleva su clase `theme-*`, así que no depende
+ * del tema activo ni usa colores sueltos.
+ */
+function ThemeSwatch({ theme, className }: { theme: ResolvedTheme; className?: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={cn(
+        `theme-${theme}`,
+        "grid h-[51px] w-full grid-cols-[14px_1fr] grid-rows-[9px_1fr] gap-1 rounded-[10px] border border-(--line-strong) bg-background p-[7px]",
+        className,
+      )}
+    >
+      <i className="row-span-2 rounded-[3px] bg-(--line-strong)" />
+      <i className="rounded-[3px] bg-primary" />
+      <i className="rounded-[3px] bg-(--line)" />
+    </span>
+  );
+}
+
+function ThemePreview({ theme }: { theme: AppTheme }) {
+  if (theme !== "system") return <ThemeSwatch theme={theme} />;
+  return (
+    <span className="relative block w-full">
+      <ThemeSwatch theme="light" />
+      <ThemeSwatch theme="dark" className="absolute inset-0 [clip-path:inset(0_0_0_50%)]" />
+    </span>
+  );
+}
 
 export function AppearanceDialog({
   preferences,
@@ -11,85 +96,57 @@ export function AppearanceDialog({
   onChange: (preferences: AppearancePreferences) => void;
   onClose: () => void;
 }) {
-  const themes: Array<{ value: AppTheme; label: string; description: string }> = [
-    { value: "system", label: "Sistema", description: "Sigue macOS, Windows o Linux" },
-    { value: "light", label: "Claro", description: "Mayor luminosidad" },
-    { value: "dark", label: "Oscuro", description: "Menor brillo" },
-  ];
-  const sizes: Array<{ value: SessionTextSize; label: string; sample: string }> = [
-    { value: "compact", label: "Compacto", sample: "Aa" },
-    { value: "comfortable", label: "Cómodo", sample: "Aa" },
-    { value: "large", label: "Grande", sample: "Aa" },
-  ];
-
+  const [previewSession] = useState<CodeSession>(() => ({ ...PREVIEW_SESSION, lastActivityAt: Date.now() }));
   return (
-    <ModalFrame
-      title="Apariencia"
-      subtitle="Personaliza la lectura de tus sesiones"
-      onClose={onClose}
-    >
-      <div className="appearance-settings">
-        <section className="appearance-section">
-          <div className="appearance-section-heading">
-            <strong>Tema</strong>
-            <span>Se aplica inmediatamente</span>
-          </div>
-          <div className="theme-options" role="radiogroup" aria-label="Tema de la aplicación">
-            {themes.map((theme) => (
-              <button
-                key={theme.value}
-                type="button"
-                className={`theme-option theme-preview-${theme.value} ${preferences.theme === theme.value ? "selected" : ""}`}
-                onClick={() => onChange({ ...preferences, theme: theme.value })}
-                role="radio"
-                aria-checked={preferences.theme === theme.value}
-              >
-                <span className="theme-swatch"><i /><i /><i /></span>
-                <span><strong>{theme.label}</strong><small>{theme.description}</small></span>
-              </button>
+    <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Apariencia</DialogTitle>
+          <DialogDescription>Personaliza la lectura de tus sesiones</DialogDescription>
+        </DialogHeader>
+
+        <FieldSet className="gap-3">
+          <FieldLegend variant="label" className="mb-0 flex w-full items-baseline justify-between gap-4">
+            Tema <span className="text-[11px] font-normal text-muted-foreground">Se aplica inmediatamente</span>
+          </FieldLegend>
+          <RadioGroup
+            aria-label="Tema de la aplicación"
+            value={preferences.theme}
+            onValueChange={(theme) => onChange({ ...preferences, theme: theme as AppTheme })}
+            className="grid-cols-3 gap-2"
+          >
+            {THEMES.map((theme) => (
+              <ChoiceCard key={theme.value} id={`appearance-theme-${theme.value}`} value={theme.value} title={theme.label} description={theme.description}>
+                <ThemePreview theme={theme.value} />
+              </ChoiceCard>
             ))}
-          </div>
-        </section>
+          </RadioGroup>
+        </FieldSet>
 
-        <section className="appearance-section">
-          <div className="appearance-section-heading">
-            <strong>Tamaño del texto de sesiones</strong>
-            <span>También amplía modelos y contexto</span>
-          </div>
-          <div className="text-size-options" role="radiogroup" aria-label="Tamaño del texto de las sesiones">
-            {sizes.map((size) => (
-              <button
-                key={size.value}
-                type="button"
-                className={`text-size-option size-${size.value} ${preferences.sessionTextSize === size.value ? "selected" : ""}`}
-                onClick={() => onChange({ ...preferences, sessionTextSize: size.value })}
-                role="radio"
-                aria-checked={preferences.sessionTextSize === size.value}
-              >
-                <span>{size.sample}</span>
-                <strong>{size.label}</strong>
-              </button>
+        <FieldSet className="gap-3">
+          <FieldLegend variant="label" className="mb-0 flex w-full items-baseline justify-between gap-4">
+            Tamaño del texto de sesiones <span className="text-[11px] font-normal text-muted-foreground">También amplía modelos y contexto</span>
+          </FieldLegend>
+          <RadioGroup
+            aria-label="Tamaño del texto de las sesiones"
+            value={preferences.sessionTextSize}
+            onValueChange={(size) => onChange({ ...preferences, sessionTextSize: size as SessionTextSize })}
+            className="grid-cols-3 gap-2"
+          >
+            {SIZES.map((size) => (
+              <ChoiceCard key={size.value} id={`appearance-size-${size.value}`} value={size.value} title={size.label}>
+                <span aria-hidden="true" className={cn("flex h-6 w-full items-center font-mono leading-none text-muted-foreground", size.sample)}>Aa</span>
+              </ChoiceCard>
             ))}
-          </div>
-        </section>
+          </RadioGroup>
+        </FieldSet>
 
-        <div className="appearance-preview" aria-label="Vista previa del texto de sesión">
-          <span className="session-index"><CodeSessionIcon size={14} /></span>
-          <div className="session-copy">
-            <strong>Vista previa de una sesión</strong>
-            <span>Opus 4.8 <i /> 24 turnos <i /> Ahora mismo</span>
-            <div className="session-context context-elevated">
-              <div className="session-context-heading"><span>640k de 1M</span><strong>64%</strong></div>
-              <div className="session-context-track"><span style={{ width: "64%" }} /></div>
-              <small>Contexto elevado</small>
-            </div>
-          </div>
-        </div>
+        <SessionItem session={previewSession} aria-label="Vista previa del texto de sesión" className="min-h-(--session-row-height)" />
 
-        <div className="modal-actions appearance-actions">
-          <button className="primary-action modal-primary" onClick={onClose}>Listo</button>
-        </div>
-      </div>
-    </ModalFrame>
+        <DialogFooter>
+          <Button size="lg" className="min-w-36" onClick={onClose}>Listo</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

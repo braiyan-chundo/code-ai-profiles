@@ -1,3 +1,0 @@
-.modal-actions { justify-content: flex-end; gap: 10px; margin-top: 7px; }
-.modal-actions .secondary-button, .modal-actions .primary-action, .modal-actions .destructive-button { min-height: 44px; border-radius: 14px; }
-.modal-primary { min-width: 145px; }

@@ -77,7 +77,9 @@ export function Ejemplo() {
 
 ## Estados
 
-No se cierra al pulsar fuera: solo con Cancelar, la acción o Escape.
+No se cierra al pulsar fuera: solo con Cancelar, la acción o Escape. `AlertDialogAction` cierra el diálogo al pulsarlo:
+si la confirmación es asíncrona y el diálogo debe seguir abierto con «Eliminando…», usa un `Button` normal y cierra al
+terminar (lo hacen `DeleteInstanceDialog` y `UnlinkSessionDialog`). Con `busy`, `onOpenChange` no cierra.
 
 ## Accesibilidad
 
@@ -93,6 +95,10 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 ## Diferencias con el registro
 
 Ajuste 1 (velo): `bg-black/10 … backdrop-blur-xs` pasa a `bg-overlay … backdrop-blur-[18px]`, el velo de `.modal-backdrop`.
+
+Ajuste 2 (HU-0016, A-12): el aspecto del modal de la app. `AlertDialogContent` pasa de `rounded-xl p-6` a
+`rounded-3xl p-7`, y `AlertDialogTitle`, de `text-lg font-medium` a `text-[22px] leading-tight font-semibold
+tracking-[-0.035em]`, como `DialogTitle`.
 
 ## Qué no hacer
 

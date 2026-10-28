@@ -1,5 +1,5 @@
 export { SessionContextMeter } from "./SessionContextMeter";
-export { SessionList } from "./SessionList";
+export { SessionItem, SessionList } from "./SessionList";
 export { SessionTransferDialog } from "./SessionTransferDialog";
 export { formatModelName, formatSessionTime, formatTokenCount, sessionContextLevel, type SessionContextLevel } from "./session-format";
 export { describeArtifactOutcome, transferNotice, unlinkDialogCopy, type UnlinkDialogCopy } from "./session-messages";

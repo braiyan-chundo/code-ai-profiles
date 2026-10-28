@@ -1,3 +1,0 @@
-.confirm-content { display: flex; align-items: flex-start; gap: 14px; margin: 4px 0 24px; padding: 16px; background: rgba(207, 70, 47, 0.075); border: 1px solid rgba(239, 126, 112, 0.12); border-radius: 16px; }
-.confirm-warning { display: grid; flex: 0 0 auto; width: 39px; height: 39px; place-items: center; color: #ef8879; background: rgba(239, 126, 112, 0.09); border-radius: 13px; }
-.confirm-content p { margin: 0; color: #aaa19e; font-size: 12px; line-height: 1.65; }
