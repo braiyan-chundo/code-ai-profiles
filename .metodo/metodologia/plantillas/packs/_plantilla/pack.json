@@ -1,0 +1,28 @@
+{
+  "$comentario": "Esqueleto para forjar un pack (packs.md §4). Se copia a packs/<nombre>/ y se renombra skills/_nombre/.",
+  "nombre": "<tipo>-<tecnologia>",
+  "tipo": "servidor | apps | persistencia | dominio | diseno | infra | observabilidad",
+  "roles": [
+    "backend",
+    "fullstack"
+  ],
+  "siempre": [
+    "backend",
+    "fullstack"
+  ],
+  "skills": [
+    "<tipo>-<tecnologia>"
+  ],
+  "comandos": {
+    "tipos": "<comando de tipos>",
+    "build": "<comando de build>",
+    "relacionadas": "<comando que corre solo las pruebas de {archivos}>",
+    "suite": "<comando de la suite, con reporter silencioso>"
+  },
+  "modulo-config": "<ruta del módulo de configuración que recomienda este stack>",
+  "fuentes": [
+    "<documentación oficial de la versión usada>"
+  ],
+  "version": "0.1.0",
+  "probado-en": []
+}

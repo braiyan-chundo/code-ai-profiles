@@ -64,7 +64,7 @@ cargo test --manifest-path src-tauri/Cargo.toml
 
 ## Versionado
 
-El repositorio usa Semantic Versioning y actualmente está en `0.2.1`. Para preparar una versión compatible, una funcionalidad o un cambio incompatible, ejecuta:
+El repositorio usa Semantic Versioning y actualmente está en `0.2.2`. Para preparar una versión compatible, una funcionalidad o un cambio incompatible, ejecuta:
 
 ```bash
 npm run release:version -- patch
@@ -78,7 +78,7 @@ npm run release:check
 
 ## Desarrollo asistido por IA y Graphify
 
-El repositorio incluye cuatro agentes de desarrollo: `architect`, `backend`, `frontend` y `document`. Sus instrucciones neutrales viven en [`.agents/roles/`](.agents/roles/README.md) y Codex dispone de adaptadores con modelos independientes en [`.codex/agents/`](.codex/agents/). Toda feature o fix requiere una HU única en [`docs/hu/`](docs/hu/index.md).
+El repositorio sigue la metodología agéntica v4 (perfil S) con tres agentes: `architect`, `backend` y `frontend`. La configuración vive en [`.metodo/config.json`](.metodo/config.json) y el contrato generado está en [`AGENTS.md`](AGENTS.md). Toda feature o fix es una historia en [`hu/`](hu/INDEX.md) y se trabaja con `/hu-new`, `/hu-work`, `/hu-close` y `/fix`. Las historias y los roles anteriores se archivaron en [`docs/archivo/previo/`](docs/archivo/previo/) ([ADR-0001](docs/decisiones/ADR-0001-adopcion-metodologia-v4.md)).
 
 Graphify mantiene un grafo local del código que debe consultarse antes del análisis y actualizarse al cerrar cada iteración. Instala la versión fijada por el proyecto y genera o actualiza sus artefactos:
 
@@ -93,7 +93,7 @@ Antes de enviar cambios, comprueba que el grafo versionado coincide con el códi
 npm run graph:check
 ```
 
-El grafo se extrae localmente mediante AST y no requiere claves ni envía el código a un modelo externo. Consulta [la documentación del flujo de agentes](docs/agents.document.md) y [la integración de Graphify](docs/graphify.document.md).
+El grafo se extrae localmente mediante AST y no requiere claves ni envía el código a un modelo externo. Consulta [la integración de Graphify](docs/graphify.document.md).
 
 ## Crear cada versión
 
@@ -121,7 +121,7 @@ src-tauri/target/release/bundle/macos/Code AI Profiles.app
 src-tauri/target/release/bundle/dmg/*.dmg
 ```
 
-La entrega local verificada de `0.2.1` para Apple Silicon es `src-tauri/target/release/bundle/dmg/Code AI Profiles_0.2.1_aarch64.dmg`. Pasó build, verificación del DMG y verificación estricta de la app; el binario es `arm64`. Está firmada ad-hoc y no está notarizada, por lo que macOS puede requerir clic derecho → **Abrir**. Este artefacto local no implica una publicación o GitHub Release.
+Como referencia histórica, la entrega local de Apple Silicon `0.2.1` fue verificada. La generación de `0.2.2` se realiza únicamente después de que el merge protegido llegue a `main`; la ruta esperada del DMG y la `.app`, su hash y su verificación se reportan junto con ese artefacto. Un paquete local puede estar firmado ad-hoc y no estar notarizado, por lo que macOS puede requerir clic derecho → **Abrir**. Un artefacto local no implica una publicación o GitHub Release.
 
 ### Windows x64
 
@@ -180,7 +180,7 @@ Code AI Profiles/
 - En Windows se copia el directorio de la aplicación y cada proceso recibe su propio directorio de datos.
 - En Linux se crea un lanzador hacia el binario instalado para conservar su sandbox y permitir que el gestor de paquetes actualice el ejecutable compartido.
 
-La actualización de la aplicación original y la sincronización de instancias son operaciones separadas. Code AI Profiles abre la descarga oficial en macOS/Windows o las instrucciones apt en Linux para que el usuario complete la actualización; nunca sobrescribe la original. Después del escaneo, una instalación gestionada válida que tenga la mayor versión puede sincronizar otras instancias detenidas sin tocar sus perfiles. En Linux, las instancias siguen el binario actualizado por el gestor de paquetes. Consulta [la guía de actualizaciones](docs/actualizaciones.document.md).
+La actualización de la aplicación original y la sincronización de instancias son operaciones separadas. En macOS, Code AI Profiles valida y abre exclusivamente la aplicación original; dentro de ella el usuario elige `Claude > Check for Updates`. En Windows abre la descarga oficial y en Linux las instrucciones apt. Nunca sobrescribe la original. Al volver del handoff, refresca únicamente versiones y topología, sin escaneo manual ni lectura de sesiones. Después, una instalación gestionada válida con la mayor versión puede sincronizar otras instancias detenidas sin tocar sus perfiles. Consulta [la guía de actualizaciones](docs/actualizaciones.document.md).
 
 ## Sesiones y contexto
 

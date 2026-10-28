@@ -1,0 +1,17 @@
+{
+  "nombre": "backend-nestjs",
+  "tipo": "servidor",
+  "roles": ["backend", "fullstack", "architect"],
+  "siempre": ["backend", "fullstack"],
+  "skills": ["backend-nestjs"],
+  "comandos": {
+    "tipos": "pnpm exec tsc --noEmit -p tsconfig.json",
+    "build": "pnpm build",
+    "relacionadas": "pnpm exec jest --findRelatedTests {archivos} --silent",
+    "suite": "pnpm exec jest --silent"
+  },
+  "modulo-config": "src/config/configuracion.ts",
+  "fuentes": ["https://docs.nestjs.com/", "https://docs.nestjs.com/openapi/introduction", "https://docs.nestjs.com/techniques/validation", "https://docs.nestjs.com/techniques/events", "https://docs.nestjs.com/websockets/gateways"],
+  "version": "0.1.0",
+  "probado-en": []
+}

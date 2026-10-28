@@ -1,7 +1,7 @@
 {
   "name": "code-ai-profiles",
   "private": true,
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 1420",
@@ -10,6 +10,7 @@
     "release:check": "node scripts/release-version.mjs --check",
     "test:release": "node --test scripts/release-version.test.mjs",
     "test:scan": "node --test tests/scan-controller.test.ts",
+    "test:update": "node --test tests/source-update-controller.test.ts",
     "graph:build": "node scripts/graphify.mjs build",
     "graph:update": "node scripts/graphify.mjs update",
     "graph:check": "node scripts/graphify.mjs check",

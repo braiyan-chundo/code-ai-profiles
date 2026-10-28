@@ -1,0 +1,38 @@
+{
+  "$comentario": "Plantilla de .metodo/entornos.json. Sin secretos: solo identificadores. La leen la guarda (entorno.mjs) y el agente devops. Ver entornos.md.",
+  "local": {
+    "hosts": [
+      "localhost",
+      "127.0.0.1",
+      "*.localhost",
+      "*.test"
+    ],
+    "env": ".env.local",
+    "servicios": {
+      "correo": "Mailpit en localhost:8025 (si hay correo)",
+      "base": "contenedor local"
+    }
+  },
+  "staging": {
+    "hosts": [],
+    "env": ".env.staging",
+    "nota": "Los agentes solo trabajan aquí cuando la persona nombra el host en el chat"
+  },
+  "produccion": {
+    "hosts": [],
+    "marcas": [
+      "sk_live_",
+      "pk_live_",
+      "rk_live_",
+      "whsec_live",
+      "AKIA",
+      "-----BEGIN PRIVATE KEY-----"
+    ],
+    "archivos": [
+      ".env.production",
+      ".env.prod",
+      ".env.production.local"
+    ],
+    "nota": "Ningún agente lee, usa ni apunta a nada de esta lista. Un host declarado cubre también sus subdominios. Las acciones contra producción las hace devops con autorización explícita, cada vez."
+  }
+}

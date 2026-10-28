@@ -1,13 +1,13 @@
 {
   "package.json": {
-    "mtime": 1791939021.4066067,
-    "ast_hash": "9abb3774410e13c3b9f212fd58db4a17",
-    "semantic_hash": ""
+    "mtime": 1793124076.1491957,
+    "ast_hash": "c5a361ee7a65aab6f52db79ce91a90b1",
+    "semantic_hash": "c5a361ee7a65aab6f52db79ce91a90b1"
   },
   "scripts/graphify.mjs": {
-    "mtime": 1786674898.1491435,
-    "ast_hash": "b25e54fbfbfab6b4a23a6cd6d6e546b5",
-    "semantic_hash": ""
+    "mtime": 1793150877.8991823,
+    "ast_hash": "01f39ce76920ced5efb70df6d22c2758",
+    "semantic_hash": "01f39ce76920ced5efb70df6d22c2758"
   },
   "src-tauri/build.rs": {
     "mtime": 1784433109.6357908,
@@ -20,9 +20,9 @@
     "semantic_hash": "dca85abae9a1b384a67b37f98b2f05ea"
   },
   "src-tauri/src/lib.rs": {
-    "mtime": 1791894359.7571666,
-    "ast_hash": "89511df7ddf9937c5c0d0ec80656b207",
-    "semantic_hash": ""
+    "mtime": 1792757615.576046,
+    "ast_hash": "0e41fc2e955fd8b3d525551cac5d0989",
+    "semantic_hash": "0e41fc2e955fd8b3d525551cac5d0989"
   },
   "src-tauri/src/main.rs": {
     "mtime": 1784574604.233991,
@@ -30,9 +30,9 @@
     "semantic_hash": "a85314b3cde4f5d5b64d48e0c7b18194"
   },
   "src-tauri/tauri.conf.json": {
-    "mtime": 1791939021.4077253,
-    "ast_hash": "5c41928001b34798e54eefd0bfdcc4d7",
-    "semantic_hash": ""
+    "mtime": 1793124076.150575,
+    "ast_hash": "9a79585a4ae996b808fbdbfe70a731fa",
+    "semantic_hash": "9a79585a4ae996b808fbdbfe70a731fa"
   },
   "src-tauri/tauri.linux.conf.json": {
     "mtime": 1784574604.455413,
@@ -45,9 +45,9 @@
     "semantic_hash": "4ef37201944f5f99cbc3aba02a781215"
   },
   "src/App.tsx": {
-    "mtime": 1791922723.7254794,
-    "ast_hash": "408e15ae6ddc14590ad34bff035b9ef2",
-    "semantic_hash": ""
+    "mtime": 1792781919.53882,
+    "ast_hash": "eccf4b7b904cf789ae15c6ab10639d33",
+    "semantic_hash": "eccf4b7b904cf789ae15c6ab10639d33"
   },
   "src/components/Icons.tsx": {
     "mtime": 1784516056.9907844,
@@ -55,9 +55,9 @@
     "semantic_hash": "51f16f9089a695e79d1d57e1428a0e13"
   },
   "src/lib/bridge.ts": {
-    "mtime": 1791894359.7577486,
-    "ast_hash": "edbe80eaf3621ee3ce56a68b79b5d709",
-    "semantic_hash": ""
+    "mtime": 1792757490.1674497,
+    "ast_hash": "4f27aa9635d84bb547a767f204d95840",
+    "semantic_hash": "4f27aa9635d84bb547a767f204d95840"
   },
   "src/main.tsx": {
     "mtime": 1784433949.908604,
@@ -65,9 +65,9 @@
     "semantic_hash": "6fbf89872396bfa844c1c92ae437a7a5"
   },
   "src/types.ts": {
-    "mtime": 1791894359.758358,
-    "ast_hash": "58416249e391f33d197c6964811167d6",
-    "semantic_hash": ""
+    "mtime": 1792757490.1393204,
+    "ast_hash": "68af02fca15a567927fd0c5e24ce1576",
+    "semantic_hash": "68af02fca15a567927fd0c5e24ce1576"
   },
   "src/vite-env.d.ts": {
     "mtime": 1784564730.9157422,
@@ -89,34 +89,9 @@
     "ast_hash": "86dd5498e8f4f9ab1c0c393c72433eeb",
     "semantic_hash": "86dd5498e8f4f9ab1c0c393c72433eeb"
   },
-  ".agents/roles/README.md": {
-    "mtime": 1786673650.491681,
-    "ast_hash": "6d56d0f469233c31499d1cc9474a2394",
-    "semantic_hash": ""
-  },
-  ".agents/roles/architect.md": {
-    "mtime": 1786673650.537973,
-    "ast_hash": "60be7cb0a5e8e3d64e7cba9dadfefed5",
-    "semantic_hash": ""
-  },
-  ".agents/roles/backend.md": {
-    "mtime": 1786673650.5828393,
-    "ast_hash": "477c32700a802fb8201a05d6a9477607",
-    "semantic_hash": ""
-  },
-  ".agents/roles/document.md": {
-    "mtime": 1786673650.6732814,
-    "ast_hash": "2ac158659e07825706ea454f2b7c5c85",
-    "semantic_hash": ""
-  },
-  ".agents/roles/frontend.md": {
-    "mtime": 1786673650.628953,
-    "ast_hash": "a07849344907b700b6ab71cf8bc95303",
-    "semantic_hash": ""
-  },
   ".github/PULL_REQUEST_TEMPLATE.md": {
-    "mtime": 1786673651.4129186,
-    "ast_hash": "05877f2af8c267ad8ffb4b03d6d0e6d0",
+    "mtime": 1793139749.330195,
+    "ast_hash": "2aaa5d3b5be703fd9ac7b9f2cc23eb17",
     "semantic_hash": ""
   },
   ".github/workflows/build-desktop.yml": {
@@ -130,18 +105,18 @@
     "semantic_hash": ""
   },
   ".github/workflows/validate.yml": {
-    "mtime": 1791939018.3235745,
-    "ast_hash": "2b7b78a25b8ed53afad27c28f13137b6",
+    "mtime": 1792781908.1934628,
+    "ast_hash": "68cd9661e57a36848b56ceb52d3a3746",
     "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1786673722.8031092,
-    "ast_hash": "9ec980089436abc29e0a9dfcdc351e69",
+    "mtime": 1793151256.6861742,
+    "ast_hash": "c66a601a02dbdaedf44371fad816c332",
     "semantic_hash": ""
   },
   "CONTRIBUTING.md": {
-    "mtime": 1786673651.4583342,
-    "ast_hash": "18a88193b5881f6306bdfbbee7fec3ea",
+    "mtime": 1793139749.3300939,
+    "ast_hash": "84eb6416c3f822cca8cf99c33448640d",
     "semantic_hash": ""
   },
   "DESIGN.md": {
@@ -150,8 +125,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1791939215.678394,
-    "ast_hash": "a8032e935af0dcfb29612a1301ffae48",
+    "mtime": 1793139749.3298929,
+    "ast_hash": "e7d0d51a091c4c41958de4df42c1bcdd",
     "semantic_hash": ""
   },
   "code.html": {
@@ -159,24 +134,9 @@
     "ast_hash": "e182799e936eb620a9a9650f37de258c",
     "semantic_hash": ""
   },
-  "docs/agents.document.md": {
-    "mtime": 1786673651.2766523,
-    "ast_hash": "ae58b3ee1a392aa4196a6c3424a5d630",
-    "semantic_hash": ""
-  },
   "docs/graphify.document.md": {
     "mtime": 1786674898.1972291,
     "ast_hash": "0e7e94a8cca389905051951f308f3986",
-    "semantic_hash": ""
-  },
-  "docs/hu/HU-0001-integracion-graphify-y-agentes.md": {
-    "mtime": 1786674898.24192,
-    "ast_hash": "066c9dc0f88b3e5d98a151b78c1caf73",
-    "semantic_hash": ""
-  },
-  "docs/hu/index.md": {
-    "mtime": 1792296832.568398,
-    "ast_hash": "20423134cc4ab06b70e4b10bed00a78b",
     "semantic_hash": ""
   },
   "index.html": {
@@ -185,28 +145,13 @@
     "semantic_hash": ""
   },
   "docs/actualizaciones.document.md": {
-    "mtime": 1791894359.753102,
-    "ast_hash": "c654f7622b76e02fa9aa219dd59ec704",
-    "semantic_hash": ""
-  },
-  "docs/hu/HU-0002-actualizar-aplicacion-original-y-metadatos-por-modelo-y-proveedor.md": {
-    "mtime": 1786678102.350435,
-    "ast_hash": "dea1942f65948e0e41f6a6116af7b936",
+    "mtime": 1792815400.376967,
+    "ast_hash": "54f673ae03582635c50792b45f45d0de",
     "semantic_hash": ""
   },
   "docs/sesiones.document.md": {
     "mtime": 1791894359.7542782,
     "ast_hash": "b2928b24ac4c34757cd69fcc618734f5",
-    "semantic_hash": ""
-  },
-  "docs/hu/HU-0003-transferencias-conscientes-de-artefactos-actualizacion-disponible-y-uso-en-vivo.md": {
-    "mtime": 1790350279.6532426,
-    "ast_hash": "688ad6051199a21420f76f5faedd1fde",
-    "semantic_hash": ""
-  },
-  "docs/hu/HU-0004-sincronizacion-desde-la-instancia-mas-reciente-cierre-robusto-artefactos-locales-e-identidad-visual.md": {
-    "mtime": 1791894359.7534535,
-    "ast_hash": "a9a54b9ffca579c60a9b9cf2d2397d34",
     "semantic_hash": ""
   },
   "docs/instancias.document.md": {
@@ -217,66 +162,231 @@
   "scripts/release-version.mjs": {
     "mtime": 1791894359.7561305,
     "ast_hash": "c4070e11a5bd8e50351006c7efef384e",
-    "semantic_hash": ""
+    "semantic_hash": "c4070e11a5bd8e50351006c7efef384e"
   },
   "scripts/release-version.test.mjs": {
     "mtime": 1791894359.7562394,
     "ast_hash": "686fba07048c1fd87d0c3cb274cc1f8f",
-    "semantic_hash": ""
+    "semantic_hash": "686fba07048c1fd87d0c3cb274cc1f8f"
   },
   "CHANGELOG.md": {
-    "mtime": 1791939195.851201,
-    "ast_hash": "52b72645fcb24dade209deed4b8a62fd",
-    "semantic_hash": ""
-  },
-  "docs/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md": {
-    "mtime": 1792296840.5776398,
-    "ast_hash": "9c9acdc8e8e611a3b45eab724c8bc0db",
+    "mtime": 1793124148.8208578,
+    "ast_hash": "403be5ddee20c99c61e8bb73ec5c9f33",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
-    "mtime": 1791939195.7978098,
+    "mtime": 1792648655.1092925,
     "ast_hash": "f5da5f5c3eca394f62faf9438595fa1b",
     "semantic_hash": ""
   },
   "docs/versionado.document.md": {
-    "mtime": 1791939195.8160563,
-    "ast_hash": "00e485c393e43b7836194c563eb7b69c",
+    "mtime": 1793124148.8439977,
+    "ast_hash": "44c05701cc44d34beca38b5b0cd2de22",
     "semantic_hash": ""
   },
   "src/lib/scan-controller.ts": {
-    "mtime": 1791922723.7030432,
+    "mtime": 1792648655.115292,
     "ast_hash": "3e6a39d3004f4bc44f45443d34c94042",
-    "semantic_hash": ""
+    "semantic_hash": "3e6a39d3004f4bc44f45443d34c94042"
   },
   "tests/scan-controller.test.ts": {
-    "mtime": 1791922723.7438564,
+    "mtime": 1792648655.1159103,
     "ast_hash": "46e472841bc9055e09a39815eac86af8",
+    "semantic_hash": "46e472841bc9055e09a39815eac86af8"
+  },
+  "scripts/hu0007-macos-dock-icon-spike.sh": {
+    "mtime": 1792648655.112833,
+    "ast_hash": "18e127cf8cefa1860a41e6eefb35a486",
+    "semantic_hash": "18e127cf8cefa1860a41e6eefb35a486"
+  },
+  "scripts/hu0008-macos-launch-ab-diagnostic.sh": {
+    "mtime": 1792648655.113111,
+    "ast_hash": "9cf8a39e4da325aed33b9bfc8022a6af",
+    "semantic_hash": "9cf8a39e4da325aed33b9bfc8022a6af"
+  },
+  "src/lib/source-update-controller.ts": {
+    "mtime": 1792781908.1280866,
+    "ast_hash": "3606b035ae50158f86fb9d04ce8cf467",
+    "semantic_hash": "3606b035ae50158f86fb9d04ce8cf467"
+  },
+  "tests/source-update-controller.test.ts": {
+    "mtime": 1792781908.1725817,
+    "ast_hash": "4f03d43731e2e6c6fc745fb69322c2d1",
+    "semantic_hash": "4f03d43731e2e6c6fc745fb69322c2d1"
+  },
+  "CLAUDE.md": {
+    "mtime": 1793139609.3761172,
+    "ast_hash": "5c27369b226fcf2be8a6cfe52224e767",
     "semantic_hash": ""
   },
-  "docs/hu/HU-0006-escaneo-automatico-silencioso-y-ciclo-manual-controlado.md": {
-    "mtime": 1791939366.4041896,
+  "docs/archivo/previo/AGENTS.md": {
+    "mtime": 1786673722.8031092,
+    "ast_hash": "9ec980089436abc29e0a9dfcdc351e69",
+    "semantic_hash": ""
+  },
+  "docs/archivo/previo/agents.document.md": {
+    "mtime": 1786673651.2766523,
+    "ast_hash": "ae58b3ee1a392aa4196a6c3424a5d630",
+    "semantic_hash": ""
+  },
+  "docs/archivo/previo/hu/HU-0001-integracion-graphify-y-agentes.md": {
+    "mtime": 1786674898.24192,
+    "ast_hash": "066c9dc0f88b3e5d98a151b78c1caf73",
+    "semantic_hash": ""
+  },
+  "docs/archivo/previo/hu/HU-0002-actualizar-aplicacion-original-y-metadatos-por-modelo-y-proveedor.md": {
+    "mtime": 1786678102.350435,
+    "ast_hash": "dea1942f65948e0e41f6a6116af7b936",
+    "semantic_hash": ""
+  },
+  "docs/archivo/previo/hu/HU-0003-transferencias-conscientes-de-artefactos-actualizacion-disponible-y-uso-en-vivo.md": {
+    "mtime": 1790350279.6532426,
+    "ast_hash": "688ad6051199a21420f76f5faedd1fde",
+    "semantic_hash": ""
+  },
+  "docs/archivo/previo/hu/HU-0004-sincronizacion-desde-la-instancia-mas-reciente-cierre-robusto-artefactos-locales-e-identidad-visual.md": {
+    "mtime": 1791894359.7534535,
+    "ast_hash": "a9a54b9ffca579c60a9b9cf2d2397d34",
+    "semantic_hash": ""
+  },
+  "docs/archivo/previo/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md": {
+    "mtime": 1793141150.6170835,
+    "ast_hash": "a2ece973609396f7f8dcc0140b2c2fd6",
+    "semantic_hash": ""
+  },
+  "docs/archivo/previo/hu/HU-0006-escaneo-automatico-silencioso-y-ciclo-manual-controlado.md": {
+    "mtime": 1792648655.1085231,
     "ast_hash": "4501f21c5166b090fa41b0f0a7a58d5f",
     "semantic_hash": ""
   },
-  "scripts/hu0007-macos-dock-icon-spike.sh": {
-    "mtime": 1792004617.2091215,
-    "ast_hash": "18e127cf8cefa1860a41e6eefb35a486",
-    "semantic_hash": ""
-  },
-  "docs/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md": {
-    "mtime": 1792027554.1347513,
+  "docs/archivo/previo/hu/HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md": {
+    "mtime": 1792648655.1087396,
     "ast_hash": "3a01af79e234a28994d53575da211b3d",
     "semantic_hash": ""
   },
-  "scripts/hu0008-macos-launch-ab-diagnostic.sh": {
-    "mtime": 1792257206.5112975,
-    "ast_hash": "9cf8a39e4da325aed33b9bfc8022a6af",
-    "semantic_hash": ""
-  },
-  "docs/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md": {
-    "mtime": 1792296871.4929163,
+  "docs/archivo/previo/hu/HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md": {
+    "mtime": 1792648655.1089513,
     "ast_hash": "2958e31fcac18bb9902908a57f14c589",
     "semantic_hash": ""
+  },
+  "docs/archivo/previo/hu/HU-0009-estado-oficial-de-actualizacion-y-refresco-de-versiones.md": {
+    "mtime": 1792815409.4159727,
+    "ast_hash": "59cbd49f458b79eac48333ef0c333a9f",
+    "semantic_hash": ""
+  },
+  "docs/archivo/previo/hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md": {
+    "mtime": 1793137804.3965824,
+    "ast_hash": "50696b1dc0d21ff8193ad13103d3572f",
+    "semantic_hash": ""
+  },
+  "docs/archivo/previo/hu/index.md": {
+    "mtime": 1793141150.731334,
+    "ast_hash": "873cd26caba3b1192f0db11d8eaee5de",
+    "semantic_hash": ""
+  },
+  "docs/arquitectura/stack.md": {
+    "mtime": 1793139609.3715703,
+    "ast_hash": "0b0b5cdb3e58b7e01bb4b9452db63943",
+    "semantic_hash": ""
+  },
+  "docs/decisiones/ADR-0001-adopcion-metodologia-v4.md": {
+    "mtime": 1793139749.3090007,
+    "ast_hash": "9fcd5d97803657350a95b973da73104d",
+    "semantic_hash": ""
+  },
+  "docs/diseno/guias.md": {
+    "mtime": 1793139749.3115158,
+    "ast_hash": "5aee0d49f9d17c057619c57fd56ec3a7",
+    "semantic_hash": ""
+  },
+  "docs/producto/invariantes.md": {
+    "mtime": 1793139609.371464,
+    "ast_hash": "96c048f573705ea38506c24726b6c144",
+    "semantic_hash": ""
+  },
+  "docs/producto/reglas/README.md": {
+    "mtime": 1793139609.3713522,
+    "ast_hash": "1aa385464c0e931e029f95e753939a4a",
+    "semantic_hash": ""
+  },
+  "hu/HU-0010-publicar-el-fix-de-actualizacion-como-ve/arquitectura.md": {
+    "mtime": 1793139717.8898072,
+    "ast_hash": "c7f72dfe319bbf615900f67bd002e1ac",
+    "semantic_hash": ""
+  },
+  "hu/HU-0010-publicar-el-fix-de-actualizacion-como-ve/hu.md": {
+    "mtime": 1793139698.048063,
+    "ast_hash": "2cefc8b38240e984ff3d03523220587b",
+    "semantic_hash": ""
+  },
+  "hu/HU-0010-publicar-el-fix-de-actualizacion-como-ve/seguimiento.md": {
+    "mtime": 1793139668.3500702,
+    "ast_hash": "df2df2f05ea0352de7ae71c3d1f25d3d",
+    "semantic_hash": ""
+  },
+  "hu/HU-0011-adopcion-v4/arquitectura.md": {
+    "mtime": 1793139717.892263,
+    "ast_hash": "c8f83469566a12d4f3c07388cea66b98",
+    "semantic_hash": ""
+  },
+  "hu/HU-0011-adopcion-v4/hu.md": {
+    "mtime": 1793151321.0151303,
+    "ast_hash": "f3a4c8fecce8fa989d4ddd70b8c0c3bb",
+    "semantic_hash": ""
+  },
+  "hu/HU-0011-adopcion-v4/seguimiento.md": {
+    "mtime": 1793151376.2704172,
+    "ast_hash": "03b2dfce533f61253cdbb9af1e11d731",
+    "semantic_hash": ""
+  },
+  "hu/INDEX.md": {
+    "mtime": 1793151376.2709756,
+    "ast_hash": "3ecea62a8ae460c90af0462a1e368ba6",
+    "semantic_hash": ""
+  },
+  "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
+    "mtime": 1793151216.3830805,
+    "ast_hash": "8a06d760e2dd5160783df6bb68c24fc3",
+    "semantic_hash": "8a06d760e2dd5160783df6bb68c24fc3"
+  },
+  "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md": {
+    "mtime": 1793151314.371025,
+    "ast_hash": "a9d1b55b7cd2b8560e81b2b5ce3e1d7c",
+    "semantic_hash": ""
+  },
+  "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md": {
+    "mtime": 1793141132.9794981,
+    "ast_hash": "624cd2f6627e856fc967697b72867534",
+    "semantic_hash": ""
+  },
+  "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/seguimiento.md": {
+    "mtime": 1793141127.5946164,
+    "ast_hash": "9373c05e69ea0790612a09a3db0f9e04",
+    "semantic_hash": ""
+  },
+  "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md": {
+    "mtime": 1793150906.1075335,
+    "ast_hash": "ab69a34d96e86fe3e79cf0deb5e15199",
+    "semantic_hash": ""
+  },
+  "hu/HU-0013-describir-lo-construido-reglas-arquitect/seguimiento.md": {
+    "mtime": 1793150900.2321014,
+    "ast_hash": "5bf51bf2a4699c8d2bb1220ccc6946cd",
+    "semantic_hash": ""
+  },
+  "hu/HU-0011-adopcion-v4/revision-tecnica.md": {
+    "mtime": 1793151295.6548576,
+    "ast_hash": "33b0c1615323e5ea14c0b6b70b33f5f5",
+    "semantic_hash": ""
+  },
+  "hu/HU-0011-adopcion-v4/verificacion.md": {
+    "mtime": 1793151287.0560873,
+    "ast_hash": "e156f086c584b4b85fec882cfb384501",
+    "semantic_hash": ""
+  },
+  "hu/HU-0011-adopcion-v4/metricas.json": {
+    "mtime": 1793151321.0653057,
+    "ast_hash": "a52615e6cf79ee3f4c1d9c3150c196f2",
+    "semantic_hash": "a52615e6cf79ee3f4c1d9c3150c196f2"
   }
 }

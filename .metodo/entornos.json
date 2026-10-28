@@ -1,0 +1,36 @@
+{
+  "$comentario": "Plantilla de .metodo/entornos.json. Sin secretos: solo identificadores. La leen la guarda (entorno.mjs) y el agente devops. Ver entornos.md.",
+  "local": {
+    "hosts": [
+      "localhost",
+      "127.0.0.1",
+      "*.localhost",
+      "*.test"
+    ],
+    "env": ".env.local",
+    "servicios": {},
+    "nota": "App de escritorio sin servidor propio: no hay servicios locales que levantar."
+  },
+  "staging": {
+    "hosts": [],
+    "env": ".env.staging",
+    "nota": "No hay staging: los builds se compilan en GitHub Actions y se distribuyen por GitHub Releases."
+  },
+  "produccion": {
+    "hosts": [],
+    "marcas": [
+      "sk_live_",
+      "pk_live_",
+      "rk_live_",
+      "whsec_live",
+      "AKIA",
+      "-----BEGIN PRIVATE KEY-----"
+    ],
+    "archivos": [
+      ".env.production",
+      ".env.prod",
+      ".env.production.local"
+    ],
+    "nota": "Ningún agente lee, usa ni apunta a nada de esta lista. Un host declarado cubre también sus subdominios. Las acciones contra producción las hace devops con autorización explícita, cada vez."
+  }
+}

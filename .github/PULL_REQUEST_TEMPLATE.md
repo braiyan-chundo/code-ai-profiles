@@ -5,7 +5,7 @@
 ## Autorización previa
 
 - Issue autorizado por el mantenedor: <!-- #123 -->
-- Historia de usuario: <!-- docs/hu/HU-XXXX-slug.md -->
+- Historia de usuario: <!-- hu/HU-XXXX-slug/ -->
 - [ ] El PR apunta a `develop`.
 - [ ] Recibí autorización de `@braiyan-chundo` antes de comenzar.
 

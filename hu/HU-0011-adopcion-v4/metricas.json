@@ -1,0 +1,61 @@
+{
+  "hu": "HU-0011",
+  "generado": "2026-10-28T01:35:21.065Z",
+  "perfil": "S",
+  "fases": [
+    {
+      "fase": "requisitos",
+      "desde": "2026-10-27T22:21:00.000Z",
+      "hasta": "2026-10-27T22:21:00.000Z",
+      "minutos": 0
+    },
+    {
+      "fase": "implementacion",
+      "desde": "2026-10-27T22:21:00.000Z",
+      "hasta": "2026-10-28T01:35:00.000Z",
+      "minutos": 194
+    }
+  ],
+  "minutosTotales": 194,
+  "agentes": [
+    {
+      "agente": "architect",
+      "rol": "architect",
+      "fase": "implementacion",
+      "modelos": [
+        "claude-opus-5-5"
+      ],
+      "despachos": 1,
+      "minutos": 7,
+      "tokens": {
+        "entrada": 62,
+        "salida": 30287,
+        "cacheEscritura": 103325,
+        "cacheLectura": 2046650,
+        "total": 2180324
+      }
+    }
+  ],
+  "orquestador": {
+    "aproximado": true,
+    "porFase": [
+      {
+        "fase": "implementacion",
+        "tokens": {
+          "entrada": 214,
+          "salida": 88459,
+          "cacheEscritura": 358660,
+          "cacheLectura": 15873529,
+          "total": 16320862
+        }
+      }
+    ]
+  },
+  "totales": {
+    "tokensAgentes": 2180324,
+    "tokensOrquestador": 16320862,
+    "tokens": 18501186,
+    "despachos": 1
+  },
+  "notas": []
+}

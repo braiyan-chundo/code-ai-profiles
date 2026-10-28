@@ -11,6 +11,10 @@ src-tauri/icons/
 docs/screenshots/
 .github/rulesets/
 
-# Avoid indexing the same third-party Graphify skill twice.
-.agents/skills/graphify/
-.codex/skills/graphify/
+# Archived agent adapters (roles, Codex, Graphify skill copies) are not product.
+docs/archivo/previo/agents/
+docs/archivo/previo/codex/
+
+# Metodología v4: gobierno generado, fuera del grafo del producto.
+.metodo/
+.claude/

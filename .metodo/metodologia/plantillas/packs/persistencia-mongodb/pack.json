@@ -1,0 +1,10 @@
+{
+  "nombre": "persistencia-mongodb",
+  "tipo": "persistencia",
+  "roles": ["architect", "data", "backend", "fullstack"],
+  "siempre": ["data"],
+  "skills": ["persistencia-mongodb"],
+  "fuentes": ["https://www.mongodb.com/docs/manual/", "https://mongoosejs.com/docs/", "https://docs.nestjs.com/techniques/mongodb"],
+  "version": "0.1.0",
+  "probado-en": []
+}

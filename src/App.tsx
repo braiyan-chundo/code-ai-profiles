@@ -9,6 +9,12 @@ import {
   reconcileManualBusy,
   type ManualScanView,
 } from "./lib/scan-controller";
+import {
+  createSourceUpdateController,
+  mergeSourceUpdateForInstallation,
+  sourceInstallationIdentity,
+  sourceUpdatePresentation,
+} from "./lib/source-update-controller";
 import type {
   ArtifactTransferOutcome,
   CodeSession,
@@ -288,6 +294,19 @@ function App() {
     });
   }
   const scanController = scanControllerRef.current;
+  const sourceUpdateControllerRef = useRef<ReturnType<typeof createSourceUpdateController<DashboardState>> | null>(null);
+  if (!sourceUpdateControllerRef.current) {
+    sourceUpdateControllerRef.current = createSourceUpdateController({
+      runRefresh: () => bridge.refreshVersions(),
+      onRefreshResult: setState,
+      runOfficialCheck: () => bridge.checkSourceUpdate(),
+      onOfficialCheckResult: (sourceUpdate, refreshedDashboard) => {
+        const expected = sourceInstallationIdentity(refreshedDashboard.system);
+        setState((current) => mergeSourceUpdateForInstallation(current, expected, sourceUpdate));
+      },
+    });
+  }
+  const sourceUpdateController = sourceUpdateControllerRef.current;
 
   const scanManually = () => {
     if (loading) return;
@@ -298,8 +317,10 @@ function App() {
   useEffect(() => {
     let active = true;
     const load = async () => {
+      let expected: ReturnType<typeof sourceInstallationIdentity> | null = null;
       try {
         const dashboard = await bridge.dashboard();
+        expected = sourceInstallationIdentity(dashboard.system);
         if (active) setState(dashboard);
       } catch (reason) {
         if (active) setError(friendlyError(reason));
@@ -309,13 +330,11 @@ function App() {
           scanController.markLoaded();
         }
       }
+      if (!expected) return;
       try {
         const sourceUpdate = await bridge.checkSourceUpdate();
         if (active) {
-          setState((current) => ({
-            ...current,
-            system: { ...current.system, sourceUpdate },
-          }));
+          setState((current) => mergeSourceUpdateForInstallation(current, expected, sourceUpdate));
         }
       } catch {
         // La detección remota nunca bloquea la carga del dashboard.
@@ -335,11 +354,29 @@ function App() {
     };
   }, [scanController]);
 
+  useEffect(() => {
+    sourceUpdateController.activate();
+    const handleBlur = () => sourceUpdateController.handleBlur();
+    const handleFocus = () => sourceUpdateController.handleFocus();
+    const handleVisibility = () => sourceUpdateController.handleVisibility(document.hidden);
+    window.addEventListener("blur", handleBlur);
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => {
+      window.removeEventListener("blur", handleBlur);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleVisibility);
+      sourceUpdateController.deactivate();
+    };
+  }, [sourceUpdateController]);
+
   const runningInstanceIds = useMemo(
     () => state.instances.filter((instance) => instance.status === "running").map((instance) => instance.id),
     [state.instances],
   );
   const runningInstanceKey = runningInstanceIds.join(":");
+  const sourceIdentityRef = useRef(sourceInstallationIdentity(state.system));
+  sourceIdentityRef.current = sourceInstallationIdentity(state.system);
 
   useEffect(() => {
     if (!runningInstanceIds.length) return;
@@ -376,18 +413,19 @@ function App() {
     const refreshSourceUpdate = async () => {
       if (!active || document.hidden) return;
       try {
+        const expected = sourceIdentityRef.current;
         const sourceUpdate = await bridge.checkSourceUpdate();
-        if (active) setState((current) => ({ ...current, system: { ...current.system, sourceUpdate } }));
+        if (active) {
+          setState((current) => mergeSourceUpdateForInstallation(current, expected, sourceUpdate));
+        }
       } catch {
         // La última metadata válida permanece visible desde la caché backend.
       }
     };
     const timer = window.setInterval(() => void refreshSourceUpdate(), 6 * 60 * 60 * 1_000);
-    window.addEventListener("focus", refreshSourceUpdate);
     return () => {
       active = false;
       window.clearInterval(timer);
-      window.removeEventListener("focus", refreshSourceUpdate);
     };
   }, []);
 
@@ -409,7 +447,7 @@ function App() {
 
   useEffect(() => {
     const refreshSilently = (trigger: "focus" | "interval") => {
-      if (document.hidden || busyRef.current) return;
+      if (document.hidden || busyRef.current || sourceUpdateController.blocksGeneralRefresh(trigger)) return;
       scanController.requestBackground(trigger);
     };
     const timer = window.setInterval(() => refreshSilently("interval"), BACKGROUND_REFRESH_COOLDOWN_MS);
@@ -419,7 +457,7 @@ function App() {
       window.clearInterval(timer);
       window.removeEventListener("focus", handleFocus);
     };
-  }, [scanController]);
+  }, [scanController, sourceUpdateController]);
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
@@ -477,6 +515,11 @@ function App() {
   }, [state.instances, state.system.versionTopology.staleInstanceIds]);
   const latestSource = state.system.versionTopology.latestSource;
   const latestVersion = state.system.versionTopology.latestInstalledVersion;
+  const officialUpdate = sourceUpdatePresentation(
+    state.system.sourceUpdate,
+    state.system.versionTopology,
+    originalAppName,
+  );
   const synchronizeLabel = latestSource && latestVersion
     ? `Sincronizar instancias desde ${latestSource.name} v${latestVersion}`
     : "Sincronizar instancias";
@@ -613,15 +656,14 @@ function App() {
               onDismiss={() => scanController.dismissManual(scanProgress.generation)}
             />
           )}
-          {state.system.sourceUpdate.status === "available" && state.system.sourceUpdate.latestVersion && (
-            <div className="source-update-banner">
-              <span className="update-banner-icon"><SparklesIcon size={17} /></span>
+          {!loading && state.system.sourcePath && officialUpdate && (
+            <div className={`source-update-banner source-update-${officialUpdate.kind}`}>
+              <span className="update-banner-icon">
+                {officialUpdate.kind === "available" ? <SparklesIcon size={17} /> : <AlertIcon size={17} />}
+              </span>
               <div>
-                <strong>Nueva versión de {originalAppName}</strong>
-                <span>
-                  Versión {state.system.sourceUpdate.latestVersion} disponible
-                  {state.system.sourceUpdate.stale ? " · última comprobación guardada" : ""}
-                </span>
+                <strong>{officialUpdate.title}</strong>
+                <span>{officialUpdate.detail}</span>
               </div>
               <button
                 onClick={() => {
@@ -631,26 +673,7 @@ function App() {
                 }}
                 disabled={busy !== null || !state.system.sourcePath}
               >
-                Ver actualización
-              </button>
-            </div>
-          )}
-          {state.system.versionTopology.originalBehind && latestVersion && (
-            <div className="source-update-banner original-behind-banner">
-              <span className="update-banner-icon"><AlertIcon size={17} /></span>
-              <div>
-                <strong>La aplicación original está desactualizada</strong>
-                <span>La versión {latestVersion} ya existe en una instancia. La original solo puede actualizarse mediante su canal oficial.</span>
-              </div>
-              <button
-                onClick={() => {
-                  setError(null);
-                  setNotice(null);
-                  setOriginalUpdateOpen(true);
-                }}
-                disabled={busy !== null || !state.system.sourcePath}
-              >
-                Actualizar original
+                {officialUpdate.actionLabel}
               </button>
             </div>
           )}
@@ -991,7 +1014,7 @@ function App() {
             setError(null);
             setNotice(null);
             try {
-              const result = await bridge.updateOriginalApplication();
+              const result = await sourceUpdateController.runHandoff(() => bridge.updateOriginalApplication());
               setNotice(result.message);
               setOriginalUpdateOpen(false);
             } catch (reason) {
@@ -1600,9 +1623,9 @@ function OriginalApplicationUpdateDialog({
         }
       : {
           label: "macOS",
-          channel: "Descarga oficial para macOS",
-          handoff: "Se abrirá la descarga oficial. Después debes abrir y completar el instalador de macOS; Code AI Profiles no reemplazará ni cerrará la aplicación por ti.",
-          action: "Abrir descarga oficial",
+          channel: "Actualizador oficial de la aplicación original",
+          handoff: `Se abrirá únicamente ${appName}. En la aplicación original elige Claude > Check for Updates; Code AI Profiles no automatizará el menú ni solicitará permisos adicionales.`,
+          action: `Abrir ${appName}`,
         };
 
   return (
@@ -1625,13 +1648,13 @@ function OriginalApplicationUpdateDialog({
         <HardDriveIcon size={19} />
         <div>
           <strong>Tus perfiles y sesiones no se tocan</strong>
-        <p>Esta acción no escribe ni sustituye instancias administradas. Solo entrega la original a la descarga o documentación oficial.</p>
+        <p>Esta acción no escribe ni sustituye instancias administradas. Solo entrega la original al actualizador, descarga o documentación oficial de la plataforma.</p>
         </div>
       </div>
 
       <div className="original-update-next-step">
         <SparklesIcon size={18} />
-        <p>Cuando termines la instalación, vuelve a esta ventana. El escaneo al recuperar el foco recalculará qué instalación válida es la más reciente y ofrecerá <strong>Sincronizar instancias</strong> si hace falta.</p>
+        <p>Cuando vuelvas a esta ventana, se refrescarán únicamente las versiones y su topología. No se iniciará un escaneo manual ni se consultarán sesiones.</p>
       </div>
 
       <div className="modal-actions original-update-actions">

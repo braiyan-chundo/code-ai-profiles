@@ -149,6 +149,10 @@ export const bridge = {
     return isTauri() ? call("scan_system") : mockState();
   },
 
+  async refreshVersions(): Promise<DashboardState> {
+    return isTauri() ? call("refresh_versions") : mockState();
+  },
+
   async create(request: CreateInstanceRequest): Promise<DashboardState> {
     if (isTauri()) return call("create_instance", { request });
     mockInstances = [
@@ -216,8 +220,8 @@ export const bridge = {
     if (isTauri()) return call("update_original_application");
     await new Promise((resolve) => window.setTimeout(resolve, 320));
     return {
-      action: "download",
-      message: "Modo de demostración: se simuló la apertura de la descarga oficial; no se abrió ningún navegador.",
+      action: "instructions",
+      message: "Modo de demostración: se simuló abrir únicamente la aplicación original. En macOS usa Claude > Check for Updates; no se abrió ninguna aplicación real.",
     };
   },
 
