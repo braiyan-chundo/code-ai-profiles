@@ -45,8 +45,8 @@
     "semantic_hash": "4ef37201944f5f99cbc3aba02a781215"
   },
   "src/App.tsx": {
-    "mtime": 1793167627.2717764,
-    "ast_hash": "d65920e6a97b4c21e9ba0ab993e54b7f",
+    "mtime": 1793168547.7437599,
+    "ast_hash": "2f08266f216028bdec9369c007320b52",
     "semantic_hash": ""
   },
   "src/components/Icons.tsx": {
@@ -547,6 +547,96 @@
   "src/components/ModalFrame.tsx": {
     "mtime": 1793167627.2438378,
     "ast_hash": "50cedf127afdbbaea28505fe0d391a68",
+    "semantic_hash": ""
+  },
+  "src/features/appearance/AppearanceDialog.tsx": {
+    "mtime": 1793168519.7125099,
+    "ast_hash": "6421a95713269a9fb18a469199cc573b",
+    "semantic_hash": ""
+  },
+  "src/features/appearance/index.ts": {
+    "mtime": 1793168528.4941697,
+    "ast_hash": "0fbc2544ab6a64ad21ee9586bdb4a0b9",
+    "semantic_hash": ""
+  },
+  "src/features/dashboard/index.ts": {
+    "mtime": 1793168528.4983974,
+    "ast_hash": "b0961b8de9eed6ad106a1cfa7ba92430",
+    "semantic_hash": ""
+  },
+  "src/features/instances/InstanceCard.tsx": {
+    "mtime": 1793168519.711094,
+    "ast_hash": "2f0419ccfd2e771d63ed38c878bd93ec",
+    "semantic_hash": ""
+  },
+  "src/features/instances/InstanceEditor.tsx": {
+    "mtime": 1793168519.7134275,
+    "ast_hash": "ed32ecbd3a02ee5fd8cccbf3e75d1147",
+    "semantic_hash": ""
+  },
+  "src/features/instances/UsageMeter.tsx": {
+    "mtime": 1793168519.7194269,
+    "ast_hash": "409c8a7fda33e76de6bfeb4fa84fe70b",
+    "semantic_hash": ""
+  },
+  "src/features/instances/index.ts": {
+    "mtime": 1793168528.4878907,
+    "ast_hash": "6097eb30411012c649b2db4127dffcf2",
+    "semantic_hash": ""
+  },
+  "src/features/instances/instance-icon.ts": {
+    "mtime": 1793168519.7148786,
+    "ast_hash": "4f1365491bc8a283ef4c423c3d5466ed",
+    "semantic_hash": ""
+  },
+  "src/features/original-app/OriginalAppSection.tsx": {
+    "mtime": 1793168519.71035,
+    "ast_hash": "571dd5212e9a336a0078ecc9bfca5559",
+    "semantic_hash": ""
+  },
+  "src/features/original-app/index.ts": {
+    "mtime": 1793168528.4921613,
+    "ast_hash": "5369975499058a130e31ef7846133e75",
+    "semantic_hash": ""
+  },
+  "src/features/scan/ScanProgressPanel.tsx": {
+    "mtime": 1793168519.7097185,
+    "ast_hash": "2d19af12a4dd4e0f0537812db85791c1",
+    "semantic_hash": ""
+  },
+  "src/features/scan/index.ts": {
+    "mtime": 1793168528.4900405,
+    "ast_hash": "615aededb4b57b2d70d7d97cb26fa8c9",
+    "semantic_hash": ""
+  },
+  "src/features/sessions/SessionContextMeter.tsx": {
+    "mtime": 1793168519.7120514,
+    "ast_hash": "c16af9a508dfa77ab1061cc1b816820f",
+    "semantic_hash": ""
+  },
+  "src/features/sessions/SessionTransferDialog.tsx": {
+    "mtime": 1793168519.7145913,
+    "ast_hash": "3136612b8cadb7f5ba1b1ef3fef385cc",
+    "semantic_hash": ""
+  },
+  "src/features/sessions/index.ts": {
+    "mtime": 1793168528.485419,
+    "ast_hash": "b39e1afb2f9661c58a4ad10aeb3a6203",
+    "semantic_hash": ""
+  },
+  "src/features/updates/ApplicationUpdateDialog.tsx": {
+    "mtime": 1793168519.714034,
+    "ast_hash": "b08ad17ebd730e3794aeb7d096535486",
+    "semantic_hash": ""
+  },
+  "src/features/updates/OriginalApplicationUpdateDialog.tsx": {
+    "mtime": 1793168519.712965,
+    "ast_hash": "c5ef57b09659b8d6591069987aa70d1a",
+    "semantic_hash": ""
+  },
+  "src/features/updates/index.ts": {
+    "mtime": 1793168528.496196,
+    "ast_hash": "5d5b3327938f2bd3981ce53e40f6aed5",
     "semantic_hash": ""
   }
 }
