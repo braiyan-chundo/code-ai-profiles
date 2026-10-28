@@ -17,6 +17,8 @@ use sysinfo::{ProcessRefreshKind, RefreshKind, System, UpdateKind};
 use tauri::{AppHandle, Emitter, Manager, WebviewWindow};
 use uuid::Uuid;
 
+mod original_update;
+
 const REGISTRY_VERSION: u32 = 1;
 const ORIGINAL_INSTANCE_ID: &str = "__claude_original__";
 const UPDATE_CACHE_FRESH_MS: i64 = 6 * 60 * 60 * 1_000;
@@ -5522,6 +5524,33 @@ fn update_original_application(app: AppHandle) -> Result<OriginalApplicationUpda
     }
 }
 
+#[tauri::command]
+async fn install_original_update(
+    app: AppHandle,
+    request: original_update::InstallOriginalUpdateRequest,
+    on_progress: tauri::ipc::Channel<original_update::OriginalInstallProgress>,
+) -> Result<original_update::OriginalInstallResult, String> {
+    let worker_app = app.clone();
+    let outcome = tauri::async_runtime::spawn_blocking(move || {
+        original_update::install_original_update_sync(&worker_app, request, &|progress| {
+            let _ = on_progress.send(progress);
+        })
+    })
+    .await
+    .map_err(|error| {
+        format!("La actualización de la original terminó inesperadamente: {error}")
+    })??;
+    let dashboard =
+        dashboard_from_scope_async(app, RefreshScope::VERSIONS, "La actualización del panel")
+            .await?;
+    Ok(outcome.into_result(dashboard))
+}
+
+#[tauri::command]
+fn cancel_original_update() -> bool {
+    original_update::cancel_original_update()
+}
+
 #[cfg(target_os = "macos")]
 fn launch_macos_original_application_with(
     paths: &ManagedPaths,
@@ -5620,6 +5649,8 @@ pub fn run() {
             clear_instance_icon,
             open_instance_folder,
             update_original_application,
+            install_original_update,
+            cancel_original_update,
             delete_instance
         ])
         .run(tauri::generate_context!())

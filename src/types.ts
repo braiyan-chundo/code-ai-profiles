@@ -194,3 +194,28 @@ export interface UnlinkCodeSessionRequest {
   instanceId: string;
   sessionId: string;
 }
+
+export interface InstallOriginalUpdateRequest {
+  expectedVersion: string;
+}
+
+export type OriginalInstallPhase = "preparing" | "downloading" | "verifying" | "installing" | "synchronizing";
+
+export interface OriginalInstallProgress {
+  phase: OriginalInstallPhase;
+  targetVersion: string | null;
+  receivedBytes: number;
+  totalBytes: number;
+  cancellable: boolean;
+}
+
+export type OriginalInstallStatus = "installed" | "cancelled";
+
+export interface OriginalInstallResult {
+  status: OriginalInstallStatus;
+  previousVersion: string | null;
+  installedVersion: string | null;
+  synchronization: SynchronizationItemResult[];
+  pendingInstanceIds: string[];
+  dashboard: DashboardState;
+}
