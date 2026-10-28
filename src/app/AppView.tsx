@@ -3,7 +3,6 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { bridge } from "../lib/bridge";
 import { sourceUpdatePresentation } from "../lib/source-update-controller";
 import { formatBytes } from "../lib/format";
-import { friendlyError } from "../lib/errors";
 import { resolveRuntimePlatform, shortcutModifierLabel } from "../lib/platform";
 import {
   countCodeSessions,
@@ -16,30 +15,20 @@ import {
 } from "../features/dashboard";
 import {
   SessionTransferDialog,
-  transferNotice,
-  unlinkDialogCopy,
-  type SessionTransferSelection,
-  type SessionUnlinkSelection,
+  UnlinkSessionDialog,
+  useSessionActions,
+  useTransferProfiles,
 } from "../features/sessions";
-import { InstanceCard, InstanceEditor } from "../features/instances";
-import {
-  AppearanceDialog,
-  loadAppearancePreferences,
-  resolveTheme,
-  saveAppearancePreferences,
-  type AppearancePreferences,
-} from "../features/appearance";
+import { DeleteInstanceDialog, InstanceCard, InstanceEditor, useInstanceActions } from "../features/instances";
+import { AppearanceDialog, useAppearance } from "../features/appearance";
 import {
   ApplicationUpdateDialog,
   OriginalApplicationUpdateDialog,
-  summarizeSynchronization,
   synchronizeLabel as describeSynchronizeLabel,
-  useSourceUpdate,
+  useUpdateActions,
 } from "../features/updates";
 import { ScanProgressPanel, useScan } from "../features/scan";
 import { OriginalAppSection } from "../features/original-app";
-import type { ManagedInstance, SessionProfile } from "../types";
-import { ORIGINAL_INSTANCE_ID } from "../types";
 import {
   AlertIcon,
   CloudIcon,
@@ -51,10 +40,10 @@ import {
   SparklesIcon,
   XIcon,
 } from "../components/Icons";
-import { ConfirmDialog } from "../components/ConfirmDialog";
 import { EmptyState } from "../components/EmptyState";
 import { LoadingCards } from "../components/LoadingCards";
 import { Metric } from "../components/Metric";
+import { useDialogs } from "./providers/dialogs-context";
 
 function AppView() {
   const {
@@ -64,56 +53,40 @@ function AppView() {
     error,
     notice,
     iconPreviews,
-    busyRef,
-    replaceDashboard,
-    setBusy,
     setError,
     setNotice,
     clearFeedback,
-    storeIconPreview,
-    removeIconPreview,
-    runAction,
   } = useDashboard();
   const { progress: scanProgress, requestManual: scanManually, dismiss: dismissScan } = useScan();
-  const { runHandoff } = useSourceUpdate();
+  const { preferences: appearance, setPreferences: setAppearance, resolvedTheme } = useAppearance();
+  const {
+    appearanceOpen,
+    setAppearanceOpen,
+    editor,
+    setEditor,
+    deleteTarget,
+    setDeleteTarget,
+    transfer,
+    setTransfer,
+    unlinkTarget,
+    setUnlinkTarget,
+    updateTargets,
+    setUpdateTargets,
+    originalUpdateOpen,
+    setOriginalUpdateOpen,
+  } = useDialogs();
+  const instanceActions = useInstanceActions();
+  const sessionActions = useSessionActions();
+  const updateActions = useUpdateActions();
+  const transferProfiles = useTransferProfiles();
   const [query, setQuery] = useState("");
-  const [editor, setEditor] = useState<ManagedInstance | "new" | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<ManagedInstance | null>(null);
-  const [transfer, setTransfer] = useState<SessionTransferSelection | null>(null);
-  const [unlinkTarget, setUnlinkTarget] = useState<SessionUnlinkSelection | null>(null);
-  const [updateTargets, setUpdateTargets] = useState<ManagedInstance[] | null>(null);
-  const [originalUpdateOpen, setOriginalUpdateOpen] = useState(false);
-  const [appearanceOpen, setAppearanceOpen] = useState(false);
-  const [appearance, setAppearance] = useState<AppearancePreferences>(loadAppearancePreferences);
-  const [systemDark, setSystemDark] = useState(() => window.matchMedia("(prefers-color-scheme: dark)").matches);
   const searchRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    saveAppearancePreferences(appearance);
-  }, [appearance]);
-
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-    const updateSystemTheme = (event: MediaQueryListEvent) => setSystemDark(event.matches);
-    setSystemDark(media.matches);
-    media.addEventListener("change", updateSystemTheme);
-    return () => media.removeEventListener("change", updateSystemTheme);
-  }, []);
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "f") {
         event.preventDefault();
         searchRef.current?.focus();
-      }
-      if (event.key === "Escape") {
-        setAppearanceOpen(false);
-        setEditor(null);
-        setDeleteTarget(null);
-        if (!busyRef.current?.startsWith("transfer:")) setTransfer(null);
-        if (!busyRef.current?.startsWith("unlink:")) setUnlinkTarget(null);
-        if (busyRef.current !== "update-applications") setUpdateTargets(null);
-        if (busyRef.current !== "update-original") setOriginalUpdateOpen(false);
       }
     };
     window.addEventListener("keydown", handleShortcut);
@@ -143,16 +116,6 @@ function AppView() {
     originalAppName,
   );
   const synchronizeLabel = describeSynchronizeLabel(latestSource, latestVersion);
-  const transferProfiles = useMemo<SessionProfile[]>(() => [
-    {
-      id: ORIGINAL_INSTANCE_ID,
-      name: originalAppName,
-      status: state.system.originalStatus,
-      codeSessions: state.system.originalCodeSessions,
-      isOriginal: true,
-    },
-    ...state.instances,
-  ], [originalAppName, state.instances, state.system.originalCodeSessions, state.system.originalStatus]);
 
   const windowAction = async (action: "close" | "minimize" | "maximize") => {
     if (!bridge.isDesktop()) return;
@@ -164,7 +127,6 @@ function AppView() {
 
   const runtimePlatform = resolveRuntimePlatform(state.system.platform, navigator.platform);
   const buildLabel = state.system.appVersion || (loading ? "cargando…" : "no disponible");
-  const resolvedTheme = resolveTheme(appearance.theme, systemDark);
 
   return (
     <div className={`desktop-shell platform-${runtimePlatform} theme-${resolvedTheme} session-text-${appearance.sessionTextSize}`}>
@@ -358,9 +320,9 @@ function AppView() {
                         updateAvailable={outdatedInstances.some((outdated) => outdated.id === instance.id)}
                         iconPreviewUrl={iconPreviews[instance.id] ?? null}
                         autoExpand={Boolean(query)}
-                        onLaunch={() => void runAction(`launch:${instance.id}`, () => bridge.launch(instance.id))}
-                        onStop={() => void runAction(`stop:${instance.id}`, () => bridge.stop(instance.id))}
-                        onOpen={() => void bridge.openFolder(instance.id).catch((reason) => setError(friendlyError(reason)))}
+                        onLaunch={() => instanceActions.launch(instance)}
+                        onStop={() => instanceActions.stop(instance)}
+                        onOpen={() => instanceActions.openFolder(instance)}
                         onEdit={() => setEditor(instance)}
                         onDelete={() => setDeleteTarget(instance)}
                         onTransfer={(session) => {
@@ -420,52 +382,17 @@ function AppView() {
           platform={runtimePlatform}
           busy={busy === "create" || busy === "update"}
           onClose={() => setEditor(null)}
-          onSave={async (form, iconChange) => {
-            const isNew = editor === "new";
-            setBusy(isNew ? "create" : "update");
-            setError(null);
-            try {
-              let next = isNew
-                ? await bridge.create(form)
-                : await bridge.update({ ...form, id: editor.id });
-              const previousIds = new Set(state.instances.map((instance) => instance.id));
-              const changedInstance = isNew
-                ? next.instances.find((instance) => !previousIds.has(instance.id))
-                : next.instances.find((instance) => instance.id === editor.id);
-              if (changedInstance && iconChange.remove && changedInstance.customIcon) {
-                next = await bridge.clearInstanceIcon(changedInstance.id);
-                removeIconPreview(changedInstance.id);
-              }
-              if (changedInstance && iconChange.bytes) {
-                next = await bridge.setInstanceIcon(changedInstance.id, iconChange.bytes);
-                if (iconChange.previewUrl) {
-                  storeIconPreview(changedInstance.id, iconChange.previewUrl!);
-                }
-              }
-              replaceDashboard(next);
-              setEditor(null);
-            } catch (reason) {
-              setError(friendlyError(reason));
-            } finally {
-              setBusy(null);
-            }
-          }}
+          onSave={(form, iconChange) => instanceActions.save(editor, form, iconChange, () => setEditor(null))}
         />
       )}
 
       {deleteTarget && (
-        <ConfirmDialog
-          title={`Eliminar “${deleteTarget.name}”`}
-          confirmLabel="Eliminar instancia"
+        <DeleteInstanceDialog
+          instance={deleteTarget}
           busy={busy === `delete:${deleteTarget.id}`}
           onCancel={() => setDeleteTarget(null)}
-          onConfirm={async () => {
-            await runAction(`delete:${deleteTarget.id}`, () => bridge.remove(deleteTarget.id));
-            setDeleteTarget(null);
-          }}
-        >
-          Se borrarán la aplicación administrada y todos los datos locales de este perfil. La cuenta vinculada al proveedor no se elimina. Esta acción no se puede deshacer.
-        </ConfirmDialog>
+          onConfirm={() => instanceActions.remove(deleteTarget, () => setDeleteTarget(null))}
+        />
       )}
 
       {transfer && (
@@ -476,65 +403,27 @@ function AppView() {
           instances={transferProfiles}
           busy={busy === `transfer:${transfer.session.id}`}
           onClose={() => setTransfer(null)}
-          onTransfer={async (targetId, mode, includeLocalArtifacts) => {
-            const target = transferProfiles.find((instance) => instance.id === targetId);
-            if (!target) return;
-            setBusy(`transfer:${transfer.session.id}`);
-            clearFeedback();
-            try {
-              const result = await bridge.copySession({
-                sourceInstanceId: transfer.source.id,
-                targetInstanceId: targetId,
-                sessionId: transfer.session.id,
-                mode,
-                includeLocalArtifacts,
-              });
-              replaceDashboard(result.dashboard);
-              setNotice(transferNotice(mode, transfer.session.title, transfer.source.name, target.name, result.artifacts));
-              setTransfer(null);
-            } catch (reason) {
-              setError(friendlyError(reason));
-            } finally {
-              setBusy(null);
-            }
-          }}
+          onTransfer={(targetId, mode, includeLocalArtifacts) => sessionActions.transfer(
+            transfer,
+            transferProfiles,
+            targetId,
+            mode,
+            includeLocalArtifacts,
+            () => setTransfer(null),
+          )}
         />
       )}
 
-      {unlinkTarget?.session.transfer && (() => {
-        const transferInfo = unlinkTarget.session.transfer;
-        const origin = transferProfiles.find((instance) => instance.id === transferInfo.originInstanceId);
-        const copy = unlinkDialogCopy(unlinkTarget, transferInfo, origin?.name);
-        return (
-          <ConfirmDialog
-            title={copy.title}
-            confirmLabel={copy.confirmLabel}
-            busy={busy === `unlink:${unlinkTarget.session.id}`}
-            tone="neutral"
-            busyLabel={copy.busyLabel}
-            onCancel={() => setUnlinkTarget(null)}
-            onConfirm={async () => {
-              setBusy(`unlink:${unlinkTarget.session.id}`);
-              clearFeedback();
-              try {
-                const nextState = await bridge.unlinkSession({
-                  instanceId: unlinkTarget.instance.id,
-                  sessionId: unlinkTarget.session.id,
-                });
-                replaceDashboard(nextState);
-                setNotice(copy.notice);
-                setUnlinkTarget(null);
-              } catch (reason) {
-                setError(friendlyError(reason));
-              } finally {
-                setBusy(null);
-              }
-            }}
-          >
-            {copy.body}
-          </ConfirmDialog>
-        );
-      })()}
+      {unlinkTarget?.session.transfer && (
+        <UnlinkSessionDialog
+          selection={unlinkTarget}
+          transferInfo={unlinkTarget.session.transfer}
+          profiles={transferProfiles}
+          busy={busy === `unlink:${unlinkTarget.session.id}`}
+          onCancel={() => setUnlinkTarget(null)}
+          onConfirm={(copy) => sessionActions.unlink(unlinkTarget, copy, () => setUnlinkTarget(null))}
+        />
+      )}
 
       {updateTargets && latestSource && latestVersion && (
         <ApplicationUpdateDialog
@@ -545,27 +434,7 @@ function AppView() {
           unavailableReason={state.system.versionTopology.reason}
           busy={busy === "update-applications"}
           onClose={() => setUpdateTargets(null)}
-          onConfirm={async () => {
-            const targets = updateTargets.filter((instance) => instance.status === "stopped");
-            setBusy("update-applications");
-            clearFeedback();
-            try {
-              const result = await bridge.synchronizeApplications({
-                source: latestSource,
-                targetInstanceIds: targets.map((instance) => instance.id),
-              });
-              replaceDashboard(result.dashboard);
-              const summary = summarizeSynchronization(result.results);
-              if (summary.notice) setNotice(summary.notice);
-              if (summary.error) setError(summary.error);
-              setUpdateTargets(null);
-            } catch (reason) {
-              setError(friendlyError(reason));
-              setUpdateTargets(null);
-            } finally {
-              setBusy(null);
-            }
-          }}
+          onConfirm={() => updateActions.synchronize(updateTargets, latestSource, () => setUpdateTargets(null))}
         />
       )}
 
@@ -576,20 +445,7 @@ function AppView() {
           version={state.system.sourceVersion}
           busy={busy === "update-original"}
           onClose={() => setOriginalUpdateOpen(false)}
-          onConfirm={async () => {
-            setBusy("update-original");
-            clearFeedback();
-            try {
-              const result = await runHandoff(() => bridge.updateOriginalApplication());
-              setNotice(result.message);
-              setOriginalUpdateOpen(false);
-            } catch (reason) {
-              setError(friendlyError(reason));
-              setOriginalUpdateOpen(false);
-            } finally {
-              setBusy(null);
-            }
-          }}
+          onConfirm={() => updateActions.updateOriginal(() => setOriginalUpdateOpen(false))}
         />
       )}
     </div>

@@ -1,4 +1,6 @@
 export { AppearanceDialog } from "./AppearanceDialog";
+export { AppearanceProvider } from "./AppearanceProvider";
+export { useAppearance, type AppearanceContextValue } from "./appearance-context";
 export {
   APPEARANCE_STORAGE_KEY,
   DEFAULT_APPEARANCE,

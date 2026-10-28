@@ -550,8 +550,8 @@
     "semantic_hash": ""
   },
   "src/features/appearance/index.ts": {
-    "mtime": 1793168528.4941697,
-    "ast_hash": "0fbc2544ab6a64ad21ee9586bdb4a0b9",
+    "mtime": 1793169258.9819667,
+    "ast_hash": "63bdd2346bcd342c23938eaac8b86db4",
     "semantic_hash": ""
   },
   "src/features/dashboard/index.ts": {
@@ -575,8 +575,8 @@
     "semantic_hash": ""
   },
   "src/features/instances/index.ts": {
-    "mtime": 1793168967.7657611,
-    "ast_hash": "7f3f3cddf3d01947cbcc10de5937f026",
+    "mtime": 1793169259.000113,
+    "ast_hash": "116bef4c87e75dfd1fca096ecc288d8b",
     "semantic_hash": ""
   },
   "src/features/instances/instance-icon.ts": {
@@ -615,8 +615,8 @@
     "semantic_hash": ""
   },
   "src/features/sessions/index.ts": {
-    "mtime": 1793168528.485419,
-    "ast_hash": "b39e1afb2f9661c58a4ad10aeb3a6203",
+    "mtime": 1793169259.0017593,
+    "ast_hash": "8e9d74dbeb13b894daae37164c789ace",
     "semantic_hash": ""
   },
   "src/features/updates/ApplicationUpdateDialog.tsx": {
@@ -630,18 +630,18 @@
     "semantic_hash": ""
   },
   "src/features/updates/index.ts": {
-    "mtime": 1793168967.7613971,
-    "ast_hash": "a0a03db22802d56acadc11838ea3d496",
+    "mtime": 1793169259.0035126,
+    "ast_hash": "fd81b905578438ceb390d06ebad9f26a",
     "semantic_hash": ""
   },
   "src/app/App.tsx": {
-    "mtime": 1793169001.9821904,
-    "ast_hash": "92beca88b455cecb04a7cb30ce44ba2f",
+    "mtime": 1793169297.615082,
+    "ast_hash": "1bb4e043270e2f26f51ea61131791fd2",
     "semantic_hash": ""
   },
   "src/app/AppView.tsx": {
-    "mtime": 1793169009.5733018,
-    "ast_hash": "eccefef8240207b78f144629d2ce3a0e",
+    "mtime": 1793169297.6104722,
+    "ast_hash": "037a074e551b50eccc58730151ef0205",
     "semantic_hash": ""
   },
   "src/features/dashboard/DashboardProvider.tsx": {
@@ -697,6 +697,56 @@
   "src/features/updates/useSourceUpdateRuntime.ts": {
     "mtime": 1793168967.7542074,
     "ast_hash": "8ac7de5effac409dd876a1f6233b4b89",
+    "semantic_hash": ""
+  },
+  "src/app/providers/DialogsProvider.tsx": {
+    "mtime": 1793169258.9862022,
+    "ast_hash": "3cfe54ee411df53ef12da1c257ac846e",
+    "semantic_hash": ""
+  },
+  "src/app/providers/dialogs-context.ts": {
+    "mtime": 1793169258.9839668,
+    "ast_hash": "d6ca49b3088dad353550f0dc49de9da2",
+    "semantic_hash": ""
+  },
+  "src/features/appearance/AppearanceProvider.tsx": {
+    "mtime": 1793169258.979965,
+    "ast_hash": "62c3696c45bddfc4a086ea7acd7f3be6",
+    "semantic_hash": ""
+  },
+  "src/features/appearance/appearance-context.ts": {
+    "mtime": 1793169258.9778745,
+    "ast_hash": "7319db7771a9aa68565231036c5822b3",
+    "semantic_hash": ""
+  },
+  "src/features/instances/DeleteInstanceDialog.tsx": {
+    "mtime": 1793169258.9903543,
+    "ast_hash": "11df27a94e2098dfff72910807eeb640",
+    "semantic_hash": ""
+  },
+  "src/features/instances/useInstanceActions.ts": {
+    "mtime": 1793169258.9884043,
+    "ast_hash": "cae5c3d52c84718374040ab35d665758",
+    "semantic_hash": ""
+  },
+  "src/features/sessions/UnlinkSessionDialog.tsx": {
+    "mtime": 1793169258.9962826,
+    "ast_hash": "221899a106d873194515c84b840dd06a",
+    "semantic_hash": ""
+  },
+  "src/features/sessions/useSessionActions.ts": {
+    "mtime": 1793169258.9944391,
+    "ast_hash": "bc97231da887b8a90b30e362c5b715bc",
+    "semantic_hash": ""
+  },
+  "src/features/sessions/useTransferProfiles.ts": {
+    "mtime": 1793169258.9924362,
+    "ast_hash": "627d510709c16c5531e34ce3ec9b18fb",
+    "semantic_hash": ""
+  },
+  "src/features/updates/useUpdateActions.ts": {
+    "mtime": 1793169258.9983149,
+    "ast_hash": "cb4cad050ee2c6b0ba2e1d6b28979412",
     "semantic_hash": ""
   }
 }
