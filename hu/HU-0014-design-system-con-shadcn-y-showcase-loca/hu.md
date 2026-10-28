@@ -2,7 +2,7 @@
 id: HU-0014
 titulo: "Design system con shadcn y showcase local"
 estado: en-proceso
-fase: implementacion
+fase: verificacion
 area: interfaz
 entrega: 1
 prioridad: media

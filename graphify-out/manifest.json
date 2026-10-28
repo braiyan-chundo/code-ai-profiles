@@ -100,8 +100,8 @@
     "semantic_hash": ""
   },
   ".github/workflows/validate.yml": {
-    "mtime": 1793196081.1087143,
-    "ast_hash": "207cf66f72b8b2a05c1a7880ab7a48be",
+    "mtime": 1793196725.1861959,
+    "ast_hash": "ba1234dccf87b093abd97ac0f9029c5e",
     "semantic_hash": ""
   },
   "AGENTS.md": {
@@ -335,8 +335,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793196665.6585658,
-    "ast_hash": "6a227a09cb881ea5e1f53d3974673651",
+    "mtime": 1793196864.6740952,
+    "ast_hash": "893dd21ed7cacad5da7e86e66f5f50c9",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -400,13 +400,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md": {
-    "mtime": 1793194338.0459704,
-    "ast_hash": "6b19b96fb55b261d4fdaf411e853eecb",
+    "mtime": 1793196827.8484473,
+    "ast_hash": "34b7c45c51d763068f0ae1804fdda61a",
     "semantic_hash": ""
   },
   "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/seguimiento.md": {
-    "mtime": 1793196665.6579564,
-    "ast_hash": "536c7e7544959983faeb2dcae8e1a9c0",
+    "mtime": 1793196864.673504,
+    "ast_hash": "4d3658bb3148520ffa196a6a68c14276",
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/arquitectura.md": {
@@ -595,12 +595,12 @@
     "semantic_hash": ""
   },
   "src/features/scan/ScanProgressPanel.tsx": {
-    "mtime": 1793192634.490138,
+    "mtime": 1793196765.4156964,
     "ast_hash": "2d19af12a4dd4e0f0537812db85791c1",
     "semantic_hash": ""
   },
   "src/features/scan/index.ts": {
-    "mtime": 1793192634.4902885,
+    "mtime": 1793196716.5680487,
     "ast_hash": "9a1b5b58e870b9ba246e8a4ce7fc776e",
     "semantic_hash": ""
   },
@@ -1525,8 +1525,8 @@
     "semantic_hash": ""
   },
   "tests/ui-isolation.test.ts": {
-    "mtime": 1793196063.0140228,
-    "ast_hash": "ae1148c653a50c4aa302dd5b8cd99ba0",
+    "mtime": 1793196709.0390878,
+    "ast_hash": "25655f8e2f1583dd813a3cb8b2715874",
     "semantic_hash": ""
   },
   "showcase.html": {
@@ -1535,8 +1535,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/revision-tecnica.md": {
-    "mtime": 1793196635.601975,
-    "ast_hash": "c3cb27e8e92468d35144c2ca26b6bad4",
+    "mtime": 1793196811.4898825,
+    "ast_hash": "8e74764377db402cc85ecabebf9821c0",
+    "semantic_hash": ""
+  },
+  "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/verificacion.md": {
+    "mtime": 1793196857.0043247,
+    "ast_hash": "a7af61a3be01d1b22884d30c83c53816",
     "semantic_hash": ""
   }
 }

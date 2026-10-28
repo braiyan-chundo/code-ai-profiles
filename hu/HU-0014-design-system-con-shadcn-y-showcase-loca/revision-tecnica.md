@@ -1,6 +1,10 @@
 # Revisión técnica · HU-0014 · Design system con shadcn y showcase local
 
-**Veredicto: FAIL**, por un solo bloqueo (R-1). La prueba `tests/ui-isolation.test.ts` es la única guarda
+**Veredicto final: PASS** (segunda vuelta, `283649f`). R-1 y R-5 están corregidos. No queda nada que bloquee: lo
+que sigue abierto son observaciones (R-2, R-3, R-4, R-6, R-7, R-8, R-9) y la suite, que corre el orquestador. El
+detalle, en § Segunda vuelta, al final.
+
+**Primera vuelta (`2de3ff4`): FAIL**, por un solo bloqueo (R-1). La prueba `tests/ui-isolation.test.ts` es la única guarda
 automática del riesgo principal (Tailwind o el catálogo dentro de la app), y tiene dos problemas: en Windows da
 falsos verdes y no detecta un import de Tailwind fuera de las dos entradas. Lo demás está bien. La app no cambia
 (ni `index.html`, ni `src/main.tsx`, ni `src/styles/{index,base,theme-light,…}.css`, ni `app/`, `features/`,
@@ -113,3 +117,29 @@ En `docs/arquitectura/frontend.md`, § Design system, añadí lo que el código 
 «Adoptarlo en la app», la base de navegadores (R-6) y la cookie de `sidebar` (R-5). Cuando se arregle la R-1, la
 frase «Lo vigila `tests/ui-isolation.test.ts`» de § Reglas de dependencias sigue siendo cierta y no hay que
 cambiarla.
+
+## Segunda vuelta · `0dc0a6d..283649f` · PASS
+
+Revisado el 2026-10-28: el diff de `tests/ui-isolation.test.ts`, `validate.yml` y la ficha `sidebar.md`.
+`pruebas.mjs estado`: «HEAD 283649f sin suite en verde». No he corrido pruebas. El orquestador informa de que
+`pnpm test:ui` da 5 de 5 y de que, con un import real de `@/components/ui/button` en `src/features/scan/`, falla 1.
+
+| | Estado | Comprobación |
+| --- | --- | --- |
+| R-1 (a) Windows | Resuelto | `toPosix` en la ruta local y `posix.dirname`/`posix.join`/`posix.normalize` en los destinos relativos. El canario lo prueba con rutas `\` (`features\scan\x.ts` revisado; `components\ui\…`, `hooks\…` y `styles\ui-theme.css` excluidos) |
+| R-1 (b) Alcance | Resuelto | Recorre todo `src/` (`.ts`, `.tsx` y `.css`) salvo `components/ui/`, `hooks/`, `showcase/`, `styles/ui-theme.css` y `lib/utils.ts`. Entran `main.tsx`, `styles/*.css` y `components/*.css`. Prohíbe los paquetes (`tailwindcss`, `@tailwindcss/`, `tw-animate-css`, `shadcn`, `lucide-react`, `radix-ui`, `class-variance-authority`, `cn`), los alias `@/…` y los relativos que resuelven al catálogo. Las guardas de cobertura (cada prefijo, `main.tsx` y `styles/base.css`) evitan el verde vacío. La prueba 1 añade `components/ui` |
+| R-1 (c) `(--muted)` | Resuelto | `/\(--muted\)/`, con el canario de las dos formas y el negativo `var(--surface-soft)` |
+| R-1 (d) Canario | Resuelto | 10 fugas sintéticas (CSS, `url()`, alias, relativos, `import()` dinámico) y 4 casos limpios que no deben marcarse. Protege contra un predicado que nunca falle y contra uno que marque de más |
+| R-1 (e) `dist/` en CI | Resuelto | Va después de «Build frontend», con el escalar entre comillas (si no, el `!` sería una etiqueta YAML). Con `bash -e`, si encuentra Tailwind, la lista sale con 1 y el paso falla |
+| R-5 | Resuelto | `sidebar.md`, «Qué no hacer»: la cookie `sidebar_state`, el atajo Cmd/Ctrl+B y qué hacer al adoptarlo |
+
+Lo que queda (nada bloquea):
+
+| | Bloquea | Dónde | Qué | Qué hacer | Responsable |
+| --- | --- | --- | --- | --- | --- |
+| R-9 | No | `tests/ui-isolation.test.ts`, `validate.yml` | (1) `specifiers()` no ve un `@import url(x)` sin comillas (es CSS válido). (2) Si faltara `dist/`, `grep -r` sale con 2 y el `!` lo convierte en éxito. Hoy no puede pasar, porque el paso anterior es el build y falla antes | Opcional: aceptar `url\(\s*["']?` sin comillas y añadir `test -d dist &&` al principio del paso. Se cambia si se vuelve a tocar el archivo | frontend |
+
+R-2, R-3, R-4, R-6, R-7 y R-8 siguen como en la primera vuelta. Solo son observaciones o decisiones del mantenedor.
+
+Falta para cerrar: la suite completa sobre el SHA final (orquestador), `npm run graph:update` y `graph:check` por el
+cambio de código, y la prueba humana de AC-01 a AC-03 en `/showcase.html`, en oscuro y en claro.
