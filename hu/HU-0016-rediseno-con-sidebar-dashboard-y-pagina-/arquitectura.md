@@ -118,6 +118,19 @@ También busqué en `node_modules`, con `rg`, los listeners de `window` de Radix
 | A-14 | Iconos: lucide en todo. `CloudIcon` pasa a `components/BrandMark.tsx` (la marca y el icono por defecto de una instancia) y `Icons.tsx` se borra. El icono personalizado sigue con `managedIconSource`. | D-5 |
 | A-15 | Dashboard: Instancias, En marcha, Sesiones Code y versión de la aplicación original (las cifras de la toolbar actual, para no perderlas), almacenamiento (administrado y libre), uso por instancia ordenado (`usageRanking`), avisos y los accesos «Nueva instancia» y «Escanear sistema». Sin búsqueda: el resumen es global. | D-6, más las cifras de la toolbar (AC-06) |
 
+### Lo construido frente al plan (revisión técnica, 2026-10-28)
+
+Aceptado en la revisión (`revision-tecnica.md`). Manda lo que dice esta tabla sobre las filas A-n de arriba.
+
+| | Plan | Construido |
+| --- | --- | --- |
+| A-6 | `transform` en la raíz | En el marco (`SidebarProvider`), con `overflow-hidden` y las esquinas de Windows. La raíz es `data-slot="desktop-shell"` y no lleva `transform`. `DialogHost` queda fuera del marco: sus portales van a `body` igualmente |
+| A-6/A-7 | `data-platform` y variantes CSS | `useRuntimePlatform()` en `AppShell` y `Titlebar`. La clase `platform-*` queda solo como marca |
+| A-12 | Escape, X y clic fuera con la guarda de `busy` | Además: la X se deshabilita con `busy` (`closeDisabled`, prop nueva de `DialogContent`). El `AlertDialog` no cierra con el clic fuera (antes `ConfirmDialog` sí). Confirmar es un `Button`, no `AlertDialogAction` |
+| A-12 | Aspecto de los diálogos en el uso | En el catálogo: `DialogContent`, `DialogTitle`, `DialogDescription`, `AlertDialogContent` y `AlertDialogTitle` restilizados, anotados en sus fichas |
+| § CSS | Tokens oscuros en `:root` | En `:root, .theme-dark`, por la muestra oscura del diálogo de Apariencia |
+| § Estructura | — | Nuevos `PageHeader`, `PageContent`, `PageSkeleton` (`app/layout`), `NoticeAlert` (`components/`), `InstanceStatusBadge`, `UsageBar`, `usage-tone.ts` e `instance-status.ts` (`features/instances`) |
+
 ### Estructura resultante
 
 ```text

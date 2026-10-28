@@ -100,7 +100,7 @@
     "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1793208709.9068067,
+    "mtime": 1793209030.586793,
     "ast_hash": "410c38c8000293668a2519c2682b53c0",
     "semantic_hash": ""
   },
@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793208716.9620574,
-    "ast_hash": "a55e01e6c7a47ebb3e45cfaab77310b1",
+    "mtime": 1793209062.3520112,
+    "ast_hash": "b9332d5c7d295ada7c416a68cea6d603",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -390,8 +390,8 @@
     "semantic_hash": ""
   },
   "docs/arquitectura/frontend.md": {
-    "mtime": 1793204372.772606,
-    "ast_hash": "dea5f0db9ee901e48c87ed8f41707c31",
+    "mtime": 1793208921.0107658,
+    "ast_hash": "9c2c41dbcb2e91bebb3b5030faf9bef6",
     "semantic_hash": ""
   },
   "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md": {
@@ -1500,18 +1500,18 @@
     "semantic_hash": ""
   },
   "hu/HU-0016-rediseno-con-sidebar-dashboard-y-pagina-/hu.md": {
-    "mtime": 1793204422.7672858,
-    "ast_hash": "b07bb6d280b0b0c845c2b8234ca313b2",
+    "mtime": 1793209030.652531,
+    "ast_hash": "ecf094b41ae83765f0ded694b8908635",
     "semantic_hash": ""
   },
   "hu/HU-0016-rediseno-con-sidebar-dashboard-y-pagina-/seguimiento.md": {
-    "mtime": 1793208716.9614038,
-    "ast_hash": "063f394ad24f99b97f4633ec2e5e911f",
+    "mtime": 1793209062.3514745,
+    "ast_hash": "e24615cb6243caf427222368fd3106bc",
     "semantic_hash": ""
   },
   "hu/HU-0016-rediseno-con-sidebar-dashboard-y-pagina-/arquitectura.md": {
-    "mtime": 1793204372.7722478,
-    "ast_hash": "cd85485b83754dd1dd9f028620db0193",
+    "mtime": 1793208931.0047305,
+    "ast_hash": "949ab16b87e19f52cb8067811be67930",
     "semantic_hash": ""
   },
   "hu/HU-0016-rediseno-con-sidebar-dashboard-y-pagina-/briefs/frontend.md": {
@@ -1622,6 +1622,16 @@
   "src/features/sessions/SessionList.tsx": {
     "mtime": 1793207042.5126097,
     "ast_hash": "0f2d9603dc955bbb7eeac4e9e3bd2128",
+    "semantic_hash": ""
+  },
+  "hu/HU-0016-rediseno-con-sidebar-dashboard-y-pagina-/revision-tecnica.md": {
+    "mtime": 1793208998.0401225,
+    "ast_hash": "4b6c45a01518072117d8b81616ef982b",
+    "semantic_hash": ""
+  },
+  "hu/HU-0016-rediseno-con-sidebar-dashboard-y-pagina-/verificacion.md": {
+    "mtime": 1793209055.940248,
+    "ast_hash": "989e7ddc411ac54aa3b616e5bf6b8cdc",
     "semantic_hash": ""
   }
 }

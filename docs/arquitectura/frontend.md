@@ -18,19 +18,20 @@ src/
     router.tsx          createHashRouter: rutas, layout y salida para rutas desconocidas
     RouteErrorBoundary.tsx
     providers/          AppProviders, DashboardRuntime, DialogsProvider (+ dialogs-context.ts)
-    layout/             AppShell (SidebarProvider), Titlebar, AppSidebar, FeedbackArea, Statusbar, DialogHost, window-actions.ts
+    layout/             AppShell (SidebarProvider), Titlebar, AppSidebar, FeedbackArea, Statusbar, DialogHost,
+                        PageHeader, PageContent, PageSkeleton (las dos filas y el esqueleto de una pantalla) y window-actions.ts
     routes/<pantalla>/  un componente de ruta y las piezas que solo usa esa pantalla
   features/<feature>/   componentes, hooks, lógica pura y tipos de una funcionalidad (sin CSS desde la HU-0016)
     index.ts            su API pública
-  components/           piezas compartidas sin dominio: BrandMark (la marca) y EmptyState
+  components/           piezas compartidas sin dominio: BrandMark (la marca), EmptyState y NoticeAlert (el aviso en línea)
     ui/                 (HU-0014) el catálogo shadcn/ui (radix-vega): código propio desde su descarga
   hooks/                (HU-0014) hooks genéricos del registro: use-mobile, use-highlighted-code (+ highlighter.tsx)
-  lib/                  sin React: bridge, controladores, formato, errores, plataforma
+  lib/                  sin React: bridge, controladores, formato, errores, plataforma, webview-support (HU-0016)
     utils.ts            (HU-0014) cn(), reexportado del paquete `cn`
   styles/               index.css (la entrada de Tailwind de la app), tokens.css (tokens oscuros, claros y de
                         densidad) y ui-theme.css (el puente de las variables de shadcn a los tokens)
-  showcase/             (HU-0014) la otra entrada de Vite: main.tsx, showcase.css (la única entrada de
-                        Tailwind), Showcase.tsx, catalog.ts y sections/<componente>.tsx
+  showcase/             (HU-0014) la otra entrada de Vite: main.tsx, showcase.css (su entrada de Tailwind; la app
+                        tiene la suya en styles/index.css), Showcase.tsx, catalog.ts y sections/<componente>.tsx
 tests/*.test.ts         node --test sobre módulos puros (y ui-isolation.test.ts, que vigila las fronteras de la UI)
 showcase.html           (HU-0014) la página del showcase; solo la sirve `pnpm dev`, `vite build` no la empaqueta
 components.json         (HU-0014) configuración de la CLI de shadcn
@@ -76,7 +77,8 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
   Node no resuelve `@/`.
 - **La capa de UI genérica** (HU-0014): `components/ui → hooks → lib/utils.ts`. No conoce el dominio ni importa
   `features/`, `app/`, `lib/bridge.ts`, `types.ts` ni `@tauri-apps/*`. La app la usa (HU-0016) importando
-  `@/components/ui/<id>`, `cn` de `@/lib/utils` y los iconos de `lucide-react`. `radix-ui` y `cva` solo aparecen
+  `components/ui/<id>`, `cn` de `lib/utils` (con imports relativos, como el resto de la app) y los iconos de
+  `lucide-react`. `radix-ui` y `cva` solo aparecen
   dentro de `components/ui`. Si una pantalla necesita una primitiva que el catálogo no tiene, se añade al catálogo.
 - **El showcase** (`src/showcase/`) importa `components/ui`, `hooks`, `lib/utils.ts` y las fuentes. Nada importa
   del showcase, y el showcase no importa features, `app/`, `bridge` ni datos reales.
@@ -142,7 +144,8 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
   - `change` del `matchMedia` de `hooks/use-mobile.ts`, que usa el sidebar.
 
   Escape lo gestiona cada diálogo de Radix (HU-0016). En las dependencias, Radix `Menu` (menús desplegables y
-  contextuales) y `Select` registran `blur` en `window` **mientras están abiertos**, para cerrarse. No tocan los
+  contextuales) y `Select` registrarían `blur` en `window` **mientras estuvieran abiertos**, para cerrarse (hoy la app no
+  los usa: en el bundle solo hay los cinco listeners de los tres dueños). No tocan los
   `focus` de R-1. En la app no se montan `Toaster` (sonner registra `visibilitychange`) ni el toast de Radix (registra
   `focus` y `blur`).
 - **Dependencias de esos efectos.** Solo valores estables (los controladores, refs, las acciones del store) o la
@@ -154,7 +157,9 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
   `sidebar.tsx` del catálogo no escribe `sidebar_state` ni registra Cmd/Ctrl+B.
 - **El tema va en `<html>`** (HU-0016). `AppearanceProvider` aplica `theme-dark`/`theme-light` y `data-session-text`
   sobre `document.documentElement` con `useLayoutEffect`, y así los portales de Radix (menús, diálogos, tooltips),
-  que cuelgan de `body`, lo heredan. La plataforma va en la raíz del shell (`data-platform`).
+  que cuelgan de `body`, lo heredan. La plataforma no va en el DOM como gancho de CSS: los componentes que cambian
+  por plataforma (`AppShell`, `Titlebar`) leen `useRuntimePlatform()` y eligen sus clases. La raíz conserva la clase
+  `platform-*` solo como marca para inspeccionar.
 
 ## Router
 
@@ -217,13 +222,24 @@ Lo que rige desde la HU-0016, con los pasos y la convivencia en `hu/HU-0016-…/
   utilidades); `ui-theme.css`; y un `@layer base` con el borde y el anillo por defecto, el `color-scheme` de cada tema
   y `prefers-reduced-motion`. **`body` no lleva fondo**: en Windows la ventana es transparente con esquinas
   redondeadas, y el fondo lo pinta la raíz del shell.
-- Tokens: oscuros en `:root`, claros en `.theme-light` (detrás) y densidad en `:root[data-session-text=…]`. El
-  puente a shadcn, en `ui-theme.css` (§ Design system).
-- Plataformas: la raíz del shell lleva `data-platform`, y las diferencias van con variantes (`in-data-[platform=…]:`).
-  macOS reserva el semáforo nativo (`x:28, y:40` en `tauri.macos.conf.json`) con una titlebar de 94 px. Windows pinta
-  sus controles arriba a la derecha y tiene esquinas de 20 px. Linux usa las decoraciones nativas.
-- El sidebar del catálogo es `position: fixed`. La raíz del shell lleva `transform: translateZ(0)` para que quede
-  dentro de la ventana, y el sidebar empieza debajo de la titlebar (`--titlebar-height`).
+- Tokens (`styles/tokens.css`): oscuros en `:root, .theme-dark` (una muestra `.theme-dark` dentro del tema claro
+  también los toma), claros en `.theme-light` (detrás) y densidad en `:root[data-session-text=…]`. El puente a shadcn,
+  en `ui-theme.css` (§ Design system). Lo que el aspecto de la app necesita y no es token de shadcn va como `--ui-*`
+  (por ejemplo, el degradado, el borde y la sombra de la ventana).
+- Plataformas (`AppShell` y `Titlebar`, con `useRuntimePlatform()`): `--titlebar-height` es de 94 px en macOS, que
+  reserva 106 px a la izquierda para el semáforo nativo (`x:28, y:40` en `tauri.macos.conf.json`), y de 64 px en
+  Windows y Linux. Windows pinta sus controles arriba a la derecha y lleva un marco con esquinas de 20 px, borde y
+  sombra. Linux usa las decoraciones nativas.
+- Los elementos estructurales se marcan con `data-slot` (`desktop-shell` en la raíz, `sidebar-wrapper` del catálogo
+  en el marco), no con clases propias.
+- El sidebar del catálogo es `position: fixed`. El marco (`SidebarProvider`) lleva `transform: translateZ(0)` y
+  `overflow-hidden` para que quede dentro de la ventana y lo recorten sus esquinas. `AppSidebar` lo baja con
+  `top-(--titlebar-height)! h-auto!`. Los diálogos se pintan en `body`, fuera del marco: su velo cubre la ventana
+  entera, también las esquinas transparentes de Windows, como antes.
+- Diálogos: el aspecto común (radio 26, relleno 28, ancho 580, título de 22 px) está en `components/ui/dialog.tsx` y
+  `alert-dialog.tsx`, con `closeDisabled` en `DialogContent` (ver sus fichas). Confirmar es un `Button`, no
+  `AlertDialogAction`, para que el diálogo siga abierto mientras la operación marca `busy`. Un `AlertDialog` no se
+  cierra con el clic fuera.
 - **Base de navegadores** (HU-0016 P-1). Tailwind 4 necesita capas en cascada y `color-mix`, es decir, WebKit de
   Safari 16.4 o posterior. Por eso macOS pide **13.3 o posterior** (`minimumSystemVersion` en
   `src-tauri/tauri.conf.json`, que trae Safari 16.4). Linux pide **WebKitGTK 2.40 o posterior** (en Ubuntu 22.04, el de
@@ -254,6 +270,12 @@ Cómo usar cada componente, en la skill `code-ai-profiles-ui`. El detalle de las
 - **Tailwind 4 se carga siempre** (HU-0016). Hay dos entradas: `src/styles/index.css` (la app) y
   `src/showcase/showcase.css` (el showcase), cada una con `source(none)` y sus `@source`. El build minifica con los
   `targets` fijos de Tailwind (Safari 16.4, Chrome 111, Firefox 128).
+- **Peso** (medido en HU-0016, un solo chunk de entrada): CSS 57,6 → 214,5 kB (31,8 kB gzip) y JS 383 → 573 kB
+  (181 kB gzip), con el aviso de Vite por un chunk de más de 500 kB. El CSS crece porque `@source "../components"`
+  genera las clases de los 63 componentes, aunque la app usa 18. El JS crece por las primitivas de Radix (dialog,
+  alert-dialog, tooltip con floating-ui, checkbox, radio-group, progress) y por lucide. No llegan al bundle recharts,
+  shiki, date-fns, @base-ui, cmdk, vaul ni embla. Se carga del disco local, así que no se nota al arrancar. Si
+  importara, hay dos palancas: excluir del `@source` lo que la app no usa y diferir los diálogos.
 - **`vite build` solo empaqueta `index.html`** porque no hay `build.rollupOptions.input`. Si algún día se declara,
   `showcase.html` no entra en él.
 - **En `pnpm dev` (y `pnpm tauri dev`) el optimizador de dependencias recorre todos los `*.html` de la raíz**, también

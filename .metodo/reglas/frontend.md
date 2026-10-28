@@ -13,3 +13,4 @@
 - Respetas los controles nativos de ventana de macOS y las decoraciones de Windows y Linux.
 - No cambias contratos de backend ni Rust. Si los necesitas, lo devuelves al orquestador.
 - No inventas datos que el backend no pueda obtener de forma segura.
+- El servidor de desarrollo se para por el PID que lanzaste tú, nunca matando lo que escucha en un puerto (`lsof -ti`): las instancias de Claude del mantenedor pueden estar en marcha y se mató una así en HU-0016. Nada bajo `~/Library/Application Support/com.braiyan.claudeprofiles/` ni procesos de Claude.

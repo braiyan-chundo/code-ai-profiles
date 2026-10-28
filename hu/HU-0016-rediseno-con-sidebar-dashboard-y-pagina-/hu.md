@@ -2,7 +2,7 @@
 id: HU-0016
 titulo: "Rediseño con sidebar, dashboard y página por instancia"
 estado: en-proceso
-fase: implementacion
+fase: verificacion
 area: interfaz
 entrega: 1
 prioridad: media
