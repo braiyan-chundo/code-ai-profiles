@@ -3,7 +3,7 @@ import { originalAppName as selectOriginalAppName, useDashboard, useRuntimePlatf
 import { OriginalDetail } from "../../../features/original-app";
 import { useScan } from "../../../features/scan";
 import { useTransferProfiles } from "../../../features/sessions";
-import { SourceUpdateBanner } from "../../../features/updates";
+import { originalInstallAvailability, SourceUpdateBanner, useUpdateActions } from "../../../features/updates";
 import { useDialogs } from "../../providers/dialogs-context";
 import { PageContent } from "../../layout/PageContent";
 import { PageHeader } from "../../layout/PageHeader";
@@ -19,6 +19,7 @@ export function OriginalRoute() {
   const { setTransfer, setUnlinkTarget, setOriginalUpdateOpen } = useDialogs();
   const runtimePlatform = useRuntimePlatform();
   const transferProfiles = useTransferProfiles();
+  const { installOriginal } = useUpdateActions();
   const appName = selectOriginalAppName(state.system);
   const sourcePath = state.system.sourcePath;
   const openOriginalUpdate = () => {
@@ -42,6 +43,8 @@ export function OriginalRoute() {
               status={state.system.originalStatus}
               sessions={state.system.originalCodeSessions}
               busy={busy !== null}
+              install={originalInstallAvailability(state.system, busy)}
+              onInstall={() => void installOriginal()}
               onUpdate={openOriginalUpdate}
               onTransfer={(session) => {
                 clearFeedback();

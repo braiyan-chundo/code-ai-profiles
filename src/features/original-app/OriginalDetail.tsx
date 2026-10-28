@@ -1,16 +1,18 @@
-import { RefreshCwIcon, TerminalSquareIcon } from "lucide-react";
+import { DownloadIcon, RefreshCwIcon, TerminalSquareIcon } from "lucide-react";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import type { CodeSession, DashboardState, SessionProfile } from "../../types";
 import { InstanceAvatar, InstanceStatusBadge } from "../instances";
 import { SessionList } from "../sessions";
+import type { OriginalInstallAvailability } from "../updates";
 
 /**
  * El cuerpo de `#/original` (HU-0016, AC-04): la aplicación original con su ruta, versión, estado, perfil local y
  * sesiones de Code, y sus acciones: actualizar por el canal oficial y, por sesión, transferir y desvincular o devolver.
  * Sustituye a la `OriginalAppSection`. Sus botones de sesión **no** se deshabilitan con `busy`, como antes; solo
- * «Actualizar original».
+ * «Actualizar original». Con una versión disponible en macOS (HU-0017, A-10) «Descargar e instalar» es el botón
+ * principal y «Actualizar original» queda como secundario, con el motivo de bloqueo a la vista.
  */
 export function OriginalDetail({
   appName,
@@ -21,6 +23,8 @@ export function OriginalDetail({
   status,
   sessions,
   busy,
+  install,
+  onInstall,
   onUpdate,
   onTransfer,
   onUnlink,
@@ -33,6 +37,8 @@ export function OriginalDetail({
   status: SessionProfile["status"];
   sessions: CodeSession[];
   busy: boolean;
+  install: OriginalInstallAvailability;
+  onInstall: () => void;
   onUpdate: () => void;
   onTransfer: (session: CodeSession) => void;
   onUnlink: (session: CodeSession) => void;
@@ -65,18 +71,30 @@ export function OriginalDetail({
           <div className="flex flex-wrap items-center gap-2.5">
             <Metric label="Perfil local" value={profilePath ? "Detectado" : "Sin detectar"} />
             <Metric label="Sesiones Code" value={`${sessions.length}`} />
-            <Button
-              type="button"
-              variant="outline"
-              size="lg"
-              onClick={onUpdate}
-              disabled={busy}
-              aria-label={`Actualizar ${appName} mediante su canal oficial`}
-              title={`Abrir confirmación para el canal oficial de ${channel}`}
-              className="px-4"
-            >
-              <RefreshCwIcon /> Actualizar original
-            </Button>
+            <div className="grid justify-items-end gap-1.5">
+              <div className="flex flex-wrap items-center justify-end gap-2.5">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  onClick={onUpdate}
+                  disabled={busy}
+                  aria-label={`Actualizar ${appName} mediante su canal oficial`}
+                  title={`Abrir confirmación para el canal oficial de ${channel}`}
+                  className="px-4"
+                >
+                  <RefreshCwIcon /> Actualizar original
+                </Button>
+                {install.visible && (
+                  <Button type="button" size="lg" onClick={onInstall} disabled={install.disabled} className="px-4">
+                    <DownloadIcon /> Descargar e instalar
+                  </Button>
+                )}
+              </div>
+              {install.visible && install.disabledReason && (
+                <span className="text-right text-xs text-muted-foreground">{install.disabledReason}</span>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>
