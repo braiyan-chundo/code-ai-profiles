@@ -17,6 +17,7 @@ use sysinfo::{ProcessRefreshKind, RefreshKind, System, UpdateKind};
 use tauri::{AppHandle, Emitter, Manager, WebviewWindow};
 use uuid::Uuid;
 
+mod config;
 mod original_update;
 
 const REGISTRY_VERSION: u32 = 1;
@@ -1037,15 +1038,15 @@ fn original_application_update_target(
     match (platform, arch) {
         ("windows", "x86_64") => Some(OriginalApplicationUpdateTarget {
             action: OriginalApplicationUpdateAction::Download,
-            url: "https://claude.ai/api/desktop/win32/x64/setup/latest/redirect",
+            url: config::windows_x64_download_url(),
         }),
         ("windows", "aarch64") => Some(OriginalApplicationUpdateTarget {
             action: OriginalApplicationUpdateAction::Download,
-            url: "https://claude.ai/api/desktop/win32/arm64/setup/latest/redirect",
+            url: config::windows_arm64_download_url(),
         }),
         ("linux", _) => Some(OriginalApplicationUpdateTarget {
             action: OriginalApplicationUpdateAction::Instructions,
-            url: "https://support.claude.com/en/articles/10065433-install-claude-desktop",
+            url: config::linux_install_guide_url(),
         }),
         _ => None,
     }
@@ -1905,16 +1906,13 @@ fn save_source_update_cache(
     atomic_replace_file(&paths.source_update_cache, &contents)
 }
 
-fn check_official_update_feed(
-    platform: &str,
-    arch: &str,
+/// Consulta el feed oficial y devuelve su JSON. Sin redirecciones, 5 s, 256 KiB y `device_id` nulo.
+fn fetch_official_feed(
+    feed_platform: &str,
+    feed_arch: &str,
     installed_version: &str,
-) -> Result<SourceUpdateInfo, String> {
-    let (feed_platform, feed_arch) = update_feed_target(platform, arch)
-        .ok_or_else(|| "No existe un feed oficial para esta plataforma.".to_string())?;
-    let url = format!(
-        "https://releases.claude.com/api/desktop/{feed_platform}/{feed_arch}/squirrel/update"
-    );
+) -> Result<Value, String> {
+    let url = config::feed_url(feed_platform, feed_arch);
     let client = reqwest::blocking::Client::builder()
         .timeout(std::time::Duration::from_secs(5))
         .redirect(reqwest::redirect::Policy::none())
@@ -1926,7 +1924,7 @@ fn check_official_update_feed(
             ("version", installed_version),
             ("device_id", NULL_DEVICE_ID),
         ])
-        .header(reqwest::header::USER_AGENT, "Code-AI-Profiles/0.1")
+        .header(reqwest::header::USER_AGENT, config::user_agent())
         .send()
         .map_err(|error| format!("No se pudo consultar el feed oficial: {error}"))?;
     if !response.status().is_success() {
@@ -1946,8 +1944,14 @@ fn check_official_update_feed(
     if body.len() as u64 > UPDATE_FEED_MAX_BYTES {
         return Err("La respuesta del feed oficial excede el límite permitido.".to_string());
     }
-    let document: Value = serde_json::from_slice(&body)
-        .map_err(|_| "El feed oficial devolvió metadata inválida.".to_string())?;
+    serde_json::from_slice(&body)
+        .map_err(|_| "El feed oficial devolvió metadata inválida.".to_string())
+}
+
+fn source_update_from_feed(
+    document: &Value,
+    installed_version: &str,
+) -> Result<SourceUpdateInfo, String> {
     let latest_version = document
         .get("currentRelease")
         .and_then(Value::as_str)
@@ -1961,6 +1965,17 @@ fn check_official_update_feed(
         stale: false,
         source: Some(SourceUpdateSource::OfficialFeed),
     })
+}
+
+fn check_official_update_feed(
+    platform: &str,
+    arch: &str,
+    installed_version: &str,
+) -> Result<SourceUpdateInfo, String> {
+    let (feed_platform, feed_arch) = update_feed_target(platform, arch)
+        .ok_or_else(|| "No existe un feed oficial para esta plataforma.".to_string())?;
+    let document = fetch_official_feed(feed_platform, feed_arch, installed_version)?;
+    source_update_from_feed(&document, installed_version)
 }
 
 fn parse_apt_policy(contents: &str) -> (Option<String>, Option<String>) {
@@ -5627,6 +5642,7 @@ fn delete_instance_sync(app: &AppHandle, id: String) -> Result<(), String> {
 pub fn run() {
     tauri::Builder::default()
         .setup(|app| {
+            config::validate().map_err(std::io::Error::other)?;
             let handle = app.handle().clone();
             ManagedPaths::resolve(&handle).map_err(std::io::Error::other)?;
             Ok(())
@@ -6328,21 +6344,21 @@ int main(int argc, const char **argv) {
             original_application_update_target("windows", "x86_64"),
             Some(OriginalApplicationUpdateTarget {
                 action: OriginalApplicationUpdateAction::Download,
-                url: "https://claude.ai/api/desktop/win32/x64/setup/latest/redirect",
+                url: config::windows_x64_download_url(),
             })
         );
         assert_eq!(
             original_application_update_target("windows", "aarch64"),
             Some(OriginalApplicationUpdateTarget {
                 action: OriginalApplicationUpdateAction::Download,
-                url: "https://claude.ai/api/desktop/win32/arm64/setup/latest/redirect",
+                url: config::windows_arm64_download_url(),
             })
         );
         assert_eq!(
             original_application_update_target("linux", "x86_64"),
             Some(OriginalApplicationUpdateTarget {
                 action: OriginalApplicationUpdateAction::Instructions,
-                url: "https://support.claude.com/en/articles/10065433-install-claude-desktop",
+                url: config::linux_install_guide_url(),
             })
         );
         assert_eq!(
@@ -6773,6 +6789,29 @@ int main(int argc, const char **argv) {
         assert!(valid_release_version("1:1.22300.0-1~stable"));
         assert!(!valid_release_version("https://invalid.example/version"));
         assert!(!valid_release_version(""));
+    }
+
+    #[test]
+    fn maps_official_feed_document_to_source_update() {
+        let document = serde_json::json!({ "currentRelease": "1.22400.0", "releases": [] });
+        let newer = source_update_from_feed(&document, "1.22300.0").unwrap();
+        assert_eq!(newer.status, SourceUpdateStatus::Available);
+        assert_eq!(newer.latest_version.as_deref(), Some("1.22400.0"));
+        assert_eq!(newer.source, Some(SourceUpdateSource::OfficialFeed));
+        assert!(!newer.stale);
+        assert!(newer.checked_at.is_some());
+        assert_eq!(
+            source_update_from_feed(&document, "1.22400.0")
+                .unwrap()
+                .status,
+            SourceUpdateStatus::Current
+        );
+        assert!(source_update_from_feed(&serde_json::json!({}), "1.0.0").is_err());
+        assert!(source_update_from_feed(
+            &serde_json::json!({ "currentRelease": "https://invalid.example" }),
+            "1.0.0"
+        )
+        .is_err());
     }
 
     #[test]
