@@ -1,8 +1,15 @@
 //! Descarga, verificación e instalación de la aplicación original en macOS (HU-0017, ADR-0002).
+//!
+//! Fuera de macOS el comando devuelve «no disponible» sin tocar la red; el resto del módulo compila en
+//! todas las plataformas para que sus pruebas corran también en CI.
+#![cfg_attr(not(target_os = "macos"), allow(dead_code))]
 
 use super::*;
 use sha2::{Digest, Sha256};
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{
+    atomic::{AtomicBool, Ordering},
+    Arc,
+};
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -1137,16 +1144,596 @@ pub(crate) fn recover_leftovers_in(installations: &[PathBuf], staging_root: &Pat
     }
 }
 
+// ---------------------------------------------------------------------------------------------------------
+// Vuelo único y cancelación (A-5).
+// ---------------------------------------------------------------------------------------------------------
+
+struct Flight {
+    cancel: AtomicBool,
+    cancellable: Mutex<bool>,
+}
+
+fn active_flight() -> std::sync::MutexGuard<'static, Option<Arc<Flight>>> {
+    static ACTIVE: OnceLock<Mutex<Option<Arc<Flight>>>> = OnceLock::new();
+    ACTIVE
+        .get_or_init(|| Mutex::new(None))
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner())
+}
+
+/// La operación en curso. Al soltarse libera el vuelo, pase lo que pase.
+pub(crate) struct FlightGuard {
+    flight: Arc<Flight>,
+}
+
+impl FlightGuard {
+    fn cancelled(&self) -> bool {
+        self.flight.cancel.load(Ordering::SeqCst)
+    }
+
+    /// Deja de admitir cancelación. Devuelve `false` si ya se había cancelado: entonces no se instala.
+    fn enter_uncancellable(&self) -> bool {
+        let mut cancellable = self
+            .flight
+            .cancellable
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        if self.cancelled() {
+            return false;
+        }
+        *cancellable = false;
+        true
+    }
+}
+
+impl Drop for FlightGuard {
+    fn drop(&mut self) {
+        let mut active = active_flight();
+        if active
+            .as_ref()
+            .is_some_and(|current| Arc::ptr_eq(current, &self.flight))
+        {
+            *active = None;
+        }
+    }
+}
+
+pub(crate) fn begin_flight() -> Result<FlightGuard, String> {
+    let mut active = active_flight();
+    if active.is_some() {
+        return Err("Ya hay una actualización de la original en curso.".to_string());
+    }
+    let flight = Arc::new(Flight {
+        cancel: AtomicBool::new(false),
+        cancellable: Mutex::new(true),
+    });
+    *active = Some(flight.clone());
+    Ok(FlightGuard { flight })
+}
+
+/// `true` si había una operación en una fase cancelable (preparación, descarga o verificación).
+pub(crate) fn cancel_original_update() -> bool {
+    let active = active_flight();
+    let Some(flight) = active.as_ref() else {
+        return false;
+    };
+    let cancellable = flight
+        .cancellable
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner());
+    if !*cancellable {
+        return false;
+    }
+    flight.cancel.store(true, Ordering::SeqCst);
+    true
+}
+
+pub(crate) fn original_update_in_flight() -> bool {
+    active_flight().is_some()
+}
+
+// ---------------------------------------------------------------------------------------------------------
+// Piezas del flujo.
+// ---------------------------------------------------------------------------------------------------------
+
+const DOWNLOAD_SPACE_MARGIN: u64 = 64 * 1024 * 1024;
+const INSTALL_SPACE_MARGIN: u64 = 256 * 1024 * 1024;
+const CONNECT_TIMEOUT: Duration = Duration::from_secs(15);
+/// En `reqwest::blocking` 0.13 el `timeout` del cliente se aplica a la espera de cabeceras y a cada lectura
+/// por separado: es el plazo «sin bytes». El total lo vigila `stream_to_file`.
+const STALL_TIMEOUT: Duration = Duration::from_secs(60);
+const TOTAL_DOWNLOAD_TIMEOUT: Duration = Duration::from_secs(30 * 60);
+const UNCHANGED_SUFFIX: &str = "La original no cambió.";
+
+fn unchanged(message: String) -> String {
+    let message = message.trim_end().to_string();
+    if message.ends_with(UNCHANGED_SUFFIX) {
+        message
+    } else {
+        format!("{message} {UNCHANGED_SUFFIX}")
+    }
+}
+
+fn format_gigabytes(bytes: u64) -> String {
+    format!("{:.1} GB", bytes as f64 / 1_000_000_000.0)
+}
+
+/// Espacio: la descarga en los datos de la app y el preparado junto a la original (la suma si comparten
+/// volumen).
+pub(crate) fn check_space(
+    download_free: u64,
+    install_free: u64,
+    same_volume: bool,
+    size: u64,
+) -> Result<(), String> {
+    let download_need = size.saturating_add(DOWNLOAD_SPACE_MARGIN);
+    let install_need = size.saturating_mul(3).saturating_add(INSTALL_SPACE_MARGIN);
+    let missing = |need: u64| {
+        format!(
+            "No hay espacio suficiente en el disco: hacen falta unos {} libres.",
+            format_gigabytes(need)
+        )
+    };
+    if same_volume {
+        let need = download_need.saturating_add(install_need);
+        if install_free < need {
+            return Err(missing(need));
+        }
+        return Ok(());
+    }
+    if download_free < download_need {
+        return Err(missing(download_need));
+    }
+    if install_free < install_need {
+        return Err(missing(install_need));
+    }
+    Ok(())
+}
+
+#[cfg(unix)]
+fn same_volume(first: &Path, second: &Path) -> bool {
+    use std::os::unix::fs::MetadataExt;
+    match (fs::metadata(first), fs::metadata(second)) {
+        (Ok(first), Ok(second)) => first.dev() == second.dev(),
+        _ => true,
+    }
+}
+
+#[cfg(not(unix))]
+fn same_volume(_first: &Path, _second: &Path) -> bool {
+    true
+}
+
+fn available_space(path: &Path) -> Result<u64, String> {
+    fs2::available_space(path)
+        .map_err(|error| format!("No se pudo comprobar el espacio libre: {error}"))
+}
+
+/// La original detectada, comprobada antes de escribir junto a ella: no es un enlace, no está dentro de
+/// las instancias, es un bundle válido y es del usuario actual.
+pub(crate) fn prepare_destination(
+    detected: &Path,
+    instances_root: &Path,
+    app_name: &str,
+) -> Result<PathBuf, String> {
+    let metadata = fs::symlink_metadata(detected)
+        .map_err(|_| "No se encontró la instalación original.".to_string())?;
+    if metadata.file_type().is_symlink() || !metadata.is_dir() {
+        return Err(format!(
+            "La original no es una aplicación normal (es un enlace u otro tipo de archivo); actualízala con «Abrir {app_name}»."
+        ));
+    }
+    let canonical = fs::canonicalize(detected)
+        .map_err(|error| format!("No se pudo resolver la ruta de la original: {error}"))?;
+    if fs::canonicalize(instances_root).is_ok_and(|instances| canonical.starts_with(instances)) {
+        return Err("La ruta detectada pertenece a una instancia administrada.".to_string());
+    }
+    if !bundle_layout_valid(&canonical) {
+        return Err(
+            "La ruta no corresponde a un bundle válido de la aplicación compatible.".to_string(),
+        );
+    }
+    if !owned_by_current_user(&metadata) {
+        return Err(format!(
+            "La original pertenece a otro usuario o al sistema; actualízala con «Abrir {app_name}»."
+        ));
+    }
+    Ok(canonical)
+}
+
+/// Lo que se guarda en la caché del feed tras instalar: la versión nueva es la actual.
+pub(crate) fn installed_update_info(version: &str, checked_at: i64) -> SourceUpdateInfo {
+    SourceUpdateInfo {
+        status: SourceUpdateStatus::Current,
+        latest_version: Some(version.to_string()),
+        checked_at: Some(checked_at),
+        stale: false,
+        source: Some(SourceUpdateSource::OfficialFeed),
+    }
+}
+
+/// Las instancias por detrás: detenidas (se sincronizan ya) y en marcha (quedan pendientes, A-6).
+pub(crate) fn split_stale_instances(
+    topology: &VersionTopology,
+    registry: &Registry,
+) -> (Vec<String>, Vec<String>) {
+    let mut targets = Vec::new();
+    let mut pending = Vec::new();
+    for id in &topology.stale_instance_ids {
+        match registry
+            .instances
+            .iter()
+            .find(|instance| &instance.id == id)
+            .map(|instance| &instance.status)
+        {
+            Some(InstanceStatus::Stopped) => targets.push(id.clone()),
+            Some(InstanceStatus::Running) => pending.push(id.clone()),
+            _ => {}
+        }
+    }
+    (targets, pending)
+}
+
+fn failed_items(
+    targets: &[String],
+    message: &str,
+    version: Option<String>,
+) -> Vec<SynchronizationItemResult> {
+    targets
+        .iter()
+        .map(|id| SynchronizationItemResult {
+            instance_id: id.clone(),
+            status: SynchronizationStatus::Failed,
+            from_version: None,
+            to_version: version.clone(),
+            message: message.to_string(),
+        })
+        .collect()
+}
+
+/// Paso 5: un fallo aquí no deshace la instalación, va en el resultado.
+fn synchronize_after_install(
+    app: &AppHandle,
+    paths: &ManagedPaths,
+) -> (Vec<SynchronizationItemResult>, Vec<String>) {
+    let Ok(mut registry) = load_registry(paths) else {
+        return (Vec::new(), Vec::new());
+    };
+    let inventory = ProcessInventory::capture();
+    refresh_instance_statuses(&mut registry, &inventory);
+    refresh_instance_versions(&mut registry);
+    let topology = build_version_topology(paths, &registry, &inventory);
+    let (targets, pending) = split_stale_instances(&topology, &registry);
+    if targets.is_empty() {
+        return (Vec::new(), pending);
+    }
+    let Some(source) = topology.latest_source.clone() else {
+        let reason = topology
+            .reason
+            .clone()
+            .unwrap_or_else(|| "No hay una fuente válida para sincronizar.".to_string());
+        return (failed_items(&targets, &reason, None), pending);
+    };
+    let results = synchronize_managed_applications_sync(
+        app,
+        SynchronizeManagedApplicationsRequest {
+            source,
+            target_instance_ids: targets.clone(),
+        },
+    )
+    .unwrap_or_else(|error| {
+        failed_items(&targets, &error, topology.latest_installed_version.clone())
+    });
+    (results, pending)
+}
+
+fn download_package(
+    package: &FeedPackage,
+    destination: &Path,
+    cancel: &AtomicBool,
+    progress: &mut dyn FnMut(u64),
+) -> Result<String, StreamError> {
+    let hosts = config::download_hosts();
+    let client = reqwest::blocking::Client::builder()
+        .connect_timeout(CONNECT_TIMEOUT)
+        .timeout(STALL_TIMEOUT)
+        .redirect(reqwest::redirect::Policy::custom(
+            move |attempt| match redirect_allowed(attempt.url(), attempt.previous().len(), &hosts) {
+                Ok(()) => attempt.follow(),
+                Err(message) => attempt.error(message),
+            },
+        ))
+        .referer(false)
+        .https_only(true)
+        .build()
+        .map_err(|error| {
+            StreamError::Failed(format!("No se pudo preparar la descarga: {error}"))
+        })?;
+    let response = client
+        .get(package.url.clone())
+        .header(reqwest::header::USER_AGENT, config::user_agent())
+        .send()
+        .map_err(|error| {
+            StreamError::Failed(format!("No se pudo descargar el paquete oficial: {error}"))
+        })?;
+    if !response.status().is_success() {
+        return Err(StreamError::Failed(format!(
+            "La descarga oficial respondió con estado {}.",
+            response.status()
+        )));
+    }
+    if response
+        .content_length()
+        .is_some_and(|length| length > package.size)
+    {
+        return Err(StreamError::Failed(
+            "El paquete descargado es más grande de lo que anuncia el feed oficial.".to_string(),
+        ));
+    }
+    stream_to_file(
+        response,
+        destination,
+        package.size,
+        cancel,
+        Instant::now() + TOTAL_DOWNLOAD_TIMEOUT,
+        progress,
+    )
+}
+
+/// Las instalaciones que `detect_provider_source` puede devolver; sus padres son los únicos sitios donde
+/// se buscan restos.
+fn installation_candidates() -> Vec<PathBuf> {
+    #[cfg(target_os = "macos")]
+    {
+        macos_provider_candidates()
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        Vec::new()
+    }
+}
+
+/// A-7. Corre en `setup` y al empezar cada instalación.
+pub(crate) fn recover_original_update_leftovers(paths: &ManagedPaths) {
+    recover_leftovers_in(&installation_candidates(), &paths.original_update);
+}
+
+// ---------------------------------------------------------------------------------------------------------
+// El flujo completo (A-5).
+// ---------------------------------------------------------------------------------------------------------
+
+struct Prepared {
+    destination: PathBuf,
+    app_name: String,
+    installed: InstalledIdentity,
+    package: FeedPackage,
+    checked_at: i64,
+    staged_app: PathBuf,
+    // Orden de limpieza: primero la operación junto a la original, luego la descarga.
+    operation: OperationDir,
+    _download: OperationDir,
+}
+
+enum PreparedStep {
+    Ready(Box<Prepared>),
+    Cancelled { previous_version: Option<String> },
+}
+
+fn cancelled_outcome(previous_version: Option<String>) -> OriginalInstallOutcome {
+    OriginalInstallOutcome {
+        status: OriginalInstallStatus::Cancelled,
+        previous_version,
+        installed_version: None,
+        synchronization: Vec::new(),
+        pending_instance_ids: Vec::new(),
+    }
+}
+
+fn progress_for(
+    phase: OriginalInstallPhase,
+    package: Option<&FeedPackage>,
+    received_bytes: u64,
+    cancellable: bool,
+) -> OriginalInstallProgress {
+    OriginalInstallProgress {
+        phase,
+        target_version: package.map(|package| package.version.clone()),
+        received_bytes,
+        total_bytes: package.map_or(0, |package| package.size),
+        cancellable,
+    }
+}
+
+/// Pasos 1 a 3: nada de esto toca la original.
+fn prepare_and_verify(
+    paths: &ManagedPaths,
+    tools: &dyn MacosTools,
+    flight: &FlightGuard,
+    request: &InstallOriginalUpdateRequest,
+    progress: &dyn Fn(OriginalInstallProgress),
+) -> Result<PreparedStep, String> {
+    use OriginalInstallPhase::{Downloading, Preparing, Verifying};
+    progress(progress_for(Preparing, None, 0, true));
+    recover_original_update_leftovers(paths);
+    let detected = require_provider_source(detect_provider_source())?;
+    let app_name =
+        source_display_name(&detected).unwrap_or_else(|| "la aplicación original".to_string());
+    let destination = prepare_destination(&detected, &paths.instances, &app_name)?;
+    let installed = read_installed_identity(tools, &destination)?;
+    let cancelled = || PreparedStep::Cancelled {
+        previous_version: Some(installed.version.clone()),
+    };
+    if ProcessInventory::capture().any_executable_within(&destination) {
+        return Err(format!("Cierra {app_name} para actualizarla."));
+    }
+    if flight.cancelled() {
+        return Ok(cancelled());
+    }
+
+    let checked_at = Utc::now().timestamp_millis();
+    let document = fetch_official_feed("darwin", "universal", &installed.version)?;
+    let package = parse_feed_package(&document, &config::download_hosts())?;
+    check_expected_version(&package, &request.expected_version, &installed.version)?;
+    progress(progress_for(Preparing, Some(&package), 0, true));
+    let operation = OperationDir::beside(&destination, &app_name)?;
+    let download = OperationDir::staging(&paths.original_update)?;
+    check_space(
+        available_space(download.path())?,
+        available_space(operation.path())?,
+        same_volume(download.path(), operation.path()),
+        package.size,
+    )?;
+    if flight.cancelled() {
+        return Ok(cancelled());
+    }
+
+    progress(progress_for(Downloading, Some(&package), 0, true));
+    let archive = download.path().join("package.zip");
+    let mut throttle = ProgressThrottle::new();
+    let digest =
+        match download_package(&package, &archive, &flight.flight.cancel, &mut |received| {
+            if throttle.should_emit(Instant::now(), received, package.size) {
+                progress(progress_for(Downloading, Some(&package), received, true));
+            }
+        }) {
+            Ok(digest) => digest,
+            Err(StreamError::Cancelled) => return Ok(cancelled()),
+            Err(StreamError::Failed(message)) => return Err(message),
+        };
+
+    progress(progress_for(Verifying, Some(&package), 0, true));
+    if !digest_matches(&digest, &package.sha256) {
+        return Err(
+            "El paquete descargado no coincide con el sha256 que publica el feed oficial."
+                .to_string(),
+        );
+    }
+    let listing = tools.list_zip(&archive)?;
+    let root = validate_zip_listing(&listing, package.size)?;
+    let needed = listing
+        .uncompressed_bytes
+        .saturating_add(INSTALL_SPACE_MARGIN);
+    if available_space(operation.path())? < needed {
+        return Err(format!(
+            "No hay espacio suficiente en el disco: hacen falta unos {} libres.",
+            format_gigabytes(needed)
+        ));
+    }
+    if flight.cancelled() {
+        return Ok(cancelled());
+    }
+    let staged_dir = operation.path().join("staged");
+    create_private_dir(&staged_dir)
+        .map_err(|error| format!("No se pudo preparar la carpeta temporal: {error}"))?;
+    tools.extract_zip(&archive, &staged_dir)?;
+    let _ = fs::remove_file(&archive);
+    let staged_app = staged_dir.join(&root);
+    check_symlinks_within(&staged_app)?;
+    if flight.cancelled() {
+        return Ok(cancelled());
+    }
+    verify_staged_app(tools, &staged_app, &installed, &package)?;
+    if flight.cancelled() {
+        return Ok(cancelled());
+    }
+    Ok(PreparedStep::Ready(Box::new(Prepared {
+        destination,
+        app_name,
+        installed,
+        package,
+        checked_at,
+        staged_app,
+        operation,
+        _download: download,
+    })))
+}
+
+/// Pasos 4 y 5, dentro de `with_registry_operation`.
+fn install_and_synchronize(
+    app: &AppHandle,
+    paths: &ManagedPaths,
+    tools: &dyn MacosTools,
+    prepared: &Prepared,
+    progress: &dyn Fn(OriginalInstallProgress),
+) -> Result<OriginalInstallOutcome, String> {
+    let is_running = |bundle: &Path| ProcessInventory::capture().any_executable_within(bundle);
+    match install_staged_app(
+        tools,
+        &prepared.staged_app,
+        &prepared.destination,
+        prepared.operation.path(),
+        &prepared.installed,
+        &prepared.package,
+        &prepared.app_name,
+        &is_running,
+    ) {
+        Ok(()) => {}
+        Err(InstallError::Unchanged(message)) => return Err(unchanged(message)),
+        Err(InstallError::Restored(message)) => return Err(message),
+        Err(InstallError::Stuck(message)) => {
+            prepared.operation.keep();
+            return Err(message);
+        }
+    }
+    invalidate_application_cache();
+    let _ = save_source_update_cache(
+        paths,
+        &platform_name(),
+        &prepared.package.version,
+        &installed_update_info(&prepared.package.version, prepared.checked_at),
+    );
+    progress(progress_for(
+        OriginalInstallPhase::Synchronizing,
+        Some(&prepared.package),
+        0,
+        false,
+    ));
+    let (synchronization, pending_instance_ids) = synchronize_after_install(app, paths);
+    Ok(OriginalInstallOutcome {
+        status: OriginalInstallStatus::Installed,
+        previous_version: Some(prepared.installed.version.clone()),
+        installed_version: Some(prepared.package.version.clone()),
+        synchronization,
+        pending_instance_ids,
+    })
+}
+
+#[cfg(target_os = "macos")]
+pub(crate) fn install_original_update_sync(
+    app: &AppHandle,
+    request: InstallOriginalUpdateRequest,
+    progress: &dyn Fn(OriginalInstallProgress),
+) -> Result<OriginalInstallOutcome, String> {
+    let flight = begin_flight()?;
+    let paths = ManagedPaths::resolve(app).map_err(unchanged)?;
+    let tools = SystemMacosTools;
+    let prepared = match prepare_and_verify(&paths, &tools, &flight, &request, progress) {
+        Ok(PreparedStep::Ready(prepared)) => prepared,
+        Ok(PreparedStep::Cancelled { previous_version }) => {
+            return Ok(cancelled_outcome(previous_version))
+        }
+        Err(error) => return Err(unchanged(error)),
+    };
+    if !flight.enter_uncancellable() {
+        return Ok(cancelled_outcome(Some(prepared.installed.version.clone())));
+    }
+    progress(progress_for(
+        OriginalInstallPhase::Installing,
+        Some(&prepared.package),
+        0,
+        false,
+    ));
+    // Los temporales (`prepared`) se borran al salir, ya fuera del mutex; el vuelo se libera el último.
+    with_registry_operation(|| install_and_synchronize(app, &paths, &tools, &prepared, progress))
+}
+
+#[cfg(not(target_os = "macos"))]
 pub(crate) fn install_original_update_sync(
     _app: &AppHandle,
     _request: InstallOriginalUpdateRequest,
     _progress: &dyn Fn(OriginalInstallProgress),
 ) -> Result<OriginalInstallOutcome, String> {
-    Err("La instalación directa todavía no está disponible. La original no cambió.".to_string())
-}
-
-pub(crate) fn cancel_original_update() -> bool {
-    false
+    Err("La instalación directa solo está disponible en macOS.".to_string())
 }
 
 #[cfg(test)]
@@ -2146,6 +2733,184 @@ mod tests {
         assert!(!live_path.exists());
         assert!(!staging_path.exists());
         fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn single_flight_and_cancellation_rules() {
+        assert!(!original_update_in_flight());
+        assert!(
+            !cancel_original_update(),
+            "nothing to cancel without a flight"
+        );
+        let flight = begin_flight().unwrap();
+        assert!(original_update_in_flight());
+        assert_eq!(
+            begin_flight().err().as_deref(),
+            Some("Ya hay una actualización de la original en curso.")
+        );
+        assert!(!flight.cancelled());
+        assert!(cancel_original_update());
+        assert!(flight.cancelled());
+        assert!(
+            !flight.enter_uncancellable(),
+            "a cancelled flight never installs"
+        );
+        drop(flight);
+        assert!(!original_update_in_flight());
+
+        let flight = begin_flight().unwrap();
+        assert!(flight.enter_uncancellable());
+        assert!(!cancel_original_update(), "installing is not cancellable");
+        assert!(!flight.cancelled());
+        drop(flight);
+        assert!(!original_update_in_flight());
+        assert!(!cancel_original_update());
+    }
+
+    #[test]
+    fn source_update_cache_reports_current_after_installing() {
+        let root = temp_root("installed-cache");
+        let paths = crate::tests::test_managed_paths(&root);
+        let checked_at = Utc::now().timestamp_millis();
+        save_source_update_cache(
+            &paths,
+            "macos",
+            "1.5.0",
+            &installed_update_info("1.5.0", checked_at),
+        )
+        .unwrap();
+        let cached =
+            read_source_update_cache(&paths, "macos", "1.5.0", UPDATE_CACHE_FRESH_MS).unwrap();
+        assert_eq!(cached.status, SourceUpdateStatus::Current);
+        assert_eq!(cached.latest_version.as_deref(), Some("1.5.0"));
+        assert_eq!(cached.checked_at, Some(checked_at));
+        assert_eq!(cached.source, Some(SourceUpdateSource::OfficialFeed));
+        assert!(
+            read_source_update_cache(&paths, "macos", "1.0.0", UPDATE_CACHE_FRESH_MS).is_none()
+        );
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn space_check_counts_download_and_staging_and_sums_on_one_volume() {
+        let size = 1_000_000_000;
+        let download = size + DOWNLOAD_SPACE_MARGIN;
+        let install = 3 * size + INSTALL_SPACE_MARGIN;
+        assert_eq!(check_space(download, install, false, size), Ok(()));
+        assert!(check_space(download - 1, install, false, size).is_err());
+        assert!(check_space(download, install - 1, false, size).is_err());
+        assert!(check_space(0, download + install, true, size).is_ok());
+        assert!(check_space(u64::MAX, download + install - 1, true, size).is_err());
+        let message = check_space(0, 0, true, size).unwrap_err();
+        assert!(
+            message.starts_with("No hay espacio suficiente"),
+            "{message}"
+        );
+    }
+
+    #[test]
+    fn destination_must_be_a_plain_bundle_outside_the_instances() {
+        let root = temp_root("destination");
+        let instances = root.join("managed-instances");
+        fs::create_dir_all(&instances).unwrap();
+        let original = root.join("Applications/Claude.app");
+        write_fake_bundle(&original, &signed("1.0.0"));
+        assert_eq!(
+            prepare_destination(&original, &instances, "Claude").unwrap(),
+            fs::canonicalize(&original).unwrap()
+        );
+        let inside = instances.join("Claude.app");
+        write_fake_bundle(&inside, &signed("1.0.0"));
+        assert!(prepare_destination(&inside, &instances, "Claude").is_err());
+        let not_a_bundle = root.join("Applications/Other");
+        fs::create_dir_all(&not_a_bundle).unwrap();
+        assert!(prepare_destination(&not_a_bundle, &instances, "Claude").is_err());
+        assert!(prepare_destination(&root.join("missing.app"), &instances, "Claude").is_err());
+        #[cfg(unix)]
+        {
+            let link = root.join("Link.app");
+            std::os::unix::fs::symlink(&original, &link).unwrap();
+            let error = prepare_destination(&link, &instances, "Claude").unwrap_err();
+            assert!(error.contains("«Abrir Claude»"), "{error}");
+        }
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn stale_instances_split_into_stopped_targets_and_running_pending() {
+        let root = temp_root("split-stale");
+        let mut stopped = crate::tests::test_instance(&root);
+        stopped.status = InstanceStatus::Stopped;
+        let mut running = crate::tests::test_instance(&root);
+        running.status = InstanceStatus::Running;
+        let mut missing = crate::tests::test_instance(&root);
+        missing.status = InstanceStatus::Missing;
+        let current = crate::tests::test_instance(&root);
+        let registry = Registry {
+            version: REGISTRY_VERSION,
+            instances: vec![stopped.clone(), running.clone(), missing.clone(), current],
+        };
+        let topology = VersionTopology {
+            latest_installed_version: Some("1.5.0".to_string()),
+            latest_source: None,
+            stale_instance_ids: vec![
+                stopped.id.clone(),
+                running.id.clone(),
+                missing.id.clone(),
+                "deleted".to_string(),
+            ],
+            original_behind: false,
+            can_synchronize_managed: true,
+            reason: None,
+        };
+        assert_eq!(
+            split_stale_instances(&topology, &registry),
+            (vec![stopped.id], vec![running.id])
+        );
+        fs::remove_dir_all(root).ok();
+    }
+
+    #[test]
+    fn errors_before_the_swap_say_the_original_did_not_change() {
+        assert_eq!(
+            unchanged("Sin red.".to_string()),
+            "Sin red. La original no cambió."
+        );
+        assert_eq!(
+            unchanged("Algo. La original no cambió.".to_string()),
+            "Algo. La original no cambió."
+        );
+    }
+
+    #[test]
+    fn progress_serializes_with_the_ipc_contract() {
+        let value = serde_json::to_value(progress_for(
+            OriginalInstallPhase::Downloading,
+            Some(&package("1.5.0")),
+            5,
+            true,
+        ))
+        .unwrap();
+        assert_eq!(
+            value,
+            serde_json::json!({
+                "phase": "downloading",
+                "targetVersion": "1.5.0",
+                "receivedBytes": 5,
+                "totalBytes": 10,
+                "cancellable": true
+            })
+        );
+        let outcome = cancelled_outcome(Some("1.0.0".to_string()));
+        assert_eq!(outcome.status, OriginalInstallStatus::Cancelled);
+        assert_eq!(outcome.installed_version, None);
+        assert_eq!(
+            serde_json::to_value(OriginalInstallStatus::Installed).unwrap(),
+            serde_json::json!("installed")
+        );
+        let request: InstallOriginalUpdateRequest =
+            serde_json::from_value(serde_json::json!({ "expectedVersion": "1.5.0" })).unwrap();
+        assert_eq!(request.expected_version, "1.5.0");
     }
 
     #[cfg(unix)]

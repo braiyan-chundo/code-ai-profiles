@@ -742,6 +742,7 @@ struct ManagedPaths {
     session_links: PathBuf,
     source_update_cache: PathBuf,
     artifact_exports: PathBuf,
+    original_update: PathBuf,
 }
 
 impl ManagedPaths {
@@ -759,6 +760,7 @@ impl ManagedPaths {
             session_links: app_data.join("session-links.json"),
             source_update_cache: app_data.join("source-update-cache.json"),
             artifact_exports: app_data.join("artifact-exports"),
+            original_update: app_data.join("original-update"),
             app_data,
             instances,
         })
@@ -1058,14 +1060,19 @@ fn require_provider_source(source: Option<PathBuf>) -> Result<PathBuf, String> {
     })
 }
 
+#[cfg(target_os = "macos")]
+fn macos_provider_candidates() -> Vec<PathBuf> {
+    let mut candidates = vec![PathBuf::from("/Applications/Claude.app")];
+    if let Some(home) = dirs::home_dir() {
+        candidates.push(home.join("Applications/Claude.app"));
+    }
+    candidates
+}
+
 fn detect_provider_source() -> Option<PathBuf> {
     #[cfg(target_os = "macos")]
     {
-        let mut candidates = vec![PathBuf::from("/Applications/Claude.app")];
-        if let Some(home) = dirs::home_dir() {
-            candidates.push(home.join("Applications/Claude.app"));
-        }
-        candidates
+        macos_provider_candidates()
             .into_iter()
             .find(|path| provider_executable(path).exists())
     }
@@ -3483,6 +3490,17 @@ impl ProcessInventory {
             .map(|process| process.start_time)
     }
 
+    /// Algún proceso cuyo ejecutable vive dentro del bundle (la app, sus *Helpers*, `ShipIt`…).
+    fn any_executable_within(&self, bundle: &Path) -> bool {
+        let root = fs::canonicalize(bundle).unwrap_or_else(|_| bundle.to_path_buf());
+        self.entries.iter().any(|process| {
+            process
+                .executable
+                .as_ref()
+                .is_some_and(|executable| executable.starts_with(&root))
+        })
+    }
+
     fn application_is_running(&self, application: &Path) -> bool {
         let executable = provider_executable(application);
         let executable = fs::canonicalize(&executable).unwrap_or(executable);
@@ -5475,6 +5493,11 @@ fn open_instance_folder(app: AppHandle, id: String) -> Result<(), String> {
 
 #[tauri::command]
 fn update_original_application(app: AppHandle) -> Result<OriginalApplicationUpdateResult, String> {
+    if original_update::original_update_in_flight() {
+        return Err(
+            "Hay una actualización de la original en curso. Espera a que termine.".to_string(),
+        );
+    }
     let source = require_provider_source(detect_provider_source())?;
 
     #[cfg(target_os = "macos")]
@@ -5644,7 +5667,8 @@ pub fn run() {
         .setup(|app| {
             config::validate().map_err(std::io::Error::other)?;
             let handle = app.handle().clone();
-            ManagedPaths::resolve(&handle).map_err(std::io::Error::other)?;
+            let paths = ManagedPaths::resolve(&handle).map_err(std::io::Error::other)?;
+            original_update::recover_original_update_leftovers(&paths);
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -5677,7 +5701,7 @@ pub fn run() {
 mod tests {
     use super::*;
 
-    fn test_managed_paths(root: &Path) -> ManagedPaths {
+    pub(crate) fn test_managed_paths(root: &Path) -> ManagedPaths {
         ManagedPaths {
             app_data: root.to_path_buf(),
             instances: root.join("managed-instances"),
@@ -5686,10 +5710,11 @@ mod tests {
             session_links: root.join("session-links.json"),
             source_update_cache: root.join("source-update-cache.json"),
             artifact_exports: root.join("artifact-exports"),
+            original_update: root.join("original-update"),
         }
     }
 
-    fn test_instance(root: &Path) -> ManagedInstance {
+    pub(crate) fn test_instance(root: &Path) -> ManagedInstance {
         ManagedInstance {
             id: Uuid::new_v4().to_string(),
             name: "Test profile".to_string(),
@@ -6792,6 +6817,40 @@ int main(int argc, const char **argv) {
     }
 
     #[test]
+    fn detects_any_process_running_from_inside_a_bundle() {
+        let root = env::temp_dir().join(format!("code-ai-inventory-{}", Uuid::new_v4()));
+        let bundle = root.join("Claude.app");
+        fs::create_dir_all(bundle.join("Contents/Frameworks")).unwrap();
+        let canonical = fs::canonicalize(&bundle).unwrap();
+        let entry = |executable: PathBuf| ProcessInventoryEntry {
+            pid: 1,
+            start_time: 1,
+            executable: Some(executable),
+            command: Vec::new(),
+        };
+        let helper = ProcessInventory {
+            entries: vec![entry(
+                canonical.join("Contents/Frameworks/Helper.app/Contents/MacOS/Helper"),
+            )],
+        };
+        assert!(helper.any_executable_within(&bundle));
+        let sibling = ProcessInventory {
+            entries: vec![
+                entry(root.join("Claude.app2/Contents/MacOS/Claude")),
+                entry(root.join("Other.app/Contents/MacOS/Claude")),
+                ProcessInventoryEntry {
+                    pid: 2,
+                    start_time: 2,
+                    executable: None,
+                    command: Vec::new(),
+                },
+            ],
+        };
+        assert!(!sibling.any_executable_within(&bundle));
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
     fn maps_official_feed_document_to_source_update() {
         let document = serde_json::json!({ "currentRelease": "1.22400.0", "releases": [] });
         let newer = source_update_from_feed(&document, "1.22300.0").unwrap();
@@ -6981,6 +7040,7 @@ int main(int argc, const char **argv) {
             session_links: root.join("session-links.json"),
             source_update_cache: root.join("source-update-cache.json"),
             artifact_exports: root.join("artifact-exports"),
+            original_update: root.join("original-update"),
         };
         let session_id = "local_96812ba4-6864-40d5-a70a-0470f244022c";
         let manifest = |transfer_id: &str, created_at: &str, source_id: &str, target_id: &str| {
