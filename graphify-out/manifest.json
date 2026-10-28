@@ -555,8 +555,8 @@
     "semantic_hash": ""
   },
   "src/features/dashboard/index.ts": {
-    "mtime": 1793168693.235191,
-    "ast_hash": "ac3ae12cefe963ffa64728d8a1a6397a",
+    "mtime": 1793168967.7705572,
+    "ast_hash": "10b979b92f66a97efeaf2a0bb36ab716",
     "semantic_hash": ""
   },
   "src/features/instances/InstanceCard.tsx": {
@@ -575,8 +575,8 @@
     "semantic_hash": ""
   },
   "src/features/instances/index.ts": {
-    "mtime": 1793168528.4878907,
-    "ast_hash": "6097eb30411012c649b2db4127dffcf2",
+    "mtime": 1793168967.7657611,
+    "ast_hash": "7f3f3cddf3d01947cbcc10de5937f026",
     "semantic_hash": ""
   },
   "src/features/instances/instance-icon.ts": {
@@ -600,8 +600,8 @@
     "semantic_hash": ""
   },
   "src/features/scan/index.ts": {
-    "mtime": 1793168528.4900405,
-    "ast_hash": "615aededb4b57b2d70d7d97cb26fa8c9",
+    "mtime": 1793168967.7518024,
+    "ast_hash": "9a1b5b58e870b9ba246e8a4ce7fc776e",
     "semantic_hash": ""
   },
   "src/features/sessions/SessionContextMeter.tsx": {
@@ -630,18 +630,18 @@
     "semantic_hash": ""
   },
   "src/features/updates/index.ts": {
-    "mtime": 1793168528.496196,
-    "ast_hash": "5d5b3327938f2bd3981ce53e40f6aed5",
+    "mtime": 1793168967.7613971,
+    "ast_hash": "a0a03db22802d56acadc11838ea3d496",
     "semantic_hash": ""
   },
   "src/app/App.tsx": {
-    "mtime": 1793168709.980066,
-    "ast_hash": "6f0bdd32d6841d5ce350da43cf6879c8",
+    "mtime": 1793169001.9821904,
+    "ast_hash": "92beca88b455cecb04a7cb30ce44ba2f",
     "semantic_hash": ""
   },
   "src/app/AppView.tsx": {
-    "mtime": 1793168723.1867487,
-    "ast_hash": "9ef818664b06bf8f6ab12292ea03e94a",
+    "mtime": 1793169009.5733018,
+    "ast_hash": "eccefef8240207b78f144629d2ce3a0e",
     "semantic_hash": ""
   },
   "src/features/dashboard/DashboardProvider.tsx": {
@@ -652,6 +652,51 @@
   "src/features/dashboard/dashboard-context.ts": {
     "mtime": 1793168693.2310514,
     "ast_hash": "c0f133f1946c64e91600bdab504683df",
+    "semantic_hash": ""
+  },
+  "src/app/providers/DashboardRuntime.tsx": {
+    "mtime": 1793168980.0171225,
+    "ast_hash": "b4f15fe75f3868f45430d6e88ccdbd5a",
+    "semantic_hash": ""
+  },
+  "src/features/dashboard/useInitialLoad.ts": {
+    "mtime": 1793168967.7683892,
+    "ast_hash": "fd44244c1be3f07d1bbba2758daa6d21",
+    "semantic_hash": ""
+  },
+  "src/features/instances/useLiveUsage.ts": {
+    "mtime": 1793168967.7635088,
+    "ast_hash": "f7dd2dfa4b89ba1c6f6cba8a6a1a5d2b",
+    "semantic_hash": ""
+  },
+  "src/features/scan/scan-context.ts": {
+    "mtime": 1793168967.7495959,
+    "ast_hash": "c35888fc95c481f385322669cb992748",
+    "semantic_hash": ""
+  },
+  "src/features/scan/useBackgroundRefresh.ts": {
+    "mtime": 1793168967.7462134,
+    "ast_hash": "f5c129af4940bc59696d7fb727a7f4a5",
+    "semantic_hash": ""
+  },
+  "src/features/scan/useScanRuntime.ts": {
+    "mtime": 1793168967.7436988,
+    "ast_hash": "7dc75ec2ec829425a9f6264bba9c7503",
+    "semantic_hash": ""
+  },
+  "src/features/updates/source-update-context.ts": {
+    "mtime": 1793168967.758959,
+    "ast_hash": "1f1fb1efe1e7eed29b4472c11bdab606",
+    "semantic_hash": ""
+  },
+  "src/features/updates/useSourceUpdatePolling.ts": {
+    "mtime": 1793168967.7562776,
+    "ast_hash": "525a5542f424a97fe0aa0ebeff0b0e6b",
+    "semantic_hash": ""
+  },
+  "src/features/updates/useSourceUpdateRuntime.ts": {
+    "mtime": 1793168967.7542074,
+    "ast_hash": "8ac7de5effac409dd876a1f6233b4b89",
     "semantic_hash": ""
   }
 }

@@ -1,3 +1,6 @@
 export { ApplicationUpdateDialog } from "./ApplicationUpdateDialog";
 export { OriginalApplicationUpdateDialog } from "./OriginalApplicationUpdateDialog";
 export { summarizeSynchronization, synchronizeLabel } from "./update-messages";
+export { SourceUpdateContext, useSourceUpdate, type SourceUpdateContextValue } from "./source-update-context";
+export { useSourceUpdateController, useSourceUpdateRuntime } from "./useSourceUpdateRuntime";
+export { useSourceUpdatePolling } from "./useSourceUpdatePolling";

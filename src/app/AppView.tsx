@@ -1,19 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { listen } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { bridge } from "../lib/bridge";
-import {
-  BACKGROUND_REFRESH_COOLDOWN_MS,
-  createScanController,
-  reconcileManualBusy,
-  type ManualScanView,
-} from "../lib/scan-controller";
-import {
-  createSourceUpdateController,
-  mergeSourceUpdateForInstallation,
-  sourceInstallationIdentity,
-  sourceUpdatePresentation,
-} from "../lib/source-update-controller";
+import { sourceUpdatePresentation } from "../lib/source-update-controller";
 import { formatBytes } from "../lib/format";
 import { friendlyError } from "../lib/errors";
 import { resolveRuntimePlatform, shortcutModifierLabel } from "../lib/platform";
@@ -24,7 +12,6 @@ import {
   matchesOriginalApp,
   originalAppName as selectOriginalAppName,
   outdatedInstances as selectOutdatedInstances,
-  runningInstanceIds as selectRunningInstanceIds,
   useDashboard,
 } from "../features/dashboard";
 import {
@@ -34,7 +21,7 @@ import {
   type SessionTransferSelection,
   type SessionUnlinkSelection,
 } from "../features/sessions";
-import { InstanceCard, InstanceEditor, applyLiveUsage } from "../features/instances";
+import { InstanceCard, InstanceEditor } from "../features/instances";
 import {
   AppearanceDialog,
   loadAppearancePreferences,
@@ -47,10 +34,11 @@ import {
   OriginalApplicationUpdateDialog,
   summarizeSynchronization,
   synchronizeLabel as describeSynchronizeLabel,
+  useSourceUpdate,
 } from "../features/updates";
-import { ScanProgressPanel } from "../features/scan";
+import { ScanProgressPanel, useScan } from "../features/scan";
 import { OriginalAppSection } from "../features/original-app";
-import type { DashboardState, ManagedInstance, SessionProfile } from "../types";
+import type { ManagedInstance, SessionProfile } from "../types";
 import { ORIGINAL_INSTANCE_ID } from "../types";
 import {
   AlertIcon,
@@ -68,11 +56,6 @@ import { EmptyState } from "../components/EmptyState";
 import { LoadingCards } from "../components/LoadingCards";
 import { Metric } from "../components/Metric";
 
-interface ScanProgressEvent {
-  progress: number;
-  label: string;
-}
-
 function AppView() {
   const {
     dashboard: state,
@@ -83,19 +66,17 @@ function AppView() {
     iconPreviews,
     busyRef,
     replaceDashboard,
-    updateDashboard,
     setBusy,
-    updateBusy,
     setError,
     setNotice,
     clearFeedback,
-    finishLoading,
     storeIconPreview,
     removeIconPreview,
     runAction,
   } = useDashboard();
+  const { progress: scanProgress, requestManual: scanManually, dismiss: dismissScan } = useScan();
+  const { runHandoff } = useSourceUpdate();
   const [query, setQuery] = useState("");
-  const [scanProgress, setScanProgress] = useState<ManualScanView | null>(null);
   const [editor, setEditor] = useState<ManagedInstance | "new" | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ManagedInstance | null>(null);
   const [transfer, setTransfer] = useState<SessionTransferSelection | null>(null);
@@ -106,183 +87,6 @@ function AppView() {
   const [appearance, setAppearance] = useState<AppearancePreferences>(loadAppearancePreferences);
   const [systemDark, setSystemDark] = useState(() => window.matchMedia("(prefers-color-scheme: dark)").matches);
   const searchRef = useRef<HTMLInputElement>(null);
-  const manualProgressUnlistenRef = useRef<(() => void) | null>(null);
-  const scanListenerLifecycleRef = useRef(0);
-  const scanControllerRef = useRef<ReturnType<typeof createScanController<DashboardState>> | null>(null);
-  if (!scanControllerRef.current) {
-    scanControllerRef.current = createScanController({
-      clock: {
-        now: () => Date.now(),
-        setTimeout: (callback, delay) => window.setTimeout(callback, delay),
-        clearTimeout: (timer) => window.clearTimeout(timer),
-      },
-      runBackground: () => bridge.dashboard(),
-      runManual: async (onProgress) => {
-        const listenerLifecycle = scanListenerLifecycleRef.current;
-        let removeListener: (() => void) | null = null;
-        try {
-          if (bridge.isDesktop()) {
-            try {
-              removeListener = await listen<ScanProgressEvent>("scan-progress", ({ payload }) => {
-                onProgress(payload.progress, payload.label);
-              });
-              if (listenerLifecycle !== scanListenerLifecycleRef.current) {
-                removeListener();
-                removeListener = null;
-              } else {
-                manualProgressUnlistenRef.current = removeListener;
-              }
-            } catch {
-              // El scan conserva sus estados inicial y terminal si el WebView no expone eventos.
-            }
-          }
-          if (listenerLifecycle !== scanListenerLifecycleRef.current) {
-            throw new Error("El ciclo de vida del escaneo manual terminó antes de iniciar.");
-          }
-          return await bridge.scan();
-        } finally {
-          if (manualProgressUnlistenRef.current === removeListener) manualProgressUnlistenRef.current = null;
-          removeListener?.();
-        }
-      },
-      onBackgroundResult: replaceDashboard,
-      onManualResult: replaceDashboard,
-      onManualView: (view) => {
-        setScanProgress(view);
-        updateBusy((current) => reconcileManualBusy(current, view));
-      },
-      describeError: friendlyError,
-    });
-  }
-  const scanController = scanControllerRef.current;
-  const sourceUpdateControllerRef = useRef<ReturnType<typeof createSourceUpdateController<DashboardState>> | null>(null);
-  if (!sourceUpdateControllerRef.current) {
-    sourceUpdateControllerRef.current = createSourceUpdateController({
-      runRefresh: () => bridge.refreshVersions(),
-      onRefreshResult: replaceDashboard,
-      runOfficialCheck: () => bridge.checkSourceUpdate(),
-      onOfficialCheckResult: (sourceUpdate, refreshedDashboard) => {
-        const expected = sourceInstallationIdentity(refreshedDashboard.system);
-        updateDashboard((current) => mergeSourceUpdateForInstallation(current, expected, sourceUpdate));
-      },
-    });
-  }
-  const sourceUpdateController = sourceUpdateControllerRef.current;
-
-  const scanManually = () => {
-    if (loading) return;
-    setError(null);
-    scanController.requestManual();
-  };
-
-  useEffect(() => {
-    let active = true;
-    const load = async () => {
-      let expected: ReturnType<typeof sourceInstallationIdentity> | null = null;
-      try {
-        const dashboard = await bridge.dashboard();
-        expected = sourceInstallationIdentity(dashboard.system);
-        if (active) replaceDashboard(dashboard);
-      } catch (reason) {
-        if (active) setError(friendlyError(reason));
-      } finally {
-        if (active) {
-          finishLoading();
-          scanController.markLoaded();
-        }
-      }
-      if (!expected) return;
-      try {
-        const sourceUpdate = await bridge.checkSourceUpdate();
-        if (active) {
-          updateDashboard((current) => mergeSourceUpdateForInstallation(current, expected, sourceUpdate));
-        }
-      } catch {
-        // La detección remota nunca bloquea la carga del dashboard.
-      }
-    };
-    void load();
-    return () => { active = false; };
-  }, [scanController]);
-
-  useEffect(() => {
-    scanController.activate();
-    return () => {
-      scanListenerLifecycleRef.current += 1;
-      manualProgressUnlistenRef.current?.();
-      manualProgressUnlistenRef.current = null;
-      scanController.deactivate();
-    };
-  }, [scanController]);
-
-  useEffect(() => {
-    sourceUpdateController.activate();
-    const handleBlur = () => sourceUpdateController.handleBlur();
-    const handleFocus = () => sourceUpdateController.handleFocus();
-    const handleVisibility = () => sourceUpdateController.handleVisibility(document.hidden);
-    window.addEventListener("blur", handleBlur);
-    window.addEventListener("focus", handleFocus);
-    document.addEventListener("visibilitychange", handleVisibility);
-    return () => {
-      window.removeEventListener("blur", handleBlur);
-      window.removeEventListener("focus", handleFocus);
-      document.removeEventListener("visibilitychange", handleVisibility);
-      sourceUpdateController.deactivate();
-    };
-  }, [sourceUpdateController]);
-
-  const runningInstanceIds = useMemo(
-    () => selectRunningInstanceIds(state.instances),
-    [state.instances],
-  );
-  const runningInstanceKey = runningInstanceIds.join(":");
-  const sourceIdentityRef = useRef(sourceInstallationIdentity(state.system));
-  sourceIdentityRef.current = sourceInstallationIdentity(state.system);
-
-  useEffect(() => {
-    if (!runningInstanceIds.length) return;
-    let active = true;
-    const refreshLiveUsage = async () => {
-      if (!active || document.hidden) return;
-      try {
-        const snapshots = await bridge.liveUsage(runningInstanceIds);
-        if (!active || !snapshots.length) return;
-        const byId = new Map(snapshots.map((snapshot) => [snapshot.instanceId, snapshot.usage]));
-        updateDashboard((current) => applyLiveUsage(current, byId));
-      } catch {
-        // Una lectura parcial conserva la última captura válida.
-      }
-    };
-    void refreshLiveUsage();
-    const timer = window.setInterval(() => void refreshLiveUsage(), 15_000);
-    window.addEventListener("focus", refreshLiveUsage);
-    return () => {
-      active = false;
-      window.clearInterval(timer);
-      window.removeEventListener("focus", refreshLiveUsage);
-    };
-  }, [runningInstanceKey]);
-
-  useEffect(() => {
-    let active = true;
-    const refreshSourceUpdate = async () => {
-      if (!active || document.hidden) return;
-      try {
-        const expected = sourceIdentityRef.current;
-        const sourceUpdate = await bridge.checkSourceUpdate();
-        if (active) {
-          updateDashboard((current) => mergeSourceUpdateForInstallation(current, expected, sourceUpdate));
-        }
-      } catch {
-        // La última metadata válida permanece visible desde la caché backend.
-      }
-    };
-    const timer = window.setInterval(() => void refreshSourceUpdate(), 6 * 60 * 60 * 1_000);
-    return () => {
-      active = false;
-      window.clearInterval(timer);
-    };
-  }, []);
 
   useEffect(() => {
     saveAppearancePreferences(appearance);
@@ -295,20 +99,6 @@ function AppView() {
     media.addEventListener("change", updateSystemTheme);
     return () => media.removeEventListener("change", updateSystemTheme);
   }, []);
-
-  useEffect(() => {
-    const refreshSilently = (trigger: "focus" | "interval") => {
-      if (document.hidden || busyRef.current || sourceUpdateController.blocksGeneralRefresh(trigger)) return;
-      scanController.requestBackground(trigger);
-    };
-    const timer = window.setInterval(() => refreshSilently("interval"), BACKGROUND_REFRESH_COOLDOWN_MS);
-    const handleFocus = () => refreshSilently("focus");
-    window.addEventListener("focus", handleFocus);
-    return () => {
-      window.clearInterval(timer);
-      window.removeEventListener("focus", handleFocus);
-    };
-  }, [scanController, sourceUpdateController]);
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
@@ -461,7 +251,7 @@ function AppView() {
           {scanProgress && (
             <ScanProgressPanel
               {...scanProgress}
-              onDismiss={() => scanController.dismissManual(scanProgress.generation)}
+              onDismiss={() => dismissScan(scanProgress.generation)}
             />
           )}
           {!loading && state.system.sourcePath && officialUpdate && (
@@ -790,7 +580,7 @@ function AppView() {
             setBusy("update-original");
             clearFeedback();
             try {
-              const result = await sourceUpdateController.runHandoff(() => bridge.updateOriginalApplication());
+              const result = await runHandoff(() => bridge.updateOriginalApplication());
               setNotice(result.message);
               setOriginalUpdateOpen(false);
             } catch (reason) {
