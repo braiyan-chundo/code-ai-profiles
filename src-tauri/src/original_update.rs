@@ -482,6 +482,180 @@ fn symlink_target_stays_within(link_parent: &[String], target: &Path) -> bool {
     true
 }
 
+// ---------------------------------------------------------------------------------------------------------
+// Herramientas del sistema (macOS). Capa inyectable: en pruebas se sustituye por una falsa.
+// ---------------------------------------------------------------------------------------------------------
+
+/// Lo que el flujo necesita de las herramientas de macOS. Todas reciben rutas calculadas por el flujo.
+pub(crate) trait MacosTools {
+    /// `zipinfo -1` (nombres) y `zipinfo -t` (totales).
+    fn list_zip(&self, archive: &Path) -> Result<ZipListing, String>;
+    /// `ditto -x -k <zip> <destino>`.
+    fn extract_zip(&self, archive: &Path, destination: &Path) -> Result<(), String>;
+    /// El *designated requirement* (`codesign -d -r-`).
+    fn designated_requirement(&self, bundle: &Path) -> Result<String, String>;
+    /// `codesign --verify --strict [--deep] [-R=<requisito>]`.
+    fn verify_signature(
+        &self,
+        bundle: &Path,
+        requirement: Option<&str>,
+        deep: bool,
+    ) -> Result<(), String>;
+    /// El TeamIdentifier de la firma, si lo hay.
+    fn team_identifier(&self, bundle: &Path) -> Option<String>;
+    /// `spctl --assess --type execute`.
+    fn assess_gatekeeper(&self, bundle: &Path) -> Result<(), String>;
+    /// Un valor de `Contents/Info.plist`.
+    fn bundle_value(&self, bundle: &Path, key: &str) -> Option<String>;
+}
+
+#[cfg(target_os = "macos")]
+pub(crate) struct SystemMacosTools;
+
+#[cfg(target_os = "macos")]
+impl SystemMacosTools {
+    fn output(
+        executable: &str,
+        arguments: &[&std::ffi::OsStr],
+    ) -> Result<std::process::Output, String> {
+        Command::new(executable)
+            .args(arguments)
+            .env("LC_ALL", "C")
+            .output()
+            .map_err(|error| format!("No se pudo ejecutar {executable}: {error}"))
+    }
+}
+
+#[cfg(target_os = "macos")]
+impl MacosTools for SystemMacosTools {
+    fn list_zip(&self, archive: &Path) -> Result<ZipListing, String> {
+        let names = Self::output("/usr/bin/zipinfo", &["-1".as_ref(), archive.as_os_str()])?;
+        let totals = Self::output("/usr/bin/zipinfo", &["-t".as_ref(), archive.as_os_str()])?;
+        if !names.status.success() || !totals.status.success() {
+            return Err("El paquete descargado no es un zip válido.".to_string());
+        }
+        let (entries, uncompressed_bytes) =
+            parse_zipinfo_totals(&String::from_utf8_lossy(&totals.stdout))
+                .ok_or_else(|| "No se pudo leer el índice del paquete descargado.".to_string())?;
+        Ok(ZipListing {
+            names: String::from_utf8_lossy(&names.stdout)
+                .lines()
+                .filter(|line| !line.is_empty())
+                .map(str::to_string)
+                .collect(),
+            entries,
+            uncompressed_bytes,
+        })
+    }
+
+    fn extract_zip(&self, archive: &Path, destination: &Path) -> Result<(), String> {
+        let output = Self::output(
+            "/usr/bin/ditto",
+            &[
+                "-x".as_ref(),
+                "-k".as_ref(),
+                archive.as_os_str(),
+                destination.as_os_str(),
+            ],
+        )?;
+        if !output.status.success() {
+            return Err("No se pudo descomprimir el paquete descargado.".to_string());
+        }
+        Ok(())
+    }
+
+    fn designated_requirement(&self, bundle: &Path) -> Result<String, String> {
+        let output = Self::output(
+            "/usr/bin/codesign",
+            &["-d".as_ref(), "-r-".as_ref(), bundle.as_os_str()],
+        )?;
+        if !output.status.success() {
+            return Err("No se pudo leer el requisito de firma de la original.".to_string());
+        }
+        parse_designated_requirement(&String::from_utf8_lossy(&output.stdout))
+            .ok_or_else(|| "La original no declara un requisito de firma explícito.".to_string())
+    }
+
+    fn verify_signature(
+        &self,
+        bundle: &Path,
+        requirement: Option<&str>,
+        deep: bool,
+    ) -> Result<(), String> {
+        let requirement = requirement.map(|value| format!("={value}"));
+        let mut arguments: Vec<&std::ffi::OsStr> = vec!["--verify".as_ref(), "--strict".as_ref()];
+        if deep {
+            arguments.push("--deep".as_ref());
+        }
+        if let Some(requirement) = requirement.as_deref() {
+            arguments.push("-R".as_ref());
+            arguments.push(requirement.as_ref());
+        }
+        arguments.push(bundle.as_os_str());
+        let output = Self::output("/usr/bin/codesign", &arguments)?;
+        if !output.status.success() {
+            return Err(
+                "La firma no es válida o no cumple el requisito de la original.".to_string(),
+            );
+        }
+        Ok(())
+    }
+
+    fn team_identifier(&self, bundle: &Path) -> Option<String> {
+        macos_team_identifier(bundle)
+    }
+
+    fn assess_gatekeeper(&self, bundle: &Path) -> Result<(), String> {
+        let output = Self::output(
+            "/usr/sbin/spctl",
+            &[
+                "--assess".as_ref(),
+                "--type".as_ref(),
+                "execute".as_ref(),
+                bundle.as_os_str(),
+            ],
+        )?;
+        if !output.status.success() {
+            return Err("Gatekeeper rechazó la aplicación.".to_string());
+        }
+        Ok(())
+    }
+
+    fn bundle_value(&self, bundle: &Path, key: &str) -> Option<String> {
+        let plist = bundle.join("Contents/Info.plist");
+        let output = Self::output(
+            "/usr/bin/plutil",
+            &[
+                "-extract".as_ref(),
+                key.as_ref(),
+                "raw".as_ref(),
+                "-o".as_ref(),
+                "-".as_ref(),
+                plist.as_os_str(),
+            ],
+        )
+        .ok()?;
+        output
+            .status
+            .success()
+            .then(|| String::from_utf8_lossy(&output.stdout).trim().to_string())
+            .filter(|value| {
+                !value.is_empty() && value.len() <= 256 && !value.chars().any(char::is_control)
+            })
+    }
+}
+
+/// La línea `designated => …` de `codesign -d -r-`. Una línea comentada (`# designated => cdhash …`) es el
+/// requisito implícito de una firma ad hoc y no sirve para reconocer una versión nueva.
+pub(crate) fn parse_designated_requirement(output: &str) -> Option<String> {
+    output.lines().find_map(|line| {
+        line.strip_prefix("designated => ")
+            .map(str::trim)
+            .filter(|value| !value.is_empty())
+            .map(str::to_string)
+    })
+}
+
 pub(crate) fn install_original_update_sync(
     _app: &AppHandle,
     _request: InstallOriginalUpdateRequest,
@@ -850,6 +1024,246 @@ mod tests {
         );
         assert_eq!(parse_zipinfo_totals("Empty zipfile."), None);
         assert_eq!(parse_zipinfo_totals(""), None);
+    }
+
+    /// Herramientas falsas: firma, requisito, equipo, Gatekeeper e Info.plist viven en archivos `fake-*` del
+    /// propio bundle de prueba, así que viajan con él en los intercambios.
+    #[derive(Default)]
+    struct FakeTools {
+        listing: Option<ZipListing>,
+        extract_from: Option<PathBuf>,
+    }
+
+    fn fake_value(bundle: &Path, name: &str) -> Option<String> {
+        fs::read_to_string(bundle.join("Contents").join(format!("fake-{name}"))).ok()
+    }
+
+    impl MacosTools for FakeTools {
+        fn list_zip(&self, _archive: &Path) -> Result<ZipListing, String> {
+            self.listing.clone().ok_or_else(|| "no listing".to_string())
+        }
+
+        fn extract_zip(&self, _archive: &Path, destination: &Path) -> Result<(), String> {
+            let source = self.extract_from.as_ref().ok_or("no fixture")?;
+            copy_tree(source, &destination.join(source.file_name().unwrap()));
+            Ok(())
+        }
+
+        fn designated_requirement(&self, bundle: &Path) -> Result<String, String> {
+            fake_value(bundle, "requirement").ok_or_else(|| "no requirement".to_string())
+        }
+
+        fn verify_signature(
+            &self,
+            bundle: &Path,
+            requirement: Option<&str>,
+            _deep: bool,
+        ) -> Result<(), String> {
+            let actual = fake_value(bundle, "requirement").ok_or("unsigned")?;
+            if requirement.is_some_and(|required| required != actual) {
+                return Err("requirement not satisfied".to_string());
+            }
+            Ok(())
+        }
+
+        fn team_identifier(&self, bundle: &Path) -> Option<String> {
+            fake_value(bundle, "team")
+        }
+
+        fn assess_gatekeeper(&self, bundle: &Path) -> Result<(), String> {
+            fake_value(bundle, "gatekeeper")
+                .map(|_| ())
+                .ok_or_else(|| "rejected".to_string())
+        }
+
+        fn bundle_value(&self, bundle: &Path, key: &str) -> Option<String> {
+            fake_value(bundle, key)
+        }
+    }
+
+    fn copy_tree(source: &Path, destination: &Path) {
+        fs::create_dir_all(destination).unwrap();
+        for entry in fs::read_dir(source).unwrap() {
+            let entry = entry.unwrap();
+            let target = destination.join(entry.file_name());
+            let file_type = entry.file_type().unwrap();
+            if file_type.is_dir() {
+                copy_tree(&entry.path(), &target);
+            } else if file_type.is_symlink() {
+                #[cfg(unix)]
+                std::os::unix::fs::symlink(fs::read_link(entry.path()).unwrap(), &target).unwrap();
+            } else {
+                fs::copy(entry.path(), &target).unwrap();
+            }
+        }
+    }
+
+    struct FakeBundle<'a> {
+        id: &'a str,
+        version: &'a str,
+        team: Option<&'a str>,
+        requirement: Option<&'a str>,
+        gatekeeper: bool,
+    }
+
+    const REQUIREMENT: &str = "identifier \"com.example.fixture\" and anchor apple generic";
+
+    fn signed(version: &str) -> FakeBundle<'_> {
+        FakeBundle {
+            id: "com.example.fixture",
+            version,
+            team: Some("TEAM123456"),
+            requirement: Some(REQUIREMENT),
+            gatekeeper: true,
+        }
+    }
+
+    fn write_fake_bundle(path: &Path, bundle: &FakeBundle<'_>) {
+        let contents = path.join("Contents");
+        fs::create_dir_all(contents.join("MacOS")).unwrap();
+        fs::write(contents.join("MacOS/Claude"), b"#!/bin/sh\n").unwrap();
+        fs::write(contents.join("fake-CFBundleIdentifier"), bundle.id).unwrap();
+        fs::write(
+            contents.join("fake-CFBundleShortVersionString"),
+            bundle.version,
+        )
+        .unwrap();
+        if let Some(team) = bundle.team {
+            fs::write(contents.join("fake-team"), team).unwrap();
+        }
+        if let Some(requirement) = bundle.requirement {
+            fs::write(contents.join("fake-requirement"), requirement).unwrap();
+        }
+        if bundle.gatekeeper {
+            fs::write(contents.join("fake-gatekeeper"), "ok").unwrap();
+        }
+    }
+
+    #[test]
+    fn parses_designated_requirement_and_ignores_implicit_ones() {
+        assert_eq!(
+            parse_designated_requirement(
+                "designated => identifier \"com.example\" and anchor apple generic /* exists */\n"
+            )
+            .as_deref(),
+            Some("identifier \"com.example\" and anchor apple generic /* exists */")
+        );
+        assert_eq!(
+            parse_designated_requirement("# designated => cdhash H\"00\"\n"),
+            None
+        );
+        assert_eq!(parse_designated_requirement(""), None);
+    }
+
+    #[test]
+    fn fake_tools_read_identity_from_the_fixture() {
+        let root = temp_root("fake-tools");
+        let bundle = root.join("Claude.app");
+        write_fake_bundle(&bundle, &signed("1.0.0"));
+        let tools = FakeTools::default();
+        assert_eq!(
+            tools.verify_signature(&bundle, Some(REQUIREMENT), true),
+            Ok(())
+        );
+        assert!(tools
+            .verify_signature(&bundle, Some("other"), true)
+            .is_err());
+        assert_eq!(
+            tools.team_identifier(&bundle).as_deref(),
+            Some("TEAM123456")
+        );
+        assert_eq!(
+            tools
+                .bundle_value(&bundle, "CFBundleShortVersionString")
+                .as_deref(),
+            Some("1.0.0")
+        );
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn system_tools_handle_a_real_ditto_zip_of_a_minimal_bundle() {
+        let root = temp_root("ditto-zip");
+        let bundle = root.join("source/Fixture.app");
+        let contents = bundle.join("Contents");
+        fs::create_dir_all(contents.join("MacOS")).unwrap();
+        fs::create_dir_all(contents.join("Resources/data-v1")).unwrap();
+        fs::write(contents.join("Resources/data-v1/value.txt"), b"fixture").unwrap();
+        std::os::unix::fs::symlink("data-v1", contents.join("Resources/current")).unwrap();
+        fs::write(contents.join("MacOS/Claude"), b"#!/bin/sh\nexit 0\n").unwrap();
+        fs::write(
+            contents.join("Info.plist"),
+            br#"<?xml version="1.0" encoding="UTF-8"?>
+<plist version="1.0"><dict>
+<key>CFBundleExecutable</key><string>Claude</string>
+<key>CFBundleIdentifier</key><string>com.example.codeai.fixture</string>
+<key>CFBundleShortVersionString</key><string>1.2.0</string>
+</dict></plist>
+"#,
+        )
+        .unwrap();
+        let status = Command::new("/bin/chmod")
+            .arg("755")
+            .arg(contents.join("MacOS/Claude"))
+            .status()
+            .unwrap();
+        assert!(status.success());
+        let signed = Command::new("/usr/bin/codesign")
+            .args(["--force", "--sign", "-"])
+            .arg(&bundle)
+            .output()
+            .unwrap();
+        assert!(
+            signed.status.success(),
+            "{}",
+            String::from_utf8_lossy(&signed.stderr)
+        );
+        let archive = root.join("package.zip");
+        let zipped = Command::new("/usr/bin/ditto")
+            .args(["-c", "-k", "--keepParent"])
+            .arg(&bundle)
+            .arg(&archive)
+            .status()
+            .unwrap();
+        assert!(zipped.success());
+
+        let tools = SystemMacosTools;
+        let listing = tools.list_zip(&archive).unwrap();
+        assert_eq!(listing.entries, listing.names.len() as u64);
+        let package_size = fs::metadata(&archive).unwrap().len();
+        assert_eq!(
+            validate_zip_listing(&listing, package_size).unwrap(),
+            "Fixture.app"
+        );
+        let staged = root.join("staged");
+        fs::create_dir_all(&staged).unwrap();
+        tools.extract_zip(&archive, &staged).unwrap();
+        let extracted = staged.join("Fixture.app");
+        assert_eq!(check_symlinks_within(&extracted), Ok(()));
+        assert_eq!(tools.verify_signature(&extracted, None, true), Ok(()));
+        assert!(tools
+            .verify_signature(&extracted, Some("identifier \"com.example.other\""), true)
+            .is_err());
+        assert!(
+            tools.designated_requirement(&extracted).is_err(),
+            "ad hoc has no explicit DR"
+        );
+        assert_eq!(tools.team_identifier(&extracted), None);
+        assert_eq!(
+            tools
+                .bundle_value(&extracted, "CFBundleIdentifier")
+                .as_deref(),
+            Some("com.example.codeai.fixture")
+        );
+        assert_eq!(
+            tools
+                .bundle_value(&extracted, "CFBundleShortVersionString")
+                .as_deref(),
+            Some("1.2.0")
+        );
+        assert!(tools.list_zip(&root.join("missing.zip")).is_err());
+        fs::remove_dir_all(root).unwrap();
     }
 
     #[cfg(unix)]
