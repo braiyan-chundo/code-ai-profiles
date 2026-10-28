@@ -1,5 +1,5 @@
 import { createContext, useContext, type MutableRefObject } from "react";
-import type { DashboardState } from "../../types";
+import type { DashboardState, OriginalInstallProgress } from "../../types";
 import type { DashboardStore } from "./dashboard-store";
 
 export interface DashboardContextValue extends DashboardStore {
@@ -15,6 +15,10 @@ export interface DashboardContextValue extends DashboardStore {
   finishLoading: () => void;
   storeIconPreview: (instanceId: string, url: string) => void;
   removeIconPreview: (instanceId: string) => void;
+  setOriginalInstall: (progress: OriginalInstallProgress) => void;
+  finishOriginalInstall: () => void;
+  addPendingSync: (instanceIds: string[]) => void;
+  removePendingSync: (instanceIds: string[]) => void;
   /** Marca `busy`, limpia el error, reemplaza el estado con el resultado y libera `busy`. */
   runAction: (key: string, action: () => Promise<DashboardState>) => Promise<void>;
 }

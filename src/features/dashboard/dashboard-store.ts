@@ -1,4 +1,4 @@
-import type { DashboardState } from "../../types";
+import type { DashboardState, OriginalInstallProgress } from "../../types";
 
 export const EMPTY_DASHBOARD: DashboardState = {
   instances: [],
@@ -38,6 +38,10 @@ export interface DashboardStore {
   error: string | null;
   notice: string | null;
   iconPreviews: Record<string, string>;
+  /** El avance de «Descargar e instalar» (HU-0017); `null` cuando no hay una instalación en curso. */
+  originalInstall: OriginalInstallProgress | null;
+  /** Instancias en marcha que quedaron por detrás de la original recién instalada. Solo en memoria (HU-0017, A-6). */
+  pendingSyncIds: string[];
 }
 
 export type DashboardAction =
@@ -50,7 +54,11 @@ export type DashboardAction =
   | { type: "notice/changed"; notice: string | null }
   | { type: "feedback/cleared" }
   | { type: "icon-preview/stored"; instanceId: string; url: string }
-  | { type: "icon-preview/removed"; instanceId: string };
+  | { type: "icon-preview/removed"; instanceId: string }
+  | { type: "original-install/progressed"; progress: OriginalInstallProgress }
+  | { type: "original-install/finished" }
+  | { type: "pending-sync/added"; instanceIds: string[] }
+  | { type: "pending-sync/removed"; instanceIds: string[] };
 
 export const initialDashboardStore: DashboardStore = {
   dashboard: EMPTY_DASHBOARD,
@@ -59,10 +67,23 @@ export const initialDashboardStore: DashboardStore = {
   error: null,
   notice: null,
   iconPreviews: {},
+  originalInstall: null,
+  pendingSyncIds: [],
 };
 
 function withField<K extends keyof DashboardStore>(store: DashboardStore, key: K, value: DashboardStore[K]): DashboardStore {
   return Object.is(store[key], value) ? store : { ...store, [key]: value };
+}
+
+function sameProgress(a: OriginalInstallProgress | null, b: OriginalInstallProgress): boolean {
+  return (
+    a !== null &&
+    a.phase === b.phase &&
+    a.targetVersion === b.targetVersion &&
+    a.receivedBytes === b.receivedBytes &&
+    a.totalBytes === b.totalBytes &&
+    a.cancellable === b.cancellable
+  );
 }
 
 /**
@@ -96,6 +117,18 @@ export function dashboardReducer(store: DashboardStore, action: DashboardAction)
       const iconPreviews = { ...store.iconPreviews };
       delete iconPreviews[action.instanceId];
       return { ...store, iconPreviews };
+    }
+    case "original-install/progressed":
+      return sameProgress(store.originalInstall, action.progress) ? store : { ...store, originalInstall: action.progress };
+    case "original-install/finished":
+      return withField(store, "originalInstall", null);
+    case "pending-sync/added": {
+      const added = action.instanceIds.filter((id, index, ids) => !store.pendingSyncIds.includes(id) && ids.indexOf(id) === index);
+      return added.length ? { ...store, pendingSyncIds: [...store.pendingSyncIds, ...added] } : store;
+    }
+    case "pending-sync/removed": {
+      const remaining = store.pendingSyncIds.filter((id) => !action.instanceIds.includes(id));
+      return remaining.length === store.pendingSyncIds.length ? store : { ...store, pendingSyncIds: remaining };
     }
     default:
       return store;

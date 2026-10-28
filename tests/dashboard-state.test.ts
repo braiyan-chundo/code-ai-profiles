@@ -18,7 +18,7 @@ import {
   usageRanking,
 } from "../src/features/dashboard/dashboard-selectors.ts";
 import { applyLiveUsage } from "../src/features/instances/live-usage.ts";
-import type { CodeSession, DashboardState, ManagedInstance, UsageStats } from "../src/types.ts";
+import type { CodeSession, DashboardState, ManagedInstance, OriginalInstallProgress, UsageStats } from "../src/types.ts";
 
 function session(id: string, title: string): CodeSession {
   return {
@@ -62,6 +62,8 @@ test("el store inicial carga, sin operación, sin mensajes y con el panel vacío
   assert.equal(initialDashboardStore.error, null);
   assert.equal(initialDashboardStore.notice, null);
   assert.deepEqual(initialDashboardStore.iconPreviews, {});
+  assert.equal(initialDashboardStore.originalInstall, null);
+  assert.deepEqual(initialDashboardStore.pendingSyncIds, []);
   assert.equal(initialDashboardStore.dashboard, EMPTY_DASHBOARD);
   assert.deepEqual(EMPTY_DASHBOARD.instances, []);
   assert.equal(EMPTY_DASHBOARD.system.platform, "unknown");
@@ -228,4 +230,58 @@ test("applyLiveUsage solo cambia las instancias recibidas", () => {
   assert.equal(next.system, state.system);
   assert.equal(state.instances[0].usage, null);
   assert.equal(next.instances.length, 2);
+});
+
+const downloading: OriginalInstallProgress = {
+  phase: "downloading",
+  targetVersion: "1.22400.0",
+  receivedBytes: 100,
+  totalBytes: 400,
+  cancellable: true,
+};
+
+test("original-install/progressed guarda el avance y devuelve el mismo store si no cambia nada", () => {
+  const store = dashboardReducer(initialDashboardStore, { type: "original-install/progressed", progress: downloading });
+  assert.deepEqual(store.originalInstall, downloading);
+  assert.equal(initialDashboardStore.originalInstall, null);
+  // Un objeto nuevo con los mismos valores no es un cambio: evita renders por cada mensaje repetido del canal.
+  assert.equal(dashboardReducer(store, { type: "original-install/progressed", progress: { ...downloading } }), store);
+  const next = dashboardReducer(store, {
+    type: "original-install/progressed",
+    progress: { ...downloading, receivedBytes: 250 },
+  });
+  assert.equal(next.originalInstall?.receivedBytes, 250);
+  assert.notEqual(next, store);
+  const verifying = dashboardReducer(next, {
+    type: "original-install/progressed",
+    progress: { ...downloading, phase: "verifying", receivedBytes: 0, cancellable: false },
+  });
+  assert.equal(verifying.originalInstall?.phase, "verifying");
+});
+
+test("original-install/finished limpia el avance una sola vez", () => {
+  const running = dashboardReducer(initialDashboardStore, { type: "original-install/progressed", progress: downloading });
+  const store = dashboardReducer(running, { type: "original-install/finished" });
+  assert.equal(store.originalInstall, null);
+  assert.equal(dashboardReducer(store, { type: "original-install/finished" }), store);
+  assert.equal(dashboardReducer(initialDashboardStore, { type: "original-install/finished" }), initialDashboardStore);
+});
+
+test("pending-sync/added suma sin duplicar y no cambia el store si no hay nada nuevo", () => {
+  const store = dashboardReducer(initialDashboardStore, { type: "pending-sync/added", instanceIds: ["a", "b", "a"] });
+  assert.deepEqual(store.pendingSyncIds, ["a", "b"]);
+  assert.deepEqual(initialDashboardStore.pendingSyncIds, []);
+  assert.equal(dashboardReducer(store, { type: "pending-sync/added", instanceIds: ["b"] }), store);
+  assert.equal(dashboardReducer(store, { type: "pending-sync/added", instanceIds: [] }), store);
+  const more = dashboardReducer(store, { type: "pending-sync/added", instanceIds: ["b", "c"] });
+  assert.deepEqual(more.pendingSyncIds, ["a", "b", "c"]);
+});
+
+test("pending-sync/removed quita solo las indicadas y no cambia el store si no hay ninguna", () => {
+  const store = dashboardReducer(initialDashboardStore, { type: "pending-sync/added", instanceIds: ["a", "b", "c"] });
+  const next = dashboardReducer(store, { type: "pending-sync/removed", instanceIds: ["b", "z"] });
+  assert.deepEqual(next.pendingSyncIds, ["a", "c"]);
+  assert.deepEqual(store.pendingSyncIds, ["a", "b", "c"]);
+  assert.equal(dashboardReducer(next, { type: "pending-sync/removed", instanceIds: ["b"] }), next);
+  assert.equal(dashboardReducer(next, { type: "pending-sync/removed", instanceIds: [] }), next);
 });
