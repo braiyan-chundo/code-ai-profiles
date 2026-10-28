@@ -60,9 +60,9 @@
     "semantic_hash": "4f27aa9635d84bb547a767f204d95840"
   },
   "src/main.tsx": {
-    "mtime": 1784433949.908604,
-    "ast_hash": "6fbf89872396bfa844c1c92ae437a7a5",
-    "semantic_hash": "6fbf89872396bfa844c1c92ae437a7a5"
+    "mtime": 1793167297.10135,
+    "ast_hash": "28150b8e110be303cf40ab91bd671af4",
+    "semantic_hash": ""
   },
   "src/types.ts": {
     "mtime": 1792757490.1393204,
@@ -340,8 +340,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793166306.016132,
-    "ast_hash": "a1eff14ff043faf95d3aefb2c4f8978e",
+    "mtime": 1793167185.4056973,
+    "ast_hash": "080994c5f5b9a36d1cd6cbe6d729e5be",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -420,13 +420,18 @@
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/hu.md": {
-    "mtime": 1793166281.253455,
-    "ast_hash": "f59b68d317735110618e2bc452934e5f",
+    "mtime": 1793167168.3169036,
+    "ast_hash": "b379b984ecfd0858e57b5aba16746e4e",
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/seguimiento.md": {
-    "mtime": 1793166306.0155184,
-    "ast_hash": "6e22d85cce23443c223b6811a6ae9a7a",
+    "mtime": 1793167185.4052114,
+    "ast_hash": "4f70bc202cd458552f76d26da212237f",
+    "semantic_hash": ""
+  },
+  "hu/HU-0015-frontend-escalable-componentes-features-/briefs/frontend.md": {
+    "mtime": 1793167168.285641,
+    "ast_hash": "c6cc84a9dae13f35bb89a274b7dc9bc6",
     "semantic_hash": ""
   }
 }

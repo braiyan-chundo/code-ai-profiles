@@ -1,0 +1,25 @@
+.update-banner, .source-update-banner {
+  position: sticky;
+  z-index: 7;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 15px;
+  padding: 11px 12px 11px 14px;
+  color: #bca9a2;
+  background: rgba(48, 42, 39, 0.94);
+  border: 1px solid rgba(231, 158, 132, 0.14);
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(20px);
+  animation: scan-panel-in 180ms ease both;
+}
+.source-update-banner { position: relative; top: auto; border-color: rgba(121, 176, 139, 0.18); }
+.update-banner-icon { display: grid; flex: 0 0 auto; width: 31px; height: 31px; place-items: center; color: #d99b88; background: rgba(255, 141, 108, 0.07); border-radius: 10px; }
+.update-banner > div, .source-update-banner > div { display: grid; flex: 1; gap: 3px; min-width: 0; }
+.update-banner strong, .source-update-banner strong { color: #d8cfcc; font-size: 10px; }
+.update-banner > div > span, .source-update-banner > div > span { overflow: hidden; color: #867d7a; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.update-banner > button, .source-update-banner > button { flex: 0 0 auto; min-height: 32px; padding: 0 12px; color: #d9b0a5; background: rgba(255, 141, 108, 0.06); border: 1px solid rgba(255, 141, 108, 0.14); border-radius: 10px; font-size: 9px; font-weight: 700; cursor: pointer; }
+.update-banner > button:hover:not(:disabled), .source-update-banner > button:hover:not(:disabled) { color: #f0c5b9; background: rgba(255, 141, 108, 0.1); border-color: rgba(255, 141, 108, 0.22); }
+

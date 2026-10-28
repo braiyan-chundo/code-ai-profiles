@@ -1,0 +1,67 @@
+.scan-progress-panel {
+  position: sticky;
+  z-index: 8;
+  top: 0;
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 15px 17px 14px;
+  overflow: hidden;
+  background: linear-gradient(120deg, rgba(48, 39, 36, 0.97), rgba(29, 30, 29, 0.97));
+  border: 1px solid rgba(255, 161, 134, 0.18);
+  border-radius: 17px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28), inset 0 1px rgba(255, 255, 255, 0.045);
+  backdrop-filter: blur(24px);
+  animation: scan-panel-in 180ms ease both;
+}
+.scan-progress-heading, .scan-progress-copy { display: flex; align-items: center; }
+.scan-progress-heading { justify-content: space-between; gap: 20px; }
+.scan-progress-copy { min-width: 0; gap: 11px; }
+.scan-progress-copy > div { display: grid; gap: 4px; min-width: 0; }
+.scan-progress-copy strong { color: #e9dfdc; font-size: 11px; letter-spacing: 0.01em; }
+.scan-progress-copy span:not(.scan-radar) { overflow: hidden; color: #a99690; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.scan-radar {
+  position: relative;
+  display: grid;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  color: #ffad96;
+  background: rgba(255, 141, 108, 0.08);
+  border: 1px solid rgba(255, 141, 108, 0.14);
+  border-radius: 11px;
+}
+.scan-radar::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(255, 173, 150, 0.25);
+  border-radius: 50%;
+  animation: radar-pulse 1s ease-out infinite;
+}
+.scan-percentage { color: #ffb29d; font: 600 11px/1 JetBrains Mono, monospace; }
+.scan-progress-actions { display: flex; flex: 0 0 auto; align-items: center; gap: 10px; }
+.scan-progress-actions button {
+  padding: 6px 9px;
+  color: #d8c6c1;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 8px;
+  font-size: 9px;
+  font-weight: 650;
+  cursor: pointer;
+}
+.scan-progress-actions button:hover { color: #fff4f0; background: rgba(255, 255, 255, 0.08); }
+.scan-progress-panel.is-error { border-color: rgba(255, 180, 171, 0.25); }
+.scan-progress-panel.is-error .scan-radar, .scan-progress-panel.is-error .scan-percentage { color: #ffb4ab; }
+.scan-progress-panel.is-success .scan-radar::after, .scan-progress-panel.is-error .scan-radar::after { animation: none; }
+.scan-progress-track { height: 5px; overflow: hidden; background: rgba(255, 255, 255, 0.09); border-radius: 999px; }
+.scan-progress-track span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #d86f50, #ffae97);
+  border-radius: inherit;
+  box-shadow: 0 0 15px rgba(255, 141, 108, 0.38);
+  transition: width 220ms cubic-bezier(.22,.7,.2,1);
+}
