@@ -1,0 +1,109 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { friendlyError } from "../src/lib/errors.ts";
+import { formatBytes, formatCaptureTime } from "../src/lib/format.ts";
+import { resolveRuntimePlatform, shortcutModifierLabel } from "../src/lib/platform.ts";
+import {
+  formatModelName,
+  formatSessionTime,
+  formatTokenCount,
+  sessionContextLevel,
+} from "../src/features/sessions/session-format.ts";
+
+const MINUTE = 60_000;
+const NOW = 1_800_000_000_000;
+
+test("formatBytes: nulo, cero, KB sin decimales y GB con uno", () => {
+  assert.equal(formatBytes(null), "No disponible");
+  assert.equal(formatBytes(0), "0 B");
+  assert.equal(formatBytes(512), "512 B");
+  assert.equal(formatBytes(1536), "2 KB");
+  assert.equal(formatBytes(5 * 1024 * 1024), "5 MB");
+  assert.equal(formatBytes(1.5 * 1024 ** 3), "1.5 GB");
+  assert.equal(formatBytes(2 * 1024 ** 4), "2.0 TB");
+});
+
+test("formatSessionTime: acepta segundos y milisegundos", () => {
+  assert.equal(formatSessionTime(null, NOW), "Sin actividad registrada");
+  assert.equal(formatSessionTime(NOW / 1000, NOW), "Ahora mismo");
+  assert.equal(formatSessionTime(NOW - 30_000, NOW), "Ahora mismo");
+  assert.equal(formatSessionTime(NOW + 5 * MINUTE, NOW), "Ahora mismo");
+});
+
+test("formatSessionTime: minutos, horas, días y fecha a partir de 30 días", () => {
+  assert.equal(formatSessionTime(NOW - 5 * MINUTE, NOW), "Hace 5 min");
+  assert.equal(formatSessionTime(NOW - 59 * MINUTE, NOW), "Hace 59 min");
+  assert.equal(formatSessionTime(NOW - 60 * MINUTE, NOW), "Hace 1 h");
+  assert.equal(formatSessionTime(NOW - 23 * 60 * MINUTE, NOW), "Hace 23 h");
+  assert.equal(formatSessionTime(NOW - 24 * 60 * MINUTE, NOW), "Hace 1 d");
+  assert.equal(formatSessionTime(NOW - 29 * 24 * 60 * MINUTE, NOW), "Hace 29 d");
+  const old = NOW - 30 * 24 * 60 * MINUTE;
+  assert.equal(
+    formatSessionTime(old, NOW),
+    new Intl.DateTimeFormat("es", { day: "numeric", month: "short" }).format(old),
+  );
+});
+
+test("formatSessionTime: sin `now` usa la hora actual", () => {
+  assert.equal(formatSessionTime(Date.now()), "Ahora mismo");
+});
+
+test("formatCaptureTime: nulo y patrón HH:MM:SS sin depender de la zona horaria", () => {
+  assert.equal(formatCaptureTime(null), "Sin captura reciente");
+  assert.equal(formatCaptureTime(undefined), "Sin captura reciente");
+  assert.match(formatCaptureTime(NOW), /^Última captura \d{2}:\d{2}:\d{2}$/);
+  assert.equal(formatCaptureTime(NOW / 1000), formatCaptureTime(NOW));
+});
+
+test("formatTokenCount: unidades, miles y millones", () => {
+  assert.equal(formatTokenCount(null), "Sin datos");
+  assert.equal(formatTokenCount(undefined), "Sin datos");
+  assert.equal(formatTokenCount(999), "999");
+  assert.equal(formatTokenCount(1000), "1k");
+  assert.equal(formatTokenCount(1500), "1.5k");
+  assert.equal(formatTokenCount(100_000), "100k");
+  assert.equal(formatTokenCount(1_000_000), "1M");
+  assert.equal(formatTokenCount(1_500_000), "1.5M");
+});
+
+test("formatModelName: familias con versión y nombres desconocidos", () => {
+  assert.equal(formatModelName(null), "Modelo no registrado");
+  assert.equal(formatModelName(""), "Modelo no registrado");
+  assert.equal(formatModelName("claude-opus-4-8"), "Opus 4.8");
+  assert.equal(formatModelName("claude-sonnet-4-5-20250929"), "Sonnet 4.5");
+  assert.equal(formatModelName("claude-haiku-4-5"), "Haiku 4.5");
+  assert.equal(formatModelName("opus"), "opus");
+  assert.equal(formatModelName("modelo-local"), "modelo-local");
+});
+
+test("sessionContextLevel: umbrales de 70 y 90", () => {
+  assert.equal(sessionContextLevel(null), "unknown");
+  assert.equal(sessionContextLevel(undefined), "unknown");
+  assert.equal(sessionContextLevel(69), "normal");
+  assert.equal(sessionContextLevel(70), "elevated");
+  assert.equal(sessionContextLevel(89), "elevated");
+  assert.equal(sessionContextLevel(90), "critical");
+});
+
+test("friendlyError: Error, texto y valores desconocidos", () => {
+  assert.equal(friendlyError(new Error("falló")), "falló");
+  assert.equal(friendlyError("texto"), "texto");
+  assert.equal(friendlyError({ code: 1 }), "Ocurrió un error inesperado.");
+  assert.equal(friendlyError(undefined), "Ocurrió un error inesperado.");
+});
+
+test("resolveRuntimePlatform: Rust manda y el navegador solo cubre `unknown`", () => {
+  assert.equal(resolveRuntimePlatform("linux", "MacIntel"), "linux");
+  assert.equal(resolveRuntimePlatform("windows", "MacIntel"), "windows");
+  assert.equal(resolveRuntimePlatform("macos", "Win32"), "macos");
+  assert.equal(resolveRuntimePlatform("unknown", "MacIntel"), "macos");
+  assert.equal(resolveRuntimePlatform("unknown", "Linux x86_64"), "linux");
+  assert.equal(resolveRuntimePlatform("unknown", "Win32"), "windows");
+  assert.equal(resolveRuntimePlatform("unknown", ""), "windows");
+});
+
+test("shortcutModifierLabel: ⌘ en Mac y Ctrl en el resto", () => {
+  assert.equal(shortcutModifierLabel("MacIntel"), "⌘");
+  assert.equal(shortcutModifierLabel("Win32"), "Ctrl");
+  assert.equal(shortcutModifierLabel("Linux aarch64"), "Ctrl");
+});

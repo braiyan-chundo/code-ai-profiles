@@ -31,6 +31,18 @@ jobs:
       - name: Test source update controller
         run: npm run test:update
 
+      - name: Test formatting, errors and platform
+        run: npm run test:format
+
+      - name: Test appearance preferences
+        run: npm run test:appearance
+
+      - name: Test dashboard store and selectors
+        run: npm run test:dashboard
+
+      - name: Test result messages and icon validation
+        run: npm run test:messages
+
       - name: Test Graphify query cache isolation
         run: npm run test:graph
 

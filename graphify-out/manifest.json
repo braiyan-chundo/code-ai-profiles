@@ -1,7 +1,7 @@
 {
   "package.json": {
-    "mtime": 1793165232.4939082,
-    "ast_hash": "671de5cbe6a837db43a9742ed8d25e38",
+    "mtime": 1793167573.1863356,
+    "ast_hash": "ee7855ed3d6b47a064f8af3a50281099",
     "semantic_hash": ""
   },
   "scripts/graphify.mjs": {
@@ -45,9 +45,9 @@
     "semantic_hash": "4ef37201944f5f99cbc3aba02a781215"
   },
   "src/App.tsx": {
-    "mtime": 1792781919.53882,
-    "ast_hash": "eccf4b7b904cf789ae15c6ab10639d33",
-    "semantic_hash": "eccf4b7b904cf789ae15c6ab10639d33"
+    "mtime": 1793167470.66834,
+    "ast_hash": "581f063e8bc257957188299a4d60a51c",
+    "semantic_hash": ""
   },
   "src/components/Icons.tsx": {
     "mtime": 1784516056.9907844,
@@ -105,8 +105,8 @@
     "semantic_hash": ""
   },
   ".github/workflows/validate.yml": {
-    "mtime": 1793165232.492107,
-    "ast_hash": "93843073827f85b9a042ee245c766f93",
+    "mtime": 1793167573.186516,
+    "ast_hash": "7eba4ea9b3935048748d8ae9326ed94f",
     "semantic_hash": ""
   },
   "AGENTS.md": {
@@ -432,6 +432,96 @@
   "hu/HU-0015-frontend-escalable-componentes-features-/briefs/frontend.md": {
     "mtime": 1793167168.285641,
     "ast_hash": "c6cc84a9dae13f35bb89a274b7dc9bc6",
+    "semantic_hash": ""
+  },
+  "src/features/appearance/appearance-preferences.ts": {
+    "mtime": 1793167401.6365683,
+    "ast_hash": "2d5e33be2fd9ec16c40f202c19272fd6",
+    "semantic_hash": ""
+  },
+  "src/features/dashboard/dashboard-selectors.ts": {
+    "mtime": 1793167419.3163,
+    "ast_hash": "82f34ed173b5883f73c1a18fdab7f591",
+    "semantic_hash": ""
+  },
+  "src/features/dashboard/dashboard-store.ts": {
+    "mtime": 1793167419.3139322,
+    "ast_hash": "9fa86645ca4b98576016d3e775a6787f",
+    "semantic_hash": ""
+  },
+  "src/features/instances/icon-validation.ts": {
+    "mtime": 1793167401.631098,
+    "ast_hash": "205c2622157805e79b101c176f6be53c",
+    "semantic_hash": ""
+  },
+  "src/features/instances/instance-types.ts": {
+    "mtime": 1793167401.6282625,
+    "ast_hash": "914a161597461f8b059ba9f5831158aa",
+    "semantic_hash": ""
+  },
+  "src/features/instances/live-usage.ts": {
+    "mtime": 1793167401.6339715,
+    "ast_hash": "3d2021087df63364a6c2b34ac9c62055",
+    "semantic_hash": ""
+  },
+  "src/features/sessions/session-format.ts": {
+    "mtime": 1793167401.62056,
+    "ast_hash": "e82fefaaa3f8e331902105a725a40736",
+    "semantic_hash": ""
+  },
+  "src/features/sessions/session-messages.ts": {
+    "mtime": 1793167401.6256082,
+    "ast_hash": "104007953047cdd9cf6ab9966d636023",
+    "semantic_hash": ""
+  },
+  "src/features/sessions/session-types.ts": {
+    "mtime": 1793167401.6232278,
+    "ast_hash": "263475b1c1e2143665d1af52a52caf3e",
+    "semantic_hash": ""
+  },
+  "src/features/updates/original-update-channel.ts": {
+    "mtime": 1793167401.6413803,
+    "ast_hash": "11332ed0908cac66fe3930d0d478c14e",
+    "semantic_hash": ""
+  },
+  "src/features/updates/update-messages.ts": {
+    "mtime": 1793167401.6388717,
+    "ast_hash": "e41770f0a811773a33f42a3ae79d55d8",
+    "semantic_hash": ""
+  },
+  "src/lib/errors.ts": {
+    "mtime": 1793167401.616092,
+    "ast_hash": "f9885b5d2571048ec856c7d9496f8c36",
+    "semantic_hash": ""
+  },
+  "src/lib/format.ts": {
+    "mtime": 1793167401.6136403,
+    "ast_hash": "7a8d94eecb08e165384fac13d1640227",
+    "semantic_hash": ""
+  },
+  "src/lib/platform.ts": {
+    "mtime": 1793167401.6183,
+    "ast_hash": "a4d2ef1d9799fe68541b6a0a40b7dd4d",
+    "semantic_hash": ""
+  },
+  "tests/appearance.test.ts": {
+    "mtime": 1793167510.0887752,
+    "ast_hash": "8cff765a6be13e6ac8b6b796378ed39a",
+    "semantic_hash": ""
+  },
+  "tests/dashboard-state.test.ts": {
+    "mtime": 1793167566.2823954,
+    "ast_hash": "bc9572e372665c985c27afaab1bd9d57",
+    "semantic_hash": ""
+  },
+  "tests/format.test.ts": {
+    "mtime": 1793167510.0864189,
+    "ast_hash": "a72cbacac859bbadbf15345c2d05dbe1",
+    "semantic_hash": ""
+  },
+  "tests/result-messages.test.ts": {
+    "mtime": 1793167566.285072,
+    "ast_hash": "321cb8f730aa48c7d99ee57531ee5561",
     "semantic_hash": ""
   }
 }

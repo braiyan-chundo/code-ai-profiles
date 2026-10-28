@@ -15,8 +15,41 @@ import {
   sourceInstallationIdentity,
   sourceUpdatePresentation,
 } from "./lib/source-update-controller";
+import { formatBytes, formatCaptureTime } from "./lib/format";
+import { friendlyError } from "./lib/errors";
+import { resolveRuntimePlatform, shortcutModifierLabel } from "./lib/platform";
+import { EMPTY_DASHBOARD } from "./features/dashboard/dashboard-store";
+import {
+  countCodeSessions,
+  countRunning,
+  filterInstances,
+  matchesOriginalApp,
+  originalAppName as selectOriginalAppName,
+  outdatedInstances as selectOutdatedInstances,
+  runningInstanceIds as selectRunningInstanceIds,
+} from "./features/dashboard/dashboard-selectors";
+import {
+  formatModelName,
+  formatSessionTime,
+  formatTokenCount,
+  sessionContextLevel,
+} from "./features/sessions/session-format";
+import { transferNotice, unlinkDialogCopy } from "./features/sessions/session-messages";
+import type { SessionTransferSelection, SessionUnlinkSelection } from "./features/sessions/session-types";
+import type { InstanceIconChange } from "./features/instances/instance-types";
+import { iconDimensionsError, iconFileError } from "./features/instances/icon-validation";
+import { applyLiveUsage } from "./features/instances/live-usage";
+import {
+  loadAppearancePreferences,
+  resolveTheme,
+  saveAppearancePreferences,
+  type AppearancePreferences,
+  type AppTheme,
+  type SessionTextSize,
+} from "./features/appearance/appearance-preferences";
+import { summarizeSynchronization, synchronizeLabel as describeSynchronizeLabel } from "./features/updates/update-messages";
+import { originalUpdateChannel } from "./features/updates/original-update-channel";
 import type {
-  ArtifactTransferOutcome,
   CodeSession,
   ManagedInstance,
   CreateInstanceRequest,
@@ -47,161 +80,9 @@ import {
   XIcon,
 } from "./components/Icons";
 
-const EMPTY_STATE: DashboardState = {
-  instances: [],
-  system: {
-    appVersion: "",
-    platform: "unknown",
-    sourcePath: null,
-    sourceName: null,
-    sourceVersion: null,
-    sourceUpdate: {
-      status: "unavailable",
-      latestVersion: null,
-      checkedAt: null,
-      stale: false,
-      source: null,
-    },
-    versionTopology: {
-      latestInstalledVersion: null,
-      latestSource: null,
-      staleInstanceIds: [],
-      originalBehind: false,
-      canSynchronizeManaged: false,
-      reason: null,
-    },
-    originalProfilePath: null,
-    originalStatus: "missing",
-    originalCodeSessions: [],
-    freeBytes: null,
-    managedBytes: 0,
-  },
-};
-
 interface ScanProgressEvent {
   progress: number;
   label: string;
-}
-
-interface SessionTransferSelection {
-  source: SessionProfile;
-  session: CodeSession;
-}
-
-interface SessionUnlinkSelection {
-  instance: SessionProfile;
-  session: CodeSession;
-}
-
-interface InstanceIconChange {
-  bytes: Uint8Array | null;
-  previewUrl: string | null;
-  remove: boolean;
-}
-
-type AppTheme = "system" | "dark" | "light";
-type SessionTextSize = "compact" | "comfortable" | "large";
-
-interface AppearancePreferences {
-  theme: AppTheme;
-  sessionTextSize: SessionTextSize;
-}
-
-const APPEARANCE_STORAGE_KEY = "code-ai-profiles:appearance";
-const DEFAULT_APPEARANCE: AppearancePreferences = {
-  theme: "system",
-  sessionTextSize: "comfortable",
-};
-
-function loadAppearancePreferences(): AppearancePreferences {
-  try {
-    const stored = JSON.parse(window.localStorage.getItem(APPEARANCE_STORAGE_KEY) ?? "null") as Partial<AppearancePreferences> | null;
-    const theme = stored?.theme;
-    const sessionTextSize = stored?.sessionTextSize;
-    return {
-      theme: theme === "light" || theme === "dark" || theme === "system" ? theme : DEFAULT_APPEARANCE.theme,
-      sessionTextSize: sessionTextSize === "compact" || sessionTextSize === "comfortable" || sessionTextSize === "large"
-        ? sessionTextSize
-        : DEFAULT_APPEARANCE.sessionTextSize,
-    };
-  } catch {
-    return DEFAULT_APPEARANCE;
-  }
-}
-
-function formatBytes(value: number | null): string {
-  if (value == null) return "No disponible";
-  if (value === 0) return "0 B";
-  const units = ["B", "KB", "MB", "GB", "TB"];
-  const index = Math.min(Math.floor(Math.log(value) / Math.log(1024)), units.length - 1);
-  return `${(value / 1024 ** index).toFixed(index > 2 ? 1 : 0)} ${units[index]}`;
-}
-
-function formatSessionTime(value: number | null): string {
-  if (value == null) return "Sin actividad registrada";
-  const timestamp = value < 10_000_000_000 ? value * 1000 : value;
-  const elapsed = Math.max(0, Date.now() - timestamp);
-  const minutes = Math.floor(elapsed / 60_000);
-  if (minutes < 1) return "Ahora mismo";
-  if (minutes < 60) return `Hace ${minutes} min`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `Hace ${hours} h`;
-  const days = Math.floor(hours / 24);
-  if (days < 30) return `Hace ${days} d`;
-  return new Intl.DateTimeFormat("es", { day: "numeric", month: "short" }).format(timestamp);
-}
-
-function formatCaptureTime(value: number | null | undefined): string {
-  if (value == null) return "Sin captura reciente";
-  const timestamp = value < 10_000_000_000 ? value * 1000 : value;
-  return `Última captura ${new Intl.DateTimeFormat("es", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  }).format(timestamp)}`;
-}
-
-type SessionContextLevel = "normal" | "elevated" | "critical" | "unknown";
-
-function sessionContextLevel(value: number | null | undefined): SessionContextLevel {
-  if (value == null) return "unknown";
-  if (value >= 90) return "critical";
-  if (value >= 70) return "elevated";
-  return "normal";
-}
-
-function formatTokenCount(value: number | null | undefined): string {
-  if (value == null) return "Sin datos";
-  if (value >= 1_000_000) {
-    const amount = value / 1_000_000;
-    return `${amount.toFixed(Number.isInteger(amount) ? 0 : 1)}M`;
-  }
-  if (value >= 1_000) {
-    const amount = value / 1_000;
-    return `${amount.toFixed(value >= 100_000 || Number.isInteger(amount) ? 0 : 1)}k`;
-  }
-  return `${value}`;
-}
-
-function formatModelName(value: string | null | undefined): string {
-  if (!value) return "Modelo no registrado";
-  const normalized = value.toLowerCase();
-  const family = normalized.includes("opus")
-    ? "Opus"
-    : normalized.includes("sonnet")
-      ? "Sonnet"
-      : normalized.includes("haiku")
-        ? "Haiku"
-        : null;
-  const version = normalized.match(/(?:opus|sonnet|haiku)-(\d+)-(\d+)/);
-  if (family && version) return `${family} ${version[1]}.${version[2]}`;
-  return value;
-}
-
-function friendlyError(reason: unknown): string {
-  if (reason instanceof Error) return reason.message;
-  if (typeof reason === "string") return reason;
-  return "Ocurrió un error inesperado.";
 }
 
 function managedIconSource(instance: ManagedInstance, previewUrl?: string | null) {
@@ -211,21 +92,8 @@ function managedIconSource(instance: ManagedInstance, previewUrl?: string | null
   return bridge.isDesktop() ? convertFileSrc(path) : path;
 }
 
-function describeArtifactOutcome(outcome: ArtifactTransferOutcome) {
-  const details: string[] = [];
-  if (outcome.copied > 0 || outcome.registered > 0) {
-    details.push(`${outcome.copied} copia(s) local(es) preservada(s)${outcome.registered > 0 ? `, ${outcome.registered} registrada(s)` : ""}`);
-  }
-  if (outcome.preservedForManualImport > 0) details.push(`${outcome.preservedForManualImport} lista(s) para importar o publicar de nuevo`);
-  if (outcome.remoteReferencesOmitted > 0 || outcome.monitorsOmitted > 0) details.push("las referencias y monitores cloud no se reasignaron");
-  if (outcome.exportPath) details.push("hay una exportación local disponible en la carpeta administrada");
-  if (outcome.warnings.length) details.push(outcome.warnings.join(" · "));
-  if (!details.length) details.push("no se detectaron copias locales transferibles");
-  return details.join("; ");
-}
-
 function App() {
-  const [state, setState] = useState<DashboardState>(EMPTY_STATE);
+  const [state, setState] = useState<DashboardState>(EMPTY_DASHBOARD);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -371,7 +239,7 @@ function App() {
   }, [sourceUpdateController]);
 
   const runningInstanceIds = useMemo(
-    () => state.instances.filter((instance) => instance.status === "running").map((instance) => instance.id),
+    () => selectRunningInstanceIds(state.instances),
     [state.instances],
   );
   const runningInstanceKey = runningInstanceIds.join(":");
@@ -387,13 +255,7 @@ function App() {
         const snapshots = await bridge.liveUsage(runningInstanceIds);
         if (!active || !snapshots.length) return;
         const byId = new Map(snapshots.map((snapshot) => [snapshot.instanceId, snapshot.usage]));
-        setState((current) => ({
-          ...current,
-          instances: current.instances.map((instance) => {
-            const usage = byId.get(instance.id);
-            return usage ? { ...instance, usage } : instance;
-          }),
-        }));
+        setState((current) => applyLiveUsage(current, byId));
       } catch {
         // Una lectura parcial conserva la última captura válida.
       }
@@ -430,11 +292,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    try {
-      window.localStorage.setItem(APPEARANCE_STORAGE_KEY, JSON.stringify(appearance));
-    } catch {
-      // La app sigue funcionando aunque el WebView no permita persistir preferencias.
-    }
+    saveAppearancePreferences(appearance);
   }, [appearance]);
 
   useEffect(() => {
@@ -479,40 +337,21 @@ function App() {
     return () => window.removeEventListener("keydown", handleShortcut);
   }, []);
 
-  const filtered = useMemo(() => {
-    const term = query.trim().toLocaleLowerCase();
-    if (!term) return state.instances;
-    return state.instances.filter((instance) =>
-      [instance.name, instance.appPath, instance.status, ...instance.codeSessions.map((session) => session.title)]
-        .filter(Boolean)
-        .some((value) => value!.toLocaleLowerCase().includes(term)),
-    );
-  }, [query, state.instances]);
+  const filtered = useMemo(() => filterInstances(state.instances, query), [query, state.instances]);
 
-  const originalAppName = state.system.sourceName ?? "Aplicación compatible";
-  const showOriginal = useMemo(() => {
-    if (!state.system.sourcePath) return false;
-    const term = query.trim().toLocaleLowerCase();
-    if (!term) return true;
-    return [
-      "Aplicación original",
-      "Instalación principal",
-      originalAppName,
-      state.system.sourcePath,
-      state.system.originalProfilePath,
-      ...state.system.originalCodeSessions.map((session) => session.title),
-    ]
-      .filter(Boolean)
-      .some((value) => value!.toLocaleLowerCase().includes(term));
-  }, [originalAppName, query, state.system.originalCodeSessions, state.system.originalProfilePath, state.system.sourcePath]);
+  const originalAppName = selectOriginalAppName(state.system);
+  const showOriginal = useMemo(
+    () => matchesOriginalApp(state.system, originalAppName, query),
+    // Las mismas dependencias que antes: solo los campos de `system` que lee el filtro.
+    [originalAppName, query, state.system.originalCodeSessions, state.system.originalProfilePath, state.system.sourcePath],
+  );
 
-  const running = state.instances.filter((instance) => instance.status === "running").length;
-  const codeSessionCount = state.instances.reduce((total, instance) => total + instance.codeSessions.length, 0)
-    + state.system.originalCodeSessions.length;
-  const outdatedInstances = useMemo(() => {
-    const staleIds = new Set(state.system.versionTopology.staleInstanceIds);
-    return state.instances.filter((instance) => staleIds.has(instance.id));
-  }, [state.instances, state.system.versionTopology.staleInstanceIds]);
+  const running = countRunning(state.instances);
+  const codeSessionCount = countCodeSessions(state);
+  const outdatedInstances = useMemo(
+    () => selectOutdatedInstances(state.instances, state.system.versionTopology.staleInstanceIds),
+    [state.instances, state.system.versionTopology.staleInstanceIds],
+  );
   const latestSource = state.system.versionTopology.latestSource;
   const latestVersion = state.system.versionTopology.latestInstalledVersion;
   const officialUpdate = sourceUpdatePresentation(
@@ -520,9 +359,7 @@ function App() {
     state.system.versionTopology,
     originalAppName,
   );
-  const synchronizeLabel = latestSource && latestVersion
-    ? `Sincronizar instancias desde ${latestSource.name} v${latestVersion}`
-    : "Sincronizar instancias";
+  const synchronizeLabel = describeSynchronizeLabel(latestSource, latestVersion);
   const transferProfiles = useMemo<SessionProfile[]>(() => [
     {
       id: ORIGINAL_INSTANCE_ID,
@@ -554,19 +391,9 @@ function App() {
     if (action === "maximize") await window.toggleMaximize();
   };
 
-  const browserPlatform = navigator.platform.toLowerCase();
-  const fallbackPlatform = browserPlatform.includes("mac")
-    ? "macos"
-    : browserPlatform.includes("linux")
-      ? "linux"
-      : "windows";
-  const runtimePlatform = state.system.platform === "unknown"
-    ? fallbackPlatform
-    : state.system.platform;
+  const runtimePlatform = resolveRuntimePlatform(state.system.platform, navigator.platform);
   const buildLabel = state.system.appVersion || (loading ? "cargando…" : "no disponible");
-  const resolvedTheme = appearance.theme === "system"
-    ? (systemDark ? "dark" : "light")
-    : appearance.theme;
+  const resolvedTheme = resolveTheme(appearance.theme, systemDark);
 
   return (
     <div className={`desktop-shell platform-${runtimePlatform} theme-${resolvedTheme} session-text-${appearance.sessionTextSize}`}>
@@ -644,7 +471,7 @@ function App() {
             {query ? (
               <button className="clear-search" onClick={() => setQuery("")} aria-label="Limpiar búsqueda"><XIcon size={15} /></button>
             ) : (
-              <kbd>{navigator.platform.toLowerCase().includes("mac") ? "⌘" : "Ctrl"} F</kbd>
+              <kbd>{shortcutModifierLabel(navigator.platform)} F</kbd>
             )}
           </label>
         </section>
@@ -904,12 +731,7 @@ function App() {
                 includeLocalArtifacts,
               });
               setState(result.dashboard);
-              setNotice(
-                (mode === "move"
-                  ? `“${transfer.session.title}” se movió de ${transfer.source.name} a ${target.name}.`
-                  : `“${transfer.session.title}” se copió de ${transfer.source.name} a ${target.name}.`)
-                + ` Artefactos: ${describeArtifactOutcome(result.artifacts)}.`,
-              );
+              setNotice(transferNotice(mode, transfer.session.title, transfer.source.name, target.name, result.artifacts));
               setTransfer(null);
             } catch (reason) {
               setError(friendlyError(reason));
@@ -923,14 +745,14 @@ function App() {
       {unlinkTarget?.session.transfer && (() => {
         const transferInfo = unlinkTarget.session.transfer;
         const origin = transferProfiles.find((instance) => instance.id === transferInfo.originInstanceId);
-        const isMove = transferInfo.mode === "move";
+        const copy = unlinkDialogCopy(unlinkTarget, transferInfo, origin?.name);
         return (
           <ConfirmDialog
-            title={isMove ? `Devolver “${unlinkTarget.session.title}”` : `Desvincular “${unlinkTarget.session.title}”`}
-            confirmLabel={isMove ? `Devolver a ${origin?.name ?? "su origen"}` : "Desvincular copia"}
+            title={copy.title}
+            confirmLabel={copy.confirmLabel}
             busy={busy === `unlink:${unlinkTarget.session.id}`}
             tone="neutral"
-            busyLabel={isMove ? "Devolviendo…" : "Desvinculando…"}
+            busyLabel={copy.busyLabel}
             onCancel={() => setUnlinkTarget(null)}
             onConfirm={async () => {
               setBusy(`unlink:${unlinkTarget.session.id}`);
@@ -942,11 +764,7 @@ function App() {
                   sessionId: unlinkTarget.session.id,
                 });
                 setState(nextState);
-                setNotice(
-                  isMove
-                    ? `“${unlinkTarget.session.title}” volvió a ${origin?.name ?? "su instancia de origen"}.`
-                    : `La copia de “${unlinkTarget.session.title}” se desvinculó de ${unlinkTarget.instance.name}.`,
-                );
+                setNotice(copy.notice);
                 setUnlinkTarget(null);
               } catch (reason) {
                 setError(friendlyError(reason));
@@ -955,9 +773,7 @@ function App() {
               }
             }}
           >
-            {isMove
-              ? `La sesión dejará de aparecer en ${unlinkTarget.instance.name} y volverá a ${origin?.name ?? "su instancia original"}. Ambas instancias deben estar detenidas.`
-              : `La copia dejará de aparecer en ${unlinkTarget.instance.name}. La sesión original permanece intacta en ${origin?.name ?? "su instancia de origen"}.`}
+            {copy.body}
           </ConfirmDialog>
         );
       })()}
@@ -982,15 +798,9 @@ function App() {
                 targetInstanceIds: targets.map((instance) => instance.id),
               });
               setState(result.dashboard);
-              const updated = result.results.filter((item) => item.status === "updated");
-              const skipped = result.results.filter((item) => item.status === "skipped");
-              const failed = result.results.filter((item) => item.status === "failed");
-              if (updated.length || skipped.length) {
-                setNotice(`Sincronización finalizada: ${updated.length} actualizada(s), ${skipped.length} omitida(s), ${failed.length} con error.`);
-              }
-              if (failed.length) {
-                setError(`No se completó en ${failed.length} instancia(s): ${failed.map((item) => item.message).join(" · ")}`);
-              }
+              const summary = summarizeSynchronization(result.results);
+              if (summary.notice) setNotice(summary.notice);
+              if (summary.error) setError(summary.error);
               setUpdateTargets(null);
             } catch (reason) {
               setError(friendlyError(reason));
@@ -1607,26 +1417,7 @@ function OriginalApplicationUpdateDialog({
   onClose: () => void;
   onConfirm: () => Promise<void>;
 }) {
-  const platformDetails = platform === "linux"
-    ? {
-        label: "Linux",
-        channel: "Instrucciones oficiales del repositorio apt",
-        handoff: "Se abrirán las instrucciones oficiales de apt. Revisa y completa los pasos en tu sistema; Code AI Profiles no ejecutará comandos ni solicitará permisos.",
-        action: "Ver instrucciones oficiales",
-      }
-    : platform === "windows"
-      ? {
-          label: "Windows",
-          channel: "Descarga oficial para Windows",
-          handoff: "Se abrirá la descarga oficial. Después debes ejecutar y completar el instalador de Windows; Code AI Profiles no instalará ni cerrará la aplicación por ti.",
-          action: "Abrir descarga oficial",
-        }
-      : {
-          label: "macOS",
-          channel: "Actualizador oficial de la aplicación original",
-          handoff: `Se abrirá únicamente ${appName}. En la aplicación original elige Claude > Check for Updates; Code AI Profiles no automatizará el menú ni solicitará permisos adicionales.`,
-          action: `Abrir ${appName}`,
-        };
+  const platformDetails = originalUpdateChannel(platform, appName);
 
   return (
     <ModalFrame
@@ -1723,20 +1514,17 @@ function InstanceEditor({
   const selectIcon = async (file: File | null) => {
     setIconError(null);
     if (!file) return;
-    if (!["image/png", "image/jpeg"].includes(file.type)) {
-      setIconError("Selecciona una imagen PNG o JPEG válida.");
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      setIconError("La imagen supera el límite de 5 MiB.");
+    const fileError = iconFileError(file);
+    if (fileError) {
+      setIconError(fileError);
       return;
     }
     try {
       const bitmap = await createImageBitmap(file);
-      const dimensionsValid = bitmap.width >= 32 && bitmap.height >= 32 && bitmap.width <= 4096 && bitmap.height <= 4096;
+      const dimensionsError = iconDimensionsError(bitmap.width, bitmap.height);
       bitmap.close();
-      if (!dimensionsValid) {
-        setIconError("Usa una imagen entre 32×32 y 4096×4096 píxeles.");
+      if (dimensionsError) {
+        setIconError(dimensionsError);
         return;
       }
       const reader = new FileReader();
