@@ -342,7 +342,13 @@ function managed(id: string, status: ManagedInstance["status"]): ManagedInstance
 function panel(instances: ManagedInstance[], staleInstanceIds: string[]): DashboardState {
   return {
     instances,
-    system: system({ versionTopology: { ...EMPTY_DASHBOARD.system.versionTopology, staleInstanceIds } }),
+    system: system({
+      versionTopology: {
+        ...EMPTY_DASHBOARD.system.versionTopology,
+        latestSource: { kind: "original", instanceId: null, name: "Claude" },
+        staleInstanceIds,
+      },
+    }),
   };
 }
 
@@ -378,4 +384,23 @@ test("outdatedInstancesDetail: nombra las pendientes que se sincronizarán al de
     outdatedInstancesDetail([a, b, c], ["a", "b", "c"]),
     "3 instancias usan una versión anterior. Personal, Trabajo y Lab se sincronizarán al detenerlas.",
   );
+});
+
+test("pendingSyncPlan: sin fuente en la topología la pendiente espera, no se olvida (la original abierta)", () => {
+  const withoutSource = (instances: ManagedInstance[], staleInstanceIds: string[]): DashboardState => ({
+    instances,
+    system: system({ originalStatus: "running", versionTopology: { ...EMPTY_DASHBOARD.system.versionTopology, latestSource: null, staleInstanceIds } }),
+  });
+  // La pendiente deja de aparecer en staleInstanceIds porque no hay a qué compararla: no es «al día».
+  assert.deepEqual(pendingSyncPlan(["a", "b"], withoutSource([managed("a", "stopped"), managed("b", "running")], [])), { ready: [], drop: [] });
+  assert.deepEqual(pendingSyncPlan(["a"], withoutSource([managed("a", "stopped")], ["a"])), { ready: [], drop: [] });
+  // Lo que ya no existe se olvida igual.
+  assert.deepEqual(pendingSyncPlan(["a", "gone"], withoutSource([managed("a", "stopped")], [])), { ready: [], drop: ["gone"] });
+  // Con la fuente de vuelta, la detenida y por detrás queda lista.
+  const source = { kind: "original" as const, instanceId: null, name: "Claude" };
+  const back: DashboardState = {
+    instances: [managed("a", "stopped")],
+    system: system({ versionTopology: { ...EMPTY_DASHBOARD.system.versionTopology, latestSource: source, staleInstanceIds: ["a"] } }),
+  };
+  assert.deepEqual(pendingSyncPlan(["a"], back), { ready: ["a"], drop: [] });
 });

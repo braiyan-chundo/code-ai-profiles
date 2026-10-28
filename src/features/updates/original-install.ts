@@ -107,15 +107,20 @@ export interface PendingSyncPlan {
 
 /**
  * Qué hacer con las instancias pendientes tras cualquier cambio del panel (HU-0017, A-6). Una que sigue en marcha no
- * está en ninguna de las dos listas: se espera a que se detenga.
+ * está en ninguna de las dos listas: se espera a que se detenga. Sin fuente en la topología (p. ej. la original está
+ * abierta y ninguna otra instancia tiene la versión nueva) tampoco se sabe quién va por detrás: solo se olvida la
+ * que ya no existe y el resto espera a que haya una fuente válida (revisión técnica, R-1).
  */
 export function pendingSyncPlan(pendingIds: string[], dashboard: DashboardState): PendingSyncPlan {
-  const stale = new Set(dashboard.system.versionTopology.staleInstanceIds);
+  const { latestSource, staleInstanceIds } = dashboard.system.versionTopology;
+  const stale = new Set(staleInstanceIds);
   const ready: string[] = [];
   const drop: string[] = [];
   for (const id of pendingIds) {
     const instance = dashboard.instances.find((item) => item.id === id);
-    if (!instance || !stale.has(id)) drop.push(id);
+    if (!instance) drop.push(id);
+    else if (latestSource === null) continue;
+    else if (!stale.has(id)) drop.push(id);
     else if (instance.status === "stopped") ready.push(id);
   }
   return { ready, drop };
