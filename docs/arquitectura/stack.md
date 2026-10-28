@@ -24,6 +24,8 @@ Gestor de paquetes: `pnpm`, siempre.
 
 | App | Archivo | Valida con |
 | --- | --- | --- |
+| desktop (Rust) | `src-tauri/src/config.rs` (valores fijados al compilar por `src-tauri/build.rs` desde `.env.example`; ADR-0002, HU-0017) | `build.rs` falla si falta una clave `CAP_*`; `config::validate()` en `setup` comprueba el formato |
+| interfaz (React) | Sin variables propias. Las URLs fijas irían a `src/lib/links.ts` | — |
 
 ## Las reglas que impone cada pieza
 

@@ -275,8 +275,8 @@
     "semantic_hash": ""
   },
   "docs/arquitectura/stack.md": {
-    "mtime": 1793192634.4788504,
-    "ast_hash": "7f9dd889a6ec92aa83110047aa1672f5",
+    "mtime": 1793213868.5831997,
+    "ast_hash": "1711c354867d484c479b8a3499760daa",
     "semantic_hash": ""
   },
   "docs/decisiones/ADR-0001-adopcion-metodologia-v4.md": {
@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793212877.883611,
-    "ast_hash": "14f5a48e9147310b87244d8c4420992e",
+    "mtime": 1793213976.4792724,
+    "ast_hash": "93eae92323311a4a9cd38d1b10bcb2f3",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -390,8 +390,8 @@
     "semantic_hash": ""
   },
   "docs/arquitectura/frontend.md": {
-    "mtime": 1793211133.685139,
-    "ast_hash": "9c2c41dbcb2e91bebb3b5030faf9bef6",
+    "mtime": 1793213878.8198106,
+    "ast_hash": "950adbafe4f867b4f9cf72c7f48b40fd",
     "semantic_hash": ""
   },
   "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md": {
@@ -1640,13 +1640,38 @@
     "semantic_hash": ""
   },
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/hu.md": {
-    "mtime": 1793212885.4938555,
-    "ast_hash": "8ca12f143c83cd5b9514d4af86b11892",
+    "mtime": 1793213976.4699292,
+    "ast_hash": "fd21cc3241772a1a19011594284aba95",
     "semantic_hash": ""
   },
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/seguimiento.md": {
-    "mtime": 1793212877.8828738,
-    "ast_hash": "66c8343953811d6ebe52ef49fa42e718",
+    "mtime": 1793213976.4784696,
+    "ast_hash": "384c806becd3d59fb8378baee8c16fa2",
+    "semantic_hash": ""
+  },
+  "docs/arquitectura/backend.md": {
+    "mtime": 1793213863.5748851,
+    "ast_hash": "48e5be346e73265e16c059fab5318f20",
+    "semantic_hash": ""
+  },
+  "docs/decisiones/ADR-0002-modulos-rust-y-configuracion-en-compilacion.md": {
+    "mtime": 1793213976.3934662,
+    "ast_hash": "ad488ea5feff4b5aef319bc45ef4e623",
+    "semantic_hash": ""
+  },
+  "hu/HU-0017-descargar-e-instalar-la-original-en-maco/arquitectura.md": {
+    "mtime": 1793213740.3925223,
+    "ast_hash": "b3ae3cc3d499008bef3ca8aa745d5589",
+    "semantic_hash": ""
+  },
+  "hu/HU-0017-descargar-e-instalar-la-original-en-maco/briefs/backend.md": {
+    "mtime": 1793213826.1917214,
+    "ast_hash": "6bf0ddd76a3cf1f7e0c4aceac62a2f43",
+    "semantic_hash": ""
+  },
+  "hu/HU-0017-descargar-e-instalar-la-original-en-maco/briefs/frontend.md": {
+    "mtime": 1793213833.6857412,
+    "ast_hash": "6baccc79e3900b7253daf9e0c473c6c8",
     "semantic_hash": ""
   }
 }

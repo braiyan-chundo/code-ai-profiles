@@ -68,7 +68,8 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 - `components/` no conoce el dominio: recibe props, no usa `useDashboard`.
 - `lib/` no importa React ni features. Solo `bridge.ts` toca `window` (detección de Tauri y esperas del mock);
   los demás módulos reciben del llamador lo que necesitan del entorno (`navigator.platform`, el reloj).
-- `invoke` **solo** en `lib/bridge.ts`. Las otras APIs de Tauri, siempre detrás de `bridge.isDesktop()`, viven en tres
+- `invoke` y `Channel` (HU-0017: el progreso de una llamada larga) **solo** en `lib/bridge.ts`; el resto de la app
+  recibe un callback. Las otras APIs de Tauri, siempre detrás de `bridge.isDesktop()`, viven en tres
   sitios: `listen` en `features/scan/useScanRuntime.ts`, `getCurrentWindow` en `app/layout/window-actions.ts` y
   `convertFileSrc` en `features/instances/instance-icon.ts`.
 - El alias `@/` → `src/` existe desde la HU-0014 (`tsconfig.json` `paths` y `vite.config.ts`). Lo usan
@@ -123,8 +124,12 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
   (`replaceDashboard`). Solo dos fusiones parciales, puras y probadas: el estado oficial de actualización
   (`mergeSourceUpdateForInstallation`) y el uso en vivo (`applyLiveUsage`). Pasan como `update` en la acción
   `dashboard/updated`. El reducer solo tiene `import type` y se prueba con `node --test`.
+- **Instalación de la original (HU-0017).** El store guarda también `originalInstall` (el último progreso, o `null`)
+  y `pendingSyncIds` (las instancias que estaban en marcha al instalar). Ninguno de los dos es persistente: al
+  cerrar la app, una pendiente vuelve a ser una instancia por detrás, como cualquier otra.
 - **Operación en curso.** `busy` es una clave (`scan`, `create`, `update`, `launch:<id>`, `stop:<id>`,
-  `delete:<id>`, `transfer:<sessionId>`, `unlink:<sessionId>`, `update-applications`, `update-original`) que
+  `delete:<id>`, `transfer:<sessionId>`, `unlink:<sessionId>`, `update-applications`, `update-original`,
+  `install-original`) que
   deshabilita controles. `busyRef` refleja su último valor para los listeners. `runAction(key, action)` es el
   patrón estándar: marca `busy`, limpia `error`, reemplaza el estado y libera `busy`.
 - **Hooks de acceso.** `useDashboard`, `useScan`, `useSourceUpdate`, `useAppearance` y `useDialogs`. Cada contexto
@@ -135,7 +140,8 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 - **Orden de los efectos de ejecución.** `DashboardRuntime` crea primero los dos controladores en el render
   (`useScanRuntime`, `useSourceUpdateController`) y después llama a los efectos en un orden fijo:
   `useInitialLoad` → `useScanLifecycle` → `useSourceUpdateRuntime` → `useLiveUsage` → `useSourceUpdatePolling` →
-  `useBackgroundRefresh`. El listener de `focus` de la actualización tiene que registrarse **antes** que el del
+  `useBackgroundRefresh` → `usePendingSynchronization` (HU-0017). Este último no registra listeners: reacciona al
+  store y solo sincroniza con `busy === null`. El listener de `focus` de la actualización tiene que registrarse **antes** que el del
   refresco en segundo plano: el primero marca `suppressNextGeneralFocus` y el segundo lo consume. Ningún otro
   archivo de `src/` registra `focus`, `blur` ni `visibilitychange` (lo vigila `test:ui`). Fuera de `DashboardRuntime`
   solo hay listeners de otro tipo:
