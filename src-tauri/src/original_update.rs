@@ -725,6 +725,9 @@ pub(crate) fn parse_designated_requirement(output: &str) -> Option<String> {
 const OPERATION_PREFIX: &str = ".code-ai-profiles-original-";
 const OPERATION_LOCK: &str = ".lock";
 const ROLLBACK_FAILED_MARKER: &str = "rollback-failed";
+/// Se escribe antes de intercambiar y se quita al validar o al volver atrás bien. Mientras exista, ni la
+/// limpieza ni la recuperación borran la carpeta, aunque no se haya podido escribir `rollback-failed`.
+const SWAP_IN_PROGRESS_MARKER: &str = "swap-in-progress";
 
 /// Lo que se sabe de la original instalada antes de tocar nada.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -866,14 +869,19 @@ fn exchange_unsupported(error: &std::io::Error) -> bool {
     }
 }
 
-/// Pone `staged` en `destination`. Primero `renamex_np(RENAME_SWAP)`; si el volumen no lo admite, el patrón
-/// de `swap_application_directory` con la anterior en `<previous_dir>/<nombre>`.
+type RenameFn<'a> = &'a dyn Fn(&Path, &Path) -> std::io::Result<()>;
+
+/// Pone `staged` en `destination`. Primero `renamex_np(RENAME_SWAP)`; si el volumen no lo admite, dos
+/// `rename` con la anterior en `<previous_dir>/<nombre>`. Si el segundo falla y tampoco se puede devolver
+/// la anterior a su sitio, el error es `Stuck` y dice dónde está: la original sí cambió de sitio.
 pub(crate) fn swap_bundles(
     staged: &Path,
     destination: &Path,
     previous_dir: &Path,
-) -> Result<SwapOutcome, String> {
-    swap_bundles_with(staged, destination, previous_dir, true)
+) -> Result<SwapOutcome, InstallError> {
+    swap_bundles_with(staged, destination, previous_dir, true, &|from, to| {
+        fs::rename(from, to)
+    })
 }
 
 fn swap_bundles_with(
@@ -881,21 +889,48 @@ fn swap_bundles_with(
     destination: &Path,
     previous_dir: &Path,
     try_exchange: bool,
-) -> Result<SwapOutcome, String> {
+    rename: RenameFn<'_>,
+) -> Result<SwapOutcome, InstallError> {
     if try_exchange {
         match exchange_paths(staged, destination) {
             Ok(()) => return Ok(SwapOutcome::Exchanged),
             Err(error) if exchange_unsupported(&error) => {}
-            Err(error) => return Err(format!("No se pudo intercambiar la aplicación: {error}")),
+            Err(error) => {
+                return Err(InstallError::Unchanged(format!(
+                    "No se pudo intercambiar la aplicación: {error}"
+                )))
+            }
         }
     }
-    let name = destination
-        .file_name()
-        .ok_or_else(|| "La ruta de la original no es válida.".to_string())?;
-    fs::create_dir_all(previous_dir)
-        .map_err(|error| format!("No se pudo preparar el respaldo de la original: {error}"))?;
+    let name = destination.file_name().ok_or_else(|| {
+        InstallError::Unchanged("La ruta de la original no es válida.".to_string())
+    })?;
+    fs::create_dir_all(previous_dir).map_err(|error| {
+        InstallError::Unchanged(format!(
+            "No se pudo preparar el respaldo de la original: {error}"
+        ))
+    })?;
     let backup = previous_dir.join(name);
-    swap_application_directory(staged, destination, &backup)?;
+    if fs::symlink_metadata(&backup).is_ok() {
+        return Err(InstallError::Unchanged(
+            "Ya existe un respaldo temporal de esta actualización.".to_string(),
+        ));
+    }
+    rename(destination, &backup).map_err(|error| {
+        InstallError::Unchanged(format!("No se pudo apartar la versión anterior: {error}"))
+    })?;
+    if let Err(error) = rename(staged, destination) {
+        if rename(&backup, destination).is_ok() {
+            return Err(InstallError::Unchanged(format!(
+                "No se pudo activar la versión nueva: {error}"
+            )));
+        }
+        return Err(InstallError::Stuck(format!(
+            "No se pudo activar la versión nueva ({error}) ni devolver la anterior a su sitio. La versión anterior está en {}; muévela a {} para recuperarla.",
+            backup.display(),
+            destination.display()
+        )));
+    }
     Ok(SwapOutcome::Moved { backup })
 }
 
@@ -968,8 +1003,18 @@ pub(crate) fn install_staged_app(
             "Cierra {app_name} para actualizarla."
         )));
     }
-    let outcome = swap_bundles(staged, destination, &operation_dir.join("previous"))
-        .map_err(InstallError::Unchanged)?;
+    let marker = operation_dir.join(SWAP_IN_PROGRESS_MARKER);
+    fs::write(&marker, b"").map_err(|error| {
+        InstallError::Unchanged(format!("No se pudo preparar el intercambio: {error}"))
+    })?;
+    let outcome = match swap_bundles(staged, destination, &operation_dir.join("previous")) {
+        Ok(outcome) => outcome,
+        Err(InstallError::Stuck(message)) => return Err(InstallError::Stuck(message)),
+        Err(error) => {
+            let _ = fs::remove_file(&marker);
+            return Err(error);
+        }
+    };
     let validation = if !bundle_layout_valid(destination) {
         Err("la aplicación nueva no tiene la estructura esperada".to_string())
     } else if tools
@@ -993,12 +1038,16 @@ pub(crate) fn install_staged_app(
         Ok(())
     };
     let Err(reason) = validation else {
+        let _ = fs::remove_file(&marker);
         return Ok(());
     };
     match unswap_bundles(&outcome, staged, destination, operation_dir) {
-        Ok(()) => Err(InstallError::Restored(format!(
+        Ok(()) => {
+            let _ = fs::remove_file(&marker);
+            Err(InstallError::Restored(format!(
             "La versión nueva no superó la comprobación final ({reason}). Se restauró la versión anterior."
-        ))),
+        )))
+        }
         Err(error) => Err(InstallError::Stuck(format!(
             "La versión nueva no superó la comprobación final ({reason}) y no se pudo volver a la anterior: {error} La versión anterior se conserva en {}.",
             operation_dir.display()
@@ -1129,7 +1178,8 @@ impl Drop for OperationDir {
 }
 
 /// Si falta la original y su respaldo está en `previous/`, la devuelve. Borra el directorio solo si la
-/// original está en su sitio y no hay marca de vuelta atrás fallida. Devuelve si lo borró.
+/// original está en su sitio, no hay marca de vuelta atrás fallida y no quedó un intercambio a medias
+/// (salvo que la original acabe de volver desde `previous/`). Devuelve si lo borró.
 fn cleanup_operation_dir(operation_dir: &Path, installation: &Path) -> bool {
     if operation_dir.join(ROLLBACK_FAILED_MARKER).exists() {
         return false;
@@ -1144,6 +1194,10 @@ fn cleanup_operation_dir(operation_dir: &Path, installation: &Path) -> bool {
         if !restorable || fs::rename(&previous, installation).is_err() {
             return false;
         }
+        // La original ha vuelto desde `previous/`: lo que queda es la versión nueva y se puede borrar.
+    } else if operation_dir.join(SWAP_IN_PROGRESS_MARKER).exists() {
+        // Un intercambio que no terminó: aquí puede estar la única copia de la anterior.
+        return false;
     }
     fs::remove_dir_all(operation_dir).is_ok()
 }
@@ -2704,6 +2758,7 @@ drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 App.app/\n";
             &fixture.destination,
             &operation_path.join("previous"),
             false,
+            &|from, to| fs::rename(from, to),
         )
         .unwrap();
         let backup = operation_path.join("previous/Claude.app");
@@ -2726,6 +2781,149 @@ drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 App.app/\n";
         assert_eq!(version_of(&operation_path.join("failed")), "1.5.0");
         drop(fixture.operation);
         assert!(!operation_path.exists());
+        fs::remove_dir_all(fixture.root).unwrap();
+    }
+
+    /// A `rename` that fails on the given call numbers (1-based) and does the real thing otherwise.
+    fn rename_failing_on(calls: &'static [u32]) -> impl Fn(&Path, &Path) -> std::io::Result<()> {
+        let count = Cell::new(0_u32);
+        move |from, to| {
+            count.set(count.get() + 1);
+            if calls.contains(&count.get()) {
+                Err(std::io::Error::other("simulated rename failure"))
+            } else {
+                fs::rename(from, to)
+            }
+        }
+    }
+
+    #[test]
+    fn fallback_swap_that_cannot_activate_restores_and_says_unchanged() {
+        let fixture = install_fixture("swap-fallback-restored", signed("1.5.0"));
+        let operation_path = fixture.operation.path().to_path_buf();
+        let rename = rename_failing_on(&[2]);
+        let result = swap_bundles_with(
+            &fixture.staged,
+            &fixture.destination,
+            &operation_path.join("previous"),
+            false,
+            &rename,
+        );
+        assert!(
+            matches!(result, Err(InstallError::Unchanged(_))),
+            "{result:?}"
+        );
+        assert_eq!(version_of(&fixture.destination), "1.0.0");
+        assert_eq!(version_of(&fixture.staged), "1.5.0");
+        drop(fixture.operation);
+        assert!(!operation_path.exists());
+        fs::remove_dir_all(fixture.root).unwrap();
+    }
+
+    #[test]
+    fn fallback_swap_double_failure_tells_where_the_previous_version_is() {
+        let fixture = install_fixture("swap-fallback-stuck", signed("1.5.0"));
+        let operation_path = fixture.operation.path().to_path_buf();
+        let rename = rename_failing_on(&[2, 3]);
+        let result = swap_bundles_with(
+            &fixture.staged,
+            &fixture.destination,
+            &operation_path.join("previous"),
+            false,
+            &rename,
+        );
+        let backup = operation_path.join("previous/Claude.app");
+        let Err(InstallError::Stuck(message)) = result else {
+            panic!("expected Stuck, got {result:?}");
+        };
+        assert!(!message.contains("no cambió"), "{message}");
+        assert!(message.contains(&backup.display().to_string()), "{message}");
+        assert!(fs::symlink_metadata(&fixture.destination).is_err());
+        assert_eq!(version_of(&backup), "1.0.0");
+        // What the orchestration does with Stuck: keep the folder.
+        fixture.operation.keep();
+        drop(fixture.operation);
+        assert_eq!(version_of(&backup), "1.0.0");
+        fs::remove_dir_all(fixture.root).unwrap();
+    }
+
+    #[test]
+    fn interrupted_swap_marker_protects_the_previous_version_from_recovery() {
+        // RENAME_SWAP done, the reverse swap failed and `rollback-failed` could not be written: the
+        // installation is in place (the rejected new one) and the only copy of the previous version
+        // is in staged/.
+        let root = temp_root("swap-marker");
+        let installation = root.join("Applications/Claude.app");
+        write_fake_bundle(&installation, &signed("1.5.0"));
+        let operation = root
+            .join("Applications")
+            .join(operation_dir_name(Uuid::new_v4()));
+        write_fake_bundle(&operation.join("staged/Claude.app"), &signed("1.0.0"));
+        fs::write(operation.join(SWAP_IN_PROGRESS_MARKER), b"").unwrap();
+        recover_leftovers_in(&[installation.clone()], &root.join("original-update"));
+        assert_eq!(version_of(&operation.join("staged/Claude.app")), "1.0.0");
+        assert!(!cleanup_operation_dir(&operation, &installation));
+        assert!(operation.exists());
+
+        // Fallback swap interrupted before the new one was in place: the original comes back from
+        // previous/ and only then the folder goes, marker or not.
+        fs::remove_dir_all(&installation).unwrap();
+        fs::create_dir_all(operation.join("previous")).unwrap();
+        fs::rename(
+            operation.join("staged/Claude.app"),
+            operation.join("previous/Claude.app"),
+        )
+        .unwrap();
+        recover_leftovers_in(&[installation.clone()], &root.join("original-update"));
+        assert_eq!(version_of(&installation), "1.0.0");
+        assert!(!operation.exists());
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn install_removes_the_swap_marker_when_it_finishes_cleanly() {
+        let fixture = install_fixture("swap-marker-cleared", signed("1.5.0"));
+        let operation_path = fixture.operation.path().to_path_buf();
+        install_staged_app(
+            &FakeTools::default(),
+            &fixture.staged,
+            &fixture.destination,
+            &operation_path,
+            &installed_identity(),
+            &package("1.5.0"),
+            "Claude",
+            &|_| false,
+        )
+        .unwrap();
+        assert!(!operation_path.join(SWAP_IN_PROGRESS_MARKER).exists());
+        drop(fixture.operation);
+        fs::remove_dir_all(fixture.root).unwrap();
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn no_swap_without_the_in_progress_marker() {
+        let fixture = install_fixture("swap-marker-unwritable", signed("1.5.0"));
+        let operation_path = fixture.operation.path().to_path_buf();
+        fs::set_permissions(&operation_path, fs::Permissions::from_mode(0o500)).unwrap();
+        let result = install_staged_app(
+            &FakeTools::default(),
+            &fixture.staged,
+            &fixture.destination,
+            &operation_path,
+            &installed_identity(),
+            &package("1.5.0"),
+            "Claude",
+            &|_| false,
+        );
+        fs::set_permissions(&operation_path, fs::Permissions::from_mode(0o700)).unwrap();
+        assert!(
+            matches!(result, Err(InstallError::Unchanged(_))),
+            "{result:?}"
+        );
+        assert_eq!(version_of(&fixture.destination), "1.0.0");
+        assert_eq!(version_of(&fixture.staged), "1.5.0");
+        drop(fixture.operation);
         fs::remove_dir_all(fixture.root).unwrap();
     }
 
