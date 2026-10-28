@@ -32,7 +32,7 @@ export function OriginalRoute() {
       <PageHeader eyebrow="Aplicación original" title={sourcePath ? appName : "Aplicación original"} />
       <PageContent aria-live="polite" aria-busy={loading}>
         {sourcePath ? (
-          <>
+          <div className="mx-auto grid w-full max-w-[1200px] gap-4">
             <SourceUpdateBanner onUpdate={openOriginalUpdate} />
             <OriginalDetail
               appName={appName}
@@ -55,7 +55,7 @@ export function OriginalRoute() {
                 setUnlinkTarget({ instance: transferProfiles[0], session });
               }}
             />
-          </>
+          </div>
         ) : loading ? (
           <PageSkeleton rows={2} />
         ) : (
