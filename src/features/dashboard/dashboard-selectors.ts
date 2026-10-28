@@ -32,6 +32,15 @@ export function matchesOriginalApp(system: SystemInfo, appName: string, query: s
     .some((value) => value!.toLocaleLowerCase().includes(term));
 }
 
+/**
+ * La instancia de `#/instancias/<id>` (HU-0016, A-9). `undefined` si el id no existe, si se borró o si falta en la URL:
+ * la página entonces vuelve al dashboard.
+ */
+export function findInstance(instances: ManagedInstance[], id: string | undefined): ManagedInstance | undefined {
+  if (!id) return undefined;
+  return instances.find((instance) => instance.id === id);
+}
+
 export function countRunning(instances: ManagedInstance[]): number {
   return instances.filter((instance) => instance.status === "running").length;
 }

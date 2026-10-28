@@ -8,3 +8,5 @@ export { useLiveUsage } from "./useLiveUsage";
 export { DeleteInstanceDialog } from "./DeleteInstanceDialog";
 export { useInstanceActions } from "./useInstanceActions";
 export { ManagedInstancesSection } from "./ManagedInstancesSection";
+export { InstanceAvatar } from "./InstanceAvatar";
+export { instanceStatusLabel } from "./instance-status";

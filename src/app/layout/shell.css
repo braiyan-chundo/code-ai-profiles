@@ -1,132 +1,17 @@
-.ambient {
-  position: absolute;
-  z-index: -1;
-  width: 420px;
-  height: 420px;
-  filter: blur(100px);
-  opacity: 0.12;
-  border-radius: 50%;
-  pointer-events: none;
-  display: none;
-}
-.ambient-one { background: #d76240; top: -240px; right: 8%; }
-.ambient-two { background: #66534d; bottom: -270px; left: 12%; }
-
-.app-window {
-  position: relative;
-  display: grid;
-  grid-template-rows: 94px 104px minmax(0, 1fr) 52px;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: linear-gradient(145deg, rgba(28, 29, 28, 0.985), rgba(16, 17, 16, 0.99));
-  border: 1px solid rgba(255, 255, 255, 0.11);
-  border-radius: 20px;
-  box-shadow:
-    0 40px 100px rgba(0, 0, 0, 0.56),
-    inset 0 1px 0 rgba(255, 255, 255, 0.045);
-}
-
-.titlebar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 26px;
-  padding: 0 38px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.025);
-  user-select: none;
-}
-
-.brand-cluster, .brand, .header-actions, .action-island, .text-action,
+/* Legado (HU-0016): lo que queda del shell heredado mientras convive. La titlebar, el statusbar y el marco de la
+   ventana ya son del catálogo (AppShell, Titlebar, Statusbar). Se borra en el paso 7. */
 .toolbar, .system-pill, .active-summary, .search-pill, .card-actions,
-.account-line, .name-line, .usage-detail, .footer-group, .footer-build,
-.statusbar, .modal-actions, .isolation-note, .account-detection-note, .advanced-toggle {
+.name-line, .modal-actions, .isolation-note, .advanced-toggle {
   display: flex;
   align-items: center;
 }
 
-.brand-cluster { gap: 28px; min-width: 0; }
-.window-controls { display: flex; gap: 11px; }
-.window-dot {
-  width: 13px;
-  height: 13px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-}
-.window-dot.close { background: #ff5f57; }
-.window-dot.minimize { background: #febc2e; }
-.window-dot.maximize { background: #28c840; }
-.window-controls:hover .window-dot { filter: saturate(1.18) brightness(1.08); }
-.platform-macos .app-window {
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-}
-.platform-macos .window-controls { display: none; }
-.platform-macos .brand-cluster { padding-left: 68px; }
-.platform-linux .app-window {
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-}
-.platform-linux .window-controls,
-.platform-linux .brand-divider { display: none; }
-.brand-divider { width: 1px; height: 38px; background: var(--line); }
-.brand { min-width: 0; gap: 10px; font-size: 25px; font-weight: 700; letter-spacing: -0.045em; white-space: nowrap; }
-.brand-mark { display: grid; color: var(--primary-soft); place-items: center; filter: drop-shadow(0 5px 8px rgba(255, 92, 47, 0.2)); }
-.beta-label {
-  margin-left: 3px;
-  padding: 4px 6px 3px;
-  color: #bfaca6;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 5px;
-  font: 600 8px/1 JetBrains Mono, monospace;
-  letter-spacing: 0.12em;
-}
-
-.header-actions { gap: 16px; flex: 0 0 auto; }
-.action-island, .system-pill, .search-pill {
+.system-pill, .search-pill {
   background: rgba(29, 30, 29, 0.7);
   border: 1px solid var(--line-strong);
   box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18), inset 0 1px rgba(255, 255, 255, 0.025);
   backdrop-filter: blur(24px);
 }
-.action-island { height: 50px; padding: 5px 7px 5px 15px; gap: 10px; border-radius: 18px; }
-.sparkle { display: grid; place-items: center; color: #d2aaa0; }
-.action-divider { width: 1px; height: 23px; background: var(--line); }
-.text-action {
-  gap: 8px;
-  height: 38px;
-  padding: 0 11px;
-  background: transparent;
-  border: 0;
-  border-radius: 11px;
-  color: #d4cecb;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 160ms ease, color 160ms ease;
-}
-.text-action:hover:not(:disabled) { background: rgba(255, 255, 255, 0.06); color: white; }
-.appearance-button {
-  display: grid;
-  flex: 0 0 auto;
-  width: 50px;
-  height: 50px;
-  padding: 0;
-  place-items: center;
-  color: #bfaeaa;
-  background: rgba(29, 30, 29, 0.7);
-  border: 1px solid var(--line-strong);
-  border-radius: 18px;
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18), inset 0 1px rgba(255, 255, 255, 0.025);
-  cursor: pointer;
-  transition: color 160ms ease, background 160ms ease, transform 160ms ease;
-}
-.appearance-button:hover { color: #f0e7e4; background: rgba(255, 255, 255, 0.065); transform: translateY(-1px); }
 button:disabled { opacity: 0.48; cursor: not-allowed; }
 
 .primary-action, .secondary-button, .destructive-button {
@@ -150,40 +35,3 @@ button:disabled { opacity: 0.48; cursor: not-allowed; }
 }
 .primary-action:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.07); }
 .primary-action:active:not(:disabled) { transform: scale(0.98); }
-.plus-disc { display: grid; width: 19px; height: 19px; place-items: center; background: rgba(255, 255, 255, 0.94); color: var(--primary-bright); border-radius: 50%; }
-
-.platform-windows .window-controls {
-  position: absolute;
-  z-index: 4;
-  top: 0;
-  right: 10px;
-  gap: 0;
-}
-.platform-windows .window-dot {
-  position: relative;
-  width: 46px;
-  height: 36px;
-  background: transparent;
-  border-radius: 0 0 7px 7px;
-  box-shadow: none;
-}
-.platform-windows .window-dot::after {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  color: #aaa4a1;
-  font: 400 15px/1 "Segoe UI", sans-serif;
-}
-.platform-windows .window-dot.minimize { order: 1; }
-.platform-windows .window-dot.maximize { order: 2; }
-.platform-windows .window-dot.close { order: 3; }
-.platform-windows .window-dot.minimize::after { content: "—"; transform: translateY(-3px); }
-.platform-windows .window-dot.maximize::after { content: "□"; font-size: 13px; }
-.platform-windows .window-dot.close::after { content: "×"; font-size: 18px; }
-.platform-windows .window-dot:hover { background: rgba(255, 255, 255, 0.075); filter: none; }
-.platform-windows .window-dot.close:hover { background: #c42b1c; }
-.platform-windows .window-dot.close:hover::after { color: white; }
-.platform-windows .brand-divider { display: none; }
-.platform-windows .header-actions { margin-right: 132px; }
-

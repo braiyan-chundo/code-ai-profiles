@@ -10,6 +10,7 @@ import {
   countCodeSessions,
   countRunning,
   filterInstances,
+  findInstance,
   matchesOriginalApp,
   originalAppName,
   outdatedInstances,
@@ -144,6 +145,16 @@ test("filterInstances: vacío devuelve el mismo array; recorta, ignora mayúscul
   assert.deepEqual(filterInstances(instances, "pagos").map((item) => item.id), ["c"]);
   assert.deepEqual(filterInstances(instances, "/apps/b.app").map((item) => item.id), ["b"]);
   assert.deepEqual(filterInstances(instances, "nada"), []);
+});
+
+test("findInstance: por id exacto; desconocido, vacío o ausente devuelve undefined (A-9)", () => {
+  const instances = [instance("a"), instance("b")];
+  assert.equal(findInstance(instances, "b"), instances[1]);
+  assert.equal(findInstance(instances, "c"), undefined);
+  assert.equal(findInstance(instances, ""), undefined);
+  assert.equal(findInstance(instances, undefined), undefined);
+  assert.equal(findInstance([], "a"), undefined);
+  assert.equal(findInstance(instances, "A"), undefined, "el id no se normaliza");
 });
 
 test("originalAppName y matchesOriginalApp", () => {

@@ -9,6 +9,7 @@ export {
   countCodeSessions,
   countRunning,
   filterInstances,
+  findInstance,
   matchesOriginalApp,
   originalAppName,
   outdatedInstances,

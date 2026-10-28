@@ -21,12 +21,8 @@ function IconBase({ size = 20, children, ...props }: IconProps) {
   );
 }
 
-export const CloudIcon = (props: IconProps) => (
-  <IconBase {...props}>
-    <path d="M6.5 19h11a4.5 4.5 0 0 0 .68-8.95A6.6 6.6 0 0 0 5.5 8.6 5.2 5.2 0 0 0 6.5 19Z" />
-    <path d="m9.4 13.4 1.7 1.7 3.8-4" />
-  </IconBase>
-);
+// HU-0016 (A-14): la nube es la marca y vive en BrandMark.tsx. Este archivo se borra en el paso 7.
+export { BrandMark as CloudIcon } from "./BrandMark";
 
 export const PlusIcon = (props: IconProps) => (
   <IconBase {...props}><path d="M12 5v14M5 12h14" /></IconBase>

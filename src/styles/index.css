@@ -19,7 +19,6 @@
 @import "../features/instances/instance-card.css";
 @import "../features/sessions/session-list.css";
 @import "../features/dashboard/feedback-banners.css";
-@import "../app/layout/statusbar.css";
 @import "../components/empty-state.css";
 @import "../components/buttons.css";
 @import "../components/loading-cards.css";
