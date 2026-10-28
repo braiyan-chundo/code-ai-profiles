@@ -10,6 +10,7 @@ import {
   installPhaseLabel,
   installProgressPercent,
   originalInstallAvailability,
+  outdatedInstancesDetail,
   pendingSyncNotice,
   pendingSyncPlan,
   summarizeOriginalInstall,
@@ -356,4 +357,25 @@ test("pendingSyncPlan: borrada o al día se olvida, también si está en marcha"
   assert.deepEqual(pendingSyncPlan(["a", "gone", "b"], state), { ready: [], drop: ["a", "gone"] });
   assert.deepEqual(pendingSyncPlan(["b"], panel([managed("b", "running")], [])), { ready: [], drop: ["b"] });
   assert.deepEqual(pendingSyncPlan([], state), { ready: [], drop: [] });
+});
+
+test("outdatedInstancesDetail: nombra las pendientes que se sincronizarán al detenerlas", () => {
+  const a = { id: "a", name: "Personal" };
+  const b = { id: "b", name: "Trabajo" };
+  const c = { id: "c", name: "Lab" };
+  assert.equal(outdatedInstancesDetail([a], []), "Personal usa una versión anterior.");
+  assert.equal(outdatedInstancesDetail([a, b], []), "2 instancias usan una versión anterior.");
+  assert.equal(outdatedInstancesDetail([a], ["a"]), "Personal usa una versión anterior y se sincronizará al detenerla.");
+  assert.equal(
+    outdatedInstancesDetail([a, b], ["b"]),
+    "2 instancias usan una versión anterior. Trabajo se sincronizará al detenerla.",
+  );
+  assert.equal(
+    outdatedInstancesDetail([a, b, c], ["a", "c", "gone"]),
+    "3 instancias usan una versión anterior. Personal y Lab se sincronizarán al detenerlas.",
+  );
+  assert.equal(
+    outdatedInstancesDetail([a, b, c], ["a", "b", "c"]),
+    "3 instancias usan una versión anterior. Personal, Trabajo y Lab se sincronizarán al detenerlas.",
+  );
 });

@@ -4,6 +4,7 @@ export {
   installPhaseLabel,
   installProgressPercent,
   originalInstallAvailability,
+  outdatedInstancesDetail,
   pendingSyncNotice,
   pendingSyncPlan,
   summarizeOriginalInstall,

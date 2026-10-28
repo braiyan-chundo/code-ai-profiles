@@ -3,9 +3,13 @@ import { NoticeAlert } from "../../components/NoticeAlert";
 import { Button } from "../../components/ui/button";
 import type { ManagedInstance } from "../../types";
 import { useDashboard } from "../dashboard";
+import { outdatedInstancesDetail } from "./original-install";
 import { synchronizeLabel as describeSynchronizeLabel } from "./update-messages";
 
-/** Aviso de instancias con una versión anterior a la más reciente instalada. */
+/**
+ * Aviso de instancias con una versión anterior a la más reciente instalada. Nombra las que quedaron pendientes tras
+ * instalar la original: se sincronizarán solas al detenerlas (HU-0017).
+ */
 export function SynchronizeBanner({
   outdatedInstances,
   onSynchronize,
@@ -13,7 +17,7 @@ export function SynchronizeBanner({
   outdatedInstances: ManagedInstance[];
   onSynchronize: () => void;
 }) {
-  const { dashboard: state, busy } = useDashboard();
+  const { dashboard: state, busy, pendingSyncIds } = useDashboard();
   if (!(outdatedInstances.length > 0)) return null;
   const synchronizeLabel = describeSynchronizeLabel(
     state.system.versionTopology.latestSource,
@@ -36,9 +40,7 @@ export function SynchronizeBanner({
       }
     >
       {state.system.versionTopology.canSynchronizeManaged
-        ? outdatedInstances.length === 1
-          ? `${outdatedInstances[0].name} usa una versión anterior.`
-          : `${outdatedInstances.length} instancias usan una versión anterior.`
+        ? outdatedInstancesDetail(outdatedInstances, pendingSyncIds)
         : state.system.versionTopology.reason ?? "No hay una fuente local válida para sincronizar."}
     </NoticeAlert>
   );

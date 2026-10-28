@@ -120,3 +120,19 @@ export function pendingSyncPlan(pendingIds: string[], dashboard: DashboardState)
   }
   return { ready, drop };
 }
+
+/**
+ * El detalle del aviso de sincronización: cuántas instancias van por detrás y cuáles, de ellas, se sincronizarán solas
+ * al detenerse (HU-0017, A-10).
+ */
+export function outdatedInstancesDetail(outdated: { id: string; name: string }[], pendingIds: string[]): string {
+  const pending = outdated.filter((instance) => pendingIds.includes(instance.id));
+  const base = outdated.length === 1
+    ? `${outdated[0].name} usa una versión anterior`
+    : `${outdated.length} instancias usan una versión anterior`;
+  if (pending.length === 0) return `${base}.`;
+  if (outdated.length === 1) return `${base} y se sincronizará al detenerla.`;
+  const names = pending.map((instance) => instance.name);
+  const list = names.length === 1 ? names[0] : `${names.slice(0, -1).join(", ")} y ${names[names.length - 1]}`;
+  return `${base}. ${list} ${pending.length === 1 ? "se sincronizará al detenerla" : "se sincronizarán al detenerlas"}.`;
+}

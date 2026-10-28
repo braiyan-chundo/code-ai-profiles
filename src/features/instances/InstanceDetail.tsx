@@ -15,6 +15,8 @@ export interface InstanceDetailProps {
   platform: DashboardState["system"]["platform"];
   busy: string | null;
   updateAvailable: boolean;
+  /** Quedó por detrás tras instalar la original y se sincronizará al detenerla (HU-0017). */
+  syncPending: boolean;
   iconPreviewUrl: string | null;
   onLaunch: () => void;
   onStop: () => void;
@@ -35,6 +37,7 @@ export function InstanceDetail({
   platform,
   busy,
   updateAvailable,
+  syncPending,
   iconPreviewUrl,
   onLaunch,
   onStop,
@@ -71,6 +74,11 @@ export function InstanceDetail({
               {updateAvailable && (
                 <Badge variant="outline" className="border-primary/30 font-mono text-[9px] tracking-[0.04em] text-primary-text uppercase">
                   Actualización disponible
+                </Badge>
+              )}
+              {syncPending && (
+                <Badge variant="outline" className="border-warning/30 font-mono text-[9px] tracking-[0.04em] text-warning uppercase">
+                  Sincronización pendiente
                 </Badge>
               )}
               {instance.customIcon && (
