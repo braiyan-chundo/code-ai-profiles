@@ -13,6 +13,7 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 ### Changed
 
 - La interfaz se organiza por funcionalidades (`src/app`, `src/features`, `src/components`, `src/lib`, `src/styles`), con React Router 7 por hash y estado compartido con Context y `useReducer`. No cambia nada visible.
+- Requisitos mínimos: macOS 13.3 o posterior (antes 12.0) y WebKitGTK 2.40 o posterior en Linux, porque la interfaz necesita un motor web de nivel Safari 16.4.
 - El proyecto usa pnpm en lugar de npm: `pnpm-lock.yaml`, versión fijada en `packageManager` y CI con `pnpm install --frozen-lockfile`.
 
 ## [0.2.2] - 2026-10-27
