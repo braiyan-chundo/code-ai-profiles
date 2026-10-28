@@ -1,0 +1,3 @@
+/* src/showcase/showcase.css: la única entrada de Tailwind (HU-0014). Versión mínima del paso 1. */
+@import "tailwindcss" source(none);
+@source "./";
