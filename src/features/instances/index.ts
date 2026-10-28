@@ -1,4 +1,6 @@
 export { InstanceCard } from "./InstanceCard";
+export { InstanceDetail } from "./InstanceDetail";
+export { InstanceStatusBadge } from "./InstanceStatusBadge";
 export { InstanceEditor } from "./InstanceEditor";
 export { UsageMeter } from "./UsageMeter";
 export { managedIconSource } from "./instance-icon";

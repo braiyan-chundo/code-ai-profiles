@@ -69,15 +69,6 @@
 
 .usage-overview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
 .usage-captured-at { grid-column: 1 / -1; margin-top: -7px; color: #706966; font: 500 8px/1.2 JetBrains Mono, monospace; text-align: right; }
-.usage-meter { position: relative; display: grid; gap: 8px; min-width: 0; padding: 14px 15px 12px; background: rgba(9, 10, 9, 0.26); border: 1px solid rgba(255, 255, 255, 0.065); border-radius: 17px; }
-.usage-meter-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
-.usage-meter-heading span { overflow: hidden; color: #817875; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
-.usage-meter-heading strong { color: #e4c1b7; font: 600 24px/0.9 JetBrains Mono, monospace; letter-spacing: -0.06em; }
-.usage-meter small { color: #716966; font: 500 8px/1 JetBrains Mono, monospace; text-align: right; text-transform: uppercase; }
-.progress-track { width: 100%; height: 8px; overflow: hidden; background: rgba(255, 255, 255, 0.105); border-radius: 999px; }
-.progress-track span { display: block; height: 100%; background: #949594; border-radius: inherit; box-shadow: 0 0 12px rgba(255, 255, 255, 0.08); transition: width 500ms ease; }
-.progress-track span.high { background: #ffad96; box-shadow: 0 0 12px rgba(255, 141, 108, 0.25); }
-.progress-track span.critical { background: #c4776a; }
 
 .card-actions { justify-content: flex-end; gap: 9px; }
 .icon-button {

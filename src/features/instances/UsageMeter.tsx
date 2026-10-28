@@ -1,18 +1,36 @@
-export function UsageMeter({ label, value }: { label: string; value: number | null }) {
+import { Card, CardContent } from "../../components/ui/card";
+import { Progress } from "../../components/ui/progress";
+import { cn } from "../../lib/utils";
+
+/** El color de la barra según lo cerca que está el límite: 70 % es «alto» y 90 % «crítico» (como antes). */
+function usageTone(progress: number): string {
+  if (progress >= 90) return "[&>[data-slot=progress-indicator]]:bg-destructive";
+  if (progress >= 70) return "[&>[data-slot=progress-indicator]]:bg-primary";
+  return "[&>[data-slot=progress-indicator]]:bg-muted-foreground";
+}
+
+/** Un porcentaje de uso (de sesión o semanal) con su barra. Sin dato muestra «—» y la barra vacía. */
+export function UsageMeter({ label, value, className }: { label: string; value: number | null; className?: string }) {
   const progress = Math.min(100, Math.max(0, value ?? 0));
   return (
-    <div className="usage-meter">
-      <div className="usage-meter-heading">
-        <span>{label}</span>
-        <strong>{value == null ? "—" : `${Math.round(value)}%`}</strong>
-      </div>
-      <div className="progress-track" aria-label={value == null ? `${label} no disponible` : `${label}: ${value}% usado`}>
-        <span
-          className={progress >= 90 ? "critical" : progress >= 70 ? "high" : ""}
-          style={{ width: value == null ? "0%" : `${progress}%` }}
+    <Card size="sm" className={cn("min-w-0 gap-2.5", className)}>
+      <CardContent className="gap-2.5">
+        <div className="flex items-end justify-between gap-2.5">
+          <span className="truncate text-[9px] font-bold tracking-[0.08em] text-muted-foreground uppercase">{label}</span>
+          <strong className="font-mono text-2xl/[0.9] font-semibold tracking-[-0.06em] text-primary-text">
+            {value == null ? "—" : `${Math.round(value)}%`}
+          </strong>
+        </div>
+        <Progress
+          value={value == null ? null : progress}
+          aria-label={value == null ? `${label} no disponible` : `${label}: ${value}% usado`}
+          aria-valuenow={value == null ? undefined : Math.round(progress)}
+          className={cn("h-2", usageTone(progress))}
         />
-      </div>
-      <small>{value == null ? "Sin datos" : "usado"}</small>
-    </div>
+        <small className="text-right font-mono text-[8px] leading-none font-medium text-(--quiet) uppercase">
+          {value == null ? "Sin datos" : "usado"}
+        </small>
+      </CardContent>
+    </Card>
   );
 }

@@ -1,6 +1,22 @@
 import type { CodeSession } from "../../types";
-import { formatTokenCount, sessionContextLevel } from "./session-format";
+import { Progress } from "../../components/ui/progress";
+import { cn } from "../../lib/utils";
+import { formatTokenCount, sessionContextLevel, type SessionContextLevel } from "./session-format";
 
+const LEVEL_TEXT: Record<SessionContextLevel, string> = {
+  normal: "text-success",
+  elevated: "text-warning",
+  critical: "text-destructive",
+  unknown: "text-(--quiet)",
+};
+const LEVEL_BAR: Record<SessionContextLevel, string> = {
+  normal: "[&>[data-slot=progress-indicator]]:bg-success",
+  elevated: "[&>[data-slot=progress-indicator]]:bg-warning",
+  critical: "[&>[data-slot=progress-indicator]]:bg-destructive",
+  unknown: "[&>[data-slot=progress-indicator]]:bg-transparent",
+};
+
+/** El contexto estimado de una sesión: tokens, límite y porcentaje, con una barra si el límite del modelo se conoce. */
 export function SessionContextMeter({ session }: { session: CodeSession }) {
   const tokens = session.contextTokens ?? null;
   const windowTokens = session.contextWindowTokens ?? null;
@@ -12,7 +28,7 @@ export function SessionContextMeter({ session }: { session: CodeSession }) {
     ? "Considera compactar o crear otra sesión"
     : level === "elevated"
       ? "Contexto elevado"
-        : level === "normal"
+      : level === "normal"
         ? "Contexto saludable"
         : tokens != null
           ? "Límite no identificado para este modelo"
@@ -22,38 +38,43 @@ export function SessionContextMeter({ session }: { session: CodeSession }) {
     : hasKnownLimit
       ? `Contexto usado: ${Math.round(percent)}%, ${tokens} de ${windowTokens} tokens`
       : `${tokens} tokens usados. Límite no identificado para este modelo`;
+  const formatter = new Intl.NumberFormat("es-CO");
 
   return (
     <div
-      className={`session-context context-${level}`}
+      data-level={level}
+      className="grid gap-[5px] font-mono text-(length:--session-context-size) leading-[1.1] font-semibold"
       title={tokens == null
         ? "La aplicación aún no registra uso de contexto para esta sesión"
         : hasKnownLimit
-          ? `${new Intl.NumberFormat("es-CO").format(tokens)} de ${new Intl.NumberFormat("es-CO").format(windowTokens)} tokens de contexto`
-          : `${new Intl.NumberFormat("es-CO").format(tokens)} tokens usados. Límite no identificado para este modelo`}
+          ? `${formatter.format(tokens)} de ${formatter.format(windowTokens)} tokens de contexto`
+          : `${formatter.format(tokens)} tokens usados. Límite no identificado para este modelo`}
       aria-label={accessibleLabel}
     >
-      <div className="session-context-heading">
-        <span>
+      <div className={cn("flex items-center justify-between gap-2", level === "unknown" ? "text-(--quiet)" : "text-muted-foreground")}>
+        <span className="truncate">
           {tokens == null
             ? "Contexto sin datos"
             : `${formatTokenCount(tokens)}${hasKnownLimit ? ` de ${formatTokenCount(windowTokens)}` : " tokens"}`}
         </span>
-        {hasKnownLimit && <strong>{Math.round(percent)}%</strong>}
+        {hasKnownLimit && <strong className={cn("shrink-0 font-[inherit]", LEVEL_TEXT[level])}>{Math.round(percent)}%</strong>}
       </div>
       {hasKnownLimit && (
-        <div
-          className="session-context-track"
-          role="meter"
+        <Progress
+          value={progress}
           aria-label={`Contexto usado: ${Math.round(percent)}%`}
-          aria-valuemin={0}
-          aria-valuemax={100}
           aria-valuenow={Math.round(progress)}
-        >
-          <span style={{ width: `${progress}%` }} />
-        </div>
+          className={cn("h-(--session-track-height)", LEVEL_BAR[level])}
+        />
       )}
-      <small>{description}</small>
+      <small
+        className={cn(
+          "text-(length:--session-hint-size) font-medium",
+          level === "elevated" || level === "critical" ? LEVEL_TEXT[level] : "text-(--quiet)",
+        )}
+      >
+        {description}
+      </small>
     </div>
   );
 }

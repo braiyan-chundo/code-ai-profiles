@@ -22,9 +22,9 @@
 .theme-light .original-symbol > span, .theme-light .symbol-status { border-color: #f1ebe6; }
 .theme-light .original-identity h2, .theme-light .instance-identity h2, .theme-light .empty-state h2 { color: #322c29; }
 .theme-light .original-identity > div > span, .theme-light .path, .theme-light .version { color: #776c67; }
-.theme-light .original-summary-metrics > div, .theme-light .usage-meter { background: rgba(75, 54, 46, 0.045); border-color: rgba(75, 54, 46, 0.1); }
-.theme-light .original-summary-metrics small, .theme-light .usage-meter-heading span, .theme-light .usage-meter small { color: #7e736e; }
-.theme-light .original-summary-metrics strong, .theme-light .usage-meter-heading strong { color: #6e4438; }
+.theme-light .original-summary-metrics > div { background: rgba(75, 54, 46, 0.045); border-color: rgba(75, 54, 46, 0.1); }
+.theme-light .original-summary-metrics small { color: #7e736e; }
+.theme-light .original-summary-metrics strong { color: #6e4438; }
 .theme-light .original-update-button { color: #8d4e3d; background: rgba(181, 91, 67, 0.06); border-color: rgba(181, 91, 67, 0.17); }
 .theme-light .original-update-button:hover:not(:disabled) { color: #713929; background: rgba(181, 91, 67, 0.11); border-color: rgba(181, 91, 67, 0.26); }
 .theme-light .original-code-sessions, .theme-light .code-sessions { background: rgba(83, 58, 49, 0.035); border-top-color: rgba(75, 54, 46, 0.1); }
@@ -54,8 +54,6 @@
 .theme-light .artifact-copy-option strong { color: #405746; }
 .theme-light .artifact-copy-option small { color: #66756a; }
 .theme-light .sessions-empty { color: #817671; background: rgba(255, 255, 255, 0.35); border-color: rgba(75, 54, 46, 0.12); }
-.theme-light .progress-track { background: rgba(70, 51, 43, 0.13); }
-.theme-light .progress-track span { background: #9b958f; }
 .theme-light .modal-backdrop { background: rgba(67, 50, 43, 0.3); }
 .theme-light .modal-card { background: linear-gradient(145deg, rgba(255, 253, 251, 0.995), rgba(237, 231, 226, 0.995)); border-color: rgba(75, 54, 46, 0.16); box-shadow: 0 40px 100px rgba(72, 52, 44, 0.28), inset 0 1px rgba(255, 255, 255, 0.8); }
 .theme-light .modal-header h2, .theme-light .appearance-section-heading strong, .theme-light .theme-option strong { color: #3c3430; }

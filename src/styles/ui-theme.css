@@ -25,6 +25,9 @@
   --ui-window-shadow: 0 40px 100px rgba(0, 0, 0, 0.56), inset 0 1px 0 rgba(255, 255, 255, 0.045);
   /* HU-0016: el botón de cerrar de Windows al pasar el ratón (.platform-windows .window-dot.close:hover) */
   --ui-window-close: #c42b1c;
+  /* HU-0016: contexto «normal» y «elevado» de una sesión (.session-context.context-normal / .context-elevated, session-list.css) */
+  --ui-success: #84ab8c;
+  --ui-warning: #cf9a5e;
 }
 .theme-light {
   /* .theme-light .original-badge (theme-light.css): 4,6:1 sobre #f3efeb */
@@ -37,6 +40,9 @@
   --ui-window: linear-gradient(145deg, rgba(249, 247, 244, 0.995), rgba(235, 229, 224, 0.995));
   --ui-window-border: rgba(68, 46, 38, 0.14);
   --ui-window-shadow: 0 40px 100px rgba(75, 54, 45, 0.22), inset 0 1px rgba(255, 255, 255, 0.8);
+  /* los mismos dos, más oscuros: 4,5:1 o más sobre #f3efeb */
+  --ui-success: #3f7a52;
+  --ui-warning: #94601f;
 }
 
 /* Variables de shadcn. Se declaran en los tres selectores: una custom property se resuelve en el
@@ -102,6 +108,9 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-overlay: var(--ui-overlay);
+  /* Estados de un medidor: sin riesgo (verde) y con aviso (ámbar). El rojo es --destructive */
+  --color-success: var(--ui-success);
+  --color-warning: var(--ui-warning);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);

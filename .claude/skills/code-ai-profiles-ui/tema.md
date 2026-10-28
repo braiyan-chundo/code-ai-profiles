@@ -39,6 +39,10 @@ app de la que sale.
 | `--chart-1` a `--chart-5` | `--primary`, `--primary-soft`, `--primary-bright`, `--muted`, `--quiet` | |
 | `--radius` | `14px` | botones de `.modal-actions` |
 
+Tokens `--ui-*` que la app añadió (HU-0016): `--ui-window*` (el marco de la ventana), `--ui-window-close` (cerrar de
+Windows), `--ui-success` (#84ab8c → #3f7a52 en claro) y `--ui-warning` (#cf9a5e → #94601f), que dan `text-success`,
+`bg-success`, `text-warning` y `bg-warning` al contexto «saludable» y «elevado» de una sesión. El «crítico» es `destructive`.
+
 `@theme inline` añade: `--color-primary` = `--primary-bright`; `--color-muted` = `--surface-soft`;
 `--color-muted-foreground` = `--muted`; `--color-primary-text` = `--ui-primary-text`; `--color-overlay` =
 `--ui-overlay` (el velo de `.modal-backdrop`); `--font-sans` y `--font-heading` = Inter; `--font-mono` = JetBrains

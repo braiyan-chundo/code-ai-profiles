@@ -18,8 +18,6 @@
   .instance-symbol { width: 64px; height: 64px; border-radius: 20px; }
   .instance-identity h2 { font-size: 15px; }
   .usage-overview { gap: 8px; }
-  .usage-meter { padding: 12px 11px 10px; }
-  .usage-meter-heading strong { font-size: 20px; }
   .code-sessions { padding: 14px 18px 18px 96px; }
   .code-session-list { grid-template-columns: 1fr; max-height: 300px; }
   .original-app-main { grid-template-columns: 58px minmax(0, 1fr); }

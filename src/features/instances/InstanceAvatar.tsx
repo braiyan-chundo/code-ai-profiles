@@ -11,11 +11,14 @@ export function InstanceAvatar({
   status,
   stopping = false,
   className,
+  dotClassName,
 }: {
   iconSrc: string | null;
   status: InstanceStatus;
   stopping?: boolean;
   className?: string;
+  /** Para dar otro tamaño o posición al punto de estado (el avatar grande de una página). */
+  dotClassName?: string;
 }) {
   return (
     <span
@@ -34,6 +37,7 @@ export function InstanceAvatar({
           "data-[status=running]:bg-(--primary) data-[status=running]:shadow-[0_0_6px_var(--primary)]",
           "data-[status=stopping]:animate-pulse data-[status=stopping]:bg-(--primary-soft)",
           "data-[status=missing]:bg-destructive",
+          dotClassName,
         )}
       />
     </span>

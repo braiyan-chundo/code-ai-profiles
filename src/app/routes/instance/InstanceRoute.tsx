@@ -1,21 +1,22 @@
 import { useMemo } from "react";
 import { Navigate, useParams } from "react-router";
-import { LoadingCards } from "../../../components/LoadingCards";
 import {
   findInstance,
   outdatedInstances as selectOutdatedInstances,
   useDashboard,
   useRuntimePlatform,
 } from "../../../features/dashboard";
-import { InstanceCard, useInstanceActions } from "../../../features/instances";
+import { InstanceDetail, useInstanceActions } from "../../../features/instances";
 import { useDialogs } from "../../providers/dialogs-context";
 import { PageFeedback } from "../../layout/PageFeedback";
+import { PageContent } from "../../layout/PageContent";
 import { PageHeader } from "../../layout/PageHeader";
+import { PageSkeleton } from "../../layout/PageSkeleton";
 
 /**
  * `#/instancias/<id>` (HU-0016, A-9). Un id que no está (desconocido, borrado desde aquí o desaparecido en un refresco)
- * vuelve al dashboard; mientras carga, un esqueleto. TEMPORAL (paso 2): pinta la `InstanceCard` heredada; en el paso 3
- * la sustituye `InstanceDetail`.
+ * vuelve al dashboard; mientras carga, un esqueleto. TEMPORAL (paso 5): el feedback va dentro de la página hasta que
+ * `FeedbackArea` lo suba al layout (A-10).
  */
 export function InstanceRoute() {
   const { instanceId } = useParams();
@@ -34,7 +35,7 @@ export function InstanceRoute() {
     return (
       <>
         <PageHeader eyebrow="Instancia" title="Cargando…" />
-        <section className="content" aria-busy="true"><LoadingCards /></section>
+        <PageContent aria-busy="true"><PageSkeleton /></PageContent>
       </>
     );
   }
@@ -42,15 +43,14 @@ export function InstanceRoute() {
   return (
     <>
       <PageHeader eyebrow="Instancia" title={instance.name} />
-      <section className="content" aria-live="polite">
+      <PageContent aria-live="polite">
         <PageFeedback />
-        <InstanceCard
+        <InstanceDetail
           instance={instance}
           platform={runtimePlatform}
           busy={busy}
           updateAvailable={outdatedInstances.some((outdated) => outdated.id === instance.id)}
           iconPreviewUrl={iconPreviews[instance.id] ?? null}
-          autoExpand
           onLaunch={() => instanceActions.launch(instance)}
           onStop={() => instanceActions.stop(instance)}
           onOpen={() => instanceActions.openFolder(instance)}
@@ -65,7 +65,7 @@ export function InstanceRoute() {
             setUnlinkTarget({ instance, session });
           }}
         />
-      </section>
+      </PageContent>
     </>
   );
 }
