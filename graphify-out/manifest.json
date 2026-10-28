@@ -1,13 +1,13 @@
 {
   "package.json": {
-    "mtime": 1793124076.1491957,
-    "ast_hash": "c5a361ee7a65aab6f52db79ce91a90b1",
-    "semantic_hash": "c5a361ee7a65aab6f52db79ce91a90b1"
+    "mtime": 1793163864.9977872,
+    "ast_hash": "671de5cbe6a837db43a9742ed8d25e38",
+    "semantic_hash": ""
   },
   "scripts/graphify.mjs": {
-    "mtime": 1793150877.8991823,
-    "ast_hash": "01f39ce76920ced5efb70df6d22c2758",
-    "semantic_hash": "01f39ce76920ced5efb70df6d22c2758"
+    "mtime": 1793163847.7754283,
+    "ast_hash": "c658069b6525d30ea4dcc95abd046965",
+    "semantic_hash": ""
   },
   "src-tauri/build.rs": {
     "mtime": 1784433109.6357908,
@@ -105,12 +105,12 @@
     "semantic_hash": ""
   },
   ".github/workflows/validate.yml": {
-    "mtime": 1792781908.1934628,
-    "ast_hash": "68cd9661e57a36848b56ceb52d3a3746",
+    "mtime": 1793163864.9983606,
+    "ast_hash": "93843073827f85b9a042ee245c766f93",
     "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1793151256.6861742,
+    "mtime": 1793163886.5482967,
     "ast_hash": "c66a601a02dbdaedf44371fad816c332",
     "semantic_hash": ""
   },
@@ -135,8 +135,8 @@
     "semantic_hash": ""
   },
   "docs/graphify.document.md": {
-    "mtime": 1786674898.1972291,
-    "ast_hash": "0e7e94a8cca389905051951f308f3986",
+    "mtime": 1793163920.4455702,
+    "ast_hash": "c551c607278f000453985a9f7add05d0",
     "semantic_hash": ""
   },
   "index.html": {
@@ -388,5 +388,15 @@
     "mtime": 1793151321.0653057,
     "ast_hash": "a52615e6cf79ee3f4c1d9c3150c196f2",
     "semantic_hash": "a52615e6cf79ee3f4c1d9c3150c196f2"
+  },
+  "scripts/graphify-memory.mjs": {
+    "mtime": 1793163840.5439231,
+    "ast_hash": "3ff23b64660290c7c3ea18837c16fff7",
+    "semantic_hash": ""
+  },
+  "scripts/graphify-memory.test.mjs": {
+    "mtime": 1793163864.8768945,
+    "ast_hash": "98dcb3fbd42526a7a0a4360534a8f5e8",
+    "semantic_hash": ""
   }
 }

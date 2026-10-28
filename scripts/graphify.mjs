@@ -2,6 +2,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
+import { withMemoryAside } from "./graphify-memory.mjs";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const graphDir = join(projectRoot, "graphify-out");
@@ -81,28 +82,30 @@ function normalizeReportTitle() {
   }
 }
 
-let status = 0;
-if (action === "build") {
-  status = runGraphify(["extract", ".", "--code-only", "--force"]);
-  if (status === 0) {
-    status = runGraphify(["update", "."]);
-  }
-} else if (action === "update" || action === "check") {
-  status = updateGraph();
-} else {
+if (!["build", "update", "check"].includes(action)) {
   console.error("Uso: node scripts/graphify.mjs <build|update|check>");
   process.exit(2);
 }
 
-if (status !== 0) {
-  process.exit(status);
+// Sin process.exit dentro: withMemoryAside tiene que poder devolver la caché de consultas.
+function generateGraph() {
+  if (action !== "build") {
+    return updateGraph();
+  }
+  const status = runGraphify(["extract", ".", "--code-only", "--force"]);
+  if (status !== 0) {
+    return status;
+  }
+  const updateStatus = runGraphify(["update", "."]);
+  if (updateStatus !== 0) {
+    return updateStatus;
+  }
+  return runGraphify(["cluster-only", ".", "--no-label"]);
 }
 
-if (action === "build") {
-  status = runGraphify(["cluster-only", ".", "--no-label"]);
-  if (status !== 0) {
-    process.exit(status);
-  }
+const status = withMemoryAside(graphDir, generateGraph);
+if (status !== 0) {
+  process.exit(status);
 }
 
 normalizeReportTitle();

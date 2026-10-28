@@ -31,6 +31,9 @@ jobs:
       - name: Test source update controller
         run: npm run test:update
 
+      - name: Test Graphify query cache isolation
+        run: npm run test:graph
+
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
