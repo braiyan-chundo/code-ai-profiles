@@ -1,0 +1,69 @@
+# Tecla (`kbd`)
+
+## Para qué
+
+Muestra una tecla o un atajo de teclado.
+
+## Cuándo sí / cuándo no
+
+**Sí**
+- Mostrar un atajo de teclado dentro de un botón, un tooltip o un menú.
+
+**No**
+- Para código: usa `CodeBlock`. La app ya tiene `<kbd>` propio en la búsqueda (`.search-pill kbd`).
+- En una pantalla de la app: hoy no. La app no carga Tailwind (D-2); lo adopta una historia posterior.
+
+## Importación
+
+```tsx
+import { Kbd, KbdGroup } from "@/components/ui/kbd"
+```
+
+## Uso mínimo
+
+Compila tal cual (`pnpm exec tsc`); los textos son de ejemplo.
+
+```tsx
+import { Kbd, KbdGroup } from "@/components/ui/kbd"
+
+export function Ejemplo() {
+  return (
+    <KbdGroup>
+      <Kbd>Ctrl</Kbd>
+      <Kbd>K</Kbd>
+    </KbdGroup>
+  )
+}
+```
+
+## Variantes y tamaños
+
+Sin variantes: `Kbd` y `KbdGroup`.
+
+## Estados
+
+Ninguno: es de solo lectura.
+
+## Accesibilidad
+
+Es un `kbd` semántico; si el atajo es la única pista, repítelo en el `aria-label` del control.
+
+## Tokens que usa
+
+- `--background`, `--muted` (`text-muted-foreground`), `--surface-soft` (`bg-muted`)
+- Además: `--radius-*`.
+
+Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
+
+## Diferencias con el registro
+
+Ninguna: es el código del registro `radix-vega` (2026-10-28) tal como se descargó.
+
+## Qué no hacer
+
+- No escribir símbolos de una sola plataforma sin su equivalente en las otras (⌘ y Ctrl).
+- No regenerar con `pnpm exec shadcn add kbd --overwrite`: es código propio y se perderían los ajustes.
+
+## En el showcase
+
+`http://127.0.0.1:1420/showcase.html#kbd` (con `pnpm dev`).
