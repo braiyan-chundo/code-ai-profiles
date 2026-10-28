@@ -1,0 +1,123 @@
+{
+  "hu": "HU-0016",
+  "generado": "2026-10-28T18:03:37.073Z",
+  "perfil": "S",
+  "fases": [
+    {
+      "fase": "requisitos",
+      "desde": "2026-10-28T15:51:00.000Z",
+      "hasta": "2026-10-28T15:55:00.000Z",
+      "minutos": 4
+    },
+    {
+      "fase": "arquitectura",
+      "desde": "2026-10-28T15:55:00.000Z",
+      "hasta": "2026-10-28T16:20:00.000Z",
+      "minutos": 25
+    },
+    {
+      "fase": "implementacion",
+      "desde": "2026-10-28T16:20:00.000Z",
+      "hasta": "2026-10-28T17:37:00.000Z",
+      "minutos": 77
+    },
+    {
+      "fase": "verificacion",
+      "desde": "2026-10-28T17:37:00.000Z",
+      "hasta": "2026-10-28T18:03:00.000Z",
+      "minutos": 26
+    }
+  ],
+  "minutosTotales": 132,
+  "agentes": [
+    {
+      "agente": "architect",
+      "rol": "architect",
+      "fase": "arquitectura",
+      "modelos": [
+        "claude-opus-5-5"
+      ],
+      "despachos": 1,
+      "minutos": 101,
+      "tokens": {
+        "entrada": 160,
+        "salida": 121149,
+        "cacheEscritura": 798285,
+        "cacheLectura": 15319486,
+        "total": 16239080
+      }
+    },
+    {
+      "agente": "frontend",
+      "rol": "frontend",
+      "fase": "implementacion",
+      "modelos": [
+        "claude-opus-5-5",
+        "opus",
+        "claude-sonnet-5-5",
+        "sonnet"
+      ],
+      "despachos": 3,
+      "minutos": 69,
+      "tokens": {
+        "entrada": 642,
+        "salida": 358715,
+        "cacheEscritura": 926890,
+        "cacheLectura": 65195791,
+        "total": 66482038
+      }
+    }
+  ],
+  "orquestador": {
+    "aproximado": true,
+    "porFase": [
+      {
+        "fase": "requisitos",
+        "tokens": {
+          "entrada": 10,
+          "salida": 7234,
+          "cacheEscritura": 8904,
+          "cacheLectura": 1257140,
+          "total": 1273288
+        }
+      },
+      {
+        "fase": "arquitectura",
+        "tokens": {
+          "entrada": 26,
+          "salida": 5206,
+          "cacheEscritura": 15044,
+          "cacheLectura": 2354872,
+          "total": 2375148
+        }
+      },
+      {
+        "fase": "implementacion",
+        "tokens": {
+          "entrada": 54,
+          "salida": 16559,
+          "cacheEscritura": 40188,
+          "cacheLectura": 6921823,
+          "total": 6978624
+        }
+      },
+      {
+        "fase": "verificacion",
+        "tokens": {
+          "entrada": 16,
+          "salida": 5226,
+          "cacheEscritura": 10379,
+          "cacheLectura": 2219781,
+          "total": 2235402
+        }
+      }
+    ]
+  },
+  "totales": {
+    "tokensAgentes": 82721118,
+    "tokensOrquestador": 12862462,
+    "tokens": 95583580,
+    "despachos": 4
+  },
+  "notas": []
+}

@@ -80,4 +80,8 @@ Regresión: cada acción que usabas antes sigue existiendo; si echas algo en fal
 
 ## Veredicto
 
-Pendiente de la persona.
+2026-10-28 · Braiyan Rodriguez (mantenedor), tras recorrer la app de escritorio con `pnpm tauri dev` en macOS:
+
+> «Aprobado, cierra»
+
+**Aprobada.** Las ★ quedan como estaban, incluidas R-2 y R-3.

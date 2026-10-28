@@ -1,8 +1,8 @@
 ---
 id: HU-0016
 titulo: "Rediseño con sidebar, dashboard y página por instancia"
-estado: en-proceso
-fase: verificacion
+estado: terminada
+fase: cierre
 area: interfaz
 entrega: 1
 prioridad: media
@@ -148,23 +148,38 @@ mejor.
 
 ## Definición de Terminado
 
-- [ ] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
-- [ ] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
-- [ ] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
-- [ ] Revisión técnica pasada, si la historia es riesgosa
-- [ ] La persona probó y aprobó; su veredicto está en `verificacion.md`
-- [ ] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
-- [ ] Commits en cada repo tocado con `HU: HU-0016`. **Sin push, sin publicar, sin desplegar**
-- [ ] Lo que solo comprueba una persona, declarado como pendiente humano
+- [x] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
+- [x] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
+- [x] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
+- [x] Revisión técnica pasada, si la historia es riesgosa
+- [x] La persona probó y aprobó; su veredicto está en `verificacion.md`
+- [x] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
+- [x] Commits en cada repo tocado con `HU: HU-0016`. **Sin push, sin publicar, sin desplegar**
+- [x] Lo que solo comprueba una persona, declarado como pendiente humano
 
 ## Cierre
 
-Fecha, quién cerró y sobre qué veredicto.
+2026-10-28, cerrada por el orquestador sobre el veredicto «Aprobado, cierra» de Braiyan Rodriguez.
 
-SHA por repositorio, con una línea de qué hace cada uno:
+SHA por repositorio, con una línea de qué hace cada uno (code-ai-profiles, rama `hu-0016-rediseno-sidebar`):
+- `a8091c2`: macOS 13.3 como mínimo y requisitos de motor web (P-1, opción b).
+- `eaac80d`, `c4c584f` (E1): Tailwind en la app, tema en `<html>`, aviso de motor, `test:ui`; shell con sidebar, titlebar, statusbar y rutas.
+- `358823a`, `f45efe9`, `0a83abd` (E2): página de instancia, página de la original y dashboard; avisos en el layout y búsqueda en el sidebar.
+- `40d5400`, `08bd8b2` (E3): diálogos con el catálogo; `tokens.css`; fuera el CSS propio e `Icons.tsx`; documentación.
+- `d06c006`, `bc04d0a`, `ed8b3b1`, `378f41d`, `6583100`, `8caf37f`, `e70b58a` y el de cierre: historia, arquitectura, bitácora, guías, revisión técnica, regla de procesos, verificación, CHANGELOG y rendimiento.
 
-★ aceptadas tal como estaban:
+★ aceptadas tal como estaban: D-1 a D-6, más las desviaciones aceptadas en la revisión técnica, R-2 (las confirmaciones no se cierran con un clic fuera) y R-3 (con `busy`, X deshabilitada y Escape sin efecto).
 
 Pendientes humanos (nadie los vio; no se dan por hechos):
+- Windows y Linux reales: controles de ventana, esquinas transparentes con el velo de los diálogos (R-7), WebKitGTK y el aviso de motor en una Ubuntu 22.04 sin actualizar.
+- La vuelta tras «Actualizar original» con una actualización oficial disponible, si no la hubo al probar.
+- Iconos personalizados reales con el selector de archivo, y que el `.dmg` declare `LSMinimumSystemVersion` 13.3.
+- Lector de pantalla y `prefers-reduced-motion`.
 
 Deuda declarada:
+- R-4: la skill `code-ai-profiles-frontend-react-vite` pesa 12,3 KB; el detalle debe pasar a archivos aparte dentro de la skill.
+- R-1 (opcional): un paso de CI que cuente los `addEventListener` de foco en `dist/` y exija 5.
+- R-6: la comprobación del motor corre después de importar `App`; con `import()` dinámico avisaría antes.
+- Peso: CSS y JS más grandes y aviso de chunk > 500 kB (`docs/rendimiento.document.md`).
+- Declarar `libwebkit2gtk-4.1-0 (>= 2.40)` en el `.deb` (`bundle.linux.deb.depends`): decisión del mantenedor.
+- Incidente de E1: se mató un proceso de red de la instancia «Claudio Personal» en marcha; Electron lo relanzó. Regla nueva en `.metodo/reglas/frontend.md` (R-8).

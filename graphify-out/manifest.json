@@ -160,13 +160,13 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1793204408.3270664,
+    "mtime": 1793210616.802278,
     "ast_hash": "37e33c2c122684a4fcfb5a6ea15e2b28",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
-    "mtime": 1793192634.4791744,
-    "ast_hash": "2c6a4c498a9508552a4e43734bb072af",
+    "mtime": 1793210616.8025486,
+    "ast_hash": "25e8808b2f4f93d36884f4ebe792124d",
     "semantic_hash": ""
   },
   "docs/versionado.document.md": {
@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793209062.3520112,
-    "ast_hash": "b9332d5c7d295ada7c416a68cea6d603",
+    "mtime": 1793210617.0880713,
+    "ast_hash": "d5015e5db2d45550fb736907bc185169",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -1500,13 +1500,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0016-rediseno-con-sidebar-dashboard-y-pagina-/hu.md": {
-    "mtime": 1793209030.652531,
-    "ast_hash": "ecf094b41ae83765f0ded694b8908635",
+    "mtime": 1793210616.8723967,
+    "ast_hash": "40297f7164cb317f9cfd0ef5d14a389c",
     "semantic_hash": ""
   },
   "hu/HU-0016-rediseno-con-sidebar-dashboard-y-pagina-/seguimiento.md": {
-    "mtime": 1793209062.3514745,
-    "ast_hash": "e24615cb6243caf427222368fd3106bc",
+    "mtime": 1793210616.8804355,
+    "ast_hash": "efdad037ccb743d8e2cf23b9750f22a8",
     "semantic_hash": ""
   },
   "hu/HU-0016-rediseno-con-sidebar-dashboard-y-pagina-/arquitectura.md": {
@@ -1630,8 +1630,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0016-rediseno-con-sidebar-dashboard-y-pagina-/verificacion.md": {
-    "mtime": 1793209055.940248,
-    "ast_hash": "989e7ddc411ac54aa3b616e5bf6b8cdc",
+    "mtime": 1793210616.802031,
+    "ast_hash": "0ecfe761352c0840780eb930c3ebc430",
+    "semantic_hash": ""
+  },
+  "hu/HU-0016-rediseno-con-sidebar-dashboard-y-pagina-/metricas.json": {
+    "mtime": 1793210617.0733879,
+    "ast_hash": "4dc23580d223e3f212fafe9e0b39b1b9",
     "semantic_hash": ""
   }
 }

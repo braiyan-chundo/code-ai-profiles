@@ -16,3 +16,5 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-10-28 12:37 | orquestador | revisión técnica: PASS (architect), R-1..R-9 sin bloqueo; R-2 y R-3 (cierre de confirmaciones y Escape con busy) se declaran; R-8 aplicada por el orquestador en .metodo/reglas/frontend.md (parar vite por su PID, nunca por puerto) y agentes regenerados |
 | 2026-10-28 12:37 | hu.mjs | fase implementacion → verificacion |
 | 2026-10-28 12:37 | orquestador | verificación preparada; suite una vez sobre el commit de verificación; entregada al mantenedor con pnpm tauri dev — pendiente su veredicto |
+| 2026-10-28 13:03 | orquestador | veredicto: «Aprobado, cierra» — Braiyan Rodriguez, 2026-10-28, tras recorrer la app con pnpm tauri dev en macOS |
+| 2026-10-28 13:03 | hu.mjs | estado en-proceso → terminada |
