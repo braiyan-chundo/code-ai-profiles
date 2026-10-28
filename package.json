@@ -9,6 +9,7 @@
     "release:version": "node scripts/release-version.mjs",
     "release:check": "node scripts/release-version.mjs --check",
     "test:release": "node --test scripts/release-version.test.mjs",
+    "test:graph": "node --test scripts/graphify-memory.test.mjs",
     "test:scan": "node --test tests/scan-controller.test.ts",
     "test:update": "node --test tests/source-update-controller.test.ts",
     "graph:build": "node scripts/graphify.mjs build",
