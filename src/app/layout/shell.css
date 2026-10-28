@@ -1,17 +1,10 @@
 /* Legado (HU-0016): lo que queda del shell heredado mientras convive. La titlebar, el statusbar y el marco de la
    ventana ya son del catálogo (AppShell, Titlebar, Statusbar). Se borra en el paso 7. */
-.toolbar, .system-pill, .active-summary, .search-pill, .card-actions,
-.name-line, .modal-actions, .isolation-note, .advanced-toggle {
+.modal-actions, .isolation-note, .advanced-toggle {
   display: flex;
   align-items: center;
 }
 
-.system-pill, .search-pill {
-  background: rgba(29, 30, 29, 0.7);
-  border: 1px solid var(--line-strong);
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18), inset 0 1px rgba(255, 255, 255, 0.025);
-  backdrop-filter: blur(24px);
-}
 button:disabled { opacity: 0.48; cursor: not-allowed; }
 
 .primary-action, .secondary-button, .destructive-button {

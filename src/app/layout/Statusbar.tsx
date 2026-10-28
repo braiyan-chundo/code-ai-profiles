@@ -11,7 +11,7 @@ export function Statusbar() {
   const buildLabel = state.system.appVersion || (loading ? "cargando…" : "no disponible");
   const healthy = Boolean(state.system.sourcePath);
   return (
-    <footer className="flex h-13 shrink-0 items-center justify-between gap-4 border-t border-border bg-(--surface-soft)/60 px-[38px] text-[9px] text-(--quiet) max-[1070px]:h-12 max-[1070px]:px-[25px]">
+    <footer className="row-start-4 flex h-13 shrink-0 items-center justify-between gap-4 border-t border-border bg-(--surface-soft)/60 px-[38px] text-[9px] text-(--quiet) max-[1070px]:h-12 max-[1070px]:px-[25px]">
       <div className="flex min-w-0 items-center gap-[18px]">
         <span
           className={cn(

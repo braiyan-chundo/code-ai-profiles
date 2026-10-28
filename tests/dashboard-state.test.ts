@@ -15,6 +15,7 @@ import {
   originalAppName,
   outdatedInstances,
   runningInstanceIds,
+  usageRanking,
 } from "../src/features/dashboard/dashboard-selectors.ts";
 import { applyLiveUsage } from "../src/features/instances/live-usage.ts";
 import type { CodeSession, DashboardState, ManagedInstance, UsageStats } from "../src/types.ts";
@@ -176,6 +177,23 @@ test("originalAppName y matchesOriginalApp", () => {
   assert.equal(matchesOriginalApp(system, "Compatible", "users/x"), true);
   assert.equal(matchesOriginalApp(system, "Compatible", "ROUTER"), true);
   assert.equal(matchesOriginalApp(system, "Compatible", "nada"), false);
+});
+
+test("usageRanking: de mayor a menor por el mayor de los dos porcentajes, sin dato al final y empate por nombre (A-15)", () => {
+  const usage = (sessionPercent: number | null, weeklyPercent: number | null): UsageStats => ({ sessionPercent, weeklyPercent, capturedAt: null });
+  const alta = instance("alta", { name: "Alta", usage: usage(30, 91) });
+  const media = instance("media", { name: "Media", usage: usage(60, 20) });
+  const soloSemanal = instance("semanal", { name: "Semanal", usage: usage(null, 45) });
+  const empateB = instance("b", { name: "Beta", usage: usage(10, 50) });
+  const empateA = instance("a", { name: "Álamo", usage: usage(50, 5) });
+  const sinUsoB = instance("sb", { name: "Zeta", usage: null });
+  const sinUsoA = instance("sa", { name: "Ábaco", usage: usage(null, null) });
+  const original = [sinUsoB, media, empateB, alta, sinUsoA, soloSemanal, empateA];
+  const ids = usageRanking(original).map((item) => item.id);
+  assert.deepEqual(ids, ["alta", "media", "a", "b", "semanal", "sa", "sb"]);
+  assert.deepEqual(original.map((item) => item.id), ["sb", "media", "b", "alta", "sa", "semanal", "a"], "no muta la entrada");
+  assert.deepEqual(usageRanking([]), []);
+  assert.notEqual(usageRanking(original), original);
 });
 
 test("conteos: en ejecución y sesiones de Code (instancias + original)", () => {

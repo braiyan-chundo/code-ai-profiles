@@ -10,17 +10,8 @@
 @import "./ui-theme.css";
 /* Legado sin capa (A-2): los mismos @import de antes y en el mismo orden. */
 @import "../app/layout/shell.css";
-@import "../app/routes/panel/toolbar.css";
-@import "../app/routes/panel/content.css";
-@import "../features/original-app/original-app.css";
-@import "../features/instances/instance-list.css";
-@import "../features/scan/scan.css";
-@import "../features/updates/update-banners.css";
-@import "../features/instances/instance-card.css";
 @import "../features/sessions/session-list.css";
-@import "../features/dashboard/feedback-banners.css";
 @import "../components/buttons.css";
-@import "../components/loading-cards.css";
 @import "../components/modal.css";
 @import "../features/instances/instance-editor.css";
 @import "../components/modal-actions.css";

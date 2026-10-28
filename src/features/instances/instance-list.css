@@ -1,3 +1,0 @@
-.instance-list { display: grid; gap: 18px; }
-.content.is-scanning .instance-list { opacity: 0.68; filter: saturate(0.8); }
-

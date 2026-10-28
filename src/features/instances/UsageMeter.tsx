@@ -1,13 +1,7 @@
 import { Card, CardContent } from "../../components/ui/card";
 import { Progress } from "../../components/ui/progress";
 import { cn } from "../../lib/utils";
-
-/** El color de la barra según lo cerca que está el límite: 70 % es «alto» y 90 % «crítico» (como antes). */
-function usageTone(progress: number): string {
-  if (progress >= 90) return "[&>[data-slot=progress-indicator]]:bg-destructive";
-  if (progress >= 70) return "[&>[data-slot=progress-indicator]]:bg-primary";
-  return "[&>[data-slot=progress-indicator]]:bg-muted-foreground";
-}
+import { usageTone } from "./usage-tone";
 
 /** Un porcentaje de uso (de sesión o semanal) con su barra. Sin dato muestra «—» y la barra vacía. */
 export function UsageMeter({ label, value, className }: { label: string; value: number | null; className?: string }) {

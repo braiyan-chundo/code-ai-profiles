@@ -7,6 +7,7 @@ import { useRuntimePlatform } from "../../features/dashboard";
 import { cn } from "../../lib/utils";
 import { AppSidebar } from "./AppSidebar";
 import { DialogHost } from "./DialogHost";
+import { FeedbackArea } from "./FeedbackArea";
 import { Statusbar } from "./Statusbar";
 import { Titlebar } from "./Titlebar";
 
@@ -14,9 +15,10 @@ import { Titlebar } from "./Titlebar";
 const SIDEBAR_STYLE = { "--sidebar-width": "260px" } as CSSProperties;
 
 /**
- * La ruta de layout (HU-0016, A-6): la titlebar a todo el ancho y, debajo, el sidebar y el contenido. La pantalla
- * (`<Outlet />`) pinta dos hijos sin envoltorio dentro de `SidebarInset`: su barra (fila 1) y su `.content` (fila 2);
- * el statusbar va en la fila 3. Los diálogos, después, dentro de `.desktop-shell`.
+ * La ruta de layout (HU-0016, A-6): la titlebar a todo el ancho y, debajo, el sidebar y el contenido. `SidebarInset`
+ * tiene cuatro filas: la barra de la página (1), el feedback (2, A-10), su contenido (3) y el statusbar (4). La pantalla
+ * (`<Outlet />`) pinta dos hijos sin envoltorio, `PageHeader` y `PageContent`, que fijan sus filas. Los diálogos,
+ * después, dentro de `.desktop-shell`.
  *
  * - El marco (`.app-frame`) lleva `transform` para que el `position: fixed` del sidebar quede dentro de la ventana y
  *   sus esquinas redondeadas (Windows) lo recorten. La raíz fija `--titlebar-height` por plataforma (A-7).
@@ -48,7 +50,8 @@ export function AppShell() {
           <Titlebar />
           <div className="flex min-h-0 flex-1">
             <AppSidebar />
-            <SidebarInset className="grid min-h-0 min-w-0 grid-rows-[auto_minmax(0,1fr)_auto] bg-transparent">
+            <SidebarInset className="grid min-h-0 min-w-0 grid-rows-[auto_auto_minmax(0,1fr)_auto] bg-transparent">
+              <FeedbackArea />
               <Outlet />
               <Statusbar />
             </SidebarInset>

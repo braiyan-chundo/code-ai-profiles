@@ -14,6 +14,7 @@ export {
   originalAppName,
   outdatedInstances,
   runningInstanceIds,
+  usageRanking,
 } from "./dashboard-selectors";
 export { DashboardProvider } from "./DashboardProvider";
 export { useDashboard, type DashboardContextValue } from "./dashboard-context";

@@ -8,15 +8,13 @@ import {
 } from "../../../features/dashboard";
 import { InstanceDetail, useInstanceActions } from "../../../features/instances";
 import { useDialogs } from "../../providers/dialogs-context";
-import { PageFeedback } from "../../layout/PageFeedback";
 import { PageContent } from "../../layout/PageContent";
 import { PageHeader } from "../../layout/PageHeader";
 import { PageSkeleton } from "../../layout/PageSkeleton";
 
 /**
  * `#/instancias/<id>` (HU-0016, A-9). Un id que no está (desconocido, borrado desde aquí o desaparecido en un refresco)
- * vuelve al dashboard; mientras carga, un esqueleto. TEMPORAL (paso 5): el feedback va dentro de la página hasta que
- * `FeedbackArea` lo suba al layout (A-10).
+ * vuelve al dashboard; mientras carga, un esqueleto. El error, el aviso y el escaneo los pinta `FeedbackArea`, en el layout (A-10).
  */
 export function InstanceRoute() {
   const { instanceId } = useParams();
@@ -44,7 +42,6 @@ export function InstanceRoute() {
     <>
       <PageHeader eyebrow="Instancia" title={instance.name} />
       <PageContent aria-live="polite">
-        <PageFeedback />
         <InstanceDetail
           instance={instance}
           platform={runtimePlatform}

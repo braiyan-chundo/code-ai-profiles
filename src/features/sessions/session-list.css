@@ -1,18 +1,4 @@
-.code-sessions { padding: 15px 25px 20px 127px; background: rgba(10, 11, 10, 0.17); border-top: 1px solid rgba(255, 255, 255, 0.06); transition: padding 180ms ease, background 180ms ease; }
-.code-sessions.is-collapsed, .original-code-sessions.is-collapsed { padding-top: 12px; padding-bottom: 12px; }
-.code-sessions-heading { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 11px; }
-.is-collapsed > .code-sessions-heading { margin-bottom: 0; }
-.code-sessions-heading > div { display: flex; align-items: center; gap: 8px; color: #c8a69d; }
-.code-sessions-heading strong { color: #cfc5c1; font-size: 10px; letter-spacing: 0.035em; }
-.sessions-toggle { display: inline-flex; align-items: center; gap: 7px; min-height: 29px; padding: 0 7px 0 10px; color: #837a77; background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.065); border-radius: 9px; font: 500 9px/1 JetBrains Mono, monospace; cursor: pointer; transition: color 160ms ease, background 160ms ease, border-color 160ms ease; }
-.sessions-toggle:hover { color: #cbbfbb; background: rgba(255, 255, 255, 0.055); border-color: rgba(255, 255, 255, 0.11); }
-.sessions-toggle svg { transition: transform 180ms ease; }
-.sessions-toggle svg.open { transform: rotate(180deg); }
-.code-sessions-body { animation: sessions-expand 180ms cubic-bezier(.2,.75,.25,1) both; }
-.code-session-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; max-height: 270px; overflow-x: hidden; overflow-y: auto; padding-right: 5px; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.12) transparent; }
-.code-session-list::-webkit-scrollbar { width: 6px; }
-.code-session-list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.11); border-radius: 9px; }
-.code-session-row { display: grid; grid-template-columns: 31px minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: var(--session-row-height); padding: 10px 11px; background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.055); border-radius: 13px; }
+/* Lo que queda de las sesiones heredadas: la vista previa de AppearanceDialog. Se borra con el diálogo (paso 6). */
 .session-index { display: grid; width: 30px; height: 30px; place-items: center; color: #9c8179; background: rgba(255, 141, 108, 0.055); border-radius: 9px; }
 .session-copy { display: grid; gap: 5px; min-width: 0; }
 .session-copy strong { overflow: hidden; color: #cfc9c6; font-size: var(--session-title-size); font-weight: 550; line-height: 1.3; text-overflow: ellipsis; white-space: nowrap; }
@@ -27,18 +13,3 @@
 .session-context > small { overflow: hidden; color: #797370; font: 500 var(--session-hint-size)/1.25 JetBrains Mono, monospace; letter-spacing: 0.015em; text-overflow: ellipsis; white-space: nowrap; }
 .session-context.context-elevated .session-context-heading > strong, .session-context.context-elevated > small { color: #c8a06f; }
 .session-context.context-elevated .session-context-track > span { background: #c18c51; }
-.session-context.context-critical .session-context-heading > strong, .session-context.context-critical > small { color: #df816f; }
-.session-context.context-critical .session-context-track > span { background: #da725f; box-shadow: 0 0 8px rgba(218, 114, 95, 0.25); }
-.session-context.context-unknown .session-context-heading { color: #65615f; }
-.session-context.context-unknown .session-context-track > span { background: transparent; }
-.archived-badge { padding: 4px 5px; color: #7d7471; border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 6px; font: 600 var(--session-badge-size)/1 JetBrains Mono, monospace; letter-spacing: 0.05em; text-transform: uppercase; }
-.session-actions { display: flex; align-items: center; gap: 6px; }
-.linked-badge { padding: 4px 5px; border: 1px solid; border-radius: 6px; font: 600 var(--session-badge-size)/1 JetBrains Mono, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
-.linked-badge.mode-copy { color: #a78d84; background: rgba(255, 141, 108, 0.04); border-color: rgba(255, 141, 108, 0.11); }
-.linked-badge.mode-move { color: #8eb99b; background: rgba(83, 167, 108, 0.055); border-color: rgba(106, 190, 131, 0.13); }
-.session-transfer-button { display: grid; width: 29px; height: 29px; padding: 0; place-items: center; color: #987c74; background: rgba(255, 141, 108, 0.045); border: 1px solid rgba(255, 141, 108, 0.1); border-radius: 9px; cursor: pointer; transition: color 160ms ease, background 160ms ease, border-color 160ms ease, transform 160ms ease; }
-.session-transfer-button:hover { color: #f1ac98; background: rgba(255, 141, 108, 0.1); border-color: rgba(255, 141, 108, 0.22); transform: translateY(-1px); }
-.session-unlink-button { display: grid; width: 29px; height: 29px; padding: 0; place-items: center; color: #938c88; background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 9px; cursor: pointer; transition: color 160ms ease, background 160ms ease, border-color 160ms ease, transform 160ms ease; }
-.session-unlink-button:hover { color: #e9dedb; background: rgba(255, 255, 255, 0.065); border-color: rgba(255, 255, 255, 0.14); transform: translateY(-1px); }
-.sessions-empty { display: flex; align-items: center; gap: 7px; min-height: 46px; padding: 0 11px; color: #6f6865; background: rgba(255, 255, 255, 0.018); border: 1px dashed rgba(255, 255, 255, 0.06); border-radius: 12px; font-size: 9px; }
-

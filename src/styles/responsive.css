@@ -1,31 +1,3 @@
-@media (max-width: 1260px) {
-  .instance-card-main { grid-template-columns: 70px minmax(155px, 0.75fr) minmax(330px, 1.55fr) auto; gap: 18px; padding: 21px; }
-  .instance-symbol { width: 70px; height: 70px; border-radius: 22px; }
-  .card-actions { display: grid; grid-template-columns: 42px 42px; }
-  .launch-button { grid-column: 1 / -1; width: 93px; min-width: 93px; height: 42px; }
-  .icon-button { width: 42px; height: 42px; }
-  .danger-button { position: absolute; top: 9px; right: 9px; width: 30px; height: 30px; border-radius: 10px; opacity: 0; }
-  .instance-card:hover .danger-button { opacity: 1; }
-  .code-sessions { padding-left: 109px; padding-right: 21px; }
-}
-
-@media (max-width: 1070px) {
-  .toolbar { padding-left: 25px; padding-right: 25px; }
-  .content { padding-left: 25px; padding-right: 25px; }
-  .system-pill { gap: 14px; padding: 0 17px; }
-  .metric:nth-of-type(3), .pill-divider.short:nth-of-type(2) { display: none; }
-  .instance-card-main { grid-template-columns: 64px minmax(145px, 0.72fr) minmax(300px, 1.5fr) 93px; gap: 14px; padding: 18px; }
-  .instance-symbol { width: 64px; height: 64px; border-radius: 20px; }
-  .instance-identity h2 { font-size: 15px; }
-  .usage-overview { gap: 8px; }
-  .code-sessions { padding: 14px 18px 18px 96px; }
-  .code-session-list { grid-template-columns: 1fr; max-height: 300px; }
-  .original-app-main { grid-template-columns: 58px minmax(0, 1fr); }
-  .original-summary-metrics { grid-column: 1 / -1; }
-  .original-session-list { max-height: 320px; }
-  .update-banner > div > span { max-width: 300px; }
-}
-
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
