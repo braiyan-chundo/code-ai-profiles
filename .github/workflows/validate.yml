@@ -45,6 +45,9 @@ jobs:
       - name: Test result messages and icon validation
         run: pnpm test:messages
 
+      - name: Test design system isolation
+        run: pnpm test:ui
+
       - name: Test Graphify query cache isolation
         run: pnpm test:graph
 
