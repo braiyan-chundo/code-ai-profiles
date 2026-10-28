@@ -14,3 +14,4 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-10-28 00:59 | orquestador | despacho: frontend (opus, por recomendación de architect) con briefs/frontend.md; pasos 0-10, un commit por paso; DOM de pasos 0 y 8 a cargo del orquestador |
 | 2026-10-28 01:51 | orquestador | entrega de frontend: pasos 0-10 (02480a9…f5c194a); DOM de los 5 estados idéntico a la línea base (normalizando horas) en dev con el navegador integrado; #/no-existe → #/; consola sin errores en carga limpia; reglas de frontend y stack.comandos actualizados por el orquestador |
 | 2026-10-28 01:58 | orquestador | revisión técnica: PASS (architect), observaciones R-1..R-7 sin bloqueantes; R-6 aplicada por el orquestador en la skill; docs/arquitectura/frontend.md corregido por architect |
+| 2026-10-28 01:59 | hu.mjs | fase implementacion → verificacion |

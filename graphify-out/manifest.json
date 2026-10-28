@@ -335,8 +335,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793170738.484621,
-    "ast_hash": "080994c5f5b9a36d1cd6cbe6d729e5be",
+    "mtime": 1793170740.1018186,
+    "ast_hash": "ad1c9d9591409feca4893fdec9c60108",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -415,13 +415,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/hu.md": {
-    "mtime": 1793167168.3169036,
-    "ast_hash": "b379b984ecfd0858e57b5aba16746e4e",
+    "mtime": 1793170740.093729,
+    "ast_hash": "11bd83b48b385648ba31f6f76788dd4d",
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/seguimiento.md": {
-    "mtime": 1793170738.48412,
-    "ast_hash": "944e675a452ccdd31a3a71f915ed8dfd",
+    "mtime": 1793170740.1011992,
+    "ast_hash": "255d77550d9559e037ace649f930927d",
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/briefs/frontend.md": {
@@ -822,6 +822,11 @@
   "hu/HU-0015-frontend-escalable-componentes-features-/revision-tecnica.md": {
     "mtime": 1793170706.4018564,
     "ast_hash": "14a3e8d6aaaffa90959ebd4223a0889c",
+    "semantic_hash": ""
+  },
+  "hu/HU-0015-frontend-escalable-componentes-features-/verificacion.md": {
+    "mtime": 1793170779.3013246,
+    "ast_hash": "6c45abe17ad71d11e9cb354617e36586",
     "semantic_hash": ""
   }
 }
