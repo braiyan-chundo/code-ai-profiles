@@ -1,22 +1,22 @@
 # Graph Report - Code AI Profiles  (2026-10-28)
 
 ## Corpus Check
-- 162 files · ~108,128 words
+- 164 files · ~113,635 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1447 nodes · 3329 edges · 87 communities (78 shown, 9 thin omitted)
+- 1477 nodes · 3357 edges · 91 communities (82 shown, 9 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.68)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `cb4c019c`
+- Built from commit: `7dca7a07`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - String
-- DialogHost.tsx
+- useDashboard
 - scripts
 - Icons.tsx
 - lib.rs
@@ -30,7 +30,7 @@
 - release-version.mjs
 - Brief · HU-0015 · frontend
 - synchronize_managed_applications_sync
-- useDashboard
+- DashboardRuntime.tsx
 - graphify.mjs
 - permissions
 - HU-0010 — Publicar el fix de actualización como versión 0.2.2
@@ -83,21 +83,25 @@
 - HU-0011-adopcion-v4/seguimiento.md
 - HU-0012-icono-distintivo-en-el-dock-de-macos/seguimiento.md
 - HU-0013-describir-lo-construido-reglas-arquitect/seguimiento.md
-- sessions/index.ts
-- Publicar el fix de actualización como versión 0.2.2
+- format.test.ts
+- source-update-controller.ts
 - Design system con shadcn y showcase local
 - Frontend escalable: componentes, features y router
 - .capture
 - HU-0014-design-system-con-shadcn-y-showcase-loca/seguimiento.md
 - HU-0015-frontend-escalable-componentes-features-/seguimiento.md
-- HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md
+- Solución
 - appearance/index.ts
 - devDependencies
 - dependencies
 - Vec
 - package.json
 - Verificación · HU-0015 · Frontend escalable: componentes, features y router
+- AppProviders.tsx
+- Brief · HU-0014 · frontend
+- Titlebar.tsx
 - deserialize_collection_count
+- Alcance
 
 ## God Nodes (most connected - your core abstractions)
 1. `useDashboard()` - 46 edges
@@ -112,37 +116,37 @@
 10. `load_registry()` - 21 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `useScanRuntime()` --indirect_call--> `friendlyError()`  [INFERRED]
+  src/features/scan/useScanRuntime.ts → src/lib/errors.ts
 - `harness()` --calls--> `createScanController()`  [EXTRACTED]
   tests/scan-controller.test.ts → src/lib/scan-controller.ts
 - `harness()` --calls--> `createSourceUpdateController()`  [EXTRACTED]
   tests/source-update-controller.test.ts → src/lib/source-update-controller.ts
-- `DialogHost()` --calls--> `useDashboard()`  [EXTRACTED]
-  src/app/layout/DialogHost.tsx → src/features/dashboard/dashboard-context.ts
-- `DialogHost()` --calls--> `useInstanceActions()`  [EXTRACTED]
-  src/app/layout/DialogHost.tsx → src/features/instances/useInstanceActions.ts
-- `DialogHost()` --calls--> `useSessionActions()`  [EXTRACTED]
-  src/app/layout/DialogHost.tsx → src/features/sessions/useSessionActions.ts
+- `DialogHost()` --calls--> `useDialogs()`  [EXTRACTED]
+  src/app/layout/DialogHost.tsx → src/app/providers/dialogs-context.ts
+- `Statusbar()` --calls--> `formatBytes()`  [EXTRACTED]
+  src/app/layout/Statusbar.tsx → src/lib/format.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (87 total, 9 thin omitted)
+## Communities (91 total, 9 thin omitted)
 
 ### Community 0 - "String"
 Cohesion: 0.16
 Nodes (53): AppHandle, Child, Result, check_source_update(), clear_instance_icon(), copy_code_session(), create_instance(), create_instance_sync() (+45 more)
 
-### Community 1 - "DialogHost.tsx"
-Cohesion: 0.13
-Nodes (19): AppShell(), DialogHost(), Statusbar(), Titlebar(), windowAction, useDialogs(), RouteErrorBoundary(), router (+11 more)
+### Community 1 - "useDashboard"
+Cohesion: 0.18
+Nodes (18): AppShell(), DialogHost(), Statusbar(), ConfirmDialog(), useAppearance(), useDashboard(), useRuntimePlatform(), DeleteInstanceDialog() (+10 more)
 
 ### Community 2 - "scripts"
 Cohesion: 0.10
 Nodes (21): scripts, build, build:linux, build:macos, build:windows, dev, graph:build, graph:check (+13 more)
 
 ### Community 3 - "Icons.tsx"
-Cohesion: 0.09
-Nodes (38): ConfirmDialog(), AlertIcon(), ChevronIcon(), ClockIcon(), CloudIcon(), CodeSessionIcon(), EditIcon(), FolderIcon() (+30 more)
+Cohesion: 0.10
+Nodes (33): EmptyState(), AlertIcon(), ChevronIcon(), ClockIcon(), CloudIcon(), CodeSessionIcon(), EditIcon(), FolderIcon() (+25 more)
 
 ### Community 4 - "lib.rs"
 Cohesion: 0.04
@@ -150,11 +154,11 @@ Nodes (75): annotates_a_session_linked_inside_the_original_app(), apply_session_
 
 ### Community 5 - "Solución"
 Cohesion: 0.06
-Nodes (31): Arquitectura del frontend, Añadir una feature, Añadir una pantalla, Dónde va cada cosa, Estado, Estilos, Estructura, Las features (+23 more)
+Nodes (31): Arquitectura del frontend, Añadir una feature, Añadir una pantalla, Design system (HU-0014), Dónde va cada cosa, Estado, Estilos, Estructura (+23 more)
 
 ### Community 6 - "types.ts"
 Cohesion: 0.08
-Nodes (27): originalUpdateChannel, OriginalApplicationUpdateDialog(), call(), isTauri(), mockInstances, mockOriginalSessions, now, ArtifactMonitorSummary (+19 more)
+Nodes (43): DialogsContext, DialogsContextValue, Setter, describeArtifactOutcome(), transferNotice(), unlinkDialogCopy, SessionTransferSelection, SessionUnlinkSelection (+35 more)
 
 ### Community 7 - "bundle"
 Cohesion: 0.06
@@ -188,9 +192,9 @@ Nodes (3): Ajuste del orquestador (2026-10-28), Brief · HU-0015 · frontend, Ve
 Cohesion: 0.08
 Nodes (54): CodeSession, CustomIcon, Default, Duration, FnOnce, InstanceStatus, ManagedInstance, ManagedProcessIdentity (+46 more)
 
-### Community 15 - "useDashboard"
-Cohesion: 0.09
-Nodes (43): DashboardRuntime(), useDashboard(), useInitialLoad(), useLiveUsage(), ScanContext, ScanContextValue, ScanProgressPanel(), useBackgroundRefresh() (+35 more)
+### Community 15 - "DashboardRuntime.tsx"
+Cohesion: 0.14
+Nodes (24): DashboardRuntime(), SearchIcon(), ScanContext, ScanContextValue, ScanProgressPanel(), useBackgroundRefresh(), ScanProgressEvent, ScanRuntime (+16 more)
 
 ### Community 16 - "graphify.mjs"
 Cohesion: 0.13
@@ -201,8 +205,8 @@ Cohesion: 0.17
 Nodes (11): core:default, core:window:allow-close, core:window:allow-minimize, core:window:allow-start-dragging, core:window:allow-toggle-maximize, main, description, identifier (+3 more)
 
 ### Community 18 - "HU-0010 — Publicar el fix de actualización como versión 0.2.2"
-Cohesion: 0.12
-Nodes (16): Alcance, Bitácora de implementación, Casos límite, privacidad y plataformas, Cierre de Graphify, Contexto y evidencia de Graphify, Criterios de aceptación, Diseño técnico y contratos, Documentación afectada (+8 more)
+Cohesion: 0.06
+Nodes (31): Alcance, Bitácora de implementación, Casos límite, privacidad y plataformas, Cierre de Graphify, Contexto y evidencia de Graphify, Criterios de aceptación, Diseño técnico y contratos, Documentación afectada (+23 more)
 
 ### Community 19 - "compilerOptions"
 Cohesion: 0.22
@@ -245,16 +249,16 @@ Cohesion: 0.40
 Nodes (4): app, macOSPrivateApi, windows, $schema
 
 ### Community 29 - "updates/index.ts"
-Cohesion: 0.23
-Nodes (12): ApplicationUpdateDialog(), SourceUpdateContext, SourceUpdateContextValue, useSourceUpdate(), SourceUpdateBanner(), SynchronizeBanner(), summarizeSynchronization(), SynchronizationSummary (+4 more)
+Cohesion: 0.29
+Nodes (9): ApplicationUpdateDialog(), SourceUpdateContext, SourceUpdateContextValue, useSourceUpdate(), SynchronizeBanner(), summarizeSynchronization(), SynchronizationSummary, synchronizeLabel() (+1 more)
 
 ### Community 30 - "HU-0005 — Recuperar la respuesta de la interfaz y establecer versionado SemVer"
-Cohesion: 0.10
-Nodes (21): Alcance, Bitácora de implementación, Casos límite, privacidad y plataformas, Cierre de Graphify, Contexto y evidencia de Graphify, Criterios de aceptación, Decisión pendiente para el Dock, Diseño técnico y contratos (+13 more)
+Cohesion: 0.12
+Nodes (16): Bitácora de implementación, Casos límite, privacidad y plataformas, Cierre de Graphify, Contexto y evidencia de Graphify, Criterios de aceptación, Diseño técnico y contratos, Documentación afectada, Fuera de alcance (+8 more)
 
 ### Community 31 - "dashboard/index.ts"
-Cohesion: 0.12
-Nodes (27): PanelRoute(), Toolbar(), EmptyState(), LoadingCards(), Metric(), DashboardContext, DashboardContextValue, countCodeSessions() (+19 more)
+Cohesion: 0.14
+Nodes (25): PanelRoute(), Toolbar(), LoadingCards(), Metric(), DashboardContext, DashboardContextValue, countCodeSessions(), countRunning() (+17 more)
 
 ### Community 36 - "HU-0009 — Estado oficial de actualización y refresco de versiones"
 Cohesion: 0.11
@@ -372,13 +376,13 @@ Nodes (3): Cómo se escribe una regla, Dominios, Reglas de negocio de Code AI Pr
 Cohesion: 0.50
 Nodes (3): Autorización previa, Resumen, Verificación
 
-### Community 72 - "sessions/index.ts"
-Cohesion: 0.15
-Nodes (24): DialogsContext, DialogsContextValue, Setter, InstanceCardProps, formatTokenCount(), sessionContextLevel, describeArtifactOutcome(), transferNotice() (+16 more)
+### Community 72 - "format.test.ts"
+Cohesion: 0.20
+Nodes (12): InstanceCard(), OriginalAppSection(), formatModelName(), formatSessionTime(), formatTokenCount(), sessionContextLevel, SessionContextMeter(), formatBytes() (+4 more)
 
-### Community 73 - "Publicar el fix de actualización como versión 0.2.2"
+### Community 73 - "source-update-controller.ts"
 Cohesion: 0.17
-Nodes (12): AC-01 · Versión sincronizada, AC-02 · Documentación coherente, AC-03 · Pruebas y grafo en verde, AC-04 · Integración por PR, AC-05 · Bundle macOS verificable, Alcance, Criterios de aceptación, Estado al adoptar (+4 more)
+Nodes (19): useInitialLoad(), SourceUpdateBanner(), useSourceUpdatePolling(), useSourceUpdateController(), bridge, createSourceUpdateController(), HandoffIntent, mergeSourceUpdateForInstallation() (+11 more)
 
 ### Community 74 - "Design system con shadcn y showcase local"
 Cohesion: 0.12
@@ -392,13 +396,13 @@ Nodes (17): AC-01 · La app se ve y funciona igual, AC-02 · Cada pieza en su si
 Cohesion: 0.17
 Nodes (11): Mutex, Self, light_refresh_executes_one_inventory_and_skips_expensive_work(), platform_name(), process_start_time(), registry_operation_mutex(), reset_refresh_work_counters(), run() (+3 more)
 
-### Community 79 - "HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md"
-Cohesion: 0.33
-Nodes (3): Análisis, Arquitectura · HU-0010 · Publicar el fix de actualización como versión 0.2.2, Impacto
+### Community 79 - "Solución"
+Cohesion: 0.09
+Nodes (21): Aislamiento de Tailwind, Ajustes a los componentes del registro (lista cerrada), Análisis, Archivos, Arquitectura · HU-0014 · Design system con shadcn y showcase local, Briefs y orden, Catálogo (63, registro `radix-vega`, 2026-10-28), Decisiones (A-n) y desvíos de las ★ (+13 more)
 
 ### Community 80 - "appearance/index.ts"
-Cohesion: 0.17
-Nodes (19): App(), AppProviders(), DialogsProvider(), AppearanceContext, AppearanceContextValue, APPEARANCE_STORAGE_KEY, AppearancePreferences, AppTheme (+11 more)
+Cohesion: 0.23
+Nodes (16): AppearanceContext, AppearanceContextValue, APPEARANCE_STORAGE_KEY, AppearancePreferences, AppTheme, DEFAULT_APPEARANCE, loadAppearancePreferences(), PreferencesStorage (+8 more)
 
 ### Community 81 - "devDependencies"
 Cohesion: 0.15
@@ -420,29 +424,45 @@ Nodes (5): name, packageManager, private, type, version
 Cohesion: 0.29
 Nodes (6): Comprobaciones, Decisiones tomadas por defecto (★, revisables al probar), Guía de prueba, Qué se entregó, Veredicto, Verificación · HU-0015 · Frontend escalable: componentes, features y router
 
+### Community 86 - "AppProviders.tsx"
+Cohesion: 0.29
+Nodes (5): App(), AppProviders(), DialogsProvider(), RouteErrorBoundary(), router
+
+### Community 87 - "Brief · HU-0014 · frontend"
+Cohesion: 0.25
+Nodes (7): Archivos, Brief · HU-0014 · frontend, Entrega, No toques, Pasos (los de § Secuencia; un commit por paso con el trailer `HU: HU-0014`), Pruebas, Si dudas
+
+### Community 88 - "Titlebar.tsx"
+Cohesion: 0.48
+Nodes (5): Titlebar(), windowAction, useDialogs(), SettingsIcon(), useScan()
+
 ### Community 89 - "deserialize_collection_count"
 Cohesion: 0.67
 Nodes (3): D, Error, deserialize_collection_count()
 
+### Community 90 - "Alcance"
+Cohesion: 0.40
+Nodes (5): Alcance, Decisión pendiente para el Dock, Icono distintivo en Dock de macOS, Respuesta y refresco incremental, Versionado SemVer
+
 ## Knowledge Gaps
-- **602 isolated node(s):** `name`, `private`, `version`, `type`, `packageManager` (+597 more)
+- **626 isolated node(s):** `name`, `private`, `version`, `type`, `packageManager` (+621 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `useDashboard()` connect `useDashboard` to `DialogHost.tsx`, `Icons.tsx`, `types.ts`, `sessions/index.ts`, `appearance/index.ts`, `updates/index.ts`, `dashboard/index.ts`?**
+- **Why does `Frontend escalable: componentes, features y router` connect `Frontend escalable: componentes, features y router` to `README.md`?**
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+- **Why does `useDashboard()` connect `useDashboard` to `Icons.tsx`, `types.ts`, `format.test.ts`, `source-update-controller.ts`, `DashboardRuntime.tsx`, `AppProviders.tsx`, `Titlebar.tsx`, `updates/index.ts`, `dashboard/index.ts`?**
   _High betweenness centrality (0.010) - this node is a cross-community bridge._
 - **Why does `HU-0009 — Estado oficial de actualización y refresco de versiones` connect `HU-0009 — Estado oficial de actualización y refresco de versiones` to `index.md`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **Why does `Code AI Profiles` connect `Code AI Profiles` to `README.md`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **What connects `name`, `private`, `version` to the rest of the system?**
-  _602 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `DialogHost.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._
+  _626 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `scripts` be split into smaller, more focused modules?**
   _Cohesion score 0.09523809523809523 - nodes in this community are weakly interconnected._
 - **Should `Icons.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.08870056497175141 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.09608843537414966 - nodes in this community are weakly interconnected._
+- **Should `lib.rs` be split into smaller, more focused modules?**
+  _Cohesion score 0.03927068723702665 - nodes in this community are weakly interconnected._

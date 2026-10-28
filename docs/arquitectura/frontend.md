@@ -22,15 +22,18 @@ src/
     index.ts            su API pública
   components/           piezas compartidas sin dominio: Icons, ModalFrame, ConfirmDialog, Metric,
                         EmptyState, LoadingCards y su CSS
-    ui/                 (HU-0014) componentes de shadcn/ui
-  hooks/                (HU-0014) hooks genéricos que trae shadcn
+    ui/                 (HU-0014) el catálogo shadcn/ui (radix-vega): código propio desde su descarga
+  hooks/                (HU-0014) hooks genéricos del registro: use-mobile, use-highlighted-code (+ highlighter.tsx)
   lib/                  sin React: bridge, controladores, formato, errores, plataforma
-    utils.ts            (HU-0014) cn()
+    utils.ts            (HU-0014) cn(), reexportado del paquete `cn`
   styles/               índice del CSS y las capas globales: base, animaciones, tema claro y responsive
-tests/*.test.ts         node --test sobre módulos puros
+    ui-theme.css        (HU-0014) el puente de las variables de shadcn a los tokens; index.css NO lo importa
+  showcase/             (HU-0014) la otra entrada de Vite: main.tsx, showcase.css (la única entrada de
+                        Tailwind), Showcase.tsx, catalog.ts y sections/<componente>.tsx
+tests/*.test.ts         node --test sobre módulos puros (y ui-isolation.test.ts, que vigila el aislamiento)
+showcase.html           (HU-0014) la página del showcase; solo la sirve `pnpm dev`, `vite build` no la empaqueta
+components.json         (HU-0014) configuración de la CLI de shadcn
 ```
-
-Las entradas marcadas con (HU-0014) están reservadas: no existen hasta que esa historia instale shadcn/ui.
 
 ### Las features
 
@@ -65,7 +68,18 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 - `invoke` **solo** en `lib/bridge.ts`. Las otras APIs de Tauri, siempre detrás de `bridge.isDesktop()`, viven en tres
   sitios: `listen` en `features/scan/useScanRuntime.ts`, `getCurrentWindow` en `app/layout/window-actions.ts` y
   `convertFileSrc` en `features/instances/instance-icon.ts`.
-- Imports relativos. Cuando la HU-0014 añada el alias `@/`, se preferirá para cruzar carpetas.
+- El alias `@/` → `src/` existe desde la HU-0014 (`tsconfig.json` `paths` y `vite.config.ts`). Lo usan
+  `components/ui`, `hooks` y `showcase`. El código nuevo puede usarlo para cruzar carpetas. Lo existente no se
+  reescribe por eso. **Excepción:** un módulo que se prueba con `node --test` usa solo imports relativos, porque
+  Node no resuelve `@/`.
+- **La capa de UI genérica** (HU-0014): `components/ui → hooks → lib/utils.ts`. No conoce el dominio ni importa
+  `features/`, `app/`, `lib/bridge.ts` ni `@tauri-apps/*`. lucide-react, radix-ui, `cn` y `cva` solo aparecen en
+  `components/ui`, `hooks` y `showcase`.
+- **El showcase** (`src/showcase/`) importa `components/ui`, `hooks`, `lib/utils.ts` y las fuentes. Nada importa
+  del showcase, y el showcase no importa features, `app/`, `bridge` ni datos reales.
+- **Hasta que una historia adopte los componentes**, ningún archivo de `app/`, `features/`, `lib/` ni
+  `components/*.tsx` importa `components/ui` ni `hooks`. Lo vigila `tests/ui-isolation.test.ts`, y la historia que
+  los adopte cambia esa prueba a propósito.
 
 ## Dónde va cada cosa
 
@@ -74,7 +88,8 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 | Una pantalla nueva | `app/routes/<pantalla>/` + su ruta en `app/router.tsx` |
 | Un componente de una funcionalidad | `features/<feature>/<Componente>.tsx` |
 | Un componente reutilizable sin dominio | `components/` |
-| Un componente de shadcn | `components/ui/` (desde la HU-0014) |
+| Un componente de shadcn | `components/ui/` con `pnpm exec shadcn add <id>` (nunca `--overwrite`), su sección en `showcase/sections/` y su ficha en la skill `code-ai-profiles-ui` |
+| Una variable del tema de shadcn | `styles/ui-theme.css`: un `var(--token)` de la app o, si no existe, un `--ui-*` con la regla de la que sale |
 | Estado de una funcionalidad compartido entre pantallas | contexto en `features/<feature>/<feature>-context.ts` + proveedor; se monta en `app/providers/AppProviders.tsx` |
 | Estado local de una pieza | `useState` en la pieza |
 | Datos que vienen de Rust | el store de `features/dashboard` (o, si son de otra pantalla, la feature de esa pantalla), siempre vía `bridge` |
@@ -173,8 +188,9 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 
 ## Estilos
 
-- `src/styles/index.css` es el **único** archivo que importa CSS, y solo con `@import`. Ningún `.tsx` importa
-  CSS: Vite ordenaría el resultado según el grafo de módulos.
+- `src/styles/index.css` es el **único** archivo de la app que importa CSS, y solo con `@import`. Ningún `.tsx`
+  importa CSS: Vite ordenaría el resultado según el grafo de módulos. La única excepción es la otra entrada,
+  `src/showcase/main.tsx`, que importa sus fuentes y `showcase.css`, igual que hace `src/main.tsx`.
 - El orden del índice reproduce el `styles.css` original tramo a tramo: `base` → shell → toolbar y contenido
   del panel → features y componentes, en el orden en que aparecían → `animations` → `theme-light` →
   `responsive`. El tema claro y los cortes de ventana reducida de lo que existía viven en `styles/theme-light.css` y
@@ -192,13 +208,29 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 - `node --test` sobre los `.ts` puros. Importan con la extensión `.ts`, usan solo sintaxis borrable y
   sus imports relativos son solo `import type`. Las pruebas importan el archivo del módulo, nunca el
   `index.ts` de la feature.
-- Scripts: `test:scan`, `test:update` (controladores), `test:format`, `test:appearance`, `test:dashboard` y
-  `test:messages`.
+- Scripts: `test:scan`, `test:update` (controladores), `test:format`, `test:appearance`, `test:dashboard`,
+  `test:messages` y `test:ui` (el aislamiento de Tailwind y de `components/ui`, leyendo los archivos con `node:fs`).
+- El showcase y el aspecto de los componentes se revisan a mano en `http://127.0.0.1:1420/showcase.html`, en oscuro
+  y en claro.
 - Los hooks, los componentes, los temas, las plataformas y la ventana reducida se verifican con la app abierta
   (`pnpm dev` con el mock, `pnpm tauri dev` en escritorio).
 
-## Lo que reservó esta estructura para la HU-0014
+## Design system (HU-0014)
 
-shadcn/ui irá en `src/components/ui/`, `cn()` en `src/lib/utils.ts`, sus hooks genéricos en `src/hooks/` y el alias
-`@/` en `tsconfig.json` y `vite.config.ts`. Tailwind no entra en `src/styles/index.css`: según la HU-0014, solo
-se carga en su showcase.
+El catálogo de shadcn/ui (estilo `radix-vega`, CLI `shadcn` fijada como devDependency) vive en `src/components/ui/`.
+Cómo usar cada componente, en la skill `code-ai-profiles-ui`. El detalle de las decisiones, en
+`hu/HU-0014-…/arquitectura.md`.
+
+- **Tailwind 4 solo existe en `pnpm dev`.** `vite.config.ts` carga `@tailwindcss/vite` únicamente con
+  `command === "serve"`, y la única entrada de Tailwind es `src/showcase/showcase.css` (con `source(none)` y `@source`
+  explícitos). `vite build` no lo importa, así que `dist/` no cambia por tenerlo instalado.
+- **El showcase** es `showcase.html` (`http://127.0.0.1:1420/showcase.html`). Carga `styles/base.css` y
+  `styles/theme-light.css` con `layer(base)`, después del preflight y por debajo de las utilidades, y el tema en
+  `<html>` (`theme-dark` / `theme-light`), para que los portales de Radix, que van a `body`, lo hereden.
+- **El tema** (`styles/ui-theme.css`): las variables de shadcn apuntan a los tokens de la app y se declaran en
+  `:root, .theme-dark, .theme-light`, para que se vuelvan a resolver donde esté la clase de tema. `--primary` y
+  `--muted` **no se redeclaran**, porque son tokens de la app (en la app, `--muted` es un color de texto). Las
+  utilidades `*-muted` leen `--surface-soft`, y `*-primary` lee `--primary-bright`. Lo que la app no tiene como token
+  va como `--ui-*`, con la regla de la que sale. La variante `dark:` es `.theme-dark`.
+- **Adoptarlo en la app** es otra historia: cargar Tailwind sin preflight en `index.css` o en una capa, resolver los
+  portales (la clase de tema está en `.desktop-shell`, no en `<html>`) y cambiar `tests/ui-isolation.test.ts`.

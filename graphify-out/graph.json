@@ -6175,8 +6175,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app_app",
-      "community": 80,
-      "community_name": "appearance/index.ts",
+      "community": 86,
+      "community_name": "AppProviders.tsx",
       "norm_label": "app.tsx"
     },
     {
@@ -6186,8 +6186,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_app_app_app",
-      "community": 80,
-      "community_name": "appearance/index.ts",
+      "community": 86,
+      "community_name": "AppProviders.tsx",
       "norm_label": "app()"
     },
     {
@@ -6197,8 +6197,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app_routeerrorboundary",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 86,
+      "community_name": "AppProviders.tsx",
       "norm_label": "routeerrorboundary.tsx"
     },
     {
@@ -6208,8 +6208,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_app_routeerrorboundary_routeerrorboundary",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 86,
+      "community_name": "AppProviders.tsx",
       "norm_label": "routeerrorboundary()"
     },
     {
@@ -6220,7 +6220,7 @@
       "_origin": "ast",
       "id": "src_app_layout_appshell",
       "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community_name": "useDashboard",
       "norm_label": "appshell.tsx"
     },
     {
@@ -6231,7 +6231,7 @@
       "_origin": "ast",
       "id": "src_app_layout_appshell_appshell",
       "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community_name": "useDashboard",
       "norm_label": "appshell()"
     },
     {
@@ -6242,7 +6242,7 @@
       "_origin": "ast",
       "id": "src_app_layout_dialoghost",
       "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community_name": "useDashboard",
       "norm_label": "dialoghost.tsx"
     },
     {
@@ -6253,7 +6253,7 @@
       "_origin": "ast",
       "id": "src_app_layout_dialoghost_dialoghost",
       "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community_name": "useDashboard",
       "norm_label": "dialoghost()"
     },
     {
@@ -6264,7 +6264,7 @@
       "_origin": "ast",
       "id": "src_app_layout_statusbar",
       "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community_name": "useDashboard",
       "norm_label": "statusbar.tsx"
     },
     {
@@ -6275,7 +6275,7 @@
       "_origin": "ast",
       "id": "src_app_layout_statusbar_statusbar",
       "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community_name": "useDashboard",
       "norm_label": "statusbar()"
     },
     {
@@ -6285,8 +6285,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app_layout_titlebar",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 88,
+      "community_name": "Titlebar.tsx",
       "norm_label": "titlebar.tsx"
     },
     {
@@ -6296,8 +6296,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_app_layout_titlebar_titlebar",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 88,
+      "community_name": "Titlebar.tsx",
       "norm_label": "titlebar()"
     },
     {
@@ -6307,8 +6307,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app_layout_window_actions",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 88,
+      "community_name": "Titlebar.tsx",
       "norm_label": "window-actions.ts"
     },
     {
@@ -6318,8 +6318,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_app_layout_window_actions_windowaction",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 88,
+      "community_name": "Titlebar.tsx",
       "norm_label": "windowaction"
     },
     {
@@ -6329,8 +6329,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app_providers_appproviders",
-      "community": 80,
-      "community_name": "appearance/index.ts",
+      "community": 86,
+      "community_name": "AppProviders.tsx",
       "norm_label": "appproviders.tsx"
     },
     {
@@ -6340,8 +6340,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_app_providers_appproviders_appproviders",
-      "community": 80,
-      "community_name": "appearance/index.ts",
+      "community": 86,
+      "community_name": "AppProviders.tsx",
       "norm_label": "appproviders()"
     },
     {
@@ -6352,7 +6352,7 @@
       "_origin": "ast",
       "id": "src_app_providers_dashboardruntime",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "dashboardruntime.tsx"
     },
     {
@@ -6363,7 +6363,7 @@
       "_origin": "ast",
       "id": "src_app_providers_dashboardruntime_dashboardruntime",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "dashboardruntime()"
     },
     {
@@ -6373,8 +6373,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app_providers_dialogsprovider",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "dialogsprovider.tsx"
     },
     {
@@ -6384,8 +6384,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_app_providers_dialogsprovider_dialogsprovider",
-      "community": 80,
-      "community_name": "appearance/index.ts",
+      "community": 86,
+      "community_name": "AppProviders.tsx",
       "norm_label": "dialogsprovider()"
     },
     {
@@ -6395,8 +6395,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app_providers_dialogs_context",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "dialogs-context.ts"
     },
     {
@@ -6406,8 +6406,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_app_providers_dialogs_context_setter",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "setter"
     },
     {
@@ -6417,8 +6417,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_app_providers_dialogs_context_dialogscontextvalue",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "dialogscontextvalue"
     },
     {
@@ -6428,8 +6428,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "src_app_providers_dialogs_context_dialogscontext",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "dialogscontext"
     },
     {
@@ -6439,8 +6439,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "src_app_providers_dialogs_context_usedialogs",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 88,
+      "community_name": "Titlebar.tsx",
       "norm_label": "usedialogs()"
     },
     {
@@ -6450,8 +6450,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app_router",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 86,
+      "community_name": "AppProviders.tsx",
       "norm_label": "router.tsx"
     },
     {
@@ -6461,8 +6461,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_app_router_router",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 86,
+      "community_name": "AppProviders.tsx",
       "norm_label": "router"
     },
     {
@@ -6527,8 +6527,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_components_confirmdialog_confirmdialog",
-      "community": 3,
-      "community_name": "Icons.tsx",
+      "community": 1,
+      "community_name": "useDashboard",
       "norm_label": "confirmdialog()"
     },
     {
@@ -6549,8 +6549,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_components_emptystate_emptystate",
-      "community": 31,
-      "community_name": "dashboard/index.ts",
+      "community": 3,
+      "community_name": "Icons.tsx",
       "norm_label": "emptystate()"
     },
     {
@@ -6626,8 +6626,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "src_components_icons_searchicon",
-      "community": 3,
-      "community_name": "Icons.tsx",
+      "community": 15,
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "searchicon()"
     },
     {
@@ -6692,8 +6692,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "src_components_icons_settingsicon",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 88,
+      "community_name": "Titlebar.tsx",
       "norm_label": "settingsicon()"
     },
     {
@@ -6957,7 +6957,7 @@
       "_origin": "ast",
       "id": "src_features_appearance_appearance_context_useappearance",
       "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community_name": "useDashboard",
       "norm_label": "useappearance()"
     },
     {
@@ -7198,7 +7198,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_features_dashboard_dashboard_context_usedashboard",
-      "community": 15,
+      "community": 1,
       "community_name": "useDashboard",
       "norm_label": "usedashboard()"
     },
@@ -7385,8 +7385,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_dashboard_useinitialload",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "useinitialload.ts"
     },
     {
@@ -7396,8 +7396,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_features_dashboard_useinitialload_useinitialload",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "useinitialload()"
     },
     {
@@ -7407,8 +7407,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_dashboard_useruntimeplatform",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 72,
+      "community_name": "format.test.ts",
       "norm_label": "useruntimeplatform.ts"
     },
     {
@@ -7419,7 +7419,7 @@
       "_origin": "ast",
       "id": "src_features_dashboard_useruntimeplatform_useruntimeplatform",
       "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community_name": "useDashboard",
       "norm_label": "useruntimeplatform()"
     },
     {
@@ -7429,8 +7429,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_instances_deleteinstancedialog",
-      "community": 3,
-      "community_name": "Icons.tsx",
+      "community": 1,
+      "community_name": "useDashboard",
       "norm_label": "deleteinstancedialog.tsx"
     },
     {
@@ -7440,8 +7440,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_features_instances_deleteinstancedialog_deleteinstancedialog",
-      "community": 3,
-      "community_name": "Icons.tsx",
+      "community": 1,
+      "community_name": "useDashboard",
       "norm_label": "deleteinstancedialog()"
     },
     {
@@ -7462,8 +7462,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_features_instances_instancecard_instancecardprops",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 31,
+      "community_name": "dashboard/index.ts",
       "norm_label": "instancecardprops"
     },
     {
@@ -7473,8 +7473,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "src_features_instances_instancecard_instancecard",
-      "community": 3,
-      "community_name": "Icons.tsx",
+      "community": 72,
+      "community_name": "format.test.ts",
       "norm_label": "instancecard()"
     },
     {
@@ -7506,8 +7506,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_instances_managedinstancessection",
-      "community": 3,
-      "community_name": "Icons.tsx",
+      "community": 1,
+      "community_name": "useDashboard",
       "norm_label": "managedinstancessection.tsx"
     },
     {
@@ -7517,8 +7517,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_features_instances_managedinstancessection_managedinstancessection",
-      "community": 3,
-      "community_name": "Icons.tsx",
+      "community": 1,
+      "community_name": "useDashboard",
       "norm_label": "managedinstancessection()"
     },
     {
@@ -7627,8 +7627,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_instances_index",
-      "community": 3,
-      "community_name": "Icons.tsx",
+      "community": 1,
+      "community_name": "useDashboard",
       "norm_label": "instances/index.ts"
     },
     {
@@ -7638,8 +7638,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_instances_instance_icon",
-      "community": 3,
-      "community_name": "Icons.tsx",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "instance-icon.ts"
     },
     {
@@ -7660,8 +7660,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_instances_instance_types",
-      "community": 3,
-      "community_name": "Icons.tsx",
+      "community": 1,
+      "community_name": "useDashboard",
       "norm_label": "instance-types.ts"
     },
     {
@@ -7671,8 +7671,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_instances_instance_types_instanceiconchange",
-      "community": 3,
-      "community_name": "Icons.tsx",
+      "community": 1,
+      "community_name": "useDashboard",
       "norm_label": "instanceiconchange"
     },
     {
@@ -7682,8 +7682,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_instances_live_usage",
-      "community": 31,
-      "community_name": "dashboard/index.ts",
+      "community": 1,
+      "community_name": "useDashboard",
       "norm_label": "live-usage.ts"
     },
     {
@@ -7693,8 +7693,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_features_instances_live_usage_applyliveusage",
-      "community": 31,
-      "community_name": "dashboard/index.ts",
+      "community": 1,
+      "community_name": "useDashboard",
       "norm_label": "applyliveusage()"
     },
     {
@@ -7704,8 +7704,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_instances_useinstanceactions",
-      "community": 3,
-      "community_name": "Icons.tsx",
+      "community": 1,
+      "community_name": "useDashboard",
       "norm_label": "useinstanceactions.ts"
     },
     {
@@ -7715,8 +7715,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_features_instances_useinstanceactions_useinstanceactions",
-      "community": 3,
-      "community_name": "Icons.tsx",
+      "community": 1,
+      "community_name": "useDashboard",
       "norm_label": "useinstanceactions()"
     },
     {
@@ -7726,8 +7726,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_instances_useliveusage",
-      "community": 31,
-      "community_name": "dashboard/index.ts",
+      "community": 1,
+      "community_name": "useDashboard",
       "norm_label": "useliveusage.ts"
     },
     {
@@ -7737,7 +7737,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_features_instances_useliveusage_useliveusage",
-      "community": 15,
+      "community": 1,
       "community_name": "useDashboard",
       "norm_label": "useliveusage()"
     },
@@ -7759,8 +7759,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_features_original_app_originalappsection_originalappsection",
-      "community": 3,
-      "community_name": "Icons.tsx",
+      "community": 72,
+      "community_name": "format.test.ts",
       "norm_label": "originalappsection()"
     },
     {
@@ -7770,8 +7770,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_original_app_index",
-      "community": 3,
-      "community_name": "Icons.tsx",
+      "community": 72,
+      "community_name": "format.test.ts",
       "norm_label": "original-app/index.ts"
     },
     {
@@ -7782,7 +7782,7 @@
       "_origin": "ast",
       "id": "src_features_scan_scanprogresspanel",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "scanprogresspanel.tsx"
     },
     {
@@ -7793,7 +7793,7 @@
       "_origin": "ast",
       "id": "src_features_scan_scanprogresspanel_scanprogresspanel",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "scanprogresspanel()"
     },
     {
@@ -7804,7 +7804,7 @@
       "_origin": "ast",
       "id": "src_features_scan_index",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "scan/index.ts"
     },
     {
@@ -7815,7 +7815,7 @@
       "_origin": "ast",
       "id": "src_features_scan_scan_context",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "scan-context.ts"
     },
     {
@@ -7826,7 +7826,7 @@
       "_origin": "ast",
       "id": "src_features_scan_scan_context_scancontextvalue",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "scancontextvalue"
     },
     {
@@ -7837,7 +7837,7 @@
       "_origin": "ast",
       "id": "src_features_scan_scan_context_scancontext",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "scancontext"
     },
     {
@@ -7847,8 +7847,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_features_scan_scan_context_usescan",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 88,
+      "community_name": "Titlebar.tsx",
       "norm_label": "usescan()"
     },
     {
@@ -7859,7 +7859,7 @@
       "_origin": "ast",
       "id": "src_features_scan_usebackgroundrefresh",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "usebackgroundrefresh.ts"
     },
     {
@@ -7870,7 +7870,7 @@
       "_origin": "ast",
       "id": "src_features_scan_usebackgroundrefresh_usebackgroundrefresh",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "usebackgroundrefresh()"
     },
     {
@@ -7881,7 +7881,7 @@
       "_origin": "ast",
       "id": "src_features_scan_usescanruntime",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "usescanruntime.ts"
     },
     {
@@ -7892,7 +7892,7 @@
       "_origin": "ast",
       "id": "src_features_scan_usescanruntime_scanprogressevent",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "scanprogressevent"
     },
     {
@@ -7903,7 +7903,7 @@
       "_origin": "ast",
       "id": "src_features_scan_usescanruntime_scanruntime",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "scanruntime"
     },
     {
@@ -7914,7 +7914,7 @@
       "_origin": "ast",
       "id": "src_features_scan_usescanruntime_usescanruntime",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "usescanruntime()"
     },
     {
@@ -7925,7 +7925,7 @@
       "_origin": "ast",
       "id": "src_features_scan_usescanruntime_usescanlifecycle",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "usescanlifecycle()"
     },
     {
@@ -7936,7 +7936,7 @@
       "_origin": "ast",
       "id": "src_features_sessions_sessioncontextmeter",
       "community": 72,
-      "community_name": "sessions/index.ts",
+      "community_name": "format.test.ts",
       "norm_label": "sessioncontextmeter.tsx"
     },
     {
@@ -7947,7 +7947,7 @@
       "_origin": "ast",
       "id": "src_features_sessions_sessioncontextmeter_sessioncontextmeter",
       "community": 72,
-      "community_name": "sessions/index.ts",
+      "community_name": "format.test.ts",
       "norm_label": "sessioncontextmeter()"
     },
     {
@@ -7968,8 +7968,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_features_sessions_sessiontransferdialog_sessiontransferdialog",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 3,
+      "community_name": "Icons.tsx",
       "norm_label": "sessiontransferdialog()"
     },
     {
@@ -7979,8 +7979,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_sessions_unlinksessiondialog",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "unlinksessiondialog.tsx"
     },
     {
@@ -7990,8 +7990,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_features_sessions_unlinksessiondialog_unlinksessiondialog",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "unlinksessiondialog()"
     },
     {
@@ -8001,8 +8001,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_sessions_index",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "sessions/index.ts"
     },
     {
@@ -8013,7 +8013,7 @@
       "_origin": "ast",
       "id": "src_features_sessions_session_format",
       "community": 72,
-      "community_name": "sessions/index.ts",
+      "community_name": "format.test.ts",
       "norm_label": "session-format.ts"
     },
     {
@@ -8023,8 +8023,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_sessions_session_format_formatsessiontime",
-      "community": 3,
-      "community_name": "Icons.tsx",
+      "community": 72,
+      "community_name": "format.test.ts",
       "norm_label": "formatsessiontime()"
     },
     {
@@ -8035,7 +8035,7 @@
       "_origin": "ast",
       "id": "src_features_sessions_session_format_sessioncontextlevel",
       "community": 72,
-      "community_name": "sessions/index.ts",
+      "community_name": "format.test.ts",
       "norm_label": "sessioncontextlevel"
     },
     {
@@ -8046,7 +8046,7 @@
       "_origin": "ast",
       "id": "src_features_sessions_session_format_formattokencount",
       "community": 72,
-      "community_name": "sessions/index.ts",
+      "community_name": "format.test.ts",
       "norm_label": "formattokencount()"
     },
     {
@@ -8056,8 +8056,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "src_features_sessions_session_format_formatmodelname",
-      "community": 3,
-      "community_name": "Icons.tsx",
+      "community": 72,
+      "community_name": "format.test.ts",
       "norm_label": "formatmodelname()"
     },
     {
@@ -8067,8 +8067,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_sessions_session_messages",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "session-messages.ts"
     },
     {
@@ -8078,8 +8078,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_features_sessions_session_messages_describeartifactoutcome",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "describeartifactoutcome()"
     },
     {
@@ -8089,8 +8089,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_features_sessions_session_messages_transfernotice",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "transfernotice()"
     },
     {
@@ -8100,8 +8100,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "src_features_sessions_session_messages_unlinkdialogcopy",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "unlinkdialogcopy"
     },
     {
@@ -8111,8 +8111,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_sessions_session_types",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "session-types.ts"
     },
     {
@@ -8122,8 +8122,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_features_sessions_session_types_sessiontransferselection",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "sessiontransferselection"
     },
     {
@@ -8133,8 +8133,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_features_sessions_session_types_sessionunlinkselection",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "sessionunlinkselection"
     },
     {
@@ -8144,8 +8144,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_sessions_usesessionactions",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "usesessionactions.ts"
     },
     {
@@ -8155,8 +8155,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_features_sessions_usesessionactions_usesessionactions",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 1,
+      "community_name": "useDashboard",
       "norm_label": "usesessionactions()"
     },
     {
@@ -8178,7 +8178,7 @@
       "_origin": "ast",
       "id": "src_features_sessions_usetransferprofiles_usetransferprofiles",
       "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community_name": "useDashboard",
       "norm_label": "usetransferprofiles()"
     },
     {
@@ -8221,8 +8221,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_features_updates_originalapplicationupdatedialog_originalapplicationupdatedialog",
-      "community": 6,
-      "community_name": "types.ts",
+      "community": 3,
+      "community_name": "Icons.tsx",
       "norm_label": "originalapplicationupdatedialog()"
     },
     {
@@ -8232,8 +8232,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_updates_sourceupdatebanner",
-      "community": 29,
-      "community_name": "updates/index.ts",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "sourceupdatebanner.tsx"
     },
     {
@@ -8243,8 +8243,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_features_updates_sourceupdatebanner_sourceupdatebanner",
-      "community": 29,
-      "community_name": "updates/index.ts",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "sourceupdatebanner()"
     },
     {
@@ -8287,8 +8287,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_updates_original_update_channel",
-      "community": 6,
-      "community_name": "types.ts",
+      "community": 3,
+      "community_name": "Icons.tsx",
       "norm_label": "original-update-channel.ts"
     },
     {
@@ -8298,8 +8298,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_features_updates_original_update_channel_originalupdatechannel",
-      "community": 6,
-      "community_name": "types.ts",
+      "community": 3,
+      "community_name": "Icons.tsx",
       "norm_label": "originalupdatechannel"
     },
     {
@@ -8397,8 +8397,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_updates_usesourceupdatepolling",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "usesourceupdatepolling.ts"
     },
     {
@@ -8408,8 +8408,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_features_updates_usesourceupdatepolling_usesourceupdatepolling",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "usesourceupdatepolling()"
     },
     {
@@ -8419,8 +8419,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_features_updates_usesourceupdateruntime",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "usesourceupdateruntime.ts"
     },
     {
@@ -8430,8 +8430,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_features_updates_usesourceupdateruntime_usesourceupdatecontroller",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "usesourceupdatecontroller()"
     },
     {
@@ -8442,7 +8442,7 @@
       "_origin": "ast",
       "id": "src_features_updates_usesourceupdateruntime_usesourceupdateruntime",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "usesourceupdateruntime()"
     },
     {
@@ -8463,8 +8463,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_features_updates_useupdateactions_useupdateactions",
-      "community": 29,
-      "community_name": "updates/index.ts",
+      "community": 1,
+      "community_name": "useDashboard",
       "norm_label": "useupdateactions()"
     },
     {
@@ -8573,8 +8573,8 @@
       "source_location": "L141",
       "_origin": "ast",
       "id": "src_lib_bridge_bridge",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "bridge"
     },
     {
@@ -8584,7 +8584,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_errors",
-      "community": 15,
+      "community": 1,
       "community_name": "useDashboard",
       "norm_label": "errors.ts"
     },
@@ -8595,7 +8595,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_errors_friendlyerror",
-      "community": 15,
+      "community": 1,
       "community_name": "useDashboard",
       "norm_label": "friendlyerror()"
     },
@@ -8606,8 +8606,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_format",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 72,
+      "community_name": "format.test.ts",
       "norm_label": "format.ts"
     },
     {
@@ -8617,8 +8617,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_format_formatbytes",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 72,
+      "community_name": "format.test.ts",
       "norm_label": "formatbytes()"
     },
     {
@@ -8628,8 +8628,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_lib_format_formatcapturetime",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 72,
+      "community_name": "format.test.ts",
       "norm_label": "formatcapturetime()"
     },
     {
@@ -8639,8 +8639,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_platform",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 72,
+      "community_name": "format.test.ts",
       "norm_label": "platform.ts"
     },
     {
@@ -8650,8 +8650,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_lib_platform_systemplatform",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 72,
+      "community_name": "format.test.ts",
       "norm_label": "systemplatform"
     },
     {
@@ -8661,8 +8661,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_lib_platform_runtimeplatform",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 72,
+      "community_name": "format.test.ts",
       "norm_label": "runtimeplatform"
     },
     {
@@ -8672,8 +8672,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_lib_platform_resolveruntimeplatform",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 72,
+      "community_name": "format.test.ts",
       "norm_label": "resolveruntimeplatform()"
     },
     {
@@ -8695,7 +8695,7 @@
       "_origin": "ast",
       "id": "src_lib_scan_controller",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "scan-controller.ts"
     },
     {
@@ -8706,7 +8706,7 @@
       "_origin": "ast",
       "id": "src_lib_scan_controller_background_refresh_cooldown_ms",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "background_refresh_cooldown_ms"
     },
     {
@@ -8717,7 +8717,7 @@
       "_origin": "ast",
       "id": "src_lib_scan_controller_manual_success_close_delay_ms",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "manual_success_close_delay_ms"
     },
     {
@@ -8728,7 +8728,7 @@
       "_origin": "ast",
       "id": "src_lib_scan_controller_backgroundtrigger",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "backgroundtrigger"
     },
     {
@@ -8739,7 +8739,7 @@
       "_origin": "ast",
       "id": "src_lib_scan_controller_manualscanstatus",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "manualscanstatus"
     },
     {
@@ -8750,7 +8750,7 @@
       "_origin": "ast",
       "id": "src_lib_scan_controller_manualscanview",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "manualscanview"
     },
     {
@@ -8761,7 +8761,7 @@
       "_origin": "ast",
       "id": "src_lib_scan_controller_scancontrollerclock",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "scancontrollerclock"
     },
     {
@@ -8772,7 +8772,7 @@
       "_origin": "ast",
       "id": "src_lib_scan_controller_scancontrolleroptions",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "scancontrolleroptions"
     },
     {
@@ -8783,7 +8783,7 @@
       "_origin": "ast",
       "id": "src_lib_scan_controller_scancontroller",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "scancontroller"
     },
     {
@@ -8794,7 +8794,7 @@
       "_origin": "ast",
       "id": "src_lib_scan_controller_reconcilemanualbusy",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "reconcilemanualbusy()"
     },
     {
@@ -8805,7 +8805,7 @@
       "_origin": "ast",
       "id": "src_lib_scan_controller_createscancontroller",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "createscancontroller()"
     },
     {
@@ -8815,8 +8815,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_source_update_controller",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "source-update-controller.ts"
     },
     {
@@ -8826,8 +8826,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_lib_source_update_controller_sourceinstallationidentity",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "sourceinstallationidentity"
     },
     {
@@ -8837,8 +8837,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_lib_source_update_controller_mergesourceupdateforinstallation",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "mergesourceupdateforinstallation()"
     },
     {
@@ -8848,8 +8848,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_lib_source_update_controller_sourceupdatepresentationkind",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "sourceupdatepresentationkind"
     },
     {
@@ -8859,8 +8859,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "src_lib_source_update_controller_sourceupdatepresentation",
-      "community": 29,
-      "community_name": "updates/index.ts",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "sourceupdatepresentation"
     },
     {
@@ -8870,8 +8870,8 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "src_lib_source_update_controller_handoffintent",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "handoffintent"
     },
     {
@@ -8881,8 +8881,8 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "src_lib_source_update_controller_sourceupdatecontrolleroptions",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "sourceupdatecontrolleroptions"
     },
     {
@@ -8893,7 +8893,7 @@
       "_origin": "ast",
       "id": "src_lib_source_update_controller_sourceupdatecontroller",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "sourceupdatecontroller"
     },
     {
@@ -8903,8 +8903,8 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "src_lib_source_update_controller_createsourceupdatecontroller",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "createsourceupdatecontroller()"
     },
     {
@@ -8914,8 +8914,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_main",
-      "community": 80,
-      "community_name": "appearance/index.ts",
+      "community": 86,
+      "community_name": "AppProviders.tsx",
       "norm_label": "main.tsx"
     },
     {
@@ -8958,8 +8958,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_types_usagestats",
-      "community": 31,
-      "community_name": "dashboard/index.ts",
+      "community": 1,
+      "community_name": "useDashboard",
       "norm_label": "usagestats"
     },
     {
@@ -8991,8 +8991,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_types_artifacttransferoutcome",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "artifacttransferoutcome"
     },
     {
@@ -9002,8 +9002,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "src_types_sessiontransfermode",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "sessiontransfermode"
     },
     {
@@ -9013,8 +9013,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "src_types_sessiontransferinfo",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "sessiontransferinfo"
     },
     {
@@ -9024,8 +9024,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "src_types_codesession",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "codesession"
     },
     {
@@ -9057,8 +9057,8 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "src_types_sourceupdateinfo",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "sourceupdateinfo"
     },
     {
@@ -9068,8 +9068,8 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "src_types_managedinstance",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "managedinstance"
     },
     {
@@ -9101,8 +9101,8 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "src_types_sessionprofile",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "sessionprofile"
     },
     {
@@ -9112,8 +9112,8 @@
       "source_location": "L106",
       "_origin": "ast",
       "id": "src_types_systeminfo",
-      "community": 6,
-      "community_name": "types.ts",
+      "community": 3,
+      "community_name": "Icons.tsx",
       "norm_label": "systeminfo"
     },
     {
@@ -9145,8 +9145,8 @@
       "source_location": "L129",
       "_origin": "ast",
       "id": "src_types_versiontopology",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "versiontopology"
     },
     {
@@ -9255,8 +9255,8 @@
       "source_location": "L180",
       "_origin": "ast",
       "id": "src_types_synchronizationitemresult",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "synchronizationitemresult"
     },
     {
@@ -9398,8 +9398,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_format_test",
-      "community": 1,
-      "community_name": "DialogHost.tsx",
+      "community": 72,
+      "community_name": "format.test.ts",
       "norm_label": "format.test.ts"
     },
     {
@@ -9409,8 +9409,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_result_messages_test",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "result-messages.test.ts"
     },
     {
@@ -9420,8 +9420,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "tests_result_messages_test_noartifacts",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "noartifacts"
     },
     {
@@ -9431,8 +9431,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "tests_result_messages_test_outcome",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "outcome()"
     },
     {
@@ -9442,8 +9442,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "tests_result_messages_test_session",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "session"
     },
     {
@@ -9453,8 +9453,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "tests_result_messages_test_profile",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "profile"
     },
     {
@@ -9464,8 +9464,8 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "tests_result_messages_test_result",
-      "community": 72,
-      "community_name": "sessions/index.ts",
+      "community": 6,
+      "community_name": "types.ts",
       "norm_label": "result()"
     },
     {
@@ -9476,7 +9476,7 @@
       "_origin": "ast",
       "id": "tests_scan_controller_test",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "scan-controller.test.ts"
     },
     {
@@ -9487,7 +9487,7 @@
       "_origin": "ast",
       "id": "tests_scan_controller_test_deferred",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "deferred()"
     },
     {
@@ -9498,7 +9498,7 @@
       "_origin": "ast",
       "id": "tests_scan_controller_test_flush",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "flush()"
     },
     {
@@ -9509,7 +9509,7 @@
       "_origin": "ast",
       "id": "tests_scan_controller_test_harness",
       "community": 15,
-      "community_name": "useDashboard",
+      "community_name": "DashboardRuntime.tsx",
       "norm_label": "harness()"
     },
     {
@@ -9519,8 +9519,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_source_update_controller_test",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "source-update-controller.test.ts"
     },
     {
@@ -9530,8 +9530,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "tests_source_update_controller_test_deferred",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "deferred()"
     },
     {
@@ -9541,8 +9541,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "tests_source_update_controller_test_flush",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "flush()"
     },
     {
@@ -9552,8 +9552,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "tests_source_update_controller_test_harness",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "harness()"
     },
     {
@@ -9563,8 +9563,8 @@
       "source_location": "L268",
       "_origin": "ast",
       "id": "tests_source_update_controller_test_topology",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "topology()"
     },
     {
@@ -9574,8 +9574,8 @@
       "source_location": "L278",
       "_origin": "ast",
       "id": "tests_source_update_controller_test_update",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "update()"
     },
     {
@@ -9585,8 +9585,8 @@
       "source_location": "L287",
       "_origin": "ast",
       "id": "tests_source_update_controller_test_dashboard",
-      "community": 15,
-      "community_name": "useDashboard",
+      "community": 73,
+      "community_name": "source-update-controller.ts",
       "norm_label": "dashboard()"
     },
     {
@@ -11884,8 +11884,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "docs_archivo_previo_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_alcance",
-      "community": 30,
-      "community_name": "HU-0005 \u2014 Recuperar la respuesta de la interfaz y establecer versionado SemVer",
+      "community": 90,
+      "community_name": "Alcance",
       "norm_label": "alcance"
     },
     {
@@ -11895,8 +11895,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "docs_archivo_previo_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_respuesta_y_refresco_incremental",
-      "community": 30,
-      "community_name": "HU-0005 \u2014 Recuperar la respuesta de la interfaz y establecer versionado SemVer",
+      "community": 90,
+      "community_name": "Alcance",
       "norm_label": "respuesta y refresco incremental"
     },
     {
@@ -11906,8 +11906,8 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "docs_archivo_previo_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_versionado_semver",
-      "community": 30,
-      "community_name": "HU-0005 \u2014 Recuperar la respuesta de la interfaz y establecer versionado SemVer",
+      "community": 90,
+      "community_name": "Alcance",
       "norm_label": "versionado semver"
     },
     {
@@ -11917,8 +11917,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "docs_archivo_previo_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_icono_distintivo_en_dock_de_macos",
-      "community": 30,
-      "community_name": "HU-0005 \u2014 Recuperar la respuesta de la interfaz y establecer versionado SemVer",
+      "community": 90,
+      "community_name": "Alcance",
       "norm_label": "icono distintivo en dock de macos"
     },
     {
@@ -11928,8 +11928,8 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "docs_archivo_previo_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_decisi\u00f3n_pendiente_para_el_dock",
-      "community": 30,
-      "community_name": "HU-0005 \u2014 Recuperar la respuesta de la interfaz y establecer versionado SemVer",
+      "community": 90,
+      "community_name": "Alcance",
       "norm_label": "decision pendiente para el dock"
     },
     {
@@ -12863,8 +12863,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_archivo_previo_hu_hu_0010_publicar_fix_de_actualizacion_como_0_2_2",
-      "community": 79,
-      "community_name": "HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "community": 18,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
       "norm_label": "hu-0010-publicar-fix-de-actualizacion-como-0-2-2.md"
     },
     {
@@ -13102,7 +13102,7 @@
       "label": "Las features",
       "file_type": "document",
       "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L35",
+      "source_location": "L38",
       "_origin": "ast",
       "id": "docs_arquitectura_frontend_las_features",
       "community": 5,
@@ -13113,7 +13113,7 @@
       "label": "Reglas de dependencias",
       "file_type": "document",
       "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L49",
+      "source_location": "L52",
       "_origin": "ast",
       "id": "docs_arquitectura_frontend_reglas_de_dependencias",
       "community": 5,
@@ -13124,7 +13124,7 @@
       "label": "D\u00f3nde va cada cosa",
       "file_type": "document",
       "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L70",
+      "source_location": "L84",
       "_origin": "ast",
       "id": "docs_arquitectura_frontend_d\u00f3nde_va_cada_cosa",
       "community": 5,
@@ -13135,7 +13135,7 @@
       "label": "Estado",
       "file_type": "document",
       "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L88",
+      "source_location": "L103",
       "_origin": "ast",
       "id": "docs_arquitectura_frontend_estado",
       "community": 5,
@@ -13146,7 +13146,7 @@
       "label": "Router",
       "file_type": "document",
       "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L127",
+      "source_location": "L142",
       "_origin": "ast",
       "id": "docs_arquitectura_frontend_router",
       "community": 5,
@@ -13157,7 +13157,7 @@
       "label": "A\u00f1adir una pantalla",
       "file_type": "document",
       "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L145",
+      "source_location": "L160",
       "_origin": "ast",
       "id": "docs_arquitectura_frontend_a\u00f1adir_una_pantalla",
       "community": 5,
@@ -13168,7 +13168,7 @@
       "label": "A\u00f1adir una feature",
       "file_type": "document",
       "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L159",
+      "source_location": "L174",
       "_origin": "ast",
       "id": "docs_arquitectura_frontend_a\u00f1adir_una_feature",
       "community": 5,
@@ -13179,7 +13179,7 @@
       "label": "Estilos",
       "file_type": "document",
       "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L174",
+      "source_location": "L189",
       "_origin": "ast",
       "id": "docs_arquitectura_frontend_estilos",
       "community": 5,
@@ -13190,7 +13190,7 @@
       "label": "Pruebas",
       "file_type": "document",
       "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L190",
+      "source_location": "L206",
       "_origin": "ast",
       "id": "docs_arquitectura_frontend_pruebas",
       "community": 5,
@@ -13198,15 +13198,15 @@
       "norm_label": "pruebas"
     },
     {
-      "label": "Lo que reserv\u00f3 esta estructura para la HU-0014",
+      "label": "Design system (HU-0014)",
       "file_type": "document",
       "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L200",
+      "source_location": "L218",
       "_origin": "ast",
-      "id": "docs_arquitectura_frontend_lo_que_reserv\u00f3_esta_estructura_para_la_hu_0014",
+      "id": "docs_arquitectura_frontend_design_system_hu_0014",
       "community": 5,
       "community_name": "Soluci\u00f3n",
-      "norm_label": "lo que reservo esta estructura para la hu-0014"
+      "norm_label": "design system (hu-0014)"
     },
     {
       "label": "stack.md",
@@ -13864,8 +13864,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "hu_hu_0010_publicar_el_fix_de_actualizacion_como_ve_arquitectura",
-      "community": 79,
-      "community_name": "HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "community": 18,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
       "norm_label": "hu-0010-publicar-el-fix-de-actualizacion-como-ve/arquitectura.md"
     },
     {
@@ -13875,8 +13875,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "hu_hu_0010_publicar_el_fix_de_actualizacion_como_ve_arquitectura_arquitectura_hu_0010_publicar_el_fix_de_actualizaci\u00f3n_como_versi\u00f3n_0_2_2",
-      "community": 79,
-      "community_name": "HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "community": 18,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
       "norm_label": "arquitectura \u00b7 hu-0010 \u00b7 publicar el fix de actualizacion como version 0.2.2"
     },
     {
@@ -13886,8 +13886,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "hu_hu_0010_publicar_el_fix_de_actualizacion_como_ve_arquitectura_an\u00e1lisis",
-      "community": 79,
-      "community_name": "HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "community": 18,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
       "norm_label": "analisis"
     },
     {
@@ -13897,8 +13897,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "hu_hu_0010_publicar_el_fix_de_actualizacion_como_ve_arquitectura_impacto",
-      "community": 79,
-      "community_name": "HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "community": 18,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
       "norm_label": "impacto"
     },
     {
@@ -13908,8 +13908,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "hu_hu_0010_publicar_el_fix_de_actualizacion_como_ve_hu",
-      "community": 79,
-      "community_name": "HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md",
+      "community": 18,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
       "norm_label": "hu-0010-publicar-el-fix-de-actualizacion-como-ve/hu.md"
     },
     {
@@ -13919,8 +13919,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "hu_hu_0010_publicar_el_fix_de_actualizacion_como_ve_hu_publicar_el_fix_de_actualizaci\u00f3n_como_versi\u00f3n_0_2_2",
-      "community": 73,
-      "community_name": "Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "community": 18,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
       "norm_label": "publicar el fix de actualizacion como version 0.2.2"
     },
     {
@@ -13930,8 +13930,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "hu_hu_0010_publicar_el_fix_de_actualizacion_como_ve_hu_petici\u00f3n_original",
-      "community": 73,
-      "community_name": "Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "community": 18,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
       "norm_label": "peticion original"
     },
     {
@@ -13941,8 +13941,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "hu_hu_0010_publicar_el_fix_de_actualizacion_como_ve_hu_problema",
-      "community": 73,
-      "community_name": "Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "community": 18,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
       "norm_label": "problema"
     },
     {
@@ -13952,8 +13952,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "hu_hu_0010_publicar_el_fix_de_actualizacion_como_ve_hu_alcance",
-      "community": 73,
-      "community_name": "Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "community": 18,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
       "norm_label": "alcance"
     },
     {
@@ -13963,8 +13963,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "hu_hu_0010_publicar_el_fix_de_actualizacion_como_ve_hu_fuera_de_alcance",
-      "community": 73,
-      "community_name": "Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "community": 18,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
       "norm_label": "fuera de alcance"
     },
     {
@@ -13974,8 +13974,8 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "hu_hu_0010_publicar_el_fix_de_actualizacion_como_ve_hu_criterios_de_aceptaci\u00f3n",
-      "community": 73,
-      "community_name": "Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "community": 18,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
       "norm_label": "criterios de aceptacion"
     },
     {
@@ -13985,8 +13985,8 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "hu_hu_0010_publicar_el_fix_de_actualizacion_como_ve_hu_ac_01_versi\u00f3n_sincronizada",
-      "community": 73,
-      "community_name": "Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "community": 18,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
       "norm_label": "ac-01 \u00b7 version sincronizada"
     },
     {
@@ -13996,8 +13996,8 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "hu_hu_0010_publicar_el_fix_de_actualizacion_como_ve_hu_ac_02_documentaci\u00f3n_coherente",
-      "community": 73,
-      "community_name": "Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "community": 18,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
       "norm_label": "ac-02 \u00b7 documentacion coherente"
     },
     {
@@ -14007,8 +14007,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "hu_hu_0010_publicar_el_fix_de_actualizacion_como_ve_hu_ac_03_pruebas_y_grafo_en_verde",
-      "community": 73,
-      "community_name": "Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "community": 18,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
       "norm_label": "ac-03 \u00b7 pruebas y grafo en verde"
     },
     {
@@ -14018,8 +14018,8 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "hu_hu_0010_publicar_el_fix_de_actualizacion_como_ve_hu_ac_04_integraci\u00f3n_por_pr",
-      "community": 73,
-      "community_name": "Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "community": 18,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
       "norm_label": "ac-04 \u00b7 integracion por pr"
     },
     {
@@ -14029,8 +14029,8 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "hu_hu_0010_publicar_el_fix_de_actualizacion_como_ve_hu_ac_05_bundle_macos_verificable",
-      "community": 73,
-      "community_name": "Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "community": 18,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
       "norm_label": "ac-05 \u00b7 bundle macos verificable"
     },
     {
@@ -14040,8 +14040,8 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "hu_hu_0010_publicar_el_fix_de_actualizacion_como_ve_hu_estado_al_adoptar",
-      "community": 73,
-      "community_name": "Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
+      "community": 18,
+      "community_name": "HU-0010 \u2014 Publicar el fix de actualizaci\u00f3n como versi\u00f3n 0.2.2",
       "norm_label": "estado al adoptar"
     },
     {
@@ -15156,6 +15156,336 @@
       "norm_label": "bitacora \u00b7 hu-0013 \u00b7 describir lo construido: reglas, arquitectura y componentes"
     },
     {
+      "label": "HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "hu-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md"
+    },
+    {
+      "label": "Arquitectura \u00b7 HU-0014 \u00b7 Design system con shadcn y showcase local",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_arquitectura_hu_0014_design_system_con_shadcn_y_showcase_local",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "arquitectura \u00b7 hu-0014 \u00b7 design system con shadcn y showcase local"
+    },
+    {
+      "label": "Preguntas abiertas",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_preguntas_abiertas",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "preguntas abiertas"
+    },
+    {
+      "label": "An\u00e1lisis",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_an\u00e1lisis",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "analisis"
+    },
+    {
+      "label": "Supuestos",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L38",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_supuestos",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "supuestos"
+    },
+    {
+      "label": "Impacto",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L52",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_impacto",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "impacto"
+    },
+    {
+      "label": "Soluci\u00f3n",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L68",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_soluci\u00f3n",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "solucion"
+    },
+    {
+      "label": "Decisiones (A-n) y desv\u00edos de las \u2605",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L70",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_decisiones_a_n_y_desv\u00edos_de_las",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "decisiones (a-n) y desvios de las \u2605"
+    },
+    {
+      "label": "Archivos",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L84",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_archivos",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "archivos"
+    },
+    {
+      "label": "Dependencias",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L134",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_dependencias",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "dependencias"
+    },
+    {
+      "label": "Aislamiento de Tailwind",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L158",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_aislamiento_de_tailwind",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "aislamiento de tailwind"
+    },
+    {
+      "label": "Mapa de tokens (`src/styles/ui-theme.css`)",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L188",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_mapa_de_tokens_src_styles_ui_theme_css",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "mapa de tokens (`src/styles/ui-theme.css`)"
+    },
+    {
+      "label": "Ajustes a los componentes del registro (lista cerrada)",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L234",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_ajustes_a_los_componentes_del_registro_lista_cerrada",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "ajustes a los componentes del registro (lista cerrada)"
+    },
+    {
+      "label": "Cat\u00e1logo (63, registro `radix-vega`, 2026-10-28)",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L247",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_cat\u00e1logo_63_registro_radix_vega_2026_10_28",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "catalogo (63, registro `radix-vega`, 2026-10-28)"
+    },
+    {
+      "label": "Showcase",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L260",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_showcase",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "showcase"
+    },
+    {
+      "label": "Skill `code-ai-profiles-ui`",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L279",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_skill_code_ai_profiles_ui",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "skill `code-ai-profiles-ui`"
+    },
+    {
+      "label": "Reglas y skill de frontend",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L293",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_reglas_y_skill_de_frontend",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "reglas y skill de frontend"
+    },
+    {
+      "label": "Pruebas",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L306",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_pruebas",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "pruebas"
+    },
+    {
+      "label": "Riesgos",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L320",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_riesgos",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "riesgos"
+    },
+    {
+      "label": "Secuencia (un commit por paso, con `HU: HU-0014`)",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L333",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_secuencia_un_commit_por_paso_con_hu_hu_0014",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "secuencia (un commit por paso, con `hu: hu-0014`)"
+    },
+    {
+      "label": "Briefs y orden",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L350",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_briefs_y_orden",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "briefs y orden"
+    },
+    {
+      "label": "Revisi\u00f3n t\u00e9cnica",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L356",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_revisi\u00f3n_t\u00e9cnica",
+      "community": 79,
+      "community_name": "Soluci\u00f3n",
+      "norm_label": "revision tecnica"
+    },
+    {
+      "label": "HU-0014-design-system-con-shadcn-y-showcase-loca/briefs/frontend.md",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/briefs/frontend.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend",
+      "community": 87,
+      "community_name": "Brief \u00b7 HU-0014 \u00b7 frontend",
+      "norm_label": "hu-0014-design-system-con-shadcn-y-showcase-loca/briefs/frontend.md"
+    },
+    {
+      "label": "Brief \u00b7 HU-0014 \u00b7 frontend",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/briefs/frontend.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_brief_hu_0014_frontend",
+      "community": 87,
+      "community_name": "Brief \u00b7 HU-0014 \u00b7 frontend",
+      "norm_label": "brief \u00b7 hu-0014 \u00b7 frontend"
+    },
+    {
+      "label": "Archivos",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/briefs/frontend.md",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_archivos",
+      "community": 87,
+      "community_name": "Brief \u00b7 HU-0014 \u00b7 frontend",
+      "norm_label": "archivos"
+    },
+    {
+      "label": "Pasos (los de \u00a7 Secuencia; un commit por paso con el trailer `HU: HU-0014`)",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/briefs/frontend.md",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_pasos_los_de_secuencia_un_commit_por_paso_con_el_trailer_hu_hu_0014",
+      "community": 87,
+      "community_name": "Brief \u00b7 HU-0014 \u00b7 frontend",
+      "norm_label": "pasos (los de \u00a7 secuencia; un commit por paso con el trailer `hu: hu-0014`)"
+    },
+    {
+      "label": "Pruebas",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/briefs/frontend.md",
+      "source_location": "L53",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_pruebas",
+      "community": 87,
+      "community_name": "Brief \u00b7 HU-0014 \u00b7 frontend",
+      "norm_label": "pruebas"
+    },
+    {
+      "label": "Entrega",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/briefs/frontend.md",
+      "source_location": "L59",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_entrega",
+      "community": 87,
+      "community_name": "Brief \u00b7 HU-0014 \u00b7 frontend",
+      "norm_label": "entrega"
+    },
+    {
+      "label": "Si dudas",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/briefs/frontend.md",
+      "source_location": "L67",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_si_dudas",
+      "community": 87,
+      "community_name": "Brief \u00b7 HU-0014 \u00b7 frontend",
+      "norm_label": "si dudas"
+    },
+    {
+      "label": "No toques",
+      "file_type": "document",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/briefs/frontend.md",
+      "source_location": "L73",
+      "_origin": "ast",
+      "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_no_toques",
+      "community": 87,
+      "community_name": "Brief \u00b7 HU-0014 \u00b7 frontend",
+      "norm_label": "no toques"
+    },
+    {
       "label": "HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
       "file_type": "document",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
@@ -15236,7 +15566,7 @@
       "label": "Criterios de aceptaci\u00f3n",
       "file_type": "document",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L85",
+      "source_location": "L87",
       "_origin": "ast",
       "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_criterios_de_aceptaci\u00f3n",
       "community": 74,
@@ -15247,7 +15577,7 @@
       "label": "AC-01 \u00b7 El showcase se abre en local",
       "file_type": "document",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L87",
+      "source_location": "L89",
       "_origin": "ast",
       "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_ac_01_el_showcase_se_abre_en_local",
       "community": 74,
@@ -15258,7 +15588,7 @@
       "label": "AC-02 \u00b7 Los componentes tienen el aspecto de la app",
       "file_type": "document",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L92",
+      "source_location": "L94",
       "_origin": "ast",
       "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_ac_02_los_componentes_tienen_el_aspecto_de_la_app",
       "community": 74,
@@ -15269,7 +15599,7 @@
       "label": "AC-03 \u00b7 Tema oscuro y claro",
       "file_type": "document",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L97",
+      "source_location": "L99",
       "_origin": "ast",
       "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_ac_03_tema_oscuro_y_claro",
       "community": 74,
@@ -15280,7 +15610,7 @@
       "label": "AC-04 \u00b7 El showcase no llega a la app empaquetada",
       "file_type": "document",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L102",
+      "source_location": "L104",
       "_origin": "ast",
       "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_ac_04_el_showcase_no_llega_a_la_app_empaquetada",
       "community": 74,
@@ -15291,7 +15621,7 @@
       "label": "AC-05 \u00b7 Una skill con \u00edndice y una ficha por componente",
       "file_type": "document",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L107",
+      "source_location": "L109",
       "_origin": "ast",
       "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_ac_05_una_skill_con_\u00edndice_y_una_ficha_por_componente",
       "community": 74,
@@ -15302,7 +15632,7 @@
       "label": "Reglas de negocio afectadas",
       "file_type": "document",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L113",
+      "source_location": "L115",
       "_origin": "ast",
       "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_reglas_de_negocio_afectadas",
       "community": 74,
@@ -15313,7 +15643,7 @@
       "label": "Para la persona usuaria",
       "file_type": "document",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L117",
+      "source_location": "L119",
       "_origin": "ast",
       "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_para_la_persona_usuaria",
       "community": 74,
@@ -15324,7 +15654,7 @@
       "label": "Definici\u00f3n de Preparado",
       "file_type": "document",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L127",
+      "source_location": "L129",
       "_origin": "ast",
       "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_definici\u00f3n_de_preparado",
       "community": 74,
@@ -15335,7 +15665,7 @@
       "label": "Definici\u00f3n de Terminado",
       "file_type": "document",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L133",
+      "source_location": "L135",
       "_origin": "ast",
       "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_definici\u00f3n_de_terminado",
       "community": 74,
@@ -15346,7 +15676,7 @@
       "label": "Cierre",
       "file_type": "document",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L144",
+      "source_location": "L146",
       "_origin": "ast",
       "id": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_cierre",
       "community": 74,
@@ -15596,7 +15926,7 @@
       "norm_label": "revision tecnica"
     },
     {
-      "label": "briefs/frontend.md",
+      "label": "HU-0015-frontend-escalable-componentes-features-/briefs/frontend.md",
       "file_type": "document",
       "source_file": "hu/HU-0015-frontend-escalable-componentes-features-/briefs/frontend.md",
       "source_location": "L1",
@@ -15604,7 +15934,7 @@
       "id": "hu_hu_0015_frontend_escalable_componentes_features_briefs_frontend",
       "community": 13,
       "community_name": "Brief \u00b7 HU-0015 \u00b7 frontend",
-      "norm_label": "briefs/frontend.md"
+      "norm_label": "hu-0015-frontend-escalable-componentes-features-/briefs/frontend.md"
     },
     {
       "label": "Brief \u00b7 HU-0015 \u00b7 frontend",
@@ -52070,7 +52400,18 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L70",
+      "source_location": "L218",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_arquitectura_frontend_arquitectura_del_frontend",
+      "target": "docs_arquitectura_frontend_design_system_hu_0014",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/arquitectura/frontend.md",
+      "source_location": "L84",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_arquitectura_frontend_arquitectura_del_frontend",
@@ -52081,7 +52422,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L88",
+      "source_location": "L103",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_arquitectura_frontend_arquitectura_del_frontend",
@@ -52092,7 +52433,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L174",
+      "source_location": "L189",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_arquitectura_frontend_arquitectura_del_frontend",
@@ -52114,18 +52455,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L200",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_arquitectura_frontend_arquitectura_del_frontend",
-      "target": "docs_arquitectura_frontend_lo_que_reserv\u00f3_esta_estructura_para_la_hu_0014",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L190",
+      "source_location": "L206",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_arquitectura_frontend_arquitectura_del_frontend",
@@ -52136,7 +52466,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L49",
+      "source_location": "L52",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_arquitectura_frontend_arquitectura_del_frontend",
@@ -52147,7 +52477,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L127",
+      "source_location": "L142",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_arquitectura_frontend_arquitectura_del_frontend",
@@ -52158,7 +52488,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L35",
+      "source_location": "L38",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_arquitectura_frontend_estructura",
@@ -52169,7 +52499,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L159",
+      "source_location": "L174",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_arquitectura_frontend_router",
@@ -52180,7 +52510,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/arquitectura/frontend.md",
-      "source_location": "L145",
+      "source_location": "L160",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_arquitectura_frontend_router",
@@ -53928,6 +54258,314 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_arquitectura_hu_0014_design_system_con_shadcn_y_showcase_local",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_arquitectura_hu_0014_design_system_con_shadcn_y_showcase_local",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_an\u00e1lisis",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L350",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_arquitectura_hu_0014_design_system_con_shadcn_y_showcase_local",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_briefs_y_orden",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_arquitectura_hu_0014_design_system_con_shadcn_y_showcase_local",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_preguntas_abiertas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L356",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_arquitectura_hu_0014_design_system_con_shadcn_y_showcase_local",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_revisi\u00f3n_t\u00e9cnica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L68",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_arquitectura_hu_0014_design_system_con_shadcn_y_showcase_local",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_soluci\u00f3n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L52",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_an\u00e1lisis",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_impacto",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_an\u00e1lisis",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_supuestos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L158",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_soluci\u00f3n",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_aislamiento_de_tailwind",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L234",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_soluci\u00f3n",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_ajustes_a_los_componentes_del_registro_lista_cerrada",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L84",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_soluci\u00f3n",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_archivos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L247",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_soluci\u00f3n",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_cat\u00e1logo_63_registro_radix_vega_2026_10_28",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L70",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_soluci\u00f3n",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_decisiones_a_n_y_desv\u00edos_de_las",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L134",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_soluci\u00f3n",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_dependencias",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L188",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_soluci\u00f3n",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_mapa_de_tokens_src_styles_ui_theme_css",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L306",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_soluci\u00f3n",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_pruebas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L293",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_soluci\u00f3n",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_reglas_y_skill_de_frontend",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L320",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_soluci\u00f3n",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_riesgos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L333",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_soluci\u00f3n",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_secuencia_un_commit_por_paso_con_hu_hu_0014",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L260",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_soluci\u00f3n",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_showcase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/arquitectura.md",
+      "source_location": "L279",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_soluci\u00f3n",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_arquitectura_skill_code_ai_profiles_ui",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/briefs/frontend.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_brief_hu_0014_frontend",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/briefs/frontend.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_brief_hu_0014_frontend",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_archivos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/briefs/frontend.md",
+      "source_location": "L59",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_brief_hu_0014_frontend",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_entrega",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/briefs/frontend.md",
+      "source_location": "L73",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_brief_hu_0014_frontend",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_no_toques",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/briefs/frontend.md",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_brief_hu_0014_frontend",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_pasos_los_de_secuencia_un_commit_por_paso_con_el_trailer_hu_hu_0014",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/briefs/frontend.md",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_brief_hu_0014_frontend",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_pruebas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/briefs/frontend.md",
+      "source_location": "L67",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_brief_hu_0014_frontend",
+      "target": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_briefs_frontend_si_dudas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
       "source_location": "L17",
       "weight": 1.0,
@@ -53962,7 +54600,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L144",
+      "source_location": "L146",
       "weight": 1.0,
       "_origin": "ast",
       "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_design_system_con_shadcn_y_showcase_local",
@@ -53973,7 +54611,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L85",
+      "source_location": "L87",
       "weight": 1.0,
       "_origin": "ast",
       "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_design_system_con_shadcn_y_showcase_local",
@@ -53995,7 +54633,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L127",
+      "source_location": "L129",
       "weight": 1.0,
       "_origin": "ast",
       "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_design_system_con_shadcn_y_showcase_local",
@@ -54006,7 +54644,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L133",
+      "source_location": "L135",
       "weight": 1.0,
       "_origin": "ast",
       "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_design_system_con_shadcn_y_showcase_local",
@@ -54028,7 +54666,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L117",
+      "source_location": "L119",
       "weight": 1.0,
       "_origin": "ast",
       "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_design_system_con_shadcn_y_showcase_local",
@@ -54061,7 +54699,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L113",
+      "source_location": "L115",
       "weight": 1.0,
       "_origin": "ast",
       "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_design_system_con_shadcn_y_showcase_local",
@@ -54072,7 +54710,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L87",
+      "source_location": "L89",
       "weight": 1.0,
       "_origin": "ast",
       "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_criterios_de_aceptaci\u00f3n",
@@ -54083,7 +54721,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L92",
+      "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast",
       "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_criterios_de_aceptaci\u00f3n",
@@ -54094,7 +54732,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L97",
+      "source_location": "L99",
       "weight": 1.0,
       "_origin": "ast",
       "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_criterios_de_aceptaci\u00f3n",
@@ -54105,7 +54743,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L102",
+      "source_location": "L104",
       "weight": 1.0,
       "_origin": "ast",
       "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_criterios_de_aceptaci\u00f3n",
@@ -54116,7 +54754,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md",
-      "source_location": "L107",
+      "source_location": "L109",
       "weight": 1.0,
       "_origin": "ast",
       "source": "hu_hu_0014_design_system_con_shadcn_y_showcase_loca_hu_criterios_de_aceptaci\u00f3n",
@@ -54851,5 +55489,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "cb4c019ce03caeb8412db9a534fc7c19864fb0bf"
+  "built_at_commit": "7dca7a076db83a42c4034979b9d0d448df9dd0f5"
 }
