@@ -7,3 +7,4 @@ export type { InstanceIconChange } from "./instance-types";
 export { useLiveUsage } from "./useLiveUsage";
 export { DeleteInstanceDialog } from "./DeleteInstanceDialog";
 export { useInstanceActions } from "./useInstanceActions";
+export { ManagedInstancesSection } from "./ManagedInstancesSection";

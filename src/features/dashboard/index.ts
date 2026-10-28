@@ -17,3 +17,5 @@ export {
 export { DashboardProvider } from "./DashboardProvider";
 export { useDashboard, type DashboardContextValue } from "./dashboard-context";
 export { useInitialLoad } from "./useInitialLoad";
+export { useRuntimePlatform } from "./useRuntimePlatform";
+export { FeedbackBanners } from "./FeedbackBanners";

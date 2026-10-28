@@ -5,3 +5,5 @@ export { SourceUpdateContext, useSourceUpdate, type SourceUpdateContextValue } f
 export { useSourceUpdateController, useSourceUpdateRuntime } from "./useSourceUpdateRuntime";
 export { useSourceUpdatePolling } from "./useSourceUpdatePolling";
 export { useUpdateActions } from "./useUpdateActions";
+export { SourceUpdateBanner } from "./SourceUpdateBanner";
+export { SynchronizeBanner } from "./SynchronizeBanner";

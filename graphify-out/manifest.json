@@ -1,7 +1,7 @@
 {
   "package.json": {
-    "mtime": 1793167573.1863356,
-    "ast_hash": "ee7855ed3d6b47a064f8af3a50281099",
+    "mtime": 1793169471.421,
+    "ast_hash": "31ebca25c0b9c6a3c83197fb4383e651",
     "semantic_hash": ""
   },
   "scripts/graphify.mjs": {
@@ -555,8 +555,8 @@
     "semantic_hash": ""
   },
   "src/features/dashboard/index.ts": {
-    "mtime": 1793168967.7705572,
-    "ast_hash": "10b979b92f66a97efeaf2a0bb36ab716",
+    "mtime": 1793169522.8637147,
+    "ast_hash": "c80f74f7eefcd8b9a290286ace14bc83",
     "semantic_hash": ""
   },
   "src/features/instances/InstanceCard.tsx": {
@@ -575,8 +575,8 @@
     "semantic_hash": ""
   },
   "src/features/instances/index.ts": {
-    "mtime": 1793169259.000113,
-    "ast_hash": "116bef4c87e75dfd1fca096ecc288d8b",
+    "mtime": 1793169522.8730872,
+    "ast_hash": "cba333df6c0ee62f369e3b046d9b3dd7",
     "semantic_hash": ""
   },
   "src/features/instances/instance-icon.ts": {
@@ -630,18 +630,13 @@
     "semantic_hash": ""
   },
   "src/features/updates/index.ts": {
-    "mtime": 1793169259.0035126,
-    "ast_hash": "fd81b905578438ceb390d06ebad9f26a",
+    "mtime": 1793169522.869369,
+    "ast_hash": "69e932e4256833605eb00d926fe83d2c",
     "semantic_hash": ""
   },
   "src/app/App.tsx": {
-    "mtime": 1793169297.615082,
-    "ast_hash": "1bb4e043270e2f26f51ea61131791fd2",
-    "semantic_hash": ""
-  },
-  "src/app/AppView.tsx": {
-    "mtime": 1793169297.6104722,
-    "ast_hash": "037a074e551b50eccc58730151ef0205",
+    "mtime": 1793169575.979508,
+    "ast_hash": "421208e8eca3c62f3e3b3a3bf297d2b7",
     "semantic_hash": ""
   },
   "src/features/dashboard/DashboardProvider.tsx": {
@@ -747,6 +742,81 @@
   "src/features/updates/useUpdateActions.ts": {
     "mtime": 1793169258.9983149,
     "ast_hash": "cb4cad050ee2c6b0ba2e1d6b28979412",
+    "semantic_hash": ""
+  },
+  "src/app/RouteErrorBoundary.tsx": {
+    "mtime": 1793169575.9720318,
+    "ast_hash": "83397ad621721c16b4a6d043a7409244",
+    "semantic_hash": ""
+  },
+  "src/app/layout/AppShell.tsx": {
+    "mtime": 1793169575.964581,
+    "ast_hash": "cfe9fa494b3d0c1d2b39af3710cf1f24",
+    "semantic_hash": ""
+  },
+  "src/app/layout/DialogHost.tsx": {
+    "mtime": 1793169575.962243,
+    "ast_hash": "b3fb306489f043d527e22495e3a2a67f",
+    "semantic_hash": ""
+  },
+  "src/app/layout/Statusbar.tsx": {
+    "mtime": 1793169575.9598727,
+    "ast_hash": "02ba5ffbd1ab1eb27730a82ea8f984bf",
+    "semantic_hash": ""
+  },
+  "src/app/layout/Titlebar.tsx": {
+    "mtime": 1793169575.9575305,
+    "ast_hash": "dd1e43e992a00e1f0057cb829846f5df",
+    "semantic_hash": ""
+  },
+  "src/app/layout/window-actions.ts": {
+    "mtime": 1793169522.8749635,
+    "ast_hash": "45b9cbcb847a427cfcbea40e77a1af06",
+    "semantic_hash": ""
+  },
+  "src/app/providers/AppProviders.tsx": {
+    "mtime": 1793169575.9770079,
+    "ast_hash": "3ea38dfe036c857e083b9ae0186c64c8",
+    "semantic_hash": ""
+  },
+  "src/app/router.tsx": {
+    "mtime": 1793169575.9746687,
+    "ast_hash": "fefcf1c557f04d87f1a0923bea3e3419",
+    "semantic_hash": ""
+  },
+  "src/app/routes/panel/PanelRoute.tsx": {
+    "mtime": 1793169575.969613,
+    "ast_hash": "3764a5911767be37586db913e50fca2e",
+    "semantic_hash": ""
+  },
+  "src/app/routes/panel/Toolbar.tsx": {
+    "mtime": 1793169575.96701,
+    "ast_hash": "3018ba24fa95f0d9c8e4761ed89c972c",
+    "semantic_hash": ""
+  },
+  "src/features/dashboard/FeedbackBanners.tsx": {
+    "mtime": 1793169522.8618681,
+    "ast_hash": "544d3f458e3d36af3a248e5750305a69",
+    "semantic_hash": ""
+  },
+  "src/features/dashboard/useRuntimePlatform.ts": {
+    "mtime": 1793169522.859865,
+    "ast_hash": "de84c898ba90c160070ddeb427d0b365",
+    "semantic_hash": ""
+  },
+  "src/features/instances/ManagedInstancesSection.tsx": {
+    "mtime": 1793169522.871237,
+    "ast_hash": "1ffeb037c6a71d197fae934045a71e30",
+    "semantic_hash": ""
+  },
+  "src/features/updates/SourceUpdateBanner.tsx": {
+    "mtime": 1793169522.865485,
+    "ast_hash": "2f99dd098f472a6041a8d50579c0791a",
+    "semantic_hash": ""
+  },
+  "src/features/updates/SynchronizeBanner.tsx": {
+    "mtime": 1793169522.8672426,
+    "ast_hash": "c9c66fb2efb8b0b6ee8229e192dec5cc",
     "semantic_hash": ""
   }
 }
