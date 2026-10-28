@@ -568,7 +568,7 @@
       "label": "candidates",
       "file_type": "code",
       "source_file": "scripts/graphify.mjs",
-      "source_location": "L13",
+      "source_location": "L18",
       "_origin": "ast",
       "id": "scripts_graphify_candidates",
       "community": 9,
@@ -579,7 +579,7 @@
       "label": "graphify",
       "file_type": "code",
       "source_file": "scripts/graphify.mjs",
-      "source_location": "L26",
+      "source_location": "L31",
       "_origin": "ast",
       "id": "scripts_graphify_graphify",
       "community": 9,
@@ -590,7 +590,7 @@
       "label": "run()",
       "file_type": "code",
       "source_file": "scripts/graphify.mjs",
-      "source_location": "L42",
+      "source_location": "L47",
       "_origin": "ast",
       "id": "scripts_graphify_run",
       "community": 9,
@@ -601,7 +601,7 @@
       "label": "runGraphify()",
       "file_type": "code",
       "source_file": "scripts/graphify.mjs",
-      "source_location": "L54",
+      "source_location": "L59",
       "_origin": "ast",
       "id": "scripts_graphify_rungraphify",
       "community": 9,
@@ -612,7 +612,7 @@
       "label": "updateGraph()",
       "file_type": "code",
       "source_file": "scripts/graphify.mjs",
-      "source_location": "L58",
+      "source_location": "L63",
       "_origin": "ast",
       "id": "scripts_graphify_updategraph",
       "community": 9,
@@ -623,7 +623,7 @@
       "label": "normalizeReportTitle()",
       "file_type": "code",
       "source_file": "scripts/graphify.mjs",
-      "source_location": "L65",
+      "source_location": "L70",
       "_origin": "ast",
       "id": "scripts_graphify_normalizereporttitle",
       "community": 9,
@@ -634,7 +634,7 @@
       "label": "normalizeManifest()",
       "file_type": "code",
       "source_file": "scripts/graphify.mjs",
-      "source_location": "L129",
+      "source_location": "L134",
       "_origin": "ast",
       "id": "scripts_graphify_normalizemanifest",
       "community": 9,
@@ -1951,8 +1951,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "vec",
-      "community": 53,
-      "community_name": "copy_code_session_sync",
+      "community": 44,
+      "community_name": "Vec",
       "norm_label": "vec"
     },
     {
@@ -1973,8 +1973,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "default",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 53,
+      "community_name": "copy_code_session_sync",
       "norm_label": "default"
     },
     {
@@ -1984,8 +1984,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "src_tauri_src_lib_registry_default",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 41,
+      "community_name": ".capture",
       "norm_label": ".default()"
     },
     {
@@ -1995,8 +1995,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "self",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 41,
+      "community_name": ".capture",
       "norm_label": "self"
     },
     {
@@ -2017,8 +2017,8 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "src_tauri_src_lib_managedinstance",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "managedinstance"
     },
     {
@@ -2039,7 +2039,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "option",
-      "community": 6,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "option"
     },
@@ -2050,8 +2050,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "managedprocessidentity",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "managedprocessidentity"
     },
     {
@@ -2061,8 +2061,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "customicon",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "customicon"
     },
     {
@@ -2072,8 +2072,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "instancestatus",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "instancestatus"
     },
     {
@@ -2083,8 +2083,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "usagestats",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "usagestats"
     },
     {
@@ -2094,8 +2094,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "codesession",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "codesession"
     },
     {
@@ -2106,7 +2106,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_providerprovenance",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "providerprovenance"
     },
     {
@@ -2116,8 +2116,8 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "src_tauri_src_lib_managedprocessidentity",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "managedprocessidentity"
     },
     {
@@ -2128,7 +2128,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_customicon",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "customicon"
     },
     {
@@ -2138,8 +2138,8 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "src_tauri_src_lib_accountplan",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "accountplan"
     },
     {
@@ -2149,8 +2149,8 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "src_tauri_src_lib_instancestatus",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 76,
+      "community_name": "SystemInfo",
       "norm_label": "instancestatus"
     },
     {
@@ -2160,7 +2160,7 @@
       "source_location": "L145",
       "_origin": "ast",
       "id": "src_tauri_src_lib_usagestats",
-      "community": 6,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "usagestats"
     },
@@ -2204,7 +2204,7 @@
       "source_location": "L177",
       "_origin": "ast",
       "id": "src_tauri_src_lib_artifactmonitorsummary",
-      "community": 6,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "artifactmonitorsummary"
     },
@@ -2215,8 +2215,8 @@
       "source_location": "L185",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessiontransfermode",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "sessiontransfermode"
     },
     {
@@ -2226,8 +2226,8 @@
       "source_location": "L193",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessiontransferinfo",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "sessiontransferinfo"
     },
     {
@@ -2237,8 +2237,8 @@
       "source_location": "L200",
       "_origin": "ast",
       "id": "src_tauri_src_lib_codesessiondocument",
-      "community": 6,
-      "community_name": "Option",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "codesessiondocument"
     },
     {
@@ -2248,8 +2248,8 @@
       "source_location": "L217",
       "_origin": "ast",
       "id": "src_tauri_src_lib_transcriptentry",
-      "community": 6,
-      "community_name": "Option",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "transcriptentry"
     },
     {
@@ -2270,8 +2270,8 @@
       "source_location": "L228",
       "_origin": "ast",
       "id": "src_tauri_src_lib_artifactmonitorentry",
-      "community": 6,
-      "community_name": "Option",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "artifactmonitorentry"
     },
     {
@@ -2281,8 +2281,8 @@
       "source_location": "L233",
       "_origin": "ast",
       "id": "src_tauri_src_lib_transcriptmessage",
-      "community": 6,
-      "community_name": "Option",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "transcriptmessage"
     },
     {
@@ -2292,8 +2292,8 @@
       "source_location": "L239",
       "_origin": "ast",
       "id": "src_tauri_src_lib_transcriptusage",
-      "community": 6,
-      "community_name": "Option",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "transcriptusage"
     },
     {
@@ -2303,8 +2303,8 @@
       "source_location": "L251",
       "_origin": "ast",
       "id": "src_tauri_src_lib_transcriptusageiteration",
-      "community": 6,
-      "community_name": "Option",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "transcriptusageiteration"
     },
     {
@@ -2314,7 +2314,7 @@
       "source_location": "L260",
       "_origin": "ast",
       "id": "src_tauri_src_lib_deserialize_collection_count",
-      "community": 44,
+      "community": 77,
       "community_name": "deserialize_collection_count",
       "norm_label": "deserialize_collection_count()"
     },
@@ -2325,7 +2325,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "d",
-      "community": 44,
+      "community": 77,
       "community_name": "deserialize_collection_count",
       "norm_label": "d"
     },
@@ -2347,7 +2347,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "error",
-      "community": 44,
+      "community": 77,
       "community_name": "deserialize_collection_count",
       "norm_label": "error"
     },
@@ -2369,8 +2369,8 @@
       "source_location": "L319",
       "_origin": "ast",
       "id": "src_tauri_src_lib_systeminfo",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 76,
+      "community_name": "SystemInfo",
       "norm_label": "systeminfo"
     },
     {
@@ -2380,8 +2380,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "sourceupdateinfo",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 76,
+      "community_name": "SystemInfo",
       "norm_label": "sourceupdateinfo"
     },
     {
@@ -2391,8 +2391,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "versiontopology",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 76,
+      "community_name": "SystemInfo",
       "norm_label": "versiontopology"
     },
     {
@@ -2413,8 +2413,8 @@
       "source_location": "L389",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refreshworkcounters",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 73,
+      "community_name": "record_refresh_work",
       "norm_label": "refreshworkcounters"
     },
     {
@@ -2424,8 +2424,8 @@
       "source_location": "L405",
       "_origin": "ast",
       "id": "src_tauri_src_lib_record_refresh_work",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 73,
+      "community_name": "record_refresh_work",
       "norm_label": "record_refresh_work()"
     },
     {
@@ -2435,8 +2435,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "fnonce",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 73,
+      "community_name": "record_refresh_work",
       "norm_label": "fnonce"
     },
     {
@@ -2446,8 +2446,8 @@
       "source_location": "L410",
       "_origin": "ast",
       "id": "src_tauri_src_lib_reset_refresh_work_counters",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 41,
+      "community_name": ".capture",
       "norm_label": "reset_refresh_work_counters()"
     },
     {
@@ -2457,8 +2457,8 @@
       "source_location": "L415",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refresh_work_counters",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 73,
+      "community_name": "record_refresh_work",
       "norm_label": "refresh_work_counters()"
     },
     {
@@ -2468,8 +2468,8 @@
       "source_location": "L420",
       "_origin": "ast",
       "id": "src_tauri_src_lib_applicationfingerprint",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "applicationfingerprint"
     },
     {
@@ -2490,8 +2490,8 @@
       "source_location": "L429",
       "_origin": "ast",
       "id": "src_tauri_src_lib_runtimecache",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "runtimecache"
     },
     {
@@ -2501,8 +2501,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "dashboardstate",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "dashboardstate"
     },
     {
@@ -2512,8 +2512,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "instant",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "instant"
     },
     {
@@ -2523,8 +2523,8 @@
       "source_location": "L436",
       "_origin": "ast",
       "id": "src_tauri_src_lib_runtime_cache",
-      "community": 48,
-      "community_name": "String",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "runtime_cache()"
     },
     {
@@ -2534,8 +2534,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "mutex",
-      "community": 48,
-      "community_name": "String",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "mutex"
     },
     {
@@ -2545,8 +2545,8 @@
       "source_location": "L441",
       "_origin": "ast",
       "id": "src_tauri_src_lib_registry_operation_mutex",
-      "community": 48,
-      "community_name": "String",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "registry_operation_mutex()"
     },
     {
@@ -2578,8 +2578,8 @@
       "source_location": "L455",
       "_origin": "ast",
       "id": "src_tauri_src_lib_versiontopology",
-      "community": 53,
-      "community_name": "copy_code_session_sync",
+      "community": 44,
+      "community_name": "Vec",
       "norm_label": "versiontopology"
     },
     {
@@ -2589,8 +2589,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "versionsource",
-      "community": 53,
-      "community_name": "copy_code_session_sync",
+      "community": 44,
+      "community_name": "Vec",
       "norm_label": "versionsource"
     },
     {
@@ -2633,8 +2633,8 @@
       "source_location": "L481",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sourceupdateinfo",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "sourceupdateinfo"
     },
     {
@@ -2644,8 +2644,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "sourceupdatestatus",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "sourceupdatestatus"
     },
     {
@@ -2655,8 +2655,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "sourceupdatesource",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "sourceupdatesource"
     },
     {
@@ -2666,8 +2666,8 @@
       "source_location": "L490",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sourceupdateinfo_default",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 41,
+      "community_name": ".capture",
       "norm_label": ".default()"
     },
     {
@@ -2699,8 +2699,8 @@
       "source_location": "L518",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sourceupdatecache",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "sourceupdatecache"
     },
     {
@@ -2732,8 +2732,8 @@
       "source_location": "L541",
       "_origin": "ast",
       "id": "src_tauri_src_lib_originalapplicationupdateresult",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "originalapplicationupdateresult"
     },
     {
@@ -2754,8 +2754,8 @@
       "source_location": "L555",
       "_origin": "ast",
       "id": "src_tauri_src_lib_macosoriginallaunch",
-      "community": 53,
-      "community_name": "copy_code_session_sync",
+      "community": 44,
+      "community_name": "Vec",
       "norm_label": "macosoriginallaunch"
     },
     {
@@ -2765,8 +2765,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "osstring",
-      "community": 53,
-      "community_name": "copy_code_session_sync",
+      "community": 44,
+      "community_name": "Vec",
       "norm_label": "osstring"
     },
     {
@@ -2831,8 +2831,8 @@
       "source_location": "L597",
       "_origin": "ast",
       "id": "src_tauri_src_lib_copycodesessionrequest",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "copycodesessionrequest"
     },
     {
@@ -2853,8 +2853,8 @@
       "source_location": "L613",
       "_origin": "ast",
       "id": "src_tauri_src_lib_artifacttransferoutcome",
-      "community": 53,
-      "community_name": "copy_code_session_sync",
+      "community": 44,
+      "community_name": "Vec",
       "norm_label": "artifacttransferoutcome"
     },
     {
@@ -2897,8 +2897,8 @@
       "source_location": "L648",
       "_origin": "ast",
       "id": "src_tauri_src_lib_synchronizationitemresult",
-      "community": 48,
-      "community_name": "String",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "synchronizationitemresult"
     },
     {
@@ -2908,8 +2908,8 @@
       "source_location": "L658",
       "_origin": "ast",
       "id": "src_tauri_src_lib_synchronizemanagedapplicationsresult",
-      "community": 48,
-      "community_name": "String",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "synchronizemanagedapplicationsresult"
     },
     {
@@ -2941,8 +2941,8 @@
       "source_location": "L679",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessiontransfermanifest",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "sessiontransfermanifest"
     },
     {
@@ -2952,8 +2952,8 @@
       "source_location": "L698",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessionlink",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "sessionlink"
     },
     {
@@ -2963,8 +2963,8 @@
       "source_location": "L710",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessionlinkregistry",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 53,
+      "community_name": "copy_code_session_sync",
       "norm_label": "sessionlinkregistry"
     },
     {
@@ -2974,8 +2974,8 @@
       "source_location": "L718",
       "_origin": "ast",
       "id": "src_tauri_src_lib_transferprofile",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 76,
+      "community_name": "SystemInfo",
       "norm_label": "transferprofile"
     },
     {
@@ -2985,8 +2985,8 @@
       "source_location": "L726",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sessionlinkregistry_default",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 41,
+      "community_name": ".capture",
       "norm_label": ".default()"
     },
     {
@@ -2996,8 +2996,8 @@
       "source_location": "L734",
       "_origin": "ast",
       "id": "src_tauri_src_lib_managedpaths",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 53,
+      "community_name": "copy_code_session_sync",
       "norm_label": "managedpaths"
     },
     {
@@ -3062,8 +3062,8 @@
       "source_location": "L794",
       "_origin": "ast",
       "id": "src_tauri_src_lib_save_session_links",
-      "community": 48,
-      "community_name": "String",
+      "community": 53,
+      "community_name": "copy_code_session_sync",
       "norm_label": "save_session_links()"
     },
     {
@@ -3073,8 +3073,8 @@
       "source_location": "L801",
       "_origin": "ast",
       "id": "src_tauri_src_lib_migrate_session_links",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 53,
+      "community_name": "copy_code_session_sync",
       "norm_label": "migrate_session_links()"
     },
     {
@@ -3084,8 +3084,8 @@
       "source_location": "L854",
       "_origin": "ast",
       "id": "src_tauri_src_lib_load_session_links",
-      "community": 48,
-      "community_name": "String",
+      "community": 53,
+      "community_name": "copy_code_session_sync",
       "norm_label": "load_session_links()"
     },
     {
@@ -3128,8 +3128,8 @@
       "source_location": "L903",
       "_origin": "ast",
       "id": "src_tauri_src_lib_platform_name",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 41,
+      "community_name": ".capture",
       "norm_label": "platform_name()"
     },
     {
@@ -3139,7 +3139,7 @@
       "source_location": "L916",
       "_origin": "ast",
       "id": "src_tauri_src_lib_sanitize_source_name",
-      "community": 6,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "sanitize_source_name()"
     },
@@ -3150,7 +3150,7 @@
       "source_location": "L922",
       "_origin": "ast",
       "id": "src_tauri_src_lib_readable_source_stem",
-      "community": 6,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "readable_source_stem()"
     },
@@ -3162,7 +3162,7 @@
       "_origin": "ast",
       "id": "path",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "path"
     },
     {
@@ -3172,7 +3172,7 @@
       "source_location": "L939",
       "_origin": "ast",
       "id": "src_tauri_src_lib_source_name_from_metadata",
-      "community": 6,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "source_name_from_metadata()"
     },
@@ -3184,7 +3184,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_bundle_value",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macos_bundle_value()"
     },
     {
@@ -3194,7 +3194,7 @@
       "source_location": "L965",
       "_origin": "ast",
       "id": "src_tauri_src_lib_linux_desktop_name",
-      "community": 6,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "linux_desktop_name()"
     },
@@ -3205,7 +3205,7 @@
       "source_location": "L982",
       "_origin": "ast",
       "id": "src_tauri_src_lib_source_display_name",
-      "community": 6,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "source_display_name()"
     },
@@ -3238,8 +3238,8 @@
       "source_location": "L1058",
       "_origin": "ast",
       "id": "src_tauri_src_lib_detect_provider_source",
-      "community": 48,
-      "community_name": "String",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "detect_provider_source()"
     },
     {
@@ -3249,8 +3249,8 @@
       "source_location": "L1116",
       "_origin": "ast",
       "id": "src_tauri_src_lib_detect_original_profile",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "detect_original_profile()"
     },
     {
@@ -3260,8 +3260,8 @@
       "source_location": "L1158",
       "_origin": "ast",
       "id": "src_tauri_src_lib_original_instance_status_with_inventory",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "original_instance_status_with_inventory()"
     },
     {
@@ -3271,8 +3271,8 @@
       "source_location": "L1172",
       "_origin": "ast",
       "id": "src_tauri_src_lib_resolve_transfer_profile",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "resolve_transfer_profile()"
     },
     {
@@ -3282,8 +3282,8 @@
       "source_location": "L1202",
       "_origin": "ast",
       "id": "src_tauri_src_lib_provider_executable",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "provider_executable()"
     },
     {
@@ -3293,8 +3293,8 @@
       "source_location": "L1214",
       "_origin": "ast",
       "id": "src_tauri_src_lib_linux_provider_installation",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "linux_provider_installation()"
     },
     {
@@ -3304,7 +3304,7 @@
       "source_location": "L1229",
       "_origin": "ast",
       "id": "src_tauri_src_lib_normalize_linux_version",
-      "community": 6,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "normalize_linux_version()"
     },
@@ -3315,8 +3315,8 @@
       "source_location": "L1249",
       "_origin": "ast",
       "id": "src_tauri_src_lib_validate_source",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "validate_source()"
     },
     {
@@ -3326,7 +3326,7 @@
       "source_location": "L1296",
       "_origin": "ast",
       "id": "src_tauri_src_lib_source_version",
-      "community": 6,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "source_version()"
     },
@@ -3338,7 +3338,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_metadata_stamp",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "metadata_stamp()"
     },
     {
@@ -3349,7 +3349,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_application_fingerprint",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "application_fingerprint()"
     },
     {
@@ -3359,8 +3359,8 @@
       "source_location": "L1422",
       "_origin": "ast",
       "id": "src_tauri_src_lib_cached_source_version",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "cached_source_version()"
     },
     {
@@ -3370,8 +3370,8 @@
       "source_location": "L1438",
       "_origin": "ast",
       "id": "src_tauri_src_lib_invalidate_application_cache",
-      "community": 48,
-      "community_name": "String",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "invalidate_application_cache()"
     },
     {
@@ -3392,8 +3392,8 @@
       "source_location": "L1451",
       "_origin": "ast",
       "id": "src_tauri_src_lib_version_parts",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 44,
+      "community_name": "Vec",
       "norm_label": "version_parts()"
     },
     {
@@ -3403,8 +3403,8 @@
       "source_location": "L1459",
       "_origin": "ast",
       "id": "src_tauri_src_lib_version_is_newer",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "version_is_newer()"
     },
     {
@@ -3414,8 +3414,8 @@
       "source_location": "L1475",
       "_origin": "ast",
       "id": "src_tauri_src_lib_versions_equal",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "versions_equal()"
     },
     {
@@ -3425,8 +3425,8 @@
       "source_location": "L1479",
       "_origin": "ast",
       "id": "src_tauri_src_lib_path_is_within",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "path_is_within()"
     },
     {
@@ -3437,7 +3437,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_team_identifier",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macos_team_identifier()"
     },
     {
@@ -3448,7 +3448,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_code_hash",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macos_code_hash()"
     },
     {
@@ -3459,7 +3459,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_validate_provider_identity_uncached",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "validate_provider_identity_uncached()"
     },
     {
@@ -3470,7 +3470,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_windows_signer_subject",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "windows_signer_subject()"
     },
     {
@@ -3481,7 +3481,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_validate_provider_identity",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "validate_provider_identity()"
     },
     {
@@ -3492,7 +3492,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_fingerprint_label",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "fingerprint_label()"
     },
     {
@@ -3503,7 +3503,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_validate_managed_provenance",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "validate_managed_provenance()"
     },
     {
@@ -3513,8 +3513,8 @@
       "source_location": "L1668",
       "_origin": "ast",
       "id": "src_tauri_src_lib_validate_managed_application_source",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "validate_managed_application_source()"
     },
     {
@@ -3524,8 +3524,8 @@
       "source_location": "L1700",
       "_origin": "ast",
       "id": "src_tauri_src_lib_validate_managed_application",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "validate_managed_application()"
     },
     {
@@ -3535,8 +3535,8 @@
       "source_location": "L1721",
       "_origin": "ast",
       "id": "src_tauri_src_lib_build_version_topology",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "build_version_topology()"
     },
     {
@@ -3546,8 +3546,8 @@
       "source_location": "L1833",
       "_origin": "ast",
       "id": "src_tauri_src_lib_valid_release_version",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "valid_release_version()"
     },
     {
@@ -3557,8 +3557,8 @@
       "source_location": "L1842",
       "_origin": "ast",
       "id": "src_tauri_src_lib_update_feed_target",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "update_feed_target()"
     },
     {
@@ -3579,8 +3579,8 @@
       "source_location": "L1862",
       "_origin": "ast",
       "id": "src_tauri_src_lib_read_source_update_cache",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "read_source_update_cache()"
     },
     {
@@ -3590,8 +3590,8 @@
       "source_location": "L1890",
       "_origin": "ast",
       "id": "src_tauri_src_lib_save_source_update_cache",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "save_source_update_cache()"
     },
     {
@@ -3601,8 +3601,8 @@
       "source_location": "L1906",
       "_origin": "ast",
       "id": "src_tauri_src_lib_check_official_update_feed",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "check_official_update_feed()"
     },
     {
@@ -3612,8 +3612,8 @@
       "source_location": "L1964",
       "_origin": "ast",
       "id": "src_tauri_src_lib_parse_apt_policy",
-      "community": 6,
-      "community_name": "Option",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "parse_apt_policy()"
     },
     {
@@ -3645,8 +3645,8 @@
       "source_location": "L2038",
       "_origin": "ast",
       "id": "src_tauri_src_lib_copy_provider_application",
-      "community": 48,
-      "community_name": "String",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "copy_provider_application()"
     },
     {
@@ -3656,8 +3656,8 @@
       "source_location": "L2129",
       "_origin": "ast",
       "id": "src_tauri_src_lib_instance_bundle_name",
-      "community": 48,
-      "community_name": "String",
+      "community": 35,
+      "community_name": "PathBuf",
       "norm_label": "instance_bundle_name()"
     },
     {
@@ -3667,8 +3667,8 @@
       "source_location": "L2148",
       "_origin": "ast",
       "id": "src_tauri_src_lib_personalize_application_path",
-      "community": 48,
-      "community_name": "String",
+      "community": 35,
+      "community_name": "PathBuf",
       "norm_label": "personalize_application_path()"
     },
     {
@@ -3678,8 +3678,8 @@
       "source_location": "L2179",
       "_origin": "ast",
       "id": "src_tauri_src_lib_swap_application_directory",
-      "community": 48,
-      "community_name": "String",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "swap_application_directory()"
     },
     {
@@ -3689,8 +3689,8 @@
       "source_location": "L2203",
       "_origin": "ast",
       "id": "src_tauri_src_lib_rollback_application_directory",
-      "community": 48,
-      "community_name": "String",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "rollback_application_directory()"
     },
     {
@@ -3700,8 +3700,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "uuid",
-      "community": 48,
-      "community_name": "String",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "uuid"
     },
     {
@@ -3711,7 +3711,7 @@
       "source_location": "L2229",
       "_origin": "ast",
       "id": "src_tauri_src_lib_read_usage",
-      "community": 6,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "read_usage()"
     },
@@ -3755,7 +3755,7 @@
       "source_location": "L2299",
       "_origin": "ast",
       "id": "src_tauri_src_lib_clean_monitor_state",
-      "community": 6,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "clean_monitor_state()"
     },
@@ -3766,7 +3766,7 @@
       "source_location": "L2310",
       "_origin": "ast",
       "id": "src_tauri_src_lib_latest_artifact_monitor",
-      "community": 6,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "latest_artifact_monitor()"
     },
@@ -3898,8 +3898,8 @@
       "source_location": "L2673",
       "_origin": "ast",
       "id": "src_tauri_src_lib_find_file_named",
-      "community": 53,
-      "community_name": "copy_code_session_sync",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "find_file_named()"
     },
     {
@@ -3909,8 +3909,8 @@
       "source_location": "L2698",
       "_origin": "ast",
       "id": "src_tauri_src_lib_atomic_replace_file",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "atomic_replace_file()"
     },
     {
@@ -3920,8 +3920,8 @@
       "source_location": "L2730",
       "_origin": "ast",
       "id": "src_tauri_src_lib_restore_optional_file",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "restore_optional_file()"
     },
     {
@@ -3931,8 +3931,8 @@
       "source_location": "L2738",
       "_origin": "ast",
       "id": "src_tauri_src_lib_update_session_links_after_transfer",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 53,
+      "community_name": "copy_code_session_sync",
       "norm_label": "update_session_links_after_transfer()"
     },
     {
@@ -3942,8 +3942,8 @@
       "source_location": "L2807",
       "_origin": "ast",
       "id": "src_tauri_src_lib_rollback_transfer_target",
-      "community": 53,
-      "community_name": "copy_code_session_sync",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "rollback_transfer_target()"
     },
     {
@@ -3986,8 +3986,8 @@
       "source_location": "L2890",
       "_origin": "ast",
       "id": "src_tauri_src_lib_artifact_export_roots",
-      "community": 53,
-      "community_name": "copy_code_session_sync",
+      "community": 44,
+      "community_name": "Vec",
       "norm_label": "artifact_export_roots()"
     },
     {
@@ -4008,8 +4008,8 @@
       "source_location": "L2912",
       "_origin": "ast",
       "id": "src_tauri_src_lib_collect_opaque_artifact_files",
-      "community": 53,
-      "community_name": "copy_code_session_sync",
+      "community": 44,
+      "community_name": "Vec",
       "norm_label": "collect_opaque_artifact_files()"
     },
     {
@@ -4019,8 +4019,8 @@
       "source_location": "L2972",
       "_origin": "ast",
       "id": "src_tauri_src_lib_export_local_artifacts",
-      "community": 53,
-      "community_name": "copy_code_session_sync",
+      "community": 44,
+      "community_name": "Vec",
       "norm_label": "export_local_artifacts()"
     },
     {
@@ -4052,8 +4052,8 @@
       "source_location": "L3385",
       "_origin": "ast",
       "id": "src_tauri_src_lib_path_size",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 73,
+      "community_name": "record_refresh_work",
       "norm_label": "path_size()"
     },
     {
@@ -4063,8 +4063,8 @@
       "source_location": "L3403",
       "_origin": "ast",
       "id": "src_tauri_src_lib_process_is_alive",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "process_is_alive()"
     },
     {
@@ -4074,8 +4074,8 @@
       "source_location": "L3415",
       "_origin": "ast",
       "id": "src_tauri_src_lib_process_fingerprint",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "process_fingerprint()"
     },
     {
@@ -4085,8 +4085,8 @@
       "source_location": "L3424",
       "_origin": "ast",
       "id": "src_tauri_src_lib_processinventoryentry",
-      "community": 53,
-      "community_name": "copy_code_session_sync",
+      "community": 44,
+      "community_name": "Vec",
       "norm_label": "processinventoryentry"
     },
     {
@@ -4096,8 +4096,8 @@
       "source_location": "L3431",
       "_origin": "ast",
       "id": "src_tauri_src_lib_processinventory",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "processinventory"
     },
     {
@@ -4107,8 +4107,8 @@
       "source_location": "L3436",
       "_origin": "ast",
       "id": "src_tauri_src_lib_processinventory_capture",
-      "community": 48,
-      "community_name": "String",
+      "community": 41,
+      "community_name": ".capture",
       "norm_label": ".capture()"
     },
     {
@@ -4118,8 +4118,8 @@
       "source_location": "L3462",
       "_origin": "ast",
       "id": "src_tauri_src_lib_processinventory_start_time",
-      "community": 48,
-      "community_name": "String",
+      "community": 41,
+      "community_name": ".capture",
       "norm_label": ".start_time()"
     },
     {
@@ -4129,8 +4129,8 @@
       "source_location": "L3469",
       "_origin": "ast",
       "id": "src_tauri_src_lib_processinventory_application_is_running",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": ".application_is_running()"
     },
     {
@@ -4140,8 +4140,8 @@
       "source_location": "L3478",
       "_origin": "ast",
       "id": "src_tauri_src_lib_process_snapshot",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "process_snapshot()"
     },
     {
@@ -4151,8 +4151,8 @@
       "source_location": "L3503",
       "_origin": "ast",
       "id": "src_tauri_src_lib_identity_matches_instance",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "identity_matches_instance()"
     },
     {
@@ -4162,8 +4162,8 @@
       "source_location": "L3521",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refresh_process_identity",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "refresh_process_identity()"
     },
     {
@@ -4184,8 +4184,8 @@
       "source_location": "L3580",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refresh_instance_bundle_names",
-      "community": 48,
-      "community_name": "String",
+      "community": 35,
+      "community_name": "PathBuf",
       "norm_label": "refresh_instance_bundle_names()"
     },
     {
@@ -4195,8 +4195,8 @@
       "source_location": "L3600",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refresh_instance_statuses",
-      "community": 48,
-      "community_name": "String",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "refresh_instance_statuses()"
     },
     {
@@ -4206,8 +4206,8 @@
       "source_location": "L3617",
       "_origin": "ast",
       "id": "src_tauri_src_lib_refresh_instance_versions",
-      "community": 48,
-      "community_name": "String",
+      "community": 35,
+      "community_name": "PathBuf",
       "norm_label": "refresh_instance_versions()"
     },
     {
@@ -4239,8 +4239,8 @@
       "source_location": "L3642",
       "_origin": "ast",
       "id": "src_tauri_src_lib_managed_bytes",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 73,
+      "community_name": "record_refresh_work",
       "norm_label": "managed_bytes()"
     },
     {
@@ -4250,8 +4250,8 @@
       "source_location": "L3665",
       "_origin": "ast",
       "id": "src_tauri_src_lib_system_info_seed",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 41,
+      "community_name": ".capture",
       "norm_label": "system_info_seed()"
     },
     {
@@ -4261,8 +4261,8 @@
       "source_location": "L3689",
       "_origin": "ast",
       "id": "src_tauri_src_lib_system_info_scoped",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "system_info_scoped()"
     },
     {
@@ -4415,8 +4415,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "webviewwindow",
-      "community": 48,
-      "community_name": "String",
+      "community": 35,
+      "community_name": "PathBuf",
       "norm_label": "webviewwindow"
     },
     {
@@ -4426,8 +4426,8 @@
       "source_location": "L3924",
       "_origin": "ast",
       "id": "src_tauri_src_lib_scan_system_sync",
-      "community": 48,
-      "community_name": "String",
+      "community": 35,
+      "community_name": "PathBuf",
       "norm_label": "scan_system_sync()"
     },
     {
@@ -4470,8 +4470,8 @@
       "source_location": "L4013",
       "_origin": "ast",
       "id": "src_tauri_src_lib_update_instance_application_from_source_sync",
-      "community": 48,
-      "community_name": "String",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "update_instance_application_from_source_sync()"
     },
     {
@@ -4492,8 +4492,8 @@
       "source_location": "L4205",
       "_origin": "ast",
       "id": "src_tauri_src_lib_synchronize_managed_applications_sync",
-      "community": 48,
-      "community_name": "String",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "synchronize_managed_applications_sync()"
     },
     {
@@ -4591,8 +4591,8 @@
       "source_location": "L4580",
       "_origin": "ast",
       "id": "src_tauri_src_lib_process_start_time",
-      "community": 48,
-      "community_name": "String",
+      "community": 41,
+      "community_name": ".capture",
       "norm_label": "process_start_time()"
     },
     {
@@ -4625,7 +4625,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_wait_until_instance_stops",
       "community": 41,
-      "community_name": "ManagedInstance",
+      "community_name": ".capture",
       "norm_label": "wait_until_instance_stops()"
     },
     {
@@ -4636,7 +4636,7 @@
       "_origin": "ast",
       "id": "duration",
       "community": 41,
-      "community_name": "ManagedInstance",
+      "community_name": ".capture",
       "norm_label": "duration"
     },
     {
@@ -4646,8 +4646,8 @@
       "source_location": "L4611",
       "_origin": "ast",
       "id": "src_tauri_src_lib_signal_instance_processes",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "signal_instance_processes()"
     },
     {
@@ -4680,7 +4680,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_clone_directory",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "clone_directory()"
     },
     {
@@ -4691,7 +4691,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_set_macos_workspace_icon",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "set_macos_workspace_icon()"
     },
     {
@@ -4702,7 +4702,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_apply_macos_custom_icon",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "apply_macos_custom_icon()"
     },
     {
@@ -4713,7 +4713,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macosupdatebrandingoutcome",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macosupdatebrandingoutcome"
     },
     {
@@ -4724,7 +4724,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_apply_macos_branding_after_update",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "apply_macos_branding_after_update()"
     },
     {
@@ -4735,7 +4735,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_restore_macos_workspace_icon_after_failure",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "restore_macos_workspace_icon_after_failure()"
     },
     {
@@ -4746,7 +4746,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_clear_macos_custom_icon",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "clear_macos_custom_icon()"
     },
     {
@@ -4767,8 +4767,8 @@
       "source_location": "L5112",
       "_origin": "ast",
       "id": "src_tauri_src_lib_apply_external_icon_best_effort",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "apply_external_icon_best_effort()"
     },
     {
@@ -4811,8 +4811,8 @@
       "source_location": "L5321",
       "_origin": "ast",
       "id": "src_tauri_src_lib_clear_instance_icon_sync",
-      "community": 48,
-      "community_name": "String",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "clear_instance_icon_sync()"
     },
     {
@@ -4844,8 +4844,8 @@
       "source_location": "L5526",
       "_origin": "ast",
       "id": "src_tauri_src_lib_launch_macos_original_application_with",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "launch_macos_original_application_with()"
     },
     {
@@ -4877,8 +4877,8 @@
       "source_location": "L5598",
       "_origin": "ast",
       "id": "src_tauri_src_lib_run",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 41,
+      "community_name": ".capture",
       "norm_label": "run()"
     },
     {
@@ -4888,8 +4888,8 @@
       "source_location": "L5633",
       "_origin": "ast",
       "id": "src_tauri_src_lib_test_managed_paths",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "test_managed_paths()"
     },
     {
@@ -4910,8 +4910,8 @@
       "source_location": "L5673",
       "_origin": "ast",
       "id": "src_tauri_src_lib_macossignaturesnapshot",
-      "community": 53,
-      "community_name": "copy_code_session_sync",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "macossignaturesnapshot"
     },
     {
@@ -4922,7 +4922,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_normalized_codesign_diagnostic",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "normalized_codesign_diagnostic()"
     },
     {
@@ -4933,7 +4933,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_codesign_verification",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "codesign_verification()"
     },
     {
@@ -4944,7 +4944,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_designated_requirement",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macos_designated_requirement()"
     },
     {
@@ -4955,7 +4955,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_signature_snapshot",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macos_signature_snapshot()"
     },
     {
@@ -4965,8 +4965,8 @@
       "source_location": "L5747",
       "_origin": "ast",
       "id": "src_tauri_src_lib_light_refresh_executes_one_inventory_and_skips_expensive_work",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 41,
+      "community_name": ".capture",
       "norm_label": "light_refresh_executes_one_inventory_and_skips_expensive_work()"
     },
     {
@@ -4976,8 +4976,8 @@
       "source_location": "L5772",
       "_origin": "ast",
       "id": "src_tauri_src_lib_versions_refresh_preserves_sessions_and_skips_profile_and_storage_work",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 41,
+      "community_name": ".capture",
       "norm_label": "versions_refresh_preserves_sessions_and_skips_profile_and_storage_work()"
     },
     {
@@ -4998,8 +4998,8 @@
       "source_location": "L5876",
       "_origin": "ast",
       "id": "src_tauri_src_lib_application_fingerprint_changes_when_managed_bytes_change",
-      "community": 1,
-      "community_name": "Path",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "application_fingerprint_changes_when_managed_bytes_change()"
     },
     {
@@ -5010,7 +5010,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_write_signed_fixture_bundle",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "write_signed_fixture_bundle()"
     },
     {
@@ -5021,7 +5021,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_branding_fixture_verifies_launches_and_preserves_profile_bytes",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macos_branding_fixture_verifies_launches_and_preserves_profile_bytes()"
     },
     {
@@ -5032,7 +5032,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_update_keeps_new_bundle_when_workspace_icon_is_strict_incompatible",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macos_update_keeps_new_bundle_when_workspace_icon_is_strict_incompatible()"
     },
     {
@@ -5043,7 +5043,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_ui_only_icon_rollback_clears_workspace_metadata",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macos_ui_only_icon_rollback_clears_workspace_metadata()"
     },
     {
@@ -5054,7 +5054,7 @@
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_provider_clone_dock_visual_spike",
       "community": 1,
-      "community_name": "Path",
+      "community_name": "Option",
       "norm_label": "macos_provider_clone_dock_visual_spike()"
     },
     {
@@ -5086,8 +5086,8 @@
       "source_location": "L6189",
       "_origin": "ast",
       "id": "src_tauri_src_lib_process_fingerprint_binds_application_and_exact_profile_argument",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "process_fingerprint_binds_application_and_exact_profile_argument()"
     },
     {
@@ -5108,8 +5108,8 @@
       "source_location": "L6213",
       "_origin": "ast",
       "id": "src_tauri_src_lib_artifact_export_rejects_symlinks_and_depth_escapes",
-      "community": 53,
-      "community_name": "copy_code_session_sync",
+      "community": 44,
+      "community_name": "Vec",
       "norm_label": "artifact_export_rejects_symlinks_and_depth_escapes()"
     },
     {
@@ -5174,8 +5174,8 @@
       "source_location": "L6324",
       "_origin": "ast",
       "id": "src_tauri_src_lib_source_update_cache_is_bound_to_installed_version_and_stale_is_unavailable",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "source_update_cache_is_bound_to_installed_version_and_stale_is_unavailable()"
     },
     {
@@ -5196,8 +5196,8 @@
       "source_location": "L6378",
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_update_launcher_receives_only_the_validated_exact_original_path",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "macos_update_launcher_receives_only_the_validated_exact_original_path()"
     },
     {
@@ -5207,8 +5207,8 @@
       "source_location": "L6416",
       "_origin": "ast",
       "id": "src_tauri_src_lib_macos_update_launcher_rejects_a_managed_application_without_launching",
-      "community": 55,
-      "community_name": "ManagedPaths",
+      "community": 1,
+      "community_name": "Option",
       "norm_label": "macos_update_launcher_rejects_a_managed_application_without_launching()"
     },
     {
@@ -5251,7 +5251,7 @@
       "source_location": "L6517",
       "_origin": "ast",
       "id": "src_tauri_src_lib_summarizes_artifact_monitors_without_exposing_identifiers_or_content",
-      "community": 6,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "summarizes_artifact_monitors_without_exposing_identifiers_or_content()"
     },
@@ -5306,8 +5306,8 @@
       "source_location": "L6652",
       "_origin": "ast",
       "id": "src_tauri_src_lib_recognizes_the_official_linux_electron_layout_through_a_symlink",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 78,
+      "community_name": "update_instance_application_from_source_sync",
       "norm_label": "recognizes_the_official_linux_electron_layout_through_a_symlink()"
     },
     {
@@ -5328,8 +5328,8 @@
       "source_location": "L6703",
       "_origin": "ast",
       "id": "src_tauri_src_lib_atomically_creates_and_replaces_session_index",
-      "community": 41,
-      "community_name": "ManagedInstance",
+      "community": 48,
+      "community_name": "String",
       "norm_label": "atomically_creates_and_replaces_session_index()"
     },
     {
@@ -5372,7 +5372,7 @@
       "source_location": "L6765",
       "_origin": "ast",
       "id": "src_tauri_src_lib_reads_complete_usage_samples_and_rejects_partial_files",
-      "community": 6,
+      "community": 1,
       "community_name": "Option",
       "norm_label": "reads_complete_usage_samples_and_rejects_partial_files()"
     },
@@ -5416,8 +5416,8 @@
       "source_location": "L6847",
       "_origin": "ast",
       "id": "src_tauri_src_lib_tracks_copy_move_and_return_session_lineage",
-      "community": 35,
-      "community_name": "PathBuf",
+      "community": 53,
+      "community_name": "copy_code_session_sync",
       "norm_label": "tracks_copy_move_and_return_session_lineage()"
     },
     {
@@ -5427,8 +5427,8 @@
       "source_location": "L6903",
       "_origin": "ast",
       "id": "src_tauri_src_lib_migrates_existing_round_trip_as_a_link_to_the_original",
-      "community": 0,
-      "community_name": "lib.rs",
+      "community": 53,
+      "community_name": "copy_code_session_sync",
       "norm_label": "migrates_existing_round_trip_as_a_link_to_the_original()"
     },
     {
@@ -5449,8 +5449,8 @@
       "source_location": "L7010",
       "_origin": "ast",
       "id": "src_tauri_src_lib_swaps_and_rolls_back_application_directory",
-      "community": 48,
-      "community_name": "String",
+      "community": 0,
+      "community_name": "lib.rs",
       "norm_label": "swaps_and_rolls_back_application_directory()"
     },
     {
@@ -8787,314 +8787,6 @@
       "norm_label": "uso fuera de codex"
     },
     {
-      "label": "roles/README.md",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/README.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_readme",
-      "community": 67,
-      "community_name": "roles/README.md",
-      "norm_label": "roles/readme.md"
-    },
-    {
-      "label": "Agentes de desarrollo",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/README.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_readme_agentes_de_desarrollo",
-      "community": 67,
-      "community_name": "roles/README.md",
-      "norm_label": "agentes de desarrollo"
-    },
-    {
-      "label": "architect.md",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/architect.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_architect",
-      "community": 54,
-      "community_name": "Rol: architect",
-      "norm_label": "architect.md"
-    },
-    {
-      "label": "Rol: architect",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/architect.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_architect_rol_architect",
-      "community": 54,
-      "community_name": "Rol: architect",
-      "norm_label": "rol: architect"
-    },
-    {
-      "label": "Misi\u00f3n",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/architect.md",
-      "source_location": "L3",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_architect_misi\u00f3n",
-      "community": 54,
-      "community_name": "Rol: architect",
-      "norm_label": "mision"
-    },
-    {
-      "label": "Perfil recomendado",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/architect.md",
-      "source_location": "L7",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_architect_perfil_recomendado",
-      "community": 54,
-      "community_name": "Rol: architect",
-      "norm_label": "perfil recomendado"
-    },
-    {
-      "label": "Proceso obligatorio",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/architect.md",
-      "source_location": "L11",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_architect_proceso_obligatorio",
-      "community": 54,
-      "community_name": "Rol: architect",
-      "norm_label": "proceso obligatorio"
-    },
-    {
-      "label": "Restricciones",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/architect.md",
-      "source_location": "L24",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_architect_restricciones",
-      "community": 54,
-      "community_name": "Rol: architect",
-      "norm_label": "restricciones"
-    },
-    {
-      "label": "Entrega esperada",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/architect.md",
-      "source_location": "L31",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_architect_entrega_esperada",
-      "community": 54,
-      "community_name": "Rol: architect",
-      "norm_label": "entrega esperada"
-    },
-    {
-      "label": "backend.md",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/backend.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_backend",
-      "community": 60,
-      "community_name": "Rol: backend",
-      "norm_label": "backend.md"
-    },
-    {
-      "label": "Rol: backend",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/backend.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_backend_rol_backend",
-      "community": 60,
-      "community_name": "Rol: backend",
-      "norm_label": "rol: backend"
-    },
-    {
-      "label": "Misi\u00f3n",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/backend.md",
-      "source_location": "L3",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_backend_misi\u00f3n",
-      "community": 60,
-      "community_name": "Rol: backend",
-      "norm_label": "mision"
-    },
-    {
-      "label": "Perfil recomendado",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/backend.md",
-      "source_location": "L7",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_backend_perfil_recomendado",
-      "community": 60,
-      "community_name": "Rol: backend",
-      "norm_label": "perfil recomendado"
-    },
-    {
-      "label": "Proceso obligatorio",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/backend.md",
-      "source_location": "L11",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_backend_proceso_obligatorio",
-      "community": 60,
-      "community_name": "Rol: backend",
-      "norm_label": "proceso obligatorio"
-    },
-    {
-      "label": "Reglas cr\u00edticas",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/backend.md",
-      "source_location": "L21",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_backend_reglas_cr\u00edticas",
-      "community": 60,
-      "community_name": "Rol: backend",
-      "norm_label": "reglas criticas"
-    },
-    {
-      "label": "document.md",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/document.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_document",
-      "community": 56,
-      "community_name": "Rol: document",
-      "norm_label": "document.md"
-    },
-    {
-      "label": "Rol: document",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/document.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_document_rol_document",
-      "community": 56,
-      "community_name": "Rol: document",
-      "norm_label": "rol: document"
-    },
-    {
-      "label": "Misi\u00f3n",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/document.md",
-      "source_location": "L3",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_document_misi\u00f3n",
-      "community": 56,
-      "community_name": "Rol: document",
-      "norm_label": "mision"
-    },
-    {
-      "label": "Perfil recomendado",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/document.md",
-      "source_location": "L7",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_document_perfil_recomendado",
-      "community": 56,
-      "community_name": "Rol: document",
-      "norm_label": "perfil recomendado"
-    },
-    {
-      "label": "Proceso obligatorio",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/document.md",
-      "source_location": "L11",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_document_proceso_obligatorio",
-      "community": 56,
-      "community_name": "Rol: document",
-      "norm_label": "proceso obligatorio"
-    },
-    {
-      "label": "Estructura m\u00ednima de una HU",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/document.md",
-      "source_location": "L22",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_document_estructura_m\u00ednima_de_una_hu",
-      "community": 56,
-      "community_name": "Rol: document",
-      "norm_label": "estructura minima de una hu"
-    },
-    {
-      "label": "Restricciones",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/document.md",
-      "source_location": "L38",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_document_restricciones",
-      "community": 56,
-      "community_name": "Rol: document",
-      "norm_label": "restricciones"
-    },
-    {
-      "label": "frontend.md",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_frontend",
-      "community": 61,
-      "community_name": "Rol: frontend",
-      "norm_label": "frontend.md"
-    },
-    {
-      "label": "Rol: frontend",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_frontend_rol_frontend",
-      "community": 61,
-      "community_name": "Rol: frontend",
-      "norm_label": "rol: frontend"
-    },
-    {
-      "label": "Misi\u00f3n",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
-      "source_location": "L3",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_frontend_misi\u00f3n",
-      "community": 61,
-      "community_name": "Rol: frontend",
-      "norm_label": "mision"
-    },
-    {
-      "label": "Perfil recomendado",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
-      "source_location": "L7",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_frontend_perfil_recomendado",
-      "community": 61,
-      "community_name": "Rol: frontend",
-      "norm_label": "perfil recomendado"
-    },
-    {
-      "label": "Proceso obligatorio",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
-      "source_location": "L11",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_frontend_proceso_obligatorio",
-      "community": 61,
-      "community_name": "Rol: frontend",
-      "norm_label": "proceso obligatorio"
-    },
-    {
-      "label": "Reglas cr\u00edticas",
-      "file_type": "document",
-      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
-      "source_location": "L22",
-      "_origin": "ast",
-      "id": "docs_archivo_previo_agents_roles_frontend_reglas_cr\u00edticas",
-      "community": 61,
-      "community_name": "Rol: frontend",
-      "norm_label": "reglas criticas"
-    },
-    {
       "label": "HU-0001-integracion-graphify-y-agentes.md",
       "file_type": "document",
       "source_file": "docs/archivo/previo/hu/HU-0001-integracion-graphify-y-agentes.md",
@@ -10220,7 +9912,7 @@
       "label": "Resultado y riesgos residuales",
       "file_type": "document",
       "source_file": "docs/archivo/previo/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L172",
+      "source_location": "L173",
       "_origin": "ast",
       "id": "docs_archivo_previo_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_resultado_y_riesgos_residuales",
       "community": 26,
@@ -10231,7 +9923,7 @@
       "label": "Referencias primarias",
       "file_type": "document",
       "source_file": "docs/archivo/previo/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L184",
+      "source_location": "L185",
       "_origin": "ast",
       "id": "docs_archivo_previo_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_referencias_primarias",
       "community": 26,
@@ -10242,7 +9934,7 @@
       "label": "Cierre de Graphify",
       "file_type": "document",
       "source_file": "docs/archivo/previo/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L189",
+      "source_location": "L190",
       "_origin": "ast",
       "id": "docs_archivo_previo_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_cierre_de_graphify",
       "community": 26,
@@ -12225,8 +11917,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "hu_hu_0011_adopcion_v4_hu",
-      "community": 42,
-      "community_name": "Adopci\u00f3n v4",
+      "community": 25,
+      "community_name": "README.md",
       "norm_label": "hu-0011-adopcion-v4/hu.md"
     },
     {
@@ -12329,6 +12021,457 @@
       "norm_label": "ac-02 \u00b7 sesion nueva carga el metodo"
     },
     {
+      "label": "Definici\u00f3n de Preparado",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/hu.md",
+      "source_location": "L62",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_hu_definici\u00f3n_de_preparado",
+      "community": 42,
+      "community_name": "Adopci\u00f3n v4",
+      "norm_label": "definicion de preparado"
+    },
+    {
+      "label": "Definici\u00f3n de Terminado",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/hu.md",
+      "source_location": "L68",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_hu_definici\u00f3n_de_terminado",
+      "community": 42,
+      "community_name": "Adopci\u00f3n v4",
+      "norm_label": "definicion de terminado"
+    },
+    {
+      "label": "Cierre",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/hu.md",
+      "source_location": "L79",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_hu_cierre",
+      "community": 42,
+      "community_name": "Adopci\u00f3n v4",
+      "norm_label": "cierre"
+    },
+    {
+      "label": "SKILL.md",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill",
+      "community": 71,
+      "community_name": "Rust + Tauri 2 \u00b7 {{PROYECTO}}",
+      "norm_label": "skill.md"
+    },
+    {
+      "label": "Rust + Tauri 2 \u00b7 {{PROYECTO}}",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_rust_tauri_2_proyecto",
+      "community": 71,
+      "community_name": "Rust + Tauri 2 \u00b7 {{PROYECTO}}",
+      "norm_label": "rust + tauri 2 \u00b7 {{proyecto}}"
+    },
+    {
+      "label": "La regla de oro",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_la_regla_de_oro",
+      "community": 71,
+      "community_name": "Rust + Tauri 2 \u00b7 {{PROYECTO}}",
+      "norm_label": "la regla de oro"
+    },
+    {
+      "label": "La estructura",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_la_estructura",
+      "community": 71,
+      "community_name": "Rust + Tauri 2 \u00b7 {{PROYECTO}}",
+      "norm_label": "la estructura"
+    },
+    {
+      "label": "A\u00f1adir un comando IPC",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L33",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_a\u00f1adir_un_comando_ipc",
+      "community": 71,
+      "community_name": "Rust + Tauri 2 \u00b7 {{PROYECTO}}",
+      "norm_label": "anadir un comando ipc"
+    },
+    {
+      "label": "Errores",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L58",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_errores",
+      "community": 71,
+      "community_name": "Rust + Tauri 2 \u00b7 {{PROYECTO}}",
+      "norm_label": "errores"
+    },
+    {
+      "label": "Sistema de archivos y persistencia",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L68",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_sistema_de_archivos_y_persistencia",
+      "community": 71,
+      "community_name": "Rust + Tauri 2 \u00b7 {{PROYECTO}}",
+      "norm_label": "sistema de archivos y persistencia"
+    },
+    {
+      "label": "Procesos",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L84",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_procesos",
+      "community": 71,
+      "community_name": "Rust + Tauri 2 \u00b7 {{PROYECTO}}",
+      "norm_label": "procesos"
+    },
+    {
+      "label": "Tres plataformas",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L98",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_tres_plataformas",
+      "community": 71,
+      "community_name": "Rust + Tauri 2 \u00b7 {{PROYECTO}}",
+      "norm_label": "tres plataformas"
+    },
+    {
+      "label": "Seguridad de la ventana",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L111",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_seguridad_de_la_ventana",
+      "community": 71,
+      "community_name": "Rust + Tauri 2 \u00b7 {{PROYECTO}}",
+      "norm_label": "seguridad de la ventana"
+    },
+    {
+      "label": "Red y configuraci\u00f3n",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L121",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_red_y_configuraci\u00f3n",
+      "community": 71,
+      "community_name": "Rust + Tauri 2 \u00b7 {{PROYECTO}}",
+      "norm_label": "red y configuracion"
+    },
+    {
+      "label": "Pruebas",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L134",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_pruebas",
+      "community": 71,
+      "community_name": "Rust + Tauri 2 \u00b7 {{PROYECTO}}",
+      "norm_label": "pruebas"
+    },
+    {
+      "label": "Lo que nunca",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L144",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_lo_que_nunca",
+      "community": 71,
+      "community_name": "Rust + Tauri 2 \u00b7 {{PROYECTO}}",
+      "norm_label": "lo que nunca"
+    },
+    {
+      "label": "Lo que no se toma prestado",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L154",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_lo_que_no_se_toma_prestado",
+      "community": 71,
+      "community_name": "Rust + Tauri 2 \u00b7 {{PROYECTO}}",
+      "norm_label": "lo que no se toma prestado"
+    },
+    {
+      "label": "Verificaci\u00f3n",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L162",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_verificaci\u00f3n",
+      "community": 71,
+      "community_name": "Rust + Tauri 2 \u00b7 {{PROYECTO}}",
+      "norm_label": "verificacion"
+    },
+    {
+      "label": "Skills relacionadas",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L168",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_skills_relacionadas",
+      "community": 71,
+      "community_name": "Rust + Tauri 2 \u00b7 {{PROYECTO}}",
+      "norm_label": "skills relacionadas"
+    },
+    {
+      "label": "revision-tecnica.md",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "revision-tecnica.md"
+    },
+    {
+      "label": "Revisi\u00f3n t\u00e9cnica \u00b7 HU-0011 \u00b7 Adopci\u00f3n v4",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_revisi\u00f3n_t\u00e9cnica_hu_0011_adopci\u00f3n_v4",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "revision tecnica \u00b7 hu-0011 \u00b7 adopcion v4"
+    },
+    {
+      "label": "Bloqueos",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_bloqueos",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "bloqueos"
+    },
+    {
+      "label": "R-1 (B) \u00b7 rust-tauri: la regla de rutas y entorno es falsa para la aplicaci\u00f3n y el perfil originales",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_r_1_b_rust_tauri_la_regla_de_rutas_y_entorno_es_falsa_para_la_aplicaci\u00f3n_y_el_perfil_originales",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "r-1 (b) \u00b7 rust-tauri: la regla de rutas y entorno es falsa para la aplicacion y el perfil originales"
+    },
+    {
+      "label": "R-2 (B) \u00b7 pack.json: el comando \u00abrelacionadas\u00bb de cargo da verde sin correr ninguna prueba",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_r_2_b_pack_json_el_comando_relacionadas_de_cargo_da_verde_sin_correr_ninguna_prueba",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "r-2 (b) \u00b7 pack.json: el comando \u00abrelacionadas\u00bb de cargo da verde sin correr ninguna prueba"
+    },
+    {
+      "label": "Observaciones (no bloquean)",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_observaciones_no_bloquean",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "observaciones (no bloquean)"
+    },
+    {
+      "label": "R-3 (O) \u00b7 rust-tauri: el registro no se guarda de forma at\u00f3mica",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L34",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_r_3_o_rust_tauri_el_registro_no_se_guarda_de_forma_at\u00f3mica",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "r-3 (o) \u00b7 rust-tauri: el registro no se guarda de forma atomica"
+    },
+    {
+      "label": "R-4 (O) \u00b7 rust-tauri: la identidad del proceso est\u00e1 mal descrita",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L38",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_r_4_o_rust_tauri_la_identidad_del_proceso_est\u00e1_mal_descrita",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "r-4 (o) \u00b7 rust-tauri: la identidad del proceso esta mal descrita"
+    },
+    {
+      "label": "R-5 (O) \u00b7 rust-tauri: hay m\u00e1s `expect` que el de `run()`",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L46",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_r_5_o_rust_tauri_hay_m\u00e1s_expect_que_el_de_run",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "r-5 (o) \u00b7 rust-tauri: hay mas `expect` que el de `run()`"
+    },
+    {
+      "label": "R-6 (O) \u00b7 rust-tauri: faltan ejecutables y formas de `cfg`",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L50",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_r_6_o_rust_tauri_faltan_ejecutables_y_formas_de_cfg",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "r-6 (o) \u00b7 rust-tauri: faltan ejecutables y formas de `cfg`"
+    },
+    {
+      "label": "R-7 (O) \u00b7 rust-tauri: la deuda de URLs se queda corta",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L55",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_r_7_o_rust_tauri_la_deuda_de_urls_se_queda_corta",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "r-7 (o) \u00b7 rust-tauri: la deuda de urls se queda corta"
+    },
+    {
+      "label": "R-8 (O) \u00b7 pack.json: nombre y tipo",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L59",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_r_8_o_pack_json_nombre_y_tipo",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "r-8 (o) \u00b7 pack.json: nombre y tipo"
+    },
+    {
+      "label": "R-9 (O) \u00b7 frontend: hay APIs de Tauri fuera de `bridge.ts`",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L63",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_r_9_o_frontend_hay_apis_de_tauri_fuera_de_bridge_ts",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "r-9 (o) \u00b7 frontend: hay apis de tauri fuera de `bridge.ts`"
+    },
+    {
+      "label": "R-10 (O) \u00b7 frontend: una restricci\u00f3n de imports en los m\u00f3dulos probados",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L67",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_r_10_o_frontend_una_restricci\u00f3n_de_imports_en_los_m\u00f3dulos_probados",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "r-10 (o) \u00b7 frontend: una restriccion de imports en los modulos probados"
+    },
+    {
+      "label": "R-11 (O) \u00b7 frontend: el tema oscuro es la base",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L71",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_r_11_o_frontend_el_tema_oscuro_es_la_base",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "r-11 (o) \u00b7 frontend: el tema oscuro es la base"
+    },
+    {
+      "label": "R-12 (O) \u00b7 config: \u00abrelacionadas\u00bb no corre Rust",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L75",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_r_12_o_config_relacionadas_no_corre_rust",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "r-12 (o) \u00b7 config: \u00abrelacionadas\u00bb no corre rust"
+    },
+    {
+      "label": "R-13 (O) \u00b7 archivado de `.codex/` y `.agents/`: nada queda roto",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L79",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_r_13_o_archivado_de_codex_y_agents_nada_queda_roto",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "r-13 (o) \u00b7 archivado de `.codex/` y `.agents/`: nada queda roto"
+    },
+    {
+      "label": "Lo que se comprob\u00f3 y es correcto",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L89",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_lo_que_se_comprob\u00f3_y_es_correcto",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "lo que se comprobo y es correcto"
+    },
+    {
+      "label": "Re-revisi\u00f3n 2026-10-27",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L129",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_re_revisi\u00f3n_2026_10_27",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "re-revision 2026-10-27"
+    },
+    {
+      "label": "Resueltos",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L133",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_resueltos",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "resueltos"
+    },
+    {
+      "label": "Afirmaciones nuevas comprobadas",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L141",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_afirmaciones_nuevas_comprobadas",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "afirmaciones nuevas comprobadas"
+    },
+    {
+      "label": "Queda una observaci\u00f3n (no bloquea)",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L150",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_revision_tecnica_queda_una_observaci\u00f3n_no_bloquea",
+      "community": 6,
+      "community_name": "Observaciones (no bloquean)",
+      "norm_label": "queda una observacion (no bloquea)"
+    },
+    {
       "label": "HU-0011-adopcion-v4/seguimiento.md",
       "file_type": "document",
       "source_file": "hu/HU-0011-adopcion-v4/seguimiento.md",
@@ -12351,6 +12494,457 @@
       "norm_label": "bitacora \u00b7 hu-0011 \u00b7 adopcion v4"
     },
     {
+      "label": "verificacion.md",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/verificacion.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_verificacion",
+      "community": 55,
+      "community_name": "Verificaci\u00f3n \u00b7 HU-0011 \u00b7 Adopci\u00f3n v4",
+      "norm_label": "verificacion.md"
+    },
+    {
+      "label": "Verificaci\u00f3n \u00b7 HU-0011 \u00b7 Adopci\u00f3n v4",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/verificacion.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_verificacion_verificaci\u00f3n_hu_0011_adopci\u00f3n_v4",
+      "community": 55,
+      "community_name": "Verificaci\u00f3n \u00b7 HU-0011 \u00b7 Adopci\u00f3n v4",
+      "norm_label": "verificacion \u00b7 hu-0011 \u00b7 adopcion v4"
+    },
+    {
+      "label": "Qu\u00e9 se entreg\u00f3",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/verificacion.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_verificacion_qu\u00e9_se_entreg\u00f3",
+      "community": 55,
+      "community_name": "Verificaci\u00f3n \u00b7 HU-0011 \u00b7 Adopci\u00f3n v4",
+      "norm_label": "que se entrego"
+    },
+    {
+      "label": "Comprobaciones",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/verificacion.md",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_verificacion_comprobaciones",
+      "community": 55,
+      "community_name": "Verificaci\u00f3n \u00b7 HU-0011 \u00b7 Adopci\u00f3n v4",
+      "norm_label": "comprobaciones"
+    },
+    {
+      "label": "Decisiones tomadas por defecto (\u2605, revisables al probar)",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/verificacion.md",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_verificacion_decisiones_tomadas_por_defecto_revisables_al_probar",
+      "community": 55,
+      "community_name": "Verificaci\u00f3n \u00b7 HU-0011 \u00b7 Adopci\u00f3n v4",
+      "norm_label": "decisiones tomadas por defecto (\u2605, revisables al probar)"
+    },
+    {
+      "label": "Gu\u00eda de prueba",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/verificacion.md",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_verificacion_gu\u00eda_de_prueba",
+      "community": 55,
+      "community_name": "Verificaci\u00f3n \u00b7 HU-0011 \u00b7 Adopci\u00f3n v4",
+      "norm_label": "guia de prueba"
+    },
+    {
+      "label": "Veredicto",
+      "file_type": "document",
+      "source_file": "hu/HU-0011-adopcion-v4/verificacion.md",
+      "source_location": "L35",
+      "_origin": "ast",
+      "id": "hu_hu_0011_adopcion_v4_verificacion_veredicto",
+      "community": 55,
+      "community_name": "Verificaci\u00f3n \u00b7 HU-0011 \u00b7 Adopci\u00f3n v4",
+      "norm_label": "veredicto"
+    },
+    {
+      "label": "HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "file_type": "document",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu",
+      "community": 40,
+      "community_name": "index.md",
+      "norm_label": "hu-0012-icono-distintivo-en-el-dock-de-macos/hu.md"
+    },
+    {
+      "label": "Icono distintivo en el Dock de macOS",
+      "file_type": "document",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_icono_distintivo_en_el_dock_de_macos",
+      "community": 72,
+      "community_name": "Icono distintivo en el Dock de macOS",
+      "norm_label": "icono distintivo en el dock de macos"
+    },
+    {
+      "label": "Petici\u00f3n original",
+      "file_type": "document",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_petici\u00f3n_original",
+      "community": 72,
+      "community_name": "Icono distintivo en el Dock de macOS",
+      "norm_label": "peticion original"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_problema",
+      "community": 72,
+      "community_name": "Icono distintivo en el Dock de macOS",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Alcance",
+      "file_type": "document",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L50",
+      "_origin": "ast",
+      "id": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_alcance",
+      "community": 72,
+      "community_name": "Icono distintivo en el Dock de macOS",
+      "norm_label": "alcance"
+    },
+    {
+      "label": "Fuera de alcance",
+      "file_type": "document",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L55",
+      "_origin": "ast",
+      "id": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_fuera_de_alcance",
+      "community": 72,
+      "community_name": "Icono distintivo en el Dock de macOS",
+      "norm_label": "fuera de alcance"
+    },
+    {
+      "label": "Decisiones por defecto (\u2605)",
+      "file_type": "document",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L61",
+      "_origin": "ast",
+      "id": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_decisiones_por_defecto",
+      "community": 72,
+      "community_name": "Icono distintivo en el Dock de macOS",
+      "norm_label": "decisiones por defecto (\u2605)"
+    },
+    {
+      "label": "Criterios de aceptaci\u00f3n",
+      "file_type": "document",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L67",
+      "_origin": "ast",
+      "id": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_criterios_de_aceptaci\u00f3n",
+      "community": 72,
+      "community_name": "Icono distintivo en el Dock de macOS",
+      "norm_label": "criterios de aceptacion"
+    },
+    {
+      "label": "AC-01 \u00b7 Icono propio en el Dock sin romper la firma",
+      "file_type": "document",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L71",
+      "_origin": "ast",
+      "id": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_ac_01_icono_propio_en_el_dock_sin_romper_la_firma",
+      "community": 72,
+      "community_name": "Icono distintivo en el Dock de macOS",
+      "norm_label": "ac-01 \u00b7 icono propio en el dock sin romper la firma"
+    },
+    {
+      "label": "Reglas de negocio afectadas",
+      "file_type": "document",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L77",
+      "_origin": "ast",
+      "id": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_reglas_de_negocio_afectadas",
+      "community": 72,
+      "community_name": "Icono distintivo en el Dock de macOS",
+      "norm_label": "reglas de negocio afectadas"
+    },
+    {
+      "label": "Para la persona usuaria",
+      "file_type": "document",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L83",
+      "_origin": "ast",
+      "id": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_para_la_persona_usuaria",
+      "community": 72,
+      "community_name": "Icono distintivo en el Dock de macOS",
+      "norm_label": "para la persona usuaria"
+    },
+    {
+      "label": "Definici\u00f3n de Preparado",
+      "file_type": "document",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L88",
+      "_origin": "ast",
+      "id": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_definici\u00f3n_de_preparado",
+      "community": 72,
+      "community_name": "Icono distintivo en el Dock de macOS",
+      "norm_label": "definicion de preparado"
+    },
+    {
+      "label": "Definici\u00f3n de Terminado",
+      "file_type": "document",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L94",
+      "_origin": "ast",
+      "id": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_definici\u00f3n_de_terminado",
+      "community": 72,
+      "community_name": "Icono distintivo en el Dock de macOS",
+      "norm_label": "definicion de terminado"
+    },
+    {
+      "label": "Cierre",
+      "file_type": "document",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L105",
+      "_origin": "ast",
+      "id": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_cierre",
+      "community": 72,
+      "community_name": "Icono distintivo en el Dock de macOS",
+      "norm_label": "cierre"
+    },
+    {
+      "label": "HU-0012-icono-distintivo-en-el-dock-de-macos/seguimiento.md",
+      "file_type": "document",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/seguimiento.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_seguimiento",
+      "community": 74,
+      "community_name": "HU-0012-icono-distintivo-en-el-dock-de-macos/seguimiento.md",
+      "norm_label": "hu-0012-icono-distintivo-en-el-dock-de-macos/seguimiento.md"
+    },
+    {
+      "label": "Bit\u00e1cora \u00b7 HU-0012 \u00b7 Icono distintivo en el Dock de macOS",
+      "file_type": "document",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/seguimiento.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_seguimiento_bit\u00e1cora_hu_0012_icono_distintivo_en_el_dock_de_macos",
+      "community": 74,
+      "community_name": "HU-0012-icono-distintivo-en-el-dock-de-macos/seguimiento.md",
+      "norm_label": "bitacora \u00b7 hu-0012 \u00b7 icono distintivo en el dock de macos"
+    },
+    {
+      "label": "HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "file_type": "document",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu",
+      "community": 25,
+      "community_name": "README.md",
+      "norm_label": "hu-0013-describir-lo-construido-reglas-arquitect/hu.md"
+    },
+    {
+      "label": "Describir lo construido: reglas, arquitectura y componentes",
+      "file_type": "document",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_describir_lo_construido_reglas_arquitectura_y_componentes",
+      "community": 75,
+      "community_name": "Describir lo construido: reglas, arquitectura y componentes",
+      "norm_label": "describir lo construido: reglas, arquitectura y componentes"
+    },
+    {
+      "label": "Petici\u00f3n original",
+      "file_type": "document",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_petici\u00f3n_original",
+      "community": 75,
+      "community_name": "Describir lo construido: reglas, arquitectura y componentes",
+      "norm_label": "peticion original"
+    },
+    {
+      "label": "Problema",
+      "file_type": "document",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_problema",
+      "community": 75,
+      "community_name": "Describir lo construido: reglas, arquitectura y componentes",
+      "norm_label": "problema"
+    },
+    {
+      "label": "Alcance",
+      "file_type": "document",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L35",
+      "_origin": "ast",
+      "id": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_alcance",
+      "community": 75,
+      "community_name": "Describir lo construido: reglas, arquitectura y componentes",
+      "norm_label": "alcance"
+    },
+    {
+      "label": "Fuera de alcance",
+      "file_type": "document",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_fuera_de_alcance",
+      "community": 75,
+      "community_name": "Describir lo construido: reglas, arquitectura y componentes",
+      "norm_label": "fuera de alcance"
+    },
+    {
+      "label": "Decisiones por defecto (\u2605)",
+      "file_type": "document",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L47",
+      "_origin": "ast",
+      "id": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_decisiones_por_defecto",
+      "community": 75,
+      "community_name": "Describir lo construido: reglas, arquitectura y componentes",
+      "norm_label": "decisiones por defecto (\u2605)"
+    },
+    {
+      "label": "Criterios de aceptaci\u00f3n",
+      "file_type": "document",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L51",
+      "_origin": "ast",
+      "id": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_criterios_de_aceptaci\u00f3n",
+      "community": 75,
+      "community_name": "Describir lo construido: reglas, arquitectura y componentes",
+      "norm_label": "criterios de aceptacion"
+    },
+    {
+      "label": "AC-01 \u00b7 Reglas de negocio escritas",
+      "file_type": "document",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L55",
+      "_origin": "ast",
+      "id": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_ac_01_reglas_de_negocio_escritas",
+      "community": 75,
+      "community_name": "Describir lo construido: reglas, arquitectura y componentes",
+      "norm_label": "ac-01 \u00b7 reglas de negocio escritas"
+    },
+    {
+      "label": "AC-02 \u00b7 Arquitectura descrita",
+      "file_type": "document",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L59",
+      "_origin": "ast",
+      "id": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_ac_02_arquitectura_descrita",
+      "community": 75,
+      "community_name": "Describir lo construido: reglas, arquitectura y componentes",
+      "norm_label": "ac-02 \u00b7 arquitectura descrita"
+    },
+    {
+      "label": "AC-03 \u00b7 Componentes con skill",
+      "file_type": "document",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L63",
+      "_origin": "ast",
+      "id": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_ac_03_componentes_con_skill",
+      "community": 75,
+      "community_name": "Describir lo construido: reglas, arquitectura y componentes",
+      "norm_label": "ac-03 \u00b7 componentes con skill"
+    },
+    {
+      "label": "Reglas de negocio afectadas",
+      "file_type": "document",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L67",
+      "_origin": "ast",
+      "id": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_reglas_de_negocio_afectadas",
+      "community": 75,
+      "community_name": "Describir lo construido: reglas, arquitectura y componentes",
+      "norm_label": "reglas de negocio afectadas"
+    },
+    {
+      "label": "Para la persona usuaria",
+      "file_type": "document",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L73",
+      "_origin": "ast",
+      "id": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_para_la_persona_usuaria",
+      "community": 75,
+      "community_name": "Describir lo construido: reglas, arquitectura y componentes",
+      "norm_label": "para la persona usuaria"
+    },
+    {
+      "label": "Definici\u00f3n de Preparado",
+      "file_type": "document",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L77",
+      "_origin": "ast",
+      "id": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_definici\u00f3n_de_preparado",
+      "community": 75,
+      "community_name": "Describir lo construido: reglas, arquitectura y componentes",
+      "norm_label": "definicion de preparado"
+    },
+    {
+      "label": "Definici\u00f3n de Terminado",
+      "file_type": "document",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L83",
+      "_origin": "ast",
+      "id": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_definici\u00f3n_de_terminado",
+      "community": 75,
+      "community_name": "Describir lo construido: reglas, arquitectura y componentes",
+      "norm_label": "definicion de terminado"
+    },
+    {
+      "label": "Cierre",
+      "file_type": "document",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L94",
+      "_origin": "ast",
+      "id": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_cierre",
+      "community": 75,
+      "community_name": "Describir lo construido: reglas, arquitectura y componentes",
+      "norm_label": "cierre"
+    },
+    {
+      "label": "HU-0013-describir-lo-construido-reglas-arquitect/seguimiento.md",
+      "file_type": "document",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/seguimiento.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "hu_hu_0013_describir_lo_construido_reglas_arquitect_seguimiento",
+      "community": 81,
+      "community_name": "HU-0013-describir-lo-construido-reglas-arquitect/seguimiento.md",
+      "norm_label": "hu-0013-describir-lo-construido-reglas-arquitect/seguimiento.md"
+    },
+    {
+      "label": "Bit\u00e1cora \u00b7 HU-0013 \u00b7 Describir lo construido: reglas, arquitectura y componentes",
+      "file_type": "document",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/seguimiento.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "hu_hu_0013_describir_lo_construido_reglas_arquitect_seguimiento_bit\u00e1cora_hu_0013_describir_lo_construido_reglas_arquitectura_y_componentes",
+      "community": 81,
+      "community_name": "HU-0013-describir-lo-construido-reglas-arquitect/seguimiento.md",
+      "norm_label": "bitacora \u00b7 hu-0013 \u00b7 describir lo construido: reglas, arquitectura y componentes"
+    },
+    {
       "label": "INDEX.md",
       "file_type": "document",
       "source_file": "hu/INDEX.md",
@@ -12371,6 +12965,314 @@
       "community": 25,
       "community_name": "README.md",
       "norm_label": "indice de historias"
+    },
+    {
+      "label": "roles/README.md",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/README.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 67,
+      "community_name": "roles/README.md",
+      "norm_label": "roles/readme.md",
+      "id": "docs_archivo_previo_agents_roles_readme"
+    },
+    {
+      "label": "Agentes de desarrollo",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/README.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 67,
+      "community_name": "roles/README.md",
+      "norm_label": "agentes de desarrollo",
+      "id": "docs_archivo_previo_agents_roles_readme_agentes_de_desarrollo"
+    },
+    {
+      "label": "architect.md",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/architect.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 54,
+      "community_name": "Rol: architect",
+      "norm_label": "architect.md",
+      "id": "docs_archivo_previo_agents_roles_architect"
+    },
+    {
+      "label": "Rol: architect",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/architect.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 54,
+      "community_name": "Rol: architect",
+      "norm_label": "rol: architect",
+      "id": "docs_archivo_previo_agents_roles_architect_rol_architect"
+    },
+    {
+      "label": "Misi\u00f3n",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/architect.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "community": 54,
+      "community_name": "Rol: architect",
+      "norm_label": "mision",
+      "id": "docs_archivo_previo_agents_roles_architect_misi\u00f3n"
+    },
+    {
+      "label": "Perfil recomendado",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/architect.md",
+      "source_location": "L7",
+      "_origin": "ast",
+      "community": 54,
+      "community_name": "Rol: architect",
+      "norm_label": "perfil recomendado",
+      "id": "docs_archivo_previo_agents_roles_architect_perfil_recomendado"
+    },
+    {
+      "label": "Proceso obligatorio",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/architect.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "community": 54,
+      "community_name": "Rol: architect",
+      "norm_label": "proceso obligatorio",
+      "id": "docs_archivo_previo_agents_roles_architect_proceso_obligatorio"
+    },
+    {
+      "label": "Restricciones",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/architect.md",
+      "source_location": "L24",
+      "_origin": "ast",
+      "community": 54,
+      "community_name": "Rol: architect",
+      "norm_label": "restricciones",
+      "id": "docs_archivo_previo_agents_roles_architect_restricciones"
+    },
+    {
+      "label": "Entrega esperada",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/architect.md",
+      "source_location": "L31",
+      "_origin": "ast",
+      "community": 54,
+      "community_name": "Rol: architect",
+      "norm_label": "entrega esperada",
+      "id": "docs_archivo_previo_agents_roles_architect_entrega_esperada"
+    },
+    {
+      "label": "backend.md",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/backend.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 60,
+      "community_name": "Rol: backend",
+      "norm_label": "backend.md",
+      "id": "docs_archivo_previo_agents_roles_backend"
+    },
+    {
+      "label": "Rol: backend",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/backend.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 60,
+      "community_name": "Rol: backend",
+      "norm_label": "rol: backend",
+      "id": "docs_archivo_previo_agents_roles_backend_rol_backend"
+    },
+    {
+      "label": "Misi\u00f3n",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/backend.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "community": 60,
+      "community_name": "Rol: backend",
+      "norm_label": "mision",
+      "id": "docs_archivo_previo_agents_roles_backend_misi\u00f3n"
+    },
+    {
+      "label": "Perfil recomendado",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/backend.md",
+      "source_location": "L7",
+      "_origin": "ast",
+      "community": 60,
+      "community_name": "Rol: backend",
+      "norm_label": "perfil recomendado",
+      "id": "docs_archivo_previo_agents_roles_backend_perfil_recomendado"
+    },
+    {
+      "label": "Proceso obligatorio",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/backend.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "community": 60,
+      "community_name": "Rol: backend",
+      "norm_label": "proceso obligatorio",
+      "id": "docs_archivo_previo_agents_roles_backend_proceso_obligatorio"
+    },
+    {
+      "label": "Reglas cr\u00edticas",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/backend.md",
+      "source_location": "L21",
+      "_origin": "ast",
+      "community": 60,
+      "community_name": "Rol: backend",
+      "norm_label": "reglas criticas",
+      "id": "docs_archivo_previo_agents_roles_backend_reglas_cr\u00edticas"
+    },
+    {
+      "label": "document.md",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/document.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 56,
+      "community_name": "Rol: document",
+      "norm_label": "document.md",
+      "id": "docs_archivo_previo_agents_roles_document"
+    },
+    {
+      "label": "Rol: document",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/document.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 56,
+      "community_name": "Rol: document",
+      "norm_label": "rol: document",
+      "id": "docs_archivo_previo_agents_roles_document_rol_document"
+    },
+    {
+      "label": "Misi\u00f3n",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/document.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "community": 56,
+      "community_name": "Rol: document",
+      "norm_label": "mision",
+      "id": "docs_archivo_previo_agents_roles_document_misi\u00f3n"
+    },
+    {
+      "label": "Perfil recomendado",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/document.md",
+      "source_location": "L7",
+      "_origin": "ast",
+      "community": 56,
+      "community_name": "Rol: document",
+      "norm_label": "perfil recomendado",
+      "id": "docs_archivo_previo_agents_roles_document_perfil_recomendado"
+    },
+    {
+      "label": "Proceso obligatorio",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/document.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "community": 56,
+      "community_name": "Rol: document",
+      "norm_label": "proceso obligatorio",
+      "id": "docs_archivo_previo_agents_roles_document_proceso_obligatorio"
+    },
+    {
+      "label": "Estructura m\u00ednima de una HU",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/document.md",
+      "source_location": "L22",
+      "_origin": "ast",
+      "community": 56,
+      "community_name": "Rol: document",
+      "norm_label": "estructura minima de una hu",
+      "id": "docs_archivo_previo_agents_roles_document_estructura_m\u00ednima_de_una_hu"
+    },
+    {
+      "label": "Restricciones",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/document.md",
+      "source_location": "L38",
+      "_origin": "ast",
+      "community": 56,
+      "community_name": "Rol: document",
+      "norm_label": "restricciones",
+      "id": "docs_archivo_previo_agents_roles_document_restricciones"
+    },
+    {
+      "label": "frontend.md",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 61,
+      "community_name": "Rol: frontend",
+      "norm_label": "frontend.md",
+      "id": "docs_archivo_previo_agents_roles_frontend"
+    },
+    {
+      "label": "Rol: frontend",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 61,
+      "community_name": "Rol: frontend",
+      "norm_label": "rol: frontend",
+      "id": "docs_archivo_previo_agents_roles_frontend_rol_frontend"
+    },
+    {
+      "label": "Misi\u00f3n",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "community": 61,
+      "community_name": "Rol: frontend",
+      "norm_label": "mision",
+      "id": "docs_archivo_previo_agents_roles_frontend_misi\u00f3n"
+    },
+    {
+      "label": "Perfil recomendado",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
+      "source_location": "L7",
+      "_origin": "ast",
+      "community": 61,
+      "community_name": "Rol: frontend",
+      "norm_label": "perfil recomendado",
+      "id": "docs_archivo_previo_agents_roles_frontend_perfil_recomendado"
+    },
+    {
+      "label": "Proceso obligatorio",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "community": 61,
+      "community_name": "Rol: frontend",
+      "norm_label": "proceso obligatorio",
+      "id": "docs_archivo_previo_agents_roles_frontend_proceso_obligatorio"
+    },
+    {
+      "label": "Reglas cr\u00edticas",
+      "file_type": "document",
+      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
+      "source_location": "L22",
+      "_origin": "ast",
+      "community": 61,
+      "community_name": "Rol: frontend",
+      "norm_label": "reglas criticas",
+      "id": "docs_archivo_previo_agents_roles_frontend_reglas_cr\u00edticas"
     }
   ],
   "links": [
@@ -12885,7 +13787,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/graphify.mjs",
-      "source_location": "L13",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "source": "scripts_graphify",
@@ -12907,7 +13809,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/graphify.mjs",
-      "source_location": "L26",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
       "source": "scripts_graphify",
@@ -12929,7 +13831,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/graphify.mjs",
-      "source_location": "L129",
+      "source_location": "L134",
       "weight": 1.0,
       "_origin": "ast",
       "source": "scripts_graphify",
@@ -12940,7 +13842,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/graphify.mjs",
-      "source_location": "L65",
+      "source_location": "L70",
       "weight": 1.0,
       "_origin": "ast",
       "source": "scripts_graphify",
@@ -12973,7 +13875,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/graphify.mjs",
-      "source_location": "L42",
+      "source_location": "L47",
       "weight": 1.0,
       "_origin": "ast",
       "source": "scripts_graphify",
@@ -12984,7 +13886,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/graphify.mjs",
-      "source_location": "L54",
+      "source_location": "L59",
       "weight": 1.0,
       "_origin": "ast",
       "source": "scripts_graphify",
@@ -12995,7 +13897,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/graphify.mjs",
-      "source_location": "L58",
+      "source_location": "L63",
       "weight": 1.0,
       "_origin": "ast",
       "source": "scripts_graphify",
@@ -13018,7 +13920,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/graphify.mjs",
-      "source_location": "L55",
+      "source_location": "L60",
       "weight": 1.0,
       "_origin": "ast",
       "source": "scripts_graphify_rungraphify",
@@ -13030,7 +13932,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/graphify.mjs",
-      "source_location": "L60",
+      "source_location": "L65",
       "weight": 1.0,
       "_origin": "ast",
       "source": "scripts_graphify_updategraph",
@@ -36215,259 +37117,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/README.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_readme",
-      "target": "docs_archivo_previo_agents_roles_readme_agentes_de_desarrollo",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/architect.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_architect",
-      "target": "docs_archivo_previo_agents_roles_architect_rol_architect",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/architect.md",
-      "source_location": "L31",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_architect_rol_architect",
-      "target": "docs_archivo_previo_agents_roles_architect_entrega_esperada",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/architect.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_architect_rol_architect",
-      "target": "docs_archivo_previo_agents_roles_architect_misi\u00f3n",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/architect.md",
-      "source_location": "L7",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_architect_rol_architect",
-      "target": "docs_archivo_previo_agents_roles_architect_perfil_recomendado",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/architect.md",
-      "source_location": "L11",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_architect_rol_architect",
-      "target": "docs_archivo_previo_agents_roles_architect_proceso_obligatorio",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/architect.md",
-      "source_location": "L24",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_architect_rol_architect",
-      "target": "docs_archivo_previo_agents_roles_architect_restricciones",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/backend.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_backend",
-      "target": "docs_archivo_previo_agents_roles_backend_rol_backend",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/backend.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_backend_rol_backend",
-      "target": "docs_archivo_previo_agents_roles_backend_misi\u00f3n",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/backend.md",
-      "source_location": "L7",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_backend_rol_backend",
-      "target": "docs_archivo_previo_agents_roles_backend_perfil_recomendado",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/backend.md",
-      "source_location": "L11",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_backend_rol_backend",
-      "target": "docs_archivo_previo_agents_roles_backend_proceso_obligatorio",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/backend.md",
-      "source_location": "L21",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_backend_rol_backend",
-      "target": "docs_archivo_previo_agents_roles_backend_reglas_cr\u00edticas",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/document.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_document",
-      "target": "docs_archivo_previo_agents_roles_document_rol_document",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/document.md",
-      "source_location": "L22",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_document_rol_document",
-      "target": "docs_archivo_previo_agents_roles_document_estructura_m\u00ednima_de_una_hu",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/document.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_document_rol_document",
-      "target": "docs_archivo_previo_agents_roles_document_misi\u00f3n",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/document.md",
-      "source_location": "L7",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_document_rol_document",
-      "target": "docs_archivo_previo_agents_roles_document_perfil_recomendado",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/document.md",
-      "source_location": "L11",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_document_rol_document",
-      "target": "docs_archivo_previo_agents_roles_document_proceso_obligatorio",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/document.md",
-      "source_location": "L38",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_document_rol_document",
-      "target": "docs_archivo_previo_agents_roles_document_restricciones",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_frontend",
-      "target": "docs_archivo_previo_agents_roles_frontend_rol_frontend",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_frontend_rol_frontend",
-      "target": "docs_archivo_previo_agents_roles_frontend_misi\u00f3n",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
-      "source_location": "L7",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_frontend_rol_frontend",
-      "target": "docs_archivo_previo_agents_roles_frontend_perfil_recomendado",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
-      "source_location": "L11",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_frontend_rol_frontend",
-      "target": "docs_archivo_previo_agents_roles_frontend_proceso_obligatorio",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
-      "source_location": "L22",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_archivo_previo_agents_roles_frontend_rol_frontend",
-      "target": "docs_archivo_previo_agents_roles_frontend_reglas_cr\u00edticas",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "docs/archivo/previo/hu/HU-0001-integracion-graphify-y-agentes.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -37414,6 +38063,17 @@
     {
       "relation": "references",
       "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_archivo_previo_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver",
+      "target": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
       "source_file": "docs/archivo/previo/hu/index.md",
       "source_location": "L11",
       "weight": 1.0,
@@ -37459,7 +38119,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/archivo/previo/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L189",
+      "source_location": "L190",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_archivo_previo_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_hu_0005_recuperar_la_respuesta_de_la_interfaz_y_establecer_versionado_semver",
@@ -37580,7 +38240,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/archivo/previo/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L184",
+      "source_location": "L185",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_archivo_previo_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_hu_0005_recuperar_la_respuesta_de_la_interfaz_y_establecer_versionado_semver",
@@ -37591,7 +38251,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/archivo/previo/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md",
-      "source_location": "L172",
+      "source_location": "L173",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_archivo_previo_hu_hu_0005_recuperar_respuesta_de_la_interfaz_y_versionado_semver_hu_0005_recuperar_la_respuesta_de_la_interfaz_y_establecer_versionado_semver",
@@ -39505,11 +40165,44 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "hu/HU-0011-adopcion-v4/hu.md",
+      "source_location": "L79",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_hu_adopci\u00f3n_v4",
+      "target": "hu_hu_0011_adopcion_v4_hu_cierre",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/hu.md",
       "source_location": "L52",
       "weight": 1.0,
       "_origin": "ast",
       "source": "hu_hu_0011_adopcion_v4_hu_adopci\u00f3n_v4",
       "target": "hu_hu_0011_adopcion_v4_hu_criterios_de_aceptaci\u00f3n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/hu.md",
+      "source_location": "L62",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_hu_adopci\u00f3n_v4",
+      "target": "hu_hu_0011_adopcion_v4_hu_definici\u00f3n_de_preparado",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/hu.md",
+      "source_location": "L68",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_hu_adopci\u00f3n_v4",
+      "target": "hu_hu_0011_adopcion_v4_hu_definici\u00f3n_de_terminado",
       "confidence_score": 1.0
     },
     {
@@ -39581,12 +40274,826 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill",
+      "target": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_rust_tauri_2_proyecto",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_rust_tauri_2_proyecto",
+      "target": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_a\u00f1adir_un_comando_ipc",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L58",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_rust_tauri_2_proyecto",
+      "target": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_errores",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_rust_tauri_2_proyecto",
+      "target": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_la_estructura",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_rust_tauri_2_proyecto",
+      "target": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_la_regla_de_oro",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L154",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_rust_tauri_2_proyecto",
+      "target": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_lo_que_no_se_toma_prestado",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L144",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_rust_tauri_2_proyecto",
+      "target": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_lo_que_nunca",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L84",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_rust_tauri_2_proyecto",
+      "target": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_procesos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L134",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_rust_tauri_2_proyecto",
+      "target": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_pruebas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L121",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_rust_tauri_2_proyecto",
+      "target": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_red_y_configuraci\u00f3n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L111",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_rust_tauri_2_proyecto",
+      "target": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_seguridad_de_la_ventana",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L68",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_rust_tauri_2_proyecto",
+      "target": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_sistema_de_archivos_y_persistencia",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L168",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_rust_tauri_2_proyecto",
+      "target": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_skills_relacionadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L98",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_rust_tauri_2_proyecto",
+      "target": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_tres_plataformas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md",
+      "source_location": "L162",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_rust_tauri_2_proyecto",
+      "target": "hu_hu_0011_adopcion_v4_pack_rust_tauri_skills_rust_tauri_skill_verificaci\u00f3n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_revisi\u00f3n_t\u00e9cnica_hu_0011_adopci\u00f3n_v4",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_revisi\u00f3n_t\u00e9cnica_hu_0011_adopci\u00f3n_v4",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_bloqueos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L89",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_revisi\u00f3n_t\u00e9cnica_hu_0011_adopci\u00f3n_v4",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_lo_que_se_comprob\u00f3_y_es_correcto",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_revisi\u00f3n_t\u00e9cnica_hu_0011_adopci\u00f3n_v4",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_observaciones_no_bloquean",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L129",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_revisi\u00f3n_t\u00e9cnica_hu_0011_adopci\u00f3n_v4",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_re_revisi\u00f3n_2026_10_27",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_bloqueos",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_r_1_b_rust_tauri_la_regla_de_rutas_y_entorno_es_falsa_para_la_aplicaci\u00f3n_y_el_perfil_originales",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_bloqueos",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_r_2_b_pack_json_el_comando_relacionadas_de_cargo_da_verde_sin_correr_ninguna_prueba",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L67",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_observaciones_no_bloquean",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_r_10_o_frontend_una_restricci\u00f3n_de_imports_en_los_m\u00f3dulos_probados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L71",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_observaciones_no_bloquean",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_r_11_o_frontend_el_tema_oscuro_es_la_base",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L75",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_observaciones_no_bloquean",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_r_12_o_config_relacionadas_no_corre_rust",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L79",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_observaciones_no_bloquean",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_r_13_o_archivado_de_codex_y_agents_nada_queda_roto",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L34",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_observaciones_no_bloquean",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_r_3_o_rust_tauri_el_registro_no_se_guarda_de_forma_at\u00f3mica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_observaciones_no_bloquean",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_r_4_o_rust_tauri_la_identidad_del_proceso_est\u00e1_mal_descrita",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L46",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_observaciones_no_bloquean",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_r_5_o_rust_tauri_hay_m\u00e1s_expect_que_el_de_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L50",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_observaciones_no_bloquean",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_r_6_o_rust_tauri_faltan_ejecutables_y_formas_de_cfg",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L55",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_observaciones_no_bloquean",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_r_7_o_rust_tauri_la_deuda_de_urls_se_queda_corta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L59",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_observaciones_no_bloquean",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_r_8_o_pack_json_nombre_y_tipo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L63",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_observaciones_no_bloquean",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_r_9_o_frontend_hay_apis_de_tauri_fuera_de_bridge_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L141",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_re_revisi\u00f3n_2026_10_27",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_afirmaciones_nuevas_comprobadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L150",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_re_revisi\u00f3n_2026_10_27",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_queda_una_observaci\u00f3n_no_bloquea",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/revision-tecnica.md",
+      "source_location": "L133",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_revision_tecnica_re_revisi\u00f3n_2026_10_27",
+      "target": "hu_hu_0011_adopcion_v4_revision_tecnica_resueltos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "hu/HU-0011-adopcion-v4/seguimiento.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
       "source": "hu_hu_0011_adopcion_v4_seguimiento",
       "target": "hu_hu_0011_adopcion_v4_seguimiento_bit\u00e1cora_hu_0011_adopci\u00f3n_v4",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/verificacion.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_verificacion",
+      "target": "hu_hu_0011_adopcion_v4_verificacion_verificaci\u00f3n_hu_0011_adopci\u00f3n_v4",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/verificacion.md",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_verificacion_verificaci\u00f3n_hu_0011_adopci\u00f3n_v4",
+      "target": "hu_hu_0011_adopcion_v4_verificacion_comprobaciones",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/verificacion.md",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_verificacion_verificaci\u00f3n_hu_0011_adopci\u00f3n_v4",
+      "target": "hu_hu_0011_adopcion_v4_verificacion_decisiones_tomadas_por_defecto_revisables_al_probar",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/verificacion.md",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_verificacion_verificaci\u00f3n_hu_0011_adopci\u00f3n_v4",
+      "target": "hu_hu_0011_adopcion_v4_verificacion_gu\u00eda_de_prueba",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/verificacion.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_verificacion_verificaci\u00f3n_hu_0011_adopci\u00f3n_v4",
+      "target": "hu_hu_0011_adopcion_v4_verificacion_qu\u00e9_se_entreg\u00f3",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0011-adopcion-v4/verificacion.md",
+      "source_location": "L35",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0011_adopcion_v4_verificacion_verificaci\u00f3n_hu_0011_adopci\u00f3n_v4",
+      "target": "hu_hu_0011_adopcion_v4_verificacion_veredicto",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu",
+      "target": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_icono_distintivo_en_el_dock_de_macos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/INDEX.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_index",
+      "target": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L50",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_icono_distintivo_en_el_dock_de_macos",
+      "target": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_alcance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L105",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_icono_distintivo_en_el_dock_de_macos",
+      "target": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_cierre",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L67",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_icono_distintivo_en_el_dock_de_macos",
+      "target": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_criterios_de_aceptaci\u00f3n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L61",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_icono_distintivo_en_el_dock_de_macos",
+      "target": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_decisiones_por_defecto",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L88",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_icono_distintivo_en_el_dock_de_macos",
+      "target": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_definici\u00f3n_de_preparado",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L94",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_icono_distintivo_en_el_dock_de_macos",
+      "target": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_definici\u00f3n_de_terminado",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L55",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_icono_distintivo_en_el_dock_de_macos",
+      "target": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_fuera_de_alcance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_icono_distintivo_en_el_dock_de_macos",
+      "target": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_para_la_persona_usuaria",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_icono_distintivo_en_el_dock_de_macos",
+      "target": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_petici\u00f3n_original",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_icono_distintivo_en_el_dock_de_macos",
+      "target": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L77",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_icono_distintivo_en_el_dock_de_macos",
+      "target": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_reglas_de_negocio_afectadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md",
+      "source_location": "L71",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_criterios_de_aceptaci\u00f3n",
+      "target": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_hu_ac_01_icono_propio_en_el_dock_sin_romper_la_firma",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/seguimiento.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_seguimiento",
+      "target": "hu_hu_0012_icono_distintivo_en_el_dock_de_macos_seguimiento_bit\u00e1cora_hu_0012_icono_distintivo_en_el_dock_de_macos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu",
+      "target": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_describir_lo_construido_reglas_arquitectura_y_componentes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/INDEX.md",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_index",
+      "target": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L35",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_describir_lo_construido_reglas_arquitectura_y_componentes",
+      "target": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_alcance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L94",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_describir_lo_construido_reglas_arquitectura_y_componentes",
+      "target": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_cierre",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L51",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_describir_lo_construido_reglas_arquitectura_y_componentes",
+      "target": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_criterios_de_aceptaci\u00f3n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L47",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_describir_lo_construido_reglas_arquitectura_y_componentes",
+      "target": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_decisiones_por_defecto",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L77",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_describir_lo_construido_reglas_arquitectura_y_componentes",
+      "target": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_definici\u00f3n_de_preparado",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_describir_lo_construido_reglas_arquitectura_y_componentes",
+      "target": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_definici\u00f3n_de_terminado",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L41",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_describir_lo_construido_reglas_arquitectura_y_componentes",
+      "target": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_fuera_de_alcance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L73",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_describir_lo_construido_reglas_arquitectura_y_componentes",
+      "target": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_para_la_persona_usuaria",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_describir_lo_construido_reglas_arquitectura_y_componentes",
+      "target": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_petici\u00f3n_original",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_describir_lo_construido_reglas_arquitectura_y_componentes",
+      "target": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_problema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L67",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_describir_lo_construido_reglas_arquitectura_y_componentes",
+      "target": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_reglas_de_negocio_afectadas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L55",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_criterios_de_aceptaci\u00f3n",
+      "target": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_ac_01_reglas_de_negocio_escritas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L59",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_criterios_de_aceptaci\u00f3n",
+      "target": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_ac_02_arquitectura_descrita",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md",
+      "source_location": "L63",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_criterios_de_aceptaci\u00f3n",
+      "target": "hu_hu_0013_describir_lo_construido_reglas_arquitect_hu_ac_03_componentes_con_skill",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hu/HU-0013-describir-lo-construido-reglas-arquitect/seguimiento.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "hu_hu_0013_describir_lo_construido_reglas_arquitect_seguimiento",
+      "target": "hu_hu_0013_describir_lo_construido_reglas_arquitect_seguimiento_bit\u00e1cora_hu_0013_describir_lo_construido_reglas_arquitectura_y_componentes",
       "confidence_score": 1.0
     },
     {
@@ -39599,8 +41106,261 @@
       "source": "hu_index",
       "target": "hu_index_\u00edndice_de_historias",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/README.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_readme",
+      "target": "docs_archivo_previo_agents_roles_readme_agentes_de_desarrollo"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/architect.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_architect",
+      "target": "docs_archivo_previo_agents_roles_architect_rol_architect"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/architect.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_architect_rol_architect",
+      "target": "docs_archivo_previo_agents_roles_architect_entrega_esperada"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/architect.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_architect_rol_architect",
+      "target": "docs_archivo_previo_agents_roles_architect_misi\u00f3n"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/architect.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_architect_rol_architect",
+      "target": "docs_archivo_previo_agents_roles_architect_perfil_recomendado"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/architect.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_architect_rol_architect",
+      "target": "docs_archivo_previo_agents_roles_architect_proceso_obligatorio"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/architect.md",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_architect_rol_architect",
+      "target": "docs_archivo_previo_agents_roles_architect_restricciones"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/backend.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_backend",
+      "target": "docs_archivo_previo_agents_roles_backend_rol_backend"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/backend.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_backend_rol_backend",
+      "target": "docs_archivo_previo_agents_roles_backend_misi\u00f3n"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/backend.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_backend_rol_backend",
+      "target": "docs_archivo_previo_agents_roles_backend_perfil_recomendado"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/backend.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_backend_rol_backend",
+      "target": "docs_archivo_previo_agents_roles_backend_proceso_obligatorio"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/backend.md",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_backend_rol_backend",
+      "target": "docs_archivo_previo_agents_roles_backend_reglas_cr\u00edticas"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/document.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_document",
+      "target": "docs_archivo_previo_agents_roles_document_rol_document"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/document.md",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_document_rol_document",
+      "target": "docs_archivo_previo_agents_roles_document_estructura_m\u00ednima_de_una_hu"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/document.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_document_rol_document",
+      "target": "docs_archivo_previo_agents_roles_document_misi\u00f3n"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/document.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_document_rol_document",
+      "target": "docs_archivo_previo_agents_roles_document_perfil_recomendado"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/document.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_document_rol_document",
+      "target": "docs_archivo_previo_agents_roles_document_proceso_obligatorio"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/document.md",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_document_rol_document",
+      "target": "docs_archivo_previo_agents_roles_document_restricciones"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_frontend",
+      "target": "docs_archivo_previo_agents_roles_frontend_rol_frontend"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_frontend_rol_frontend",
+      "target": "docs_archivo_previo_agents_roles_frontend_misi\u00f3n"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_frontend_rol_frontend",
+      "target": "docs_archivo_previo_agents_roles_frontend_perfil_recomendado"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_frontend_rol_frontend",
+      "target": "docs_archivo_previo_agents_roles_frontend_proceso_obligatorio"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/archivo/previo/agents/roles/frontend.md",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "docs_archivo_previo_agents_roles_frontend_rol_frontend",
+      "target": "docs_archivo_previo_agents_roles_frontend_reglas_cr\u00edticas"
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "be132e541e9172c0d1bb772638f6db32b64b9708"
+  "built_at_commit": "a52b65850ed051eb429449fa663a481a09069937"
 }

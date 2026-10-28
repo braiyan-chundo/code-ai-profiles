@@ -100,7 +100,7 @@
       "code-ai-profiles": {
         "tipos": "npx tsc --noEmit -p tsconfig.json",
         "build": "npm run build",
-        "relacionadas": "npm run test:scan && npm run test:update && npm run test:release",
+        "relacionadas": "npm run test:scan && npm run test:update && npm run test:release && cargo test --manifest-path src-tauri/Cargo.toml -q",
         "suite": "npm run test:scan && npm run test:update && npm run test:release && cargo test --manifest-path src-tauri/Cargo.toml"
       }
     }

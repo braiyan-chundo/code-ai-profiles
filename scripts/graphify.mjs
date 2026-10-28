@@ -10,13 +10,18 @@ const reportPath = join(graphDir, "GRAPH_REPORT.md");
 const version = readFileSync(join(projectRoot, ".graphify-version"), "utf8").trim();
 const action = process.argv[2] ?? "update";
 
+// metodo:permitir herramienta de desarrollo: binario local de Graphify elegido por quien desarrolla
+const graphifyBin = process.env.GRAPHIFY_BIN;
+// metodo:permitir herramienta de desarrollo: carpeta personal para buscar ~/.local/bin/graphify
+const homeDir = process.env.HOME;
+
 const candidates = [];
-if (process.env.GRAPHIFY_BIN) {
-  candidates.push({ command: process.env.GRAPHIFY_BIN, prefix: [] });
+if (graphifyBin) {
+  candidates.push({ command: graphifyBin, prefix: [] });
 }
 candidates.push({ command: "graphify", prefix: [] });
-if (process.env.HOME && process.platform !== "win32") {
-  candidates.push({ command: join(process.env.HOME, ".local", "bin", "graphify"), prefix: [] });
+if (homeDir && process.platform !== "win32") {
+  candidates.push({ command: join(homeDir, ".local", "bin", "graphify"), prefix: [] });
 }
 candidates.push({
   command: "uvx",

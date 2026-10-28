@@ -1,27 +1,27 @@
 # Graph Report - Code AI Profiles  (2026-10-27)
 
 ## Corpus Check
-- 70 files · ~81,169 words
+- 73 files · ~85,730 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1103 nodes · 2352 edges · 71 communities (65 shown, 6 thin omitted)
+- 1185 nodes · 2430 edges · 80 communities (72 shown, 8 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 3 edges (avg confidence: 0.5)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `be132e54`
+- Built from commit: `a52b6585`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - lib.rs
-- Path
+- Option
 - scripts
 - HU-0010 — Publicar el fix de actualización como versión 0.2.2
 - bundle
 - compilerOptions
-- Option
+- Observaciones (no bloquean)
 - types.ts
 - permissions
 - graphify.mjs
@@ -53,10 +53,10 @@
 - release-version.mjs
 - App.tsx
 - index.md
-- ManagedInstance
+- .capture
 - Adopción v4
 - Code AI Profiles · cómo trabajamos
-- deserialize_collection_count
+- Vec
 - Contribuir a Code AI Profiles
 - scan-controller.ts
 - hu0007-macos-dock-icon-spike.sh
@@ -67,7 +67,7 @@
 - Changelog
 - copy_code_session_sync
 - Rol: architect
-- ManagedPaths
+- Verificación · HU-0011 · Adopción v4
 - Rol: document
 - Contrato de desarrollo asistido por IA
 - source-update-controller.ts
@@ -82,6 +82,15 @@
 - roles/README.md
 - HU-0010-publicar-el-fix-de-actualizacion-como-ve/seguimiento.md
 - HU-0011-adopcion-v4/seguimiento.md
+- Rust + Tauri 2 · {{PROYECTO}}
+- Icono distintivo en el Dock de macOS
+- record_refresh_work
+- HU-0012-icono-distintivo-en-el-dock-de-macos/seguimiento.md
+- Describir lo construido: reglas, arquitectura y componentes
+- SystemInfo
+- deserialize_collection_count
+- update_instance_application_from_source_sync
+- HU-0013-describir-lo-construido-reglas-arquitect/seguimiento.md
 
 ## God Nodes (most connected - your core abstractions)
 1. `copy_code_session_sync()` - 30 edges
@@ -110,15 +119,15 @@
 ## Import Cycles
 - None detected.
 
-## Communities (71 total, 6 thin omitted)
+## Communities (80 total, 8 thin omitted)
 
 ### Community 0 - "lib.rs"
 Cohesion: 0.05
-Nodes (33): check_official_update_feed(), clean_session_text(), clears_context_after_compaction_until_the_next_response(), contains_model_alias(), context_window_for_model(), custom_icon_contract_does_not_modify_the_application_path(), desktop_entry_value(), latest_transcript_context() (+25 more)
+Nodes (42): application_fingerprint_changes_when_managed_bytes_change(), ArtifactMonitorEntry, clean_session_text(), clears_context_after_compaction_until_the_next_response(), CodeSessionDocument, contains_model_alias(), context_window_for_model(), custom_icon_contract_does_not_modify_the_application_path() (+34 more)
 
-### Community 1 - "Path"
-Cohesion: 0.19
-Nodes (30): Path, application_fingerprint(), application_fingerprint_changes_when_managed_bytes_change(), apply_macos_branding_after_update(), apply_macos_custom_icon(), clear_macos_custom_icon(), clone_directory(), codesign_verification() (+22 more)
+### Community 1 - "Option"
+Cohesion: 0.08
+Nodes (71): CodeSession, CustomIcon, DashboardState, InstanceStatus, Instant, ManagedProcessIdentity, Mutex, Option (+63 more)
 
 ### Community 2 - "scripts"
 Cohesion: 0.04
@@ -136,9 +145,9 @@ Nodes (33): $APPDATA/managed-instances/*/branding/icon.png, icons/128x128@2x.png
 Cohesion: 0.09
 Nodes (22): DOM, DOM.Iterable, ES2022, src, compilerOptions, allowJs, allowSyntheticDefaultImports, esModuleInterop (+14 more)
 
-### Community 6 - "Option"
-Cohesion: 0.14
-Nodes (22): Option, ArtifactMonitorEntry, ArtifactMonitorSummary, clean_monitor_state(), CodeSessionDocument, latest_artifact_monitor(), linux_desktop_name(), normalize_linux_version() (+14 more)
+### Community 6 - "Observaciones (no bloquean)"
+Cohesion: 0.09
+Nodes (21): Afirmaciones nuevas comprobadas, Bloqueos, Lo que se comprobó y es correcto, Observaciones (no bloquean), Queda una observación (no bloquea), R-10 (O) · frontend: una restricción de imports en los módulos probados, R-11 (O) · frontend: el tema oscuro es la base, R-12 (O) · config: «relacionadas» no corre Rust (+13 more)
 
 ### Community 7 - "types.ts"
 Cohesion: 0.07
@@ -233,8 +242,8 @@ Cohesion: 0.29
 Nodes (7): Artefactos versionados, Comandos, Grafo de conocimiento con Graphify, Instalación, Privacidad, Propósito, Regla de cierre
 
 ### Community 35 - "PathBuf"
-Cohesion: 0.07
-Nodes (49): ArtifactMonitorSummary, DashboardState, Default, HashMap, Instant, ManagedInstance, PathBuf, Self (+41 more)
+Cohesion: 0.15
+Nodes (25): ArtifactMonitorSummary, HashMap, ManagedInstance, PathBuf, SessionTransferInfo, annotates_a_session_linked_inside_the_original_app(), applies_the_latest_model_context_and_clamps_percentage(), apply_session_context() (+17 more)
 
 ### Community 36 - "HU-0008 — Diagnóstico A/B del arranque macOS para branding previo al login"
 Cohesion: 0.12
@@ -252,21 +261,21 @@ Nodes (17): canonicalVersion(), cargoPackageBlocks(), checkVersions(), collectSt
 Cohesion: 0.06
 Nodes (30): AppearancePreferences, AppTheme, DEFAULT_APPEARANCE, EMPTY_STATE, formatTokenCount(), InstanceIconChange, ScanProgressEvent, SessionContextLevel (+22 more)
 
-### Community 41 - "ManagedInstance"
-Cohesion: 0.11
-Nodes (24): CodeSession, CustomIcon, Duration, InstanceStatus, ManagedProcessIdentity, AccountPlan, apply_external_icon_best_effort(), atomic_replace_file() (+16 more)
+### Community 41 - ".capture"
+Cohesion: 0.19
+Nodes (10): Duration, Self, light_refresh_executes_one_inventory_and_skips_expensive_work(), platform_name(), process_start_time(), reset_refresh_work_counters(), run(), system_info_seed() (+2 more)
 
 ### Community 42 - "Adopción v4"
-Cohesion: 0.20
-Nodes (9): AC-01 · Método validado, AC-02 · Sesión nueva carga el método, Adopción v4, Alcance, Criterios de aceptación, Fuera de alcance, Lo que queda pendiente, Petición original (+1 more)
+Cohesion: 0.17
+Nodes (12): AC-01 · Método validado, AC-02 · Sesión nueva carga el método, Adopción v4, Alcance, Cierre, Criterios de aceptación, Definición de Preparado, Definición de Terminado (+4 more)
 
 ### Community 43 - "Code AI Profiles · cómo trabajamos"
 Cohesion: 0.22
 Nodes (9): Code AI Profiles · cómo trabajamos, Cómo se trabaja, Las dos reglas fijas, Lo que no se edita a mano, Lo que sale de la máquina, Pruebas, Quién es quién, Reglas propias del proyecto (+1 more)
 
-### Community 44 - "deserialize_collection_count"
-Cohesion: 0.67
-Nodes (3): D, Error, deserialize_collection_count()
+### Community 44 - "Vec"
+Cohesion: 0.21
+Nodes (12): OsString, artifact_export_rejects_symlinks_and_depth_escapes(), artifact_export_roots(), ArtifactTransferOutcome, collect_opaque_artifact_files(), export_local_artifacts(), MacosOriginalLaunch, ProcessInventoryEntry (+4 more)
 
 ### Community 45 - "Contribuir a Code AI Profiles"
 Cohesion: 0.33
@@ -282,7 +291,7 @@ Nodes (22): cleanup(), CLONE_NAME, dry_run(), find_valid_primary_pid(), json_err
 
 ### Community 48 - "String"
 Cohesion: 0.09
-Nodes (86): AppHandle, Child, Mutex, Result, check_apt_update(), check_source_update(), check_source_update_sync(), clear_instance_icon() (+78 more)
+Nodes (82): AppHandle, Child, Result, SourceUpdateSource, SourceUpdateStatus, apply_external_icon_best_effort(), atomic_replace_file(), atomically_creates_and_replaces_session_index() (+74 more)
 
 ### Community 49 - "Rendimiento del dashboard"
 Cohesion: 0.29
@@ -301,16 +310,16 @@ Cohesion: 0.18
 Nodes (10): [0.2.0] - 2026-10-11, [0.2.1] - 2026-10-13, [0.2.2] - 2026-10-27, Added, Changed, Changed, Changed, Changelog (+2 more)
 
 ### Community 53 - "copy_code_session_sync"
-Cohesion: 0.13
-Nodes (25): OsString, artifact_export_rejects_symlinks_and_depth_escapes(), artifact_export_roots(), artifact_reference_count(), ArtifactTransferOutcome, canonical_code_session_id(), collect_code_session_files(), collect_opaque_artifact_files() (+17 more)
+Cohesion: 0.17
+Nodes (20): Default, artifact_reference_count(), canonical_code_session_id(), collect_code_session_files(), copy_code_session_sync(), find_code_session_index(), load_session_links(), ManagedPaths (+12 more)
 
 ### Community 54 - "Rol: architect"
 Cohesion: 0.29
 Nodes (6): Entrega esperada, Misión, Perfil recomendado, Proceso obligatorio, Restricciones, Rol: architect
 
-### Community 55 - "ManagedPaths"
-Cohesion: 0.15
-Nodes (23): FnOnce, SourceUpdateSource, SourceUpdateStatus, build_version_topology(), cached_source_version(), launch_macos_original_application_with(), macos_update_launcher_receives_only_the_validated_exact_original_path(), macos_update_launcher_rejects_a_managed_application_without_launching() (+15 more)
+### Community 55 - "Verificación · HU-0011 · Adopción v4"
+Cohesion: 0.29
+Nodes (6): Comprobaciones, Decisiones tomadas por defecto (★, revisables al probar), Guía de prueba, Qué se entregó, Veredicto, Verificación · HU-0011 · Adopción v4
 
 ### Community 56 - "Rol: document"
 Cohesion: 0.29
@@ -356,25 +365,53 @@ Nodes (3): De producto (las aprueba Braiyan Rodriguez (mantenedor)), Invariantes
 Cohesion: 0.50
 Nodes (3): Cómo se escribe una regla, Dominios, Reglas de negocio de Code AI Profiles
 
+### Community 71 - "Rust + Tauri 2 · {{PROYECTO}}"
+Cohesion: 0.12
+Nodes (15): Añadir un comando IPC, Errores, La estructura, La regla de oro, Lo que no se toma prestado, Lo que nunca, Procesos, Pruebas (+7 more)
+
+### Community 72 - "Icono distintivo en el Dock de macOS"
+Cohesion: 0.15
+Nodes (13): AC-01 · Icono propio en el Dock sin romper la firma, Alcance, Cierre, Criterios de aceptación, Decisiones por defecto (★), Definición de Preparado, Definición de Terminado, Fuera de alcance (+5 more)
+
+### Community 73 - "record_refresh_work"
+Cohesion: 0.33
+Nodes (6): FnOnce, managed_bytes(), path_size(), record_refresh_work(), refresh_work_counters(), RefreshWorkCounters
+
+### Community 75 - "Describir lo construido: reglas, arquitectura y componentes"
+Cohesion: 0.13
+Nodes (15): AC-01 · Reglas de negocio escritas, AC-02 · Arquitectura descrita, AC-03 · Componentes con skill, Alcance, Cierre, Criterios de aceptación, Decisiones por defecto (★), Definición de Preparado (+7 more)
+
+### Community 76 - "SystemInfo"
+Cohesion: 0.40
+Nodes (5): SourceUpdateInfo, InstanceStatus, SystemInfo, TransferProfile, VersionTopology
+
+### Community 77 - "deserialize_collection_count"
+Cohesion: 0.67
+Nodes (3): D, Error, deserialize_collection_count()
+
+### Community 78 - "update_instance_application_from_source_sync"
+Cohesion: 0.24
+Nodes (19): build_version_topology(), copy_provider_application(), detect_original_profile(), detect_provider_source(), linux_provider_installation(), original_instance_status_with_inventory(), process_snapshot(), ProcessInventory (+11 more)
+
 ## Knowledge Gaps
-- **474 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+469 more)
+- **539 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+534 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **6 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **8 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `HU-0003 — Transferencias conscientes de artefactos, actualización disponible y uso en vivo` connect `HU-0003 — Transferencias conscientes de artefactos, actualización disponible y uso en vivo` to `index.md`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **Why does `HU-0007 — Spike de icono de Dock previo al primer inicio de sesión` connect `HU-0007 — Spike de icono de Dock previo al primer inicio de sesión` to `index.md`?**
+- **Why does `HU-0005 — Recuperar la respuesta de la interfaz y establecer versionado SemVer` connect `HU-0005 — Recuperar la respuesta de la interfaz y establecer versionado SemVer` to `index.md`?**
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+- **Why does `HU-0009 — Estado oficial de actualización y refresco de versiones` connect `HU-0009 — Estado oficial de actualización y refresco de versiones` to `index.md`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
 - **Why does `Code AI Profiles` connect `Code AI Profiles` to `README.md`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
 - **What connects `name`, `private`, `version` to the rest of the system?**
-  _474 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _539 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `lib.rs` be split into smaller, more focused modules?**
-  _Cohesion score 0.05411764705882353 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.04632768361581921 - nodes in this community are weakly interconnected._
+- **Should `Option` be split into smaller, more focused modules?**
+  _Cohesion score 0.07525150905432595 - nodes in this community are weakly interconnected._
 - **Should `scripts` be split into smaller, more focused modules?**
   _Cohesion score 0.044444444444444446 - nodes in this community are weakly interconnected._
-- **Should `HU-0010 — Publicar el fix de actualización como versión 0.2.2` be split into smaller, more focused modules?**
-  _Cohesion score 0.058823529411764705 - nodes in this community are weakly interconnected._

@@ -5,8 +5,8 @@
     "semantic_hash": ""
   },
   "scripts/graphify.mjs": {
-    "mtime": 1786674898.1491435,
-    "ast_hash": "b25e54fbfbfab6b4a23a6cd6d6e546b5",
+    "mtime": 1793150877.8991823,
+    "ast_hash": "01f39ce76920ced5efb70df6d22c2758",
     "semantic_hash": ""
   },
   "src-tauri/build.rs": {
@@ -110,7 +110,7 @@
     "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1793139658.152757,
+    "mtime": 1793151256.6861742,
     "ast_hash": "c66a601a02dbdaedf44371fad816c332",
     "semantic_hash": ""
   },
@@ -234,31 +234,6 @@
     "ast_hash": "ae58b3ee1a392aa4196a6c3424a5d630",
     "semantic_hash": ""
   },
-  "docs/archivo/previo/agents/roles/README.md": {
-    "mtime": 1786673650.491681,
-    "ast_hash": "6d56d0f469233c31499d1cc9474a2394",
-    "semantic_hash": ""
-  },
-  "docs/archivo/previo/agents/roles/architect.md": {
-    "mtime": 1786673650.537973,
-    "ast_hash": "60be7cb0a5e8e3d64e7cba9dadfefed5",
-    "semantic_hash": ""
-  },
-  "docs/archivo/previo/agents/roles/backend.md": {
-    "mtime": 1786673650.5828393,
-    "ast_hash": "477c32700a802fb8201a05d6a9477607",
-    "semantic_hash": ""
-  },
-  "docs/archivo/previo/agents/roles/document.md": {
-    "mtime": 1786673650.6732814,
-    "ast_hash": "2ac158659e07825706ea454f2b7c5c85",
-    "semantic_hash": ""
-  },
-  "docs/archivo/previo/agents/roles/frontend.md": {
-    "mtime": 1786673650.628953,
-    "ast_hash": "a07849344907b700b6ab71cf8bc95303",
-    "semantic_hash": ""
-  },
   "docs/archivo/previo/hu/HU-0001-integracion-graphify-y-agentes.md": {
     "mtime": 1786674898.24192,
     "ast_hash": "066c9dc0f88b3e5d98a151b78c1caf73",
@@ -280,8 +255,8 @@
     "semantic_hash": ""
   },
   "docs/archivo/previo/hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md": {
-    "mtime": 1792648655.1082728,
-    "ast_hash": "9c9acdc8e8e611a3b45eab724c8bc0db",
+    "mtime": 1793141150.6170835,
+    "ast_hash": "a2ece973609396f7f8dcc0140b2c2fd6",
     "semantic_hash": ""
   },
   "docs/archivo/previo/hu/HU-0006-escaneo-automatico-silencioso-y-ciclo-manual-controlado.md": {
@@ -310,8 +285,8 @@
     "semantic_hash": ""
   },
   "docs/archivo/previo/hu/index.md": {
-    "mtime": 1793137764.06702,
-    "ast_hash": "3544186c1de7f220f1df764a0e41c20b",
+    "mtime": 1793141150.731334,
+    "ast_hash": "873cd26caba3b1192f0db11d8eaee5de",
     "semantic_hash": ""
   },
   "docs/arquitectura/stack.md": {
@@ -360,18 +335,63 @@
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/hu.md": {
-    "mtime": 1793139698.1123838,
-    "ast_hash": "fe6f680ecd15dc068a018dfe32538366",
+    "mtime": 1793151321.0151303,
+    "ast_hash": "f3a4c8fecce8fa989d4ddd70b8c0c3bb",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/seguimiento.md": {
-    "mtime": 1793139749.4074292,
-    "ast_hash": "04b4cd98cba03e98c9099f95535650fb",
+    "mtime": 1793151321.023593,
+    "ast_hash": "a93d9c8c8fdc86a81a7be23ddd4c5cc4",
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793139749.4080782,
-    "ast_hash": "26e324ecb9b1dc87cbab18a442cc590e",
+    "mtime": 1793151321.0769947,
+    "ast_hash": "3ecea62a8ae460c90af0462a1e368ba6",
+    "semantic_hash": ""
+  },
+  "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
+    "mtime": 1793151216.3830805,
+    "ast_hash": "8a06d760e2dd5160783df6bb68c24fc3",
+    "semantic_hash": ""
+  },
+  "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md": {
+    "mtime": 1793151314.371025,
+    "ast_hash": "a9d1b55b7cd2b8560e81b2b5ce3e1d7c",
+    "semantic_hash": ""
+  },
+  "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md": {
+    "mtime": 1793141132.9794981,
+    "ast_hash": "624cd2f6627e856fc967697b72867534",
+    "semantic_hash": ""
+  },
+  "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/seguimiento.md": {
+    "mtime": 1793141127.5946164,
+    "ast_hash": "9373c05e69ea0790612a09a3db0f9e04",
+    "semantic_hash": ""
+  },
+  "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md": {
+    "mtime": 1793150906.1075335,
+    "ast_hash": "ab69a34d96e86fe3e79cf0deb5e15199",
+    "semantic_hash": ""
+  },
+  "hu/HU-0013-describir-lo-construido-reglas-arquitect/seguimiento.md": {
+    "mtime": 1793150900.2321014,
+    "ast_hash": "5bf51bf2a4699c8d2bb1220ccc6946cd",
+    "semantic_hash": ""
+  },
+  "hu/HU-0011-adopcion-v4/revision-tecnica.md": {
+    "mtime": 1793151295.6548576,
+    "ast_hash": "33b0c1615323e5ea14c0b6b70b33f5f5",
+    "semantic_hash": ""
+  },
+  "hu/HU-0011-adopcion-v4/verificacion.md": {
+    "mtime": 1793151287.0560873,
+    "ast_hash": "e156f086c584b4b85fec882cfb384501",
+    "semantic_hash": ""
+  },
+  "hu/HU-0011-adopcion-v4/metricas.json": {
+    "mtime": 1793151321.0653057,
+    "ast_hash": "a52615e6cf79ee3f4c1d9c3150c196f2",
     "semantic_hash": ""
   }
 }

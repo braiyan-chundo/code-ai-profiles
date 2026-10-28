@@ -2,9 +2,9 @@
 
 ## Metadatos
 
-- Estado: `In Progress`
+- Estado: `Done` (cerrada en la adopción v4; el icono de Dock pasa a [HU-0012](../../../../hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md))
 - Creada: 2026-10-11
-- Actualizada: 2026-10-17
+- Actualizada: 2026-10-27
 - Solicitante: mantenedor del proyecto
 - Orquestación: `architect`
 - Documentación: `document`
@@ -168,6 +168,7 @@ Evidencia verificada y pendiente entregada por `architect`:
 - 2026-10-14: el cliente confirmó que `0.2.1` funciona y pidió reanudar el icono de Dock. `architect` documentó que `NSWorkspace.setIcon`, APIs externas de Electron y variables de entorno empaquetadas no resuelven la necesidad. El cliente propuso branding únicamente al crear y antes del primer login, y autorizó HU-0007 para evaluar la re-firma como alternativa candidata. No se experimentó con instancias reales, perfiles, conversaciones ni llavero.
 - 2026-10-14: [HU-0007](HU-0007-spike-icono-dock-previo-al-primer-inicio-de-sesion.md) cerró con resultado negativo válido: la re-firma ad-hoc de un clon temporal no produjo proceso validable ni confirmación visual de Dock. La técnica queda rechazada en esta configuración y no habilita producto.
 - 2026-10-17: [HU-0008](HU-0008-diagnostico-ab-del-arranque-macos-para-branding-previo-al-login.md) cerró el diagnóstico A/B con resultado `inconclusive`. El control y la variante re-firmada sobrevivieron la ventana de observación, pero la variante terminó con señal `9` después de `TERM`; no hubo muestra de UI, Dock ni login y no se atribuyó causa. No existe una implementación de branding de Dock validada.
+- 2026-10-27: en la adopción v4 (HU-0011), el mantenedor decidió «Cerrar y abrir Dock». Esta HU se cierra por lo entregado: rendimiento con refresco incremental y SemVer desde `0.2.0`. El icono de Dock pasa, en espera, a [HU-0012](../../../../hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md). Los criterios 13 y 14 no se cumplieron y viajan con ella.
 
 ## Resultado y riesgos residuales
 
