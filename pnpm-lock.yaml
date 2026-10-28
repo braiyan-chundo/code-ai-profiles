@@ -182,8 +182,8 @@ importers:
         specifier: ^19.0.0
         version: 19.2.7(react@19.2.7)
       react-router:
-        specifier: ^7.18.5
-        version: 7.18.5(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^7.18.4
+        version: 7.18.4(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
     devDependencies:
       '@tauri-apps/cli':
         specifier: ^2.0.0
@@ -826,8 +826,8 @@ packages:
     resolution: {integrity: sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==}
     engines: {node: '>=0.10.0'}
 
-  react-router@7.18.5:
-    resolution: {integrity: sha512-dTgvcXDOrLPrlLHrcZAqWveiK1hMSqN+rGAJzegP8HtmNkfRxOoshGWBNX3ZJ0cZjOHkRdlUJtaIhZMLLyGyPw==}
+  react-router@7.18.4:
+    resolution: {integrity: sha512-PUPQcMhMGRAslLcvtlPz/kmzBEWPhLdgLFrL7pLNepBL6dX0lWj4WD2cUYVgYCuT3jxvghYFg81cDTj44DhetQ==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react: '>=18'
@@ -1398,7 +1398,7 @@ snapshots:
 
   react-refresh@0.17.0: {}
 
-  react-router@7.18.5(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  react-router@7.18.4(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
       cookie: 1.1.1
       react: 19.2.7

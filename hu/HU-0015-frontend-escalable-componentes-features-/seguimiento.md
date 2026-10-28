@@ -19,3 +19,4 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-10-28 07:28 | orquestador | veredicto: «veo todo bien, lo unico que me gustaria cambiar es que nosotros no trabajamos con npm, trabajamos con pnpm podrias cambiarlo y con eso damos cerrada esta tarea» — Braiyan Rodriguez, 2026-10-28, tras npm run tauri dev en macOS |
 | 2026-10-28 07:28 | orquestador | cambio pedido en la verificación: pnpm en lugar de npm (cb4c019), hecho por el orquestador; pnpm build, relacionadas y pnpm tauri dev en verde |
 | 2026-10-28 07:28 | hu.mjs | estado en-proceso → terminada |
+| 2026-10-28 07:53 | orquestador | CI del PR #10 en rojo: pnpm 12 rechaza react-router 7.18.5 (publicado hace menos de 24 h, minimumReleaseAge). Se fija 7.18.4 (2026-09-15, mismas dependencias); instalación limpia, build, relacionadas y #/no-existe → #/ en verde — orquestador |

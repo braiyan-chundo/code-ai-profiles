@@ -1,7 +1,7 @@
 {
   "package.json": {
-    "mtime": 1793190393.9328816,
-    "ast_hash": "ab4f827a5b112282d2413874c1c981a9",
+    "mtime": 1793191925.0280216,
+    "ast_hash": "d0d81d55b9143bf7f75c6105c3694ce5",
     "semantic_hash": ""
   },
   "scripts/graphify.mjs": {
@@ -335,7 +335,7 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793190525.05498,
+    "mtime": 1793191984.1993964,
     "ast_hash": "4be5c1ee6942be9abda0dcbf8b2d5782",
     "semantic_hash": ""
   },
@@ -420,8 +420,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/seguimiento.md": {
-    "mtime": 1793190524.9549139,
-    "ast_hash": "3679ac2bb44a2ad24c2f36acac2f1365",
+    "mtime": 1793191984.1988924,
+    "ast_hash": "25148813fc6524999ee815ef94df8e57",
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/briefs/frontend.md": {
