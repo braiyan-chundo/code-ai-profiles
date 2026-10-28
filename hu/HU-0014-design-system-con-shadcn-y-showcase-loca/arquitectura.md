@@ -314,6 +314,11 @@ componentes enteros.
 3. ningún archivo de `src/components/ui` ni de `src/hooks` contiene `var(--muted)` (A-3);
 4. `index.html` no menciona `showcase`.
 
+**Ampliada en la revisión técnica** (`revision-tecnica.md`, R-1). La prueba recorre todo `src/` salvo el catálogo y
+el showcase, y normaliza los separadores de ruta para que funcione en Windows. Rechaza también los imports de
+Tailwind, `shadcn`, `ui-theme`, `showcase`, `cva` y `cn`, y la forma `(--muted)`. Lleva una prueba canario.
+`validate.yml` comprueba `dist/` después del build.
+
 La entrada en `stack.comandos` de `.metodo/config.json` la añade el orquestador. Lo visual (AC-02, AC-03) no se prueba
 con código: lo revisa la persona.
 

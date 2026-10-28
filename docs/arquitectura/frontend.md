@@ -224,6 +224,15 @@ Cómo usar cada componente, en la skill `code-ai-profiles-ui`. El detalle de las
 - **Tailwind 4 solo existe en `pnpm dev`.** `vite.config.ts` carga `@tailwindcss/vite` únicamente con
   `command === "serve"`, y la única entrada de Tailwind es `src/showcase/showcase.css` (con `source(none)` y `@source`
   explícitos). `vite build` no lo importa, así que `dist/` no cambia por tenerlo instalado.
+- **`vite build` solo empaqueta `index.html`** porque no hay `build.rollupOptions.input`. Si algún día se declara,
+  `showcase.html` no entra en él.
+- **En `pnpm dev` (y `pnpm tauri dev`) el optimizador de dependencias recorre todos los `*.html` de la raíz**, también
+  `showcase.html`: preempaqueta las dependencias del catálogo (radix-ui, recharts, shiki…) aunque solo se abra la app.
+  El arranque en frío es más lento, pero la app no las carga. Si al abrir el showcase Vite descubre una dependencia
+  nueva, vuelve a optimizar y recarga todas las pestañas, también la ventana de Tauri.
+- **El alias `@` → `"/src"`** es una ruta relativa a la raíz de Vite, no una ruta del sistema. Vite la resuelve con
+  `path.resolve(root, "src/…")` en `serve` y en `build`, también en Windows. Solo la entienden Vite y `tsc` (`paths`).
+  Una herramienta que no sea Vite y necesite `@/` usaría `fileURLToPath(new URL("./src", import.meta.url))`.
 - **El showcase** es `showcase.html` (`http://127.0.0.1:1420/showcase.html`). Carga `styles/base.css` y
   `styles/theme-light.css` con `layer(base)`, después del preflight y por debajo de las utilidades, y el tema en
   `<html>` (`theme-dark` / `theme-light`), para que los portales de Radix, que van a `body`, lo hereden.
@@ -234,3 +243,7 @@ Cómo usar cada componente, en la skill `code-ai-profiles-ui`. El detalle de las
   va como `--ui-*`, con la regla de la que sale. La variante `dark:` es `.theme-dark`.
 - **Adoptarlo en la app** es otra historia: cargar Tailwind sin preflight en `index.css` o en una capa, resolver los
   portales (la clase de tema está en `.desktop-shell`, no en `<html>`) y cambiar `tests/ui-isolation.test.ts`.
+  Además tendrá que revisar dos cosas. (1) La base de navegadores de Tailwind 4 (Safari 16.4 o superior: `@property`,
+  `color-mix`, `oklch(from …)`) frente a WKWebView en macOS 12 (`minimumSystemVersion`) y WebKitGTK en Ubuntu 22.04.
+  (2) `sidebar.tsx`, que escribe la cookie `sidebar_state` y registra el atajo global Cmd/Ctrl+B. En la app, esa
+  cookie se quita o la historia la justifica.
