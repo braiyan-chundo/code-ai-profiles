@@ -67,4 +67,9 @@ datos del mock.
 
 ## Veredicto
 
-Pendiente de la persona.
+2026-10-28 · Braiyan Rodriguez (mantenedor), tras recorrer la app de escritorio con `npm run tauri dev` en macOS:
+
+> «veo todo bien, lo unico que me gustaria cambiar es que nosotros no trabajamos con npm, trabajamos con pnpm podrias cambiarlo y con eso damos cerrada esta tarea»
+
+**Aprobada.** El cambio pedido se hizo en `cb4c019` (pnpm en lugar de npm). Con pnpm: `pnpm build`, las pruebas
+relacionadas y `pnpm tauri dev` arrancan en verde.

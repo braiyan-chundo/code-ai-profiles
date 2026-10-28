@@ -1,8 +1,8 @@
 ---
 id: HU-0015
 titulo: "Frontend escalable: componentes, features y router"
-estado: en-proceso
-fase: verificacion
+estado: terminada
+fase: cierre
 area: interfaz
 entrega: 1
 prioridad: media
@@ -136,23 +136,34 @@ ni de comportamiento. Las tres plataformas solo se ven en sus máquinas o en los
 
 ## Definición de Terminado
 
-- [ ] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
-- [ ] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
-- [ ] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
-- [ ] Revisión técnica pasada, si la historia es riesgosa
-- [ ] La persona probó y aprobó; su veredicto está en `verificacion.md`
-- [ ] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
-- [ ] Commits en cada repo tocado con `HU: HU-0015`. **Sin push, sin publicar, sin desplegar**
-- [ ] Lo que solo comprueba una persona, declarado como pendiente humano
+- [x] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
+- [x] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
+- [x] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
+- [x] Revisión técnica pasada, si la historia es riesgosa
+- [x] La persona probó y aprobó; su veredicto está en `verificacion.md`
+- [x] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
+- [x] Commits en cada repo tocado con `HU: HU-0015`. **Sin push, sin publicar, sin desplegar**
+- [x] Lo que solo comprueba una persona, declarado como pendiente humano
 
 ## Cierre
 
-Fecha, quién cerró y sobre qué veredicto.
+2026-10-28, cerrada por el orquestador sobre el veredicto «veo todo bien […] con eso damos cerrada esta tarea» de Braiyan Rodriguez, que pidió además pasar el proyecto a pnpm.
 
-SHA por repositorio, con una línea de qué hace cada uno:
+SHA por repositorio, con una línea de qué hace cada uno (code-ai-profiles, rama `hu-0015-frontend-escalable`):
+- `02480a9`…`f5c194a`: pasos 0–10 del refactor (`src/` por features, Context + `useReducer`, `DashboardRuntime`, React Router 7 por hash, 4 pruebas nuevas, skill de frontend).
+- `5995e50`, `c157308`, `234f9a5`, `df42125`: historia, arquitectura, reglas del rol, revisión técnica y verificación.
+- `cb4c019`: pnpm en lugar de npm (lockfile, Tauri, CI, método y documentación).
+- El commit de cierre: veredicto, Definición de Terminado, grafo y bitácora.
 
-★ aceptadas tal como estaban:
+★ aceptadas tal como estaban: D-1 a D-5.
 
 Pendientes humanos (nadie los vio; no se dan por hechos):
+- Windows y Linux: controles de ventana y el «Ctrl» del atajo de búsqueda.
+- Lo que el mock no muestra: icono personalizado válido e inválido, error de escaneo con «Ocultar», carga y estados vacíos.
+- La vuelta tras «Actualizar original» (R-1) solo se ve con una actualización oficial disponible.
+- CI con pnpm (`pnpm/action-setup@v4` y `cache: pnpm`): se comprueba en el primer PR.
 
 Deuda declarada:
+- El router en modo datos añade unos 33 kB gzip; `<HashRouter>` lo dejaría en 15,5 kB (`docs/rendimiento.document.md`).
+- `transferProfiles` se calcula dos veces (revisión técnica).
+- Sin alias `@/`: llega con la HU-0014.

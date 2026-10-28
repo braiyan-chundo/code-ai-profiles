@@ -15,3 +15,7 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-10-28 01:51 | orquestador | entrega de frontend: pasos 0-10 (02480a9…f5c194a); DOM de los 5 estados idéntico a la línea base (normalizando horas) en dev con el navegador integrado; #/no-existe → #/; consola sin errores en carga limpia; reglas de frontend y stack.comandos actualizados por el orquestador |
 | 2026-10-28 01:58 | orquestador | revisión técnica: PASS (architect), observaciones R-1..R-7 sin bloqueantes; R-6 aplicada por el orquestador en la skill; docs/arquitectura/frontend.md corregido por architect |
 | 2026-10-28 01:59 | hu.mjs | fase implementacion → verificacion |
+| 2026-10-28 02:00 | orquestador | verificación preparada en df42125: suite en verde y registrada; entregada al mantenedor — pendiente su veredicto |
+| 2026-10-28 07:28 | orquestador | veredicto: «veo todo bien, lo unico que me gustaria cambiar es que nosotros no trabajamos con npm, trabajamos con pnpm podrias cambiarlo y con eso damos cerrada esta tarea» — Braiyan Rodriguez, 2026-10-28, tras npm run tauri dev en macOS |
+| 2026-10-28 07:28 | orquestador | cambio pedido en la verificación: pnpm en lugar de npm (cb4c019), hecho por el orquestador; pnpm build, relacionadas y pnpm tauri dev en verde |
+| 2026-10-28 07:28 | hu.mjs | estado en-proceso → terminada |

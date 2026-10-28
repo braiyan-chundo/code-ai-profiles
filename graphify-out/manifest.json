@@ -1,12 +1,12 @@
 {
   "package.json": {
-    "mtime": 1793169471.421,
-    "ast_hash": "31ebca25c0b9c6a3c83197fb4383e651",
+    "mtime": 1793190393.9328816,
+    "ast_hash": "ab4f827a5b112282d2413874c1c981a9",
     "semantic_hash": ""
   },
   "scripts/graphify.mjs": {
-    "mtime": 1793165232.4942162,
-    "ast_hash": "c658069b6525d30ea4dcc95abd046965",
+    "mtime": 1793190376.7107036,
+    "ast_hash": "e55a9172282a3aa03d6219c8f590ad94",
     "semantic_hash": ""
   },
   "src-tauri/build.rs": {
@@ -30,9 +30,9 @@
     "semantic_hash": "a85314b3cde4f5d5b64d48e0c7b18194"
   },
   "src-tauri/tauri.conf.json": {
-    "mtime": 1793124076.150575,
-    "ast_hash": "9a79585a4ae996b808fbdbfe70a731fa",
-    "semantic_hash": "9a79585a4ae996b808fbdbfe70a731fa"
+    "mtime": 1793190376.7172308,
+    "ast_hash": "8eec374f9a78d06149096bb0203c7264",
+    "semantic_hash": ""
   },
   "src-tauri/tauri.linux.conf.json": {
     "mtime": 1784574604.455413,
@@ -85,13 +85,13 @@
     "semantic_hash": "86dd5498e8f4f9ab1c0c393c72433eeb"
   },
   ".github/PULL_REQUEST_TEMPLATE.md": {
-    "mtime": 1793139749.330195,
-    "ast_hash": "2aaa5d3b5be703fd9ac7b9f2cc23eb17",
+    "mtime": 1793190376.7057853,
+    "ast_hash": "24885dbe109192152f0cf5dbc685c1ff",
     "semantic_hash": ""
   },
   ".github/workflows/build-desktop.yml": {
-    "mtime": 1784574604.9013014,
-    "ast_hash": "249fc6318ccdbb16bf57156f36e1aa9c",
+    "mtime": 1793190399.4571254,
+    "ast_hash": "f29da9768bf8787f5fa720ceb330ff57",
     "semantic_hash": ""
   },
   ".github/workflows/pr-policy.yml": {
@@ -100,18 +100,18 @@
     "semantic_hash": ""
   },
   ".github/workflows/validate.yml": {
-    "mtime": 1793167573.186516,
-    "ast_hash": "7eba4ea9b3935048748d8ae9326ed94f",
+    "mtime": 1793190399.457002,
+    "ast_hash": "f148d380812ebdba8e2c32b9972efc69",
     "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1793170241.9575987,
-    "ast_hash": "c66a601a02dbdaedf44371fad816c332",
+    "mtime": 1793190412.6265435,
+    "ast_hash": "410c38c8000293668a2519c2682b53c0",
     "semantic_hash": ""
   },
   "CONTRIBUTING.md": {
-    "mtime": 1793139749.3300939,
-    "ast_hash": "84eb6416c3f822cca8cf99c33448640d",
+    "mtime": 1793190376.7052941,
+    "ast_hash": "8ffe035c90b37c252152317385a60cb8",
     "semantic_hash": ""
   },
   "DESIGN.md": {
@@ -120,8 +120,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1793139749.3298929,
-    "ast_hash": "e7d0d51a091c4c41958de4df42c1bcdd",
+    "mtime": 1793190383.5559602,
+    "ast_hash": "d7e570372a973b860c2f5b0a7fa46ba5",
     "semantic_hash": ""
   },
   "code.html": {
@@ -130,8 +130,8 @@
     "semantic_hash": ""
   },
   "docs/graphify.document.md": {
-    "mtime": 1793165232.4923668,
-    "ast_hash": "c551c607278f000453985a9f7add05d0",
+    "mtime": 1793190376.708692,
+    "ast_hash": "8e8b1436b3e8f15d3fa15961964978a4",
     "semantic_hash": ""
   },
   "index.html": {
@@ -155,28 +155,28 @@
     "semantic_hash": ""
   },
   "scripts/release-version.mjs": {
-    "mtime": 1791894359.7561305,
-    "ast_hash": "c4070e11a5bd8e50351006c7efef384e",
-    "semantic_hash": "c4070e11a5bd8e50351006c7efef384e"
+    "mtime": 1793190393.9664626,
+    "ast_hash": "8aa6f5bb28bb97a04fda0be0b53e6c90",
+    "semantic_hash": ""
   },
   "scripts/release-version.test.mjs": {
-    "mtime": 1791894359.7562394,
-    "ast_hash": "686fba07048c1fd87d0c3cb274cc1f8f",
-    "semantic_hash": "686fba07048c1fd87d0c3cb274cc1f8f"
+    "mtime": 1793190393.9667354,
+    "ast_hash": "7d26c2a4374243e7abb88046453fa7a0",
+    "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1793124148.8208578,
-    "ast_hash": "403be5ddee20c99c61e8bb73ec5c9f33",
+    "mtime": 1793190446.597665,
+    "ast_hash": "c2b079f84bba125496573f18c7c78791",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
-    "mtime": 1792648655.1092925,
-    "ast_hash": "f5da5f5c3eca394f62faf9438595fa1b",
+    "mtime": 1793190446.5974505,
+    "ast_hash": "2c6a4c498a9508552a4e43734bb072af",
     "semantic_hash": ""
   },
   "docs/versionado.document.md": {
-    "mtime": 1793124148.8439977,
-    "ast_hash": "44c05701cc44d34beca38b5b0cd2de22",
+    "mtime": 1793190383.5585418,
+    "ast_hash": "f8c3c233836482f7a28026f02fd574e7",
     "semantic_hash": ""
   },
   "src/lib/scan-controller.ts": {
@@ -280,8 +280,8 @@
     "semantic_hash": ""
   },
   "docs/arquitectura/stack.md": {
-    "mtime": 1793139609.3715703,
-    "ast_hash": "0b0b5cdb3e58b7e01bb4b9452db63943",
+    "mtime": 1793190393.9078093,
+    "ast_hash": "7f9dd889a6ec92aa83110047aa1672f5",
     "semantic_hash": ""
   },
   "docs/decisiones/ADR-0001-adopcion-metodologia-v4.md": {
@@ -335,8 +335,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793170740.1018186,
-    "ast_hash": "ad1c9d9591409feca4893fdec9c60108",
+    "mtime": 1793190525.05498,
+    "ast_hash": "4be5c1ee6942be9abda0dcbf8b2d5782",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -395,8 +395,8 @@
     "semantic_hash": ""
   },
   "docs/arquitectura/frontend.md": {
-    "mtime": 1793170611.993013,
-    "ast_hash": "d2252c1173eaace9f6ab55c9a6625345",
+    "mtime": 1793190376.7079003,
+    "ast_hash": "b21a61a663bbbaeb8b4ed4174979d22a",
     "semantic_hash": ""
   },
   "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md": {
@@ -415,13 +415,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/hu.md": {
-    "mtime": 1793170740.093729,
-    "ast_hash": "11bd83b48b385648ba31f6f76788dd4d",
+    "mtime": 1793190524.9468746,
+    "ast_hash": "49ac8c582876af858d96e21951cecbbd",
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/seguimiento.md": {
-    "mtime": 1793170740.1011992,
-    "ast_hash": "255d77550d9559e037ace649f930927d",
+    "mtime": 1793190524.9549139,
+    "ast_hash": "3679ac2bb44a2ad24c2f36acac2f1365",
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/briefs/frontend.md": {
@@ -825,8 +825,18 @@
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/verificacion.md": {
-    "mtime": 1793170779.3013246,
-    "ast_hash": "6c45abe17ad71d11e9cb354617e36586",
+    "mtime": 1793190524.839323,
+    "ast_hash": "b5420a5c83f7f0368f21a8c1fd23ff25",
+    "semantic_hash": ""
+  },
+  "hu/HU-0015-frontend-escalable-componentes-features-/metricas.json": {
+    "mtime": 1793190525.0432434,
+    "ast_hash": "9018d022a5bb1d49809a31f75e3b76ea",
+    "semantic_hash": ""
+  },
+  "pnpm-workspace.yaml": {
+    "mtime": 1793190350.887803,
+    "ast_hash": "b742abf2d03aa9d79c3290767176eb41",
     "semantic_hash": ""
   }
 }
