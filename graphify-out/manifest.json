@@ -2,12 +2,12 @@
   "package.json": {
     "mtime": 1793124076.1491957,
     "ast_hash": "c5a361ee7a65aab6f52db79ce91a90b1",
-    "semantic_hash": ""
+    "semantic_hash": "c5a361ee7a65aab6f52db79ce91a90b1"
   },
   "scripts/graphify.mjs": {
     "mtime": 1793150877.8991823,
     "ast_hash": "01f39ce76920ced5efb70df6d22c2758",
-    "semantic_hash": ""
+    "semantic_hash": "01f39ce76920ced5efb70df6d22c2758"
   },
   "src-tauri/build.rs": {
     "mtime": 1784433109.6357908,
@@ -22,7 +22,7 @@
   "src-tauri/src/lib.rs": {
     "mtime": 1792757615.576046,
     "ast_hash": "0e41fc2e955fd8b3d525551cac5d0989",
-    "semantic_hash": ""
+    "semantic_hash": "0e41fc2e955fd8b3d525551cac5d0989"
   },
   "src-tauri/src/main.rs": {
     "mtime": 1784574604.233991,
@@ -32,7 +32,7 @@
   "src-tauri/tauri.conf.json": {
     "mtime": 1793124076.150575,
     "ast_hash": "9a79585a4ae996b808fbdbfe70a731fa",
-    "semantic_hash": ""
+    "semantic_hash": "9a79585a4ae996b808fbdbfe70a731fa"
   },
   "src-tauri/tauri.linux.conf.json": {
     "mtime": 1784574604.455413,
@@ -47,7 +47,7 @@
   "src/App.tsx": {
     "mtime": 1792781919.53882,
     "ast_hash": "eccf4b7b904cf789ae15c6ab10639d33",
-    "semantic_hash": ""
+    "semantic_hash": "eccf4b7b904cf789ae15c6ab10639d33"
   },
   "src/components/Icons.tsx": {
     "mtime": 1784516056.9907844,
@@ -57,7 +57,7 @@
   "src/lib/bridge.ts": {
     "mtime": 1792757490.1674497,
     "ast_hash": "4f27aa9635d84bb547a767f204d95840",
-    "semantic_hash": ""
+    "semantic_hash": "4f27aa9635d84bb547a767f204d95840"
   },
   "src/main.tsx": {
     "mtime": 1784433949.908604,
@@ -67,7 +67,7 @@
   "src/types.ts": {
     "mtime": 1792757490.1393204,
     "ast_hash": "68af02fca15a567927fd0c5e24ce1576",
-    "semantic_hash": ""
+    "semantic_hash": "68af02fca15a567927fd0c5e24ce1576"
   },
   "src/vite-env.d.ts": {
     "mtime": 1784564730.9157422,
@@ -162,12 +162,12 @@
   "scripts/release-version.mjs": {
     "mtime": 1791894359.7561305,
     "ast_hash": "c4070e11a5bd8e50351006c7efef384e",
-    "semantic_hash": ""
+    "semantic_hash": "c4070e11a5bd8e50351006c7efef384e"
   },
   "scripts/release-version.test.mjs": {
     "mtime": 1791894359.7562394,
     "ast_hash": "686fba07048c1fd87d0c3cb274cc1f8f",
-    "semantic_hash": ""
+    "semantic_hash": "686fba07048c1fd87d0c3cb274cc1f8f"
   },
   "CHANGELOG.md": {
     "mtime": 1793124148.8208578,
@@ -187,37 +187,32 @@
   "src/lib/scan-controller.ts": {
     "mtime": 1792648655.115292,
     "ast_hash": "3e6a39d3004f4bc44f45443d34c94042",
-    "semantic_hash": ""
+    "semantic_hash": "3e6a39d3004f4bc44f45443d34c94042"
   },
   "tests/scan-controller.test.ts": {
     "mtime": 1792648655.1159103,
     "ast_hash": "46e472841bc9055e09a39815eac86af8",
-    "semantic_hash": ""
+    "semantic_hash": "46e472841bc9055e09a39815eac86af8"
   },
   "scripts/hu0007-macos-dock-icon-spike.sh": {
     "mtime": 1792648655.112833,
     "ast_hash": "18e127cf8cefa1860a41e6eefb35a486",
-    "semantic_hash": ""
+    "semantic_hash": "18e127cf8cefa1860a41e6eefb35a486"
   },
   "scripts/hu0008-macos-launch-ab-diagnostic.sh": {
     "mtime": 1792648655.113111,
     "ast_hash": "9cf8a39e4da325aed33b9bfc8022a6af",
-    "semantic_hash": ""
+    "semantic_hash": "9cf8a39e4da325aed33b9bfc8022a6af"
   },
   "src/lib/source-update-controller.ts": {
     "mtime": 1792781908.1280866,
     "ast_hash": "3606b035ae50158f86fb9d04ce8cf467",
-    "semantic_hash": ""
+    "semantic_hash": "3606b035ae50158f86fb9d04ce8cf467"
   },
   "tests/source-update-controller.test.ts": {
     "mtime": 1792781908.1725817,
     "ast_hash": "4f03d43731e2e6c6fc745fb69322c2d1",
-    "semantic_hash": ""
-  },
-  "graphify-out/memory/query_20261023_120821_implement_hu_0009_official_update_state_and_direct.md": {
-    "mtime": 1792757301.9452333,
-    "ast_hash": "e0faf62abc290b64d3bb9ec5ac8e1104",
-    "semantic_hash": ""
+    "semantic_hash": "4f03d43731e2e6c6fc745fb69322c2d1"
   },
   "CLAUDE.md": {
     "mtime": 1793139609.3761172,
@@ -352,7 +347,7 @@
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
     "mtime": 1793151216.3830805,
     "ast_hash": "8a06d760e2dd5160783df6bb68c24fc3",
-    "semantic_hash": ""
+    "semantic_hash": "8a06d760e2dd5160783df6bb68c24fc3"
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/skills/rust-tauri/SKILL.md": {
     "mtime": 1793151314.371025,
@@ -392,6 +387,6 @@
   "hu/HU-0011-adopcion-v4/metricas.json": {
     "mtime": 1793151321.0653057,
     "ast_hash": "a52615e6cf79ee3f4c1d9c3150c196f2",
-    "semantic_hash": ""
+    "semantic_hash": "a52615e6cf79ee3f4c1d9c3150c196f2"
   }
 }
