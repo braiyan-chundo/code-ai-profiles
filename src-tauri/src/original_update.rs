@@ -331,8 +331,39 @@ impl ProgressThrottle {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct ZipListing {
     pub(crate) names: Vec<String>,
+    /// Las entradas que son enlaces simbólicos (permisos que empiezan por `l` en `zipinfo -s`).
+    pub(crate) symlinks: Vec<String>,
     pub(crate) entries: u64,
     pub(crate) uncompressed_bytes: u64,
+}
+
+/// Marca qué nombres de `zipinfo -1` son symlinks leyendo `zipinfo -s` (formato `ls -l`, mismo orden). Cada
+/// nombre tiene que aparecer, en orden, al final de una línea; si no, no se puede confiar en el índice.
+pub(crate) fn parse_zipinfo_symlinks(names: &[String], short_listing: &str) -> Option<Vec<String>> {
+    let mut symlinks = Vec::new();
+    let mut index = 0;
+    for line in short_listing.lines() {
+        let Some(name) = names.get(index) else {
+            break;
+        };
+        let Some(prefix) = line.strip_suffix(name.as_str()) else {
+            continue;
+        };
+        let Some(mode) = prefix
+            .strip_suffix(' ')
+            .and_then(|columns| columns.split_whitespace().next())
+        else {
+            continue;
+        };
+        if mode.len() != 10 {
+            continue;
+        }
+        if mode.starts_with('l') {
+            symlinks.push(name.clone());
+        }
+        index += 1;
+    }
+    (index == names.len()).then_some(symlinks)
 }
 
 /// Lee la línea de totales de `zipinfo -t`: «N files, M bytes uncompressed, …».
@@ -410,6 +441,24 @@ pub(crate) fn validate_zip_listing(
     let root = root.unwrap_or_default();
     if !root.ends_with(".app") || root.len() <= ".app".len() || root.starts_with('.') {
         return Err("El paquete descargado no contiene una aplicación.".to_string());
+    }
+    // Nada puede colgar de un symlink: no se depende de cómo `ditto` trate «enlace/archivo».
+    let links: HashSet<&str> = listing
+        .symlinks
+        .iter()
+        .map(|link| link.trim_end_matches('/'))
+        .collect();
+    if !links.is_empty() {
+        let under_link = listing.names.iter().any(|name| {
+            name.match_indices('/')
+                .any(|(position, _)| links.contains(&name[..position]))
+        });
+        if under_link {
+            return Err(
+                "El paquete descargado contiene archivos dentro de un enlace simbólico."
+                    .to_string(),
+            );
+        }
     }
     Ok(root.to_string())
 }
@@ -538,18 +587,24 @@ impl MacosTools for SystemMacosTools {
     fn list_zip(&self, archive: &Path) -> Result<ZipListing, String> {
         let names = Self::output("/usr/bin/zipinfo", &["-1".as_ref(), archive.as_os_str()])?;
         let totals = Self::output("/usr/bin/zipinfo", &["-t".as_ref(), archive.as_os_str()])?;
-        if !names.status.success() || !totals.status.success() {
+        let short = Self::output("/usr/bin/zipinfo", &["-s".as_ref(), archive.as_os_str()])?;
+        if !names.status.success() || !totals.status.success() || !short.status.success() {
             return Err("El paquete descargado no es un zip válido.".to_string());
         }
+        let unreadable = || "No se pudo leer el índice del paquete descargado.".to_string();
         let (entries, uncompressed_bytes) =
             parse_zipinfo_totals(&String::from_utf8_lossy(&totals.stdout))
-                .ok_or_else(|| "No se pudo leer el índice del paquete descargado.".to_string())?;
+                .ok_or_else(unreadable)?;
+        let names: Vec<String> = String::from_utf8_lossy(&names.stdout)
+            .lines()
+            .filter(|line| !line.is_empty())
+            .map(str::to_string)
+            .collect();
+        let symlinks = parse_zipinfo_symlinks(&names, &String::from_utf8_lossy(&short.stdout))
+            .ok_or_else(unreadable)?;
         Ok(ZipListing {
-            names: String::from_utf8_lossy(&names.stdout)
-                .lines()
-                .filter(|line| !line.is_empty())
-                .map(str::to_string)
-                .collect(),
+            names,
+            symlinks,
             entries,
             uncompressed_bytes,
         })
@@ -2022,9 +2077,68 @@ mod tests {
     fn listing(names: &[&str], uncompressed_bytes: u64) -> ZipListing {
         ZipListing {
             names: names.iter().map(|name| name.to_string()).collect(),
+            symlinks: Vec::new(),
             entries: names.len() as u64,
             uncompressed_bytes,
         }
+    }
+
+    #[test]
+    fn zip_listing_rejects_entries_hanging_from_a_symlink() {
+        let names = [
+            "Claude.app/",
+            "Claude.app/Contents/",
+            "Claude.app/Contents/link",
+            "Claude.app/Contents/link/pwned.txt",
+        ];
+        let short = "Archive:  /tmp/package.zip\n\
+Zip file size: 900 bytes, number of entries: 4\n\
+drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 Claude.app/\n\
+drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 Claude.app/Contents/\n\
+lrwxr-xr-x  2.1 unx       17 bX defN 26-Oct-28 14:07 Claude.app/Contents/link\n\
+-rw-r--r--  2.1 unx        5 bX defN 26-Oct-28 14:07 Claude.app/Contents/link/pwned.txt\n\
+4 files, 22 bytes uncompressed, 20 bytes compressed:  9.1%\n";
+        let owned: Vec<String> = names.iter().map(|name| name.to_string()).collect();
+        let symlinks = parse_zipinfo_symlinks(&owned, short).unwrap();
+        assert_eq!(symlinks, vec!["Claude.app/Contents/link".to_string()]);
+        let mut slip = listing(&names, 22);
+        slip.symlinks = symlinks;
+        let error = validate_zip_listing(&slip, 1000).unwrap_err();
+        assert!(error.contains("enlace simbólico"), "{error}");
+
+        // A symlink with nothing under it, and a sibling whose name only starts like it, are fine.
+        let mut legit = listing(
+            &[
+                "Claude.app/",
+                "Claude.app/Contents/link",
+                "Claude.app/Contents/link-data/file",
+            ],
+            22,
+        );
+        legit.symlinks = vec!["Claude.app/Contents/link".to_string()];
+        assert_eq!(validate_zip_listing(&legit, 1000).unwrap(), "Claude.app");
+
+        // A directory entry with the same path as a symlink is also rejected.
+        let mut shadow = listing(&["Claude.app/", "Claude.app/link", "Claude.app/link/"], 22);
+        shadow.symlinks = vec!["Claude.app/link".to_string()];
+        assert!(validate_zip_listing(&shadow, 1000).is_err());
+    }
+
+    #[test]
+    fn zipinfo_short_listing_must_cover_every_name_in_order() {
+        let names: Vec<String> = ["App.app/", "App.app/a b c"]
+            .iter()
+            .map(|name| name.to_string())
+            .collect();
+        let short = "Archive:  x.zip\n\
+drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 App.app/\n\
+-rw-r--r--  2.1 unx        5 bX defN 26-Oct-28 14:07 App.app/a b c\n";
+        assert_eq!(parse_zipinfo_symlinks(&names, short), Some(Vec::new()));
+        let missing = "drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 App.app/\n";
+        assert_eq!(parse_zipinfo_symlinks(&names, missing), None);
+        let swapped = "-rw-r--r--  2.1 unx        5 bX defN 26-Oct-28 14:07 App.app/a b c\n\
+drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 App.app/\n";
+        assert_eq!(parse_zipinfo_symlinks(&names, swapped), None);
     }
 
     #[test]
@@ -2065,6 +2179,7 @@ mod tests {
         let huge = ZipListing {
             entries: names.len() as u64,
             names,
+            symlinks: Vec::new(),
             uncompressed_bytes: 10,
         };
         assert!(validate_zip_listing(&huge, 1000).is_err());
@@ -2301,6 +2416,10 @@ mod tests {
         let tools = SystemMacosTools;
         let listing = tools.list_zip(&archive).unwrap();
         assert_eq!(listing.entries, listing.names.len() as u64);
+        assert_eq!(
+            listing.symlinks,
+            vec!["Fixture.app/Contents/Resources/current".to_string()]
+        );
         let package_size = fs::metadata(&archive).unwrap().len();
         assert_eq!(
             validate_zip_listing(&listing, package_size).unwrap(),
