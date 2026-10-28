@@ -87,21 +87,22 @@
       "tsconfig.json",
       "tsconfig.node.json",
       "package.json",
-      "package-lock.json"
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml"
     ]
   },
   "stack": {
-    "gestor": "npm",
+    "gestor": "pnpm",
     "motor": null,
     "packs": [
       "frontend-react-vite"
     ],
     "comandos": {
       "code-ai-profiles": {
-        "tipos": "npx tsc --noEmit -p tsconfig.json",
-        "build": "npm run build",
-        "relacionadas": "npm run test:scan && npm run test:update && npm run test:format && npm run test:appearance && npm run test:dashboard && npm run test:messages && npm run test:release && npm run test:graph && cargo test --manifest-path src-tauri/Cargo.toml -q",
-        "suite": "npm run test:scan && npm run test:update && npm run test:format && npm run test:appearance && npm run test:dashboard && npm run test:messages && npm run test:release && npm run test:graph && cargo test --manifest-path src-tauri/Cargo.toml"
+        "tipos": "pnpm exec tsc --noEmit -p tsconfig.json",
+        "build": "pnpm build",
+        "relacionadas": "pnpm test:scan && pnpm test:update && pnpm test:format && pnpm test:appearance && pnpm test:dashboard && pnpm test:messages && pnpm test:release && pnpm test:graph && cargo test --manifest-path src-tauri/Cargo.toml -q",
+        "suite": "pnpm test:scan && pnpm test:update && pnpm test:format && pnpm test:appearance && pnpm test:dashboard && pnpm test:messages && pnpm test:release && pnpm test:graph && cargo test --manifest-path src-tauri/Cargo.toml"
       }
     }
   },
@@ -111,13 +112,13 @@
   "gatesPropios": [
     {
       "nombre": "grafo versionado al día",
-      "comando": "npm run graph:check",
+      "comando": "pnpm graph:check",
       "cuando": "codigo",
       "nivel": "aviso"
     },
     {
       "nombre": "versiones sincronizadas",
-      "comando": "npm run release:check",
+      "comando": "pnpm release:check",
       "cuando": "codigo",
       "nivel": "aviso"
     }

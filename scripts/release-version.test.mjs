@@ -8,7 +8,6 @@ import { checkVersions, releaseVersion } from "./release-version.mjs";
 const projectRoot = resolve(import.meta.dirname, "..");
 const sourceFiles = [
   "package.json",
-  "package-lock.json",
   "src-tauri/Cargo.toml",
   "src-tauri/Cargo.lock",
   "src-tauri/tauri.conf.json",

@@ -43,22 +43,22 @@ Los instaladores de cada plataforma se compilan en runners nativos mediante [`.g
 
 Requisitos comunes:
 
-- Node.js 24 y npm.
+- Node.js 24 y pnpm 12 (la versión exacta está en `packageManager` de `package.json`).
 - Rust estable mediante `rustup`.
 - Las dependencias de sistema de Tauri 2 para la plataforma.
 
 Instala dependencias y abre el modo de desarrollo:
 
 ```bash
-npm ci
-npm run tauri -- dev
+pnpm install --frozen-lockfile
+pnpm tauri dev
 ```
 
 Verifica el frontend y las pruebas de Rust:
 
 ```bash
-npm run build
-npm run test:scan
+pnpm build
+pnpm test:scan
 cargo test --manifest-path src-tauri/Cargo.toml
 ```
 
@@ -67,11 +67,11 @@ cargo test --manifest-path src-tauri/Cargo.toml
 El repositorio usa Semantic Versioning y actualmente está en `0.2.2`. Para preparar una versión compatible, una funcionalidad o un cambio incompatible, ejecuta:
 
 ```bash
-npm run release:version -- patch
-npm run release:version -- minor
-npm run release:version -- major
-npm run release:version -- 0.2.2
-npm run release:check
+pnpm release:version patch
+pnpm release:version minor
+pnpm release:version major
+pnpm release:version 0.2.2
+pnpm release:check
 ```
 
 `patch` corresponde a fixes compatibles, `minor` a funcionalidades compatibles y `major` a incompatibilidades. Mientras la versión sea `0.y.z`, un `minor` puede incluir incompatibilidades conforme al estándar; el proyecto procurará documentarlas de forma explícita. La herramienta sincroniza las fuentes de versión de Node y Tauri de forma atómica, y `release:check` comprueba que no diverjan. Cambiar una versión no publica un instalador ni crea una release. Consulta [la política completa](docs/versionado.document.md) y el [changelog](CHANGELOG.md).
@@ -84,13 +84,13 @@ Graphify mantiene un grafo local del código que debe consultarse antes del aná
 
 ```bash
 uv tool install graphifyy==0.9.32
-npm run graph:update
+pnpm graph:update
 ```
 
 Antes de enviar cambios, comprueba que el grafo versionado coincide con el código:
 
 ```bash
-npm run graph:check
+pnpm graph:check
 ```
 
 El grafo se extrae localmente mediante AST y no requiere claves ni envía el código a un modelo externo. Consulta [la integración de Graphify](docs/graphify.document.md).
@@ -110,8 +110,8 @@ xcode-select --install
 Compila la aplicación y el DMG:
 
 ```bash
-npm ci
-npm run build:macos
+pnpm install --frozen-lockfile
+pnpm build:macos
 ```
 
 Resultados:
@@ -128,8 +128,8 @@ Como referencia histórica, la entrega local de Apple Silicon `0.2.1` fue verifi
 Instala Microsoft C++ Build Tools con la carga de trabajo «Desktop development with C++», WebView2 y Rust para el target MSVC. Después ejecuta en PowerShell:
 
 ```powershell
-npm ci
-npm run build:windows
+pnpm install --frozen-lockfile
+pnpm build:windows
 ```
 
 Resultados:
@@ -151,8 +151,8 @@ sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev 
 Compila el paquete DEB y el AppImage en una máquina de la arquitectura objetivo:
 
 ```bash
-npm ci
-npm run build:linux
+pnpm install --frozen-lockfile
+pnpm build:linux
 ```
 
 Resultados:

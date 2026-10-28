@@ -162,7 +162,7 @@ src/lib/bridge.ts        el único sitio que llama a invoke(); con mock para el 
 ## Verificación
 
 `cargo fmt --manifest-path src-tauri/Cargo.toml -- --check` y `cargo test --manifest-path
-src-tauri/Cargo.toml -q`. Si cambió `src/types.ts` o `src/lib/bridge.ts`, también `npm run build`.
+src-tauri/Cargo.toml -q`. Si cambió `src/types.ts` o `src/lib/bridge.ts`, también `pnpm build`.
 La suite completa la corre el orquestador (`node .metodo/scripts/pruebas.mjs suite`).
 
 ## Skills relacionadas

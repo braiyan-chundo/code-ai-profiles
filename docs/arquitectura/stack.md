@@ -12,7 +12,7 @@ Lo decide Braiyan Rodriguez (mantenedor). Cada decisión de base tiene su ADR.
 | Observabilidad | | | | |
 | Despliegue | | | | |
 
-Gestor de paquetes: `npm`, siempre.
+Gestor de paquetes: `pnpm`, siempre.
 
 ## Repos
 

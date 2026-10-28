@@ -7,7 +7,7 @@ description: Cómo se construye la interfaz de Code AI Profiles con React 19 y V
 
 <!-- Adaptada del pack frontend-react-vite (2026-10-24) al proyecto real el 2026-10-27 (HU-0011) y a la
      estructura por features el 2026-10-28 (HU-0015). React 19, React Router 7, Vite 6, TypeScript 5.7,
-     Node 24, npm. Sin revisar por el mantenedor. Por debajo de 170 líneas; si crece, índice y fichas. -->
+     Node 24, pnpm. Sin revisar por el mantenedor. Por debajo de 170 líneas; si crece, índice y fichas. -->
 
 ## La regla de oro
 
@@ -83,7 +83,7 @@ Son propios, en `components/Icons.tsx`: un `export const XIcon = (props) => <Ico
 ## Datos y estado
 
 - **`invoke` solo en `lib/bridge.ts`**, con una función tipada por comando y su rama mock para el
-  navegador (`npm run dev`). Las funciones del bridge son de backend: si necesitas una, la pides. Las
+  navegador (`pnpm dev`). Las funciones del bridge son de backend: si necesitas una, la pides. Las
   otras APIs de Tauri, siempre detrás de `bridge.isDesktop()`, viven en tres sitios: `listen` en
   `features/scan/useScanRuntime.ts`, `getCurrentWindow` en `app/layout/window-actions.ts` y
   `convertFileSrc` en `features/instances/instance-icon.ts`.
@@ -126,11 +126,11 @@ un componente. Nada de `VITE_*` con secretos.
   módulo probado usa solo sintaxis borrable, no importa React, el DOM ni `@tauri-apps/api`, y sus
   imports relativos son solo `import type`.
 - `node:assert/strict` y `node:test`, con dobles a mano. No hay Vitest, Testing Library ni MSW.
-- `tsconfig.json` solo incluye `src/`: `npm run build` no revisa los tipos de `tests/`.
+- `tsconfig.json` solo incluye `src/`: `pnpm build` no revisa los tipos de `tests/`.
 - Un archivo de prueba nuevo lleva su script `test:<area>` en `package.json`, su entrada en
   `stack.comandos` (`.metodo/config.json`) y su paso en `.github/workflows/validate.yml`.
 - Hooks, componentes, temas, plataformas y ventana reducida se revisan con la app abierta
-  (`npm run dev`, `npm run tauri dev`) y se anotan en la entrega.
+  (`pnpm dev`, `pnpm tauri dev`) y se anotan en la entrega.
 
 ## Lo que nunca
 
@@ -149,16 +149,16 @@ un componente. Nada de `VITE_*` con secretos.
 - **TanStack Query, Zustand, Redux, SWR**: los datos llegan por IPC y el estado vive en los contextos.
 - **zod, react-hook-form**: los formularios son pocos y se validan a mano (y otra vez en Rust).
 - **Socket.IO o fetch a un servidor**: no hay servidor; solo `invoke` y los eventos de Tauri.
-- **Vitest, Jest, Testing Library, pnpm**: son `node --test` y npm.
+- **Vitest, Jest, Testing Library, npm, yarn**: son `node --test` y pnpm.
 - **`BrowserRouter` u otro router**: es `createHashRouter` de React Router 7; Tauri no resuelve rutas profundas.
 - **Next.js o Electron** (`"use client"`, `ipcRenderer`): esto es una SPA de Vite dentro de Tauri 2.
 
 ## Verificación
 
 ```bash
-npm run build
-npm run test:scan && npm run test:update && npm run test:format
-npm run test:appearance && npm run test:dashboard && npm run test:messages
+pnpm build
+pnpm test:scan && pnpm test:update && pnpm test:format
+pnpm test:appearance && pnpm test:dashboard && pnpm test:messages
 ```
 
 Las relacionadas, con `node .metodo/scripts/pruebas.mjs relacionadas code-ai-profiles <archivos>`. La

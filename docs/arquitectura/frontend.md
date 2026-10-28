@@ -195,7 +195,7 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 - Scripts: `test:scan`, `test:update` (controladores), `test:format`, `test:appearance`, `test:dashboard` y
   `test:messages`.
 - Los hooks, los componentes, los temas, las plataformas y la ventana reducida se verifican con la app abierta
-  (`npm run dev` con el mock, `npm run tauri dev` en escritorio).
+  (`pnpm dev` con el mock, `pnpm tauri dev` en escritorio).
 
 ## Lo que reservó esta estructura para la HU-0014
 

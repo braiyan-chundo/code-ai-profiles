@@ -4,6 +4,13 @@ Todos los cambios relevantes de este proyecto se documentan en este archivo.
 
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
+## [Unreleased]
+
+### Changed
+
+- La interfaz se organiza por funcionalidades (`src/app`, `src/features`, `src/components`, `src/lib`, `src/styles`), con React Router 7 por hash y estado compartido con Context y `useReducer`. No cambia nada visible.
+- El proyecto usa pnpm en lugar de npm: `pnpm-lock.yaml`, versión fijada en `packageManager` y CI con `pnpm install --frozen-lockfile`.
+
 ## [0.2.2] - 2026-10-27
 
 ### Fixed
