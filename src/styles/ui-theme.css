@@ -1,0 +1,123 @@
+/*
+ * Puente shadcn -> tokens de la app (HU-0014). Solo lo importa src/showcase/showcase.css:
+ * index.css NO lo importa, así que la app no lo carga. Los valores de shadcn salen de los tokens
+ * de base.css y theme-light.css; lo que la app no tiene como token va como --ui-* (A-4).
+ * No se declaran --primary ni --muted (A-3): ya son tokens de la app y significan otra cosa
+ * (--muted es un color de texto aquí y un fondo en shadcn); se mapean en @theme inline.
+ */
+
+@custom-variant dark (&:where(.theme-dark, .theme-dark *));
+
+/* Lo que la app no tiene como token. Oscuro (la base) y claro, con la regla de la que sale cada uno. */
+:root,
+.theme-dark {
+  /* .primary-action { color: white } (src/app/layout/shell.css) */
+  --ui-on-primary: #fff;
+  /* texto naranja en oscuro: el token --primary (base.css) */
+  --ui-primary-text: var(--primary);
+  /* inicio del degradado de .modal-card (src/components/modal.css) */
+  --ui-popover: rgba(43, 44, 43, 0.98);
+  /* .modal-backdrop (src/components/modal.css) */
+  --ui-overlay: rgba(5, 6, 5, 0.58);
+}
+.theme-light {
+  /* .theme-light .original-badge (theme-light.css): 4,6:1 sobre #f3efeb */
+  --ui-primary-text: #9c5947;
+  /* inicio del degradado de .theme-light .modal-card (theme-light.css) */
+  --ui-popover: rgba(255, 253, 251, 0.995);
+  /* .theme-light .modal-backdrop (theme-light.css) */
+  --ui-overlay: rgba(67, 50, 43, 0.3);
+}
+
+/* Variables de shadcn. Se declaran en los tres selectores: una custom property se resuelve en el
+   elemento que la declara, y un .theme-light dentro de :root no heredaría valores claros si solo
+   estuvieran en :root. */
+:root,
+.theme-dark,
+.theme-light {
+  --background: var(--surface);
+  --foreground: var(--text);
+  --card: var(--surface-raised);
+  --card-foreground: var(--text);
+  --popover: var(--ui-popover);
+  --popover-foreground: var(--text);
+  --primary-foreground: var(--ui-on-primary);
+  --secondary: var(--surface-soft);
+  --secondary-foreground: var(--text);
+  --muted-foreground: var(--muted);
+  --accent: var(--line);
+  --accent-foreground: var(--text);
+  --destructive: var(--danger);
+  --border: var(--line);
+  --input: var(--line-strong);
+  --ring: var(--primary);
+  --chart-1: var(--primary);
+  --chart-2: var(--primary-soft);
+  --chart-3: var(--primary-bright);
+  --chart-4: var(--muted);
+  --chart-5: var(--quiet);
+  --sidebar: var(--surface);
+  --sidebar-foreground: var(--text);
+  --sidebar-primary: var(--primary-bright);
+  --sidebar-primary-foreground: var(--ui-on-primary);
+  --sidebar-accent: var(--line);
+  --sidebar-accent-foreground: var(--text);
+  --sidebar-border: var(--line);
+  --sidebar-ring: var(--primary);
+  /* botones de .modal-actions */
+  --radius: 14px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  /* El relleno de .primary-action (--primary-bright), no el --primary de texto y foco */
+  --color-primary: var(--primary-bright);
+  --color-primary-foreground: var(--primary-foreground);
+  /* Texto naranja legible en claro (A-4) */
+  --color-primary-text: var(--ui-primary-text);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  /* A-3: --muted de la app es texto; el fondo de shadcn es --surface-soft */
+  --color-muted: var(--surface-soft);
+  --color-muted-foreground: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-overlay: var(--ui-overlay);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* base.css */
+  --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-heading: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  /* appearance.css e instance-editor.css */
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* chips 9, cierre 13, acciones 14, tarjetas 16 (DESIGN.md), ventana 20, modal 26 */
+  --radius-sm: 9px;
+  --radius-md: 12px;
+  --radius-lg: var(--radius);
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 26px;
+  --radius-4xl: 32px;
+}

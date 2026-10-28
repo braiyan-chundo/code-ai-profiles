@@ -6,6 +6,10 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ## [Unreleased]
 
+### Added
+
+- Catálogo de 63 componentes shadcn/ui con el tema de la app y un showcase local en `/showcase.html` (`pnpm dev`), fuera del build y de los instaladores. Skill `code-ai-profiles-ui` con una ficha por componente y la prueba `test:ui`, que vigila que nada del catálogo entre en la app.
+
 ### Changed
 
 - La interfaz se organiza por funcionalidades (`src/app`, `src/features`, `src/components`, `src/lib`, `src/styles`), con React Router 7 por hash y estado compartido con Context y `useReducer`. No cambia nada visible.
