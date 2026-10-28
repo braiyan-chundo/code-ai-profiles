@@ -330,7 +330,7 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793217387.4848623,
+    "mtime": 1793219553.8630402,
     "ast_hash": "bf8a18a22058292e098d9a5c697844c2",
     "semantic_hash": ""
   },
@@ -1710,13 +1710,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0018-descargar-e-instalar-la-original-en-wind/hu.md": {
-    "mtime": 1793217387.4752915,
-    "ast_hash": "938fb837f254560fc306944a45780f47",
+    "mtime": 1793219553.8175788,
+    "ast_hash": "399708dc853ffe90bba6a46b89f6abf9",
     "semantic_hash": ""
   },
   "hu/HU-0018-descargar-e-instalar-la-original-en-wind/seguimiento.md": {
-    "mtime": 1793217387.483794,
-    "ast_hash": "7c786eeb4438a31329b162f05261ffb9",
+    "mtime": 1793219553.8621116,
+    "ast_hash": "275a9d81feddf2c30165625c5c4fb8e9",
     "semantic_hash": ""
   }
 }

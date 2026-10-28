@@ -100,15 +100,15 @@ En las dos plataformas, si la original está en marcha, el botón está deshabil
 
 ## Reglas de negocio afectadas
 
-- **Regla que choca (decide el mantenedor):** la HU-0017 fija «no se piden privilegios» y la documentación
-  dice que en Linux Code AI Profiles «no ejecuta `sudo` ni modifica el sistema». D-2 pide privilegios en Linux
-  a través del diálogo del sistema. Hay que confirmar si se modifica o si se elige la alternativa.
+- **Regla modificada (confirmado por el mantenedor, 2026-10-28, «Pedir contraseña»):** la HU-0017 fija «no se
+  piden privilegios» y la documentación dice que en Linux Code AI Profiles «no ejecuta `sudo` ni modifica el
+  sistema». En Linux, para instalar la actualización de la original, la app pide privilegios a través del
+  diálogo del sistema (`pkexec`), sin ver nunca la contraseña. Se deja su delta al cerrar.
 - La regla de macOS de la HU-0017 se extiende a Windows.
 
 ## Para la persona usuaria
 
-1. **D-2**: en Linux, pedir la contraseña del sistema con `pkexec` o solo mostrar el comando.
-2. **D-1**: en Windows, el `Update.exe` de Squirrel o el instalador oficial en silencio.
+1. **D-1**: en Windows, el `Update.exe` de Squirrel o el instalador oficial en silencio.
 
 **Pendiente humano:** probar en una máquina Windows y en una Linux reales, con una versión nueva publicada.
 
