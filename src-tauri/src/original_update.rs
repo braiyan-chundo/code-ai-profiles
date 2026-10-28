@@ -656,6 +656,487 @@ pub(crate) fn parse_designated_requirement(output: &str) -> Option<String> {
     })
 }
 
+// ---------------------------------------------------------------------------------------------------------
+// Identidad, verificación e intercambio (A-5 pasos 1, 3 y 4).
+// ---------------------------------------------------------------------------------------------------------
+
+const OPERATION_PREFIX: &str = ".code-ai-profiles-original-";
+const OPERATION_LOCK: &str = ".lock";
+const ROLLBACK_FAILED_MARKER: &str = "rollback-failed";
+
+/// Lo que se sabe de la original instalada antes de tocar nada.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct InstalledIdentity {
+    pub(crate) requirement: String,
+    pub(crate) team: String,
+    pub(crate) bundle_id: String,
+    pub(crate) version: String,
+}
+
+pub(crate) fn read_installed_identity(
+    tools: &dyn MacosTools,
+    bundle: &Path,
+) -> Result<InstalledIdentity, String> {
+    tools
+        .verify_signature(bundle, None, true)
+        .map_err(|_| "La firma de la original instalada no es válida.".to_string())?;
+    let team = tools.team_identifier(bundle).ok_or_else(|| {
+        "La original instalada no declara un equipo de firma; no se puede comprobar el paquete nuevo."
+            .to_string()
+    })?;
+    let requirement = tools.designated_requirement(bundle)?;
+    let bundle_id = tools
+        .bundle_value(bundle, "CFBundleIdentifier")
+        .ok_or_else(|| "No se pudo leer el identificador de la original instalada.".to_string())?;
+    let version = tools
+        .bundle_value(bundle, "CFBundleShortVersionString")
+        .filter(|version| valid_release_version(version))
+        .ok_or_else(|| "No se pudo leer la versión de la original instalada.".to_string())?;
+    Ok(InstalledIdentity {
+        requirement,
+        team,
+        bundle_id,
+        version,
+    })
+}
+
+/// La versión del feed es la que vio la persona y es posterior a la instalada.
+pub(crate) fn check_expected_version(
+    package: &FeedPackage,
+    expected_version: &str,
+    installed_version: &str,
+) -> Result<(), String> {
+    if package.version != expected_version.trim() {
+        return Err(format!(
+            "El feed oficial ya anuncia la versión {} y no la {} que se mostró. Vuelve a comprobar las actualizaciones.",
+            package.version,
+            expected_version.trim()
+        ));
+    }
+    if !version_is_newer(&package.version, Some(installed_version)) {
+        return Err(format!(
+            "La original ya tiene la versión {installed_version}, igual o posterior a la {} del feed.",
+            package.version
+        ));
+    }
+    Ok(())
+}
+
+/// Comprobaciones del paquete descomprimido antes de tocar la original (D-1).
+pub(crate) fn verify_staged_app(
+    tools: &dyn MacosTools,
+    staged: &Path,
+    installed: &InstalledIdentity,
+    package: &FeedPackage,
+) -> Result<(), String> {
+    tools
+        .verify_signature(staged, Some(&installed.requirement), true)
+        .map_err(|_| {
+            "La firma del paquete descargado no es válida o no corresponde a la original."
+                .to_string()
+        })?;
+    if tools.team_identifier(staged).as_deref() != Some(installed.team.as_str()) {
+        return Err(
+            "El paquete descargado no está firmado por el mismo equipo que la original."
+                .to_string(),
+        );
+    }
+    tools
+        .assess_gatekeeper(staged)
+        .map_err(|_| "Gatekeeper rechazó el paquete descargado.".to_string())?;
+    if tools.bundle_value(staged, "CFBundleIdentifier").as_deref()
+        != Some(installed.bundle_id.as_str())
+    {
+        return Err("El paquete descargado no es la misma aplicación que la original.".to_string());
+    }
+    let version = tools
+        .bundle_value(staged, "CFBundleShortVersionString")
+        .unwrap_or_default();
+    if version != package.version {
+        return Err(format!(
+            "El paquete descargado declara la versión «{version}» y el feed oficial anunciaba la {}.",
+            package.version
+        ));
+    }
+    if !version_is_newer(&version, Some(&installed.version)) {
+        return Err("El paquete descargado no es posterior a la versión instalada.".to_string());
+    }
+    Ok(())
+}
+
+/// Cómo quedó el intercambio: con `RENAME_SWAP` la anterior está ahora en la ruta del preparado; con el
+/// patrón de dos `rename`, en `backup`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) enum SwapOutcome {
+    Exchanged,
+    Moved { backup: PathBuf },
+}
+
+#[cfg(target_os = "macos")]
+fn exchange_paths(first: &Path, second: &Path) -> std::io::Result<()> {
+    use std::os::unix::ffi::OsStrExt;
+    let first = std::ffi::CString::new(first.as_os_str().as_bytes())
+        .map_err(|_| std::io::Error::from(std::io::ErrorKind::InvalidInput))?;
+    let second = std::ffi::CString::new(second.as_os_str().as_bytes())
+        .map_err(|_| std::io::Error::from(std::io::ErrorKind::InvalidInput))?;
+    // SAFETY: both pointers are valid NUL-terminated strings that outlive the call.
+    let result = unsafe { libc::renamex_np(first.as_ptr(), second.as_ptr(), libc::RENAME_SWAP) };
+    if result == 0 {
+        Ok(())
+    } else {
+        Err(std::io::Error::last_os_error())
+    }
+}
+
+#[cfg(not(target_os = "macos"))]
+fn exchange_paths(_first: &Path, _second: &Path) -> std::io::Result<()> {
+    Err(std::io::Error::from(std::io::ErrorKind::Unsupported))
+}
+
+fn exchange_unsupported(error: &std::io::Error) -> bool {
+    #[cfg(target_os = "macos")]
+    {
+        matches!(error.raw_os_error(), Some(code) if code == libc::ENOTSUP || code == libc::EINVAL)
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        error.kind() == std::io::ErrorKind::Unsupported
+    }
+}
+
+/// Pone `staged` en `destination`. Primero `renamex_np(RENAME_SWAP)`; si el volumen no lo admite, el patrón
+/// de `swap_application_directory` con la anterior en `<previous_dir>/<nombre>`.
+pub(crate) fn swap_bundles(
+    staged: &Path,
+    destination: &Path,
+    previous_dir: &Path,
+) -> Result<SwapOutcome, String> {
+    swap_bundles_with(staged, destination, previous_dir, true)
+}
+
+fn swap_bundles_with(
+    staged: &Path,
+    destination: &Path,
+    previous_dir: &Path,
+    try_exchange: bool,
+) -> Result<SwapOutcome, String> {
+    if try_exchange {
+        match exchange_paths(staged, destination) {
+            Ok(()) => return Ok(SwapOutcome::Exchanged),
+            Err(error) if exchange_unsupported(&error) => {}
+            Err(error) => return Err(format!("No se pudo intercambiar la aplicación: {error}")),
+        }
+    }
+    let name = destination
+        .file_name()
+        .ok_or_else(|| "La ruta de la original no es válida.".to_string())?;
+    fs::create_dir_all(previous_dir)
+        .map_err(|error| format!("No se pudo preparar el respaldo de la original: {error}"))?;
+    let backup = previous_dir.join(name);
+    swap_application_directory(staged, destination, &backup)?;
+    Ok(SwapOutcome::Moved { backup })
+}
+
+/// Deshace `swap_bundles`. La versión rechazada queda en `staged` (intercambio) o en `<op>/failed`.
+pub(crate) fn unswap_bundles(
+    outcome: &SwapOutcome,
+    staged: &Path,
+    destination: &Path,
+    operation_dir: &Path,
+) -> Result<(), String> {
+    match outcome {
+        SwapOutcome::Exchanged => exchange_paths(staged, destination)
+            .map_err(|error| format!("No se pudo restaurar la versión anterior: {error}")),
+        SwapOutcome::Moved { backup } => {
+            let failed = operation_dir.join("failed");
+            fs::rename(destination, &failed)
+                .map_err(|error| format!("No se pudo apartar la versión rechazada: {error}"))?;
+            if let Err(error) = fs::rename(backup, destination) {
+                let _ = fs::rename(&failed, destination);
+                return Err(format!("No se pudo restaurar la versión anterior: {error}"));
+            }
+            Ok(())
+        }
+    }
+}
+
+/// Lo mismo que `validate_source` en macOS, sin depender de la plataforma de las pruebas.
+fn bundle_layout_valid(bundle: &Path) -> bool {
+    #[cfg(target_os = "macos")]
+    {
+        validate_source(bundle).is_ok()
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        bundle.extension().and_then(|value| value.to_str()) == Some("app")
+            && bundle.join("Contents/MacOS/Claude").is_file()
+    }
+}
+
+#[derive(Debug, PartialEq, Eq)]
+pub(crate) enum InstallError {
+    /// No se llegó a tocar la original.
+    Unchanged(String),
+    /// Se intercambió, falló la comprobación final y se volvió a la anterior.
+    Restored(String),
+    /// Falló también la vuelta atrás: el directorio de la operación se conserva.
+    Stuck(String),
+}
+
+/// Intercambia y valida la nueva; si no pasa, vuelve a la anterior. `is_running` se consulta justo antes.
+pub(crate) fn install_staged_app(
+    tools: &dyn MacosTools,
+    staged: &Path,
+    destination: &Path,
+    operation_dir: &Path,
+    installed: &InstalledIdentity,
+    package: &FeedPackage,
+    app_name: &str,
+    is_running: &dyn Fn(&Path) -> bool,
+) -> Result<(), InstallError> {
+    let destination_metadata = fs::symlink_metadata(destination)
+        .map_err(|_| InstallError::Unchanged("La original ya no está en su sitio.".to_string()))?;
+    if !destination_metadata.is_dir() || destination_metadata.file_type().is_symlink() {
+        return Err(InstallError::Unchanged(
+            "La original ya no es una aplicación válida.".to_string(),
+        ));
+    }
+    if is_running(destination) {
+        return Err(InstallError::Unchanged(format!(
+            "Cierra {app_name} para actualizarla."
+        )));
+    }
+    let outcome = swap_bundles(staged, destination, &operation_dir.join("previous"))
+        .map_err(InstallError::Unchanged)?;
+    let validation = if !bundle_layout_valid(destination) {
+        Err("la aplicación nueva no tiene la estructura esperada".to_string())
+    } else if tools
+        .bundle_value(destination, "CFBundleShortVersionString")
+        .as_deref()
+        != Some(package.version.as_str())
+    {
+        Err("la versión instalada no es la del feed".to_string())
+    } else if tools
+        .bundle_value(destination, "CFBundleIdentifier")
+        .as_deref()
+        != Some(installed.bundle_id.as_str())
+    {
+        Err("el identificador de la aplicación cambió".to_string())
+    } else if tools
+        .verify_signature(destination, Some(&installed.requirement), false)
+        .is_err()
+    {
+        Err("la firma en su ubicación final no es válida".to_string())
+    } else {
+        Ok(())
+    };
+    let Err(reason) = validation else {
+        return Ok(());
+    };
+    match unswap_bundles(&outcome, staged, destination, operation_dir) {
+        Ok(()) => Err(InstallError::Restored(format!(
+            "La versión nueva no superó la comprobación final ({reason}). Se restauró la versión anterior."
+        ))),
+        Err(error) => Err(InstallError::Stuck(format!(
+            "La versión nueva no superó la comprobación final ({reason}) y no se pudo volver a la anterior: {error} La versión anterior se conserva en {}.",
+            operation_dir.display()
+        ))),
+    }
+}
+
+// ---------------------------------------------------------------------------------------------------------
+// Directorios temporales y recuperación (A-7).
+// ---------------------------------------------------------------------------------------------------------
+
+fn operation_dir_name(id: Uuid) -> String {
+    format!("{OPERATION_PREFIX}{}", id.hyphenated())
+}
+
+fn is_operation_dir_name(name: &str) -> bool {
+    name.strip_prefix(OPERATION_PREFIX)
+        .and_then(|suffix| Uuid::parse_str(suffix).ok())
+        .is_some_and(|id| operation_dir_name(id) == name)
+}
+
+fn is_staging_dir_name(name: &str) -> bool {
+    Uuid::parse_str(name).is_ok_and(|id| id.hyphenated().to_string() == name)
+}
+
+#[cfg(unix)]
+fn owned_by_current_user(metadata: &fs::Metadata) -> bool {
+    use std::os::unix::fs::MetadataExt;
+    // SAFETY: getuid has no preconditions and cannot fail.
+    metadata.uid() == unsafe { libc::getuid() }
+}
+
+#[cfg(not(unix))]
+fn owned_by_current_user(_metadata: &fs::Metadata) -> bool {
+    false
+}
+
+fn create_private_dir(path: &Path) -> std::io::Result<()> {
+    let mut builder = fs::DirBuilder::new();
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::DirBuilderExt;
+        builder.mode(0o700);
+    }
+    builder.create(path)
+}
+
+/// Un directorio temporal propio con su cerrojo. Al soltarse se limpia, salvo que se pida conservarlo.
+pub(crate) struct OperationDir {
+    path: PathBuf,
+    installation: Option<PathBuf>,
+    keep: std::cell::Cell<bool>,
+    _lock: File,
+}
+
+impl OperationDir {
+    /// `<padre>/.code-ai-profiles-original-<uuid>/`, en el mismo volumen que la original y con modo `0700`.
+    pub(crate) fn beside(installation: &Path, app_name: &str) -> Result<Self, String> {
+        let parent = installation
+            .parent()
+            .ok_or_else(|| "La ruta de la original no es válida.".to_string())?;
+        let path = parent.join(operation_dir_name(Uuid::new_v4()));
+        create_private_dir(&path).map_err(|error| {
+            if error.kind() == std::io::ErrorKind::PermissionDenied {
+                format!(
+                    "No hay permiso para escribir en {}. Code AI Profiles no pide privilegios: usa «Abrir {app_name}».",
+                    parent.display()
+                )
+            } else {
+                format!("No se pudo preparar la carpeta temporal junto a la original: {error}")
+            }
+        })?;
+        Self::locked(path, Some(installation.to_path_buf()))
+    }
+
+    /// `<app_data>/original-update/<uuid>/` para el paquete descargado.
+    pub(crate) fn staging(staging_root: &Path) -> Result<Self, String> {
+        fs::create_dir_all(staging_root)
+            .map_err(|error| format!("No se pudo preparar la carpeta de descarga: {error}"))?;
+        let path = staging_root.join(Uuid::new_v4().hyphenated().to_string());
+        create_private_dir(&path)
+            .map_err(|error| format!("No se pudo preparar la carpeta de descarga: {error}"))?;
+        Self::locked(path, None)
+    }
+
+    fn locked(path: PathBuf, installation: Option<PathBuf>) -> Result<Self, String> {
+        let lock = File::create(path.join(OPERATION_LOCK))
+            .and_then(|file| fs2::FileExt::try_lock_exclusive(&file).map(|_| file));
+        match lock {
+            Ok(lock) => Ok(Self {
+                path,
+                installation,
+                keep: std::cell::Cell::new(false),
+                _lock: lock,
+            }),
+            Err(error) => {
+                let _ = fs::remove_dir_all(&path);
+                Err(format!("No se pudo preparar la carpeta temporal: {error}"))
+            }
+        }
+    }
+
+    pub(crate) fn path(&self) -> &Path {
+        &self.path
+    }
+
+    /// Conserva el directorio (la vuelta atrás falló y dentro está la versión anterior).
+    pub(crate) fn keep(&self) {
+        self.keep.set(true);
+        let _ = fs::write(self.path.join(ROLLBACK_FAILED_MARKER), b"");
+    }
+}
+
+impl Drop for OperationDir {
+    fn drop(&mut self) {
+        if self.keep.get() {
+            return;
+        }
+        match &self.installation {
+            Some(installation) => {
+                cleanup_operation_dir(&self.path, installation);
+            }
+            None => {
+                let _ = fs::remove_dir_all(&self.path);
+            }
+        }
+    }
+}
+
+/// Si falta la original y su respaldo está en `previous/`, la devuelve. Borra el directorio solo si la
+/// original está en su sitio y no hay marca de vuelta atrás fallida. Devuelve si lo borró.
+fn cleanup_operation_dir(operation_dir: &Path, installation: &Path) -> bool {
+    if operation_dir.join(ROLLBACK_FAILED_MARKER).exists() {
+        return false;
+    }
+    if fs::symlink_metadata(installation).is_err() {
+        let Some(name) = installation.file_name() else {
+            return false;
+        };
+        let previous = operation_dir.join("previous").join(name);
+        let restorable = fs::symlink_metadata(&previous)
+            .is_ok_and(|metadata| metadata.is_dir() && !metadata.file_type().is_symlink());
+        if !restorable || fs::rename(&previous, installation).is_err() {
+            return false;
+        }
+    }
+    fs::remove_dir_all(operation_dir).is_ok()
+}
+
+/// Un directorio de operación sin dueño vivo: el cerrojo no lo tiene otro proceso.
+fn operation_is_abandoned(operation_dir: &Path) -> bool {
+    match File::open(operation_dir.join(OPERATION_LOCK)) {
+        Ok(file) => fs2::FileExt::try_lock_exclusive(&file).is_ok(),
+        Err(error) => error.kind() == std::io::ErrorKind::NotFound,
+    }
+}
+
+fn own_plain_dir(path: &Path) -> bool {
+    fs::symlink_metadata(path).is_ok_and(|metadata| {
+        metadata.is_dir() && !metadata.file_type().is_symlink() && owned_by_current_user(&metadata)
+    })
+}
+
+/// Recupera restos de una instalación interrumpida: en el padre de cada instalación candidata (solo
+/// directorios propios con el nombre exacto) y en la carpeta de descargas.
+pub(crate) fn recover_leftovers_in(installations: &[PathBuf], staging_root: &Path) {
+    for installation in installations {
+        let Some(parent) = installation.parent() else {
+            continue;
+        };
+        let Ok(entries) = fs::read_dir(parent) else {
+            continue;
+        };
+        for entry in entries.flatten() {
+            let name = entry.file_name();
+            let Some(name) = name.to_str() else {
+                continue;
+            };
+            let path = entry.path();
+            if is_operation_dir_name(name) && own_plain_dir(&path) && operation_is_abandoned(&path)
+            {
+                cleanup_operation_dir(&path, installation);
+            }
+        }
+    }
+    let Ok(entries) = fs::read_dir(staging_root) else {
+        return;
+    };
+    for entry in entries.flatten() {
+        let name = entry.file_name();
+        let Some(name) = name.to_str() else {
+            continue;
+        };
+        let path = entry.path();
+        if is_staging_dir_name(name) && own_plain_dir(&path) && operation_is_abandoned(&path) {
+            let _ = fs::remove_dir_all(&path);
+        }
+    }
+}
+
 pub(crate) fn install_original_update_sync(
     _app: &AppHandle,
     _request: InstallOriginalUpdateRequest,
@@ -672,6 +1153,8 @@ pub(crate) fn cancel_original_update() -> bool {
 mod tests {
     use super::*;
     use std::cell::Cell;
+    #[cfg(unix)]
+    use std::os::unix::fs::PermissionsExt;
 
     const HOST: &str = "downloads.example.test";
     const SHA: &str = "aa66f2e3c3b8e1a4a0a1d23f1c2b5a6e7d8c9b0a1f2e3d4c5b6a7980716253ab";
@@ -1263,6 +1746,405 @@ mod tests {
             Some("1.2.0")
         );
         assert!(tools.list_zip(&root.join("missing.zip")).is_err());
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    fn installed_identity() -> InstalledIdentity {
+        InstalledIdentity {
+            requirement: REQUIREMENT.to_string(),
+            team: "TEAM123456".to_string(),
+            bundle_id: "com.example.fixture".to_string(),
+            version: "1.0.0".to_string(),
+        }
+    }
+
+    fn package(version: &str) -> FeedPackage {
+        FeedPackage {
+            version: version.to_string(),
+            url: reqwest::Url::parse(&format!("https://{HOST}/a.zip")).unwrap(),
+            sha256: SHA.to_string(),
+            size: 10,
+        }
+    }
+
+    fn version_of(bundle: &Path) -> String {
+        fake_value(bundle, "CFBundleShortVersionString").unwrap()
+    }
+
+    #[test]
+    fn reads_installed_identity_and_requires_a_team() {
+        let root = temp_root("installed-identity");
+        let bundle = root.join("Claude.app");
+        write_fake_bundle(&bundle, &signed("1.0.0"));
+        assert_eq!(
+            read_installed_identity(&FakeTools::default(), &bundle),
+            Ok(installed_identity())
+        );
+        let teamless = root.join("Teamless.app");
+        write_fake_bundle(
+            &teamless,
+            &FakeBundle {
+                team: None,
+                ..signed("1.0.0")
+            },
+        );
+        assert!(read_installed_identity(&FakeTools::default(), &teamless).is_err());
+        let unsigned = root.join("Unsigned.app");
+        write_fake_bundle(
+            &unsigned,
+            &FakeBundle {
+                requirement: None,
+                ..signed("1.0.0")
+            },
+        );
+        assert!(read_installed_identity(&FakeTools::default(), &unsigned).is_err());
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn expected_version_must_match_feed_and_be_newer() {
+        assert_eq!(
+            check_expected_version(&package("1.5.0"), "1.5.0", "1.0.0"),
+            Ok(())
+        );
+        assert!(check_expected_version(&package("1.6.0"), "1.5.0", "1.0.0").is_err());
+        assert!(check_expected_version(&package("1.5.0"), "1.5.0", "1.5.0").is_err());
+        assert!(check_expected_version(&package("1.5.0"), "1.5.0", "2.0.0").is_err());
+    }
+
+    #[test]
+    fn verifies_staged_app_against_installed_identity() {
+        let root = temp_root("verify-staged");
+        let tools = FakeTools::default();
+        let installed = installed_identity();
+        let check = |name: &str, bundle: FakeBundle<'_>, feed_version: &str| {
+            let path = root.join(format!("{name}.app"));
+            write_fake_bundle(&path, &bundle);
+            verify_staged_app(&tools, &path, &installed, &package(feed_version))
+        };
+        assert_eq!(check("ok", signed("1.5.0"), "1.5.0"), Ok(()));
+        let failures = [
+            check(
+                "requirement",
+                FakeBundle {
+                    requirement: Some("identifier \"evil\""),
+                    ..signed("1.5.0")
+                },
+                "1.5.0",
+            ),
+            check(
+                "unsigned",
+                FakeBundle {
+                    requirement: None,
+                    ..signed("1.5.0")
+                },
+                "1.5.0",
+            ),
+            check(
+                "team",
+                FakeBundle {
+                    team: Some("OTHERTEAM1"),
+                    ..signed("1.5.0")
+                },
+                "1.5.0",
+            ),
+            check(
+                "noteam",
+                FakeBundle {
+                    team: None,
+                    ..signed("1.5.0")
+                },
+                "1.5.0",
+            ),
+            check(
+                "gatekeeper",
+                FakeBundle {
+                    gatekeeper: false,
+                    ..signed("1.5.0")
+                },
+                "1.5.0",
+            ),
+            check(
+                "bundle-id",
+                FakeBundle {
+                    id: "com.example.other",
+                    ..signed("1.5.0")
+                },
+                "1.5.0",
+            ),
+            check("version", signed("1.4.9"), "1.5.0"),
+            check("older", signed("0.9.0"), "0.9.0"),
+            check("same", signed("1.0.0"), "1.0.0"),
+        ];
+        for (index, failure) in failures.iter().enumerate() {
+            assert!(failure.is_err(), "case {index}");
+        }
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    struct InstallFixture {
+        root: PathBuf,
+        destination: PathBuf,
+        operation: OperationDir,
+        staged: PathBuf,
+    }
+
+    fn install_fixture(case: &str, staged_bundle: FakeBundle<'_>) -> InstallFixture {
+        let root = temp_root(case);
+        let destination = root.join("Applications/Claude.app");
+        write_fake_bundle(&destination, &signed("1.0.0"));
+        fs::write(destination.join("Contents/marker"), b"old").unwrap();
+        let operation = OperationDir::beside(&destination, "Claude").unwrap();
+        let staged = operation.path().join("staged/Claude.app");
+        write_fake_bundle(&staged, &staged_bundle);
+        InstallFixture {
+            root,
+            destination,
+            operation,
+            staged,
+        }
+    }
+
+    #[test]
+    fn installs_staged_app_and_cleans_the_operation() {
+        let fixture = install_fixture("install-ok", signed("1.5.0"));
+        let operation_path = fixture.operation.path().to_path_buf();
+        #[cfg(unix)]
+        assert_eq!(
+            fs::metadata(&operation_path).unwrap().permissions().mode() & 0o777,
+            0o700
+        );
+        install_staged_app(
+            &FakeTools::default(),
+            &fixture.staged,
+            &fixture.destination,
+            &operation_path,
+            &installed_identity(),
+            &package("1.5.0"),
+            "Claude",
+            &|_| false,
+        )
+        .unwrap();
+        assert_eq!(version_of(&fixture.destination), "1.5.0");
+        assert!(!fixture.destination.join("Contents/marker").exists());
+        drop(fixture.operation);
+        assert!(!operation_path.exists());
+        assert!(fixture.destination.is_dir());
+        fs::remove_dir_all(fixture.root).unwrap();
+    }
+
+    #[test]
+    fn failed_final_check_restores_the_previous_version() {
+        // Passes the pre-swap checks in the fixture but carries the wrong version for the feed.
+        let fixture = install_fixture("install-rollback", signed("1.4.0"));
+        let operation_path = fixture.operation.path().to_path_buf();
+        let result = install_staged_app(
+            &FakeTools::default(),
+            &fixture.staged,
+            &fixture.destination,
+            &operation_path,
+            &installed_identity(),
+            &package("1.5.0"),
+            "Claude",
+            &|_| false,
+        );
+        assert!(
+            matches!(result, Err(InstallError::Restored(ref message)) if message.ends_with("Se restauró la versión anterior."))
+        );
+        assert_eq!(version_of(&fixture.destination), "1.0.0");
+        assert!(fixture.destination.join("Contents/marker").exists());
+        drop(fixture.operation);
+        assert!(!operation_path.exists());
+        fs::remove_dir_all(fixture.root).unwrap();
+    }
+
+    #[test]
+    fn running_original_is_never_touched() {
+        let fixture = install_fixture("install-running", signed("1.5.0"));
+        let operation_path = fixture.operation.path().to_path_buf();
+        let checked = Cell::new(false);
+        let result = install_staged_app(
+            &FakeTools::default(),
+            &fixture.staged,
+            &fixture.destination,
+            &operation_path,
+            &installed_identity(),
+            &package("1.5.0"),
+            "Claude",
+            &|path| {
+                checked.set(path == fixture.destination);
+                true
+            },
+        );
+        assert_eq!(
+            result,
+            Err(InstallError::Unchanged(
+                "Cierra Claude para actualizarla.".to_string()
+            ))
+        );
+        assert!(checked.get());
+        assert_eq!(version_of(&fixture.destination), "1.0.0");
+        assert_eq!(version_of(&fixture.staged), "1.5.0");
+        drop(fixture.operation);
+        fs::remove_dir_all(fixture.root).unwrap();
+    }
+
+    #[test]
+    fn fallback_swap_keeps_previous_and_can_be_undone() {
+        let fixture = install_fixture("swap-fallback", signed("1.5.0"));
+        let operation_path = fixture.operation.path().to_path_buf();
+        let outcome = swap_bundles_with(
+            &fixture.staged,
+            &fixture.destination,
+            &operation_path.join("previous"),
+            false,
+        )
+        .unwrap();
+        let backup = operation_path.join("previous/Claude.app");
+        assert_eq!(
+            outcome,
+            SwapOutcome::Moved {
+                backup: backup.clone()
+            }
+        );
+        assert_eq!(version_of(&fixture.destination), "1.5.0");
+        assert_eq!(version_of(&backup), "1.0.0");
+        unswap_bundles(
+            &outcome,
+            &fixture.staged,
+            &fixture.destination,
+            &operation_path,
+        )
+        .unwrap();
+        assert_eq!(version_of(&fixture.destination), "1.0.0");
+        assert_eq!(version_of(&operation_path.join("failed")), "1.5.0");
+        drop(fixture.operation);
+        assert!(!operation_path.exists());
+        fs::remove_dir_all(fixture.root).unwrap();
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn rename_swap_exchanges_both_bundles_atomically() {
+        let fixture = install_fixture("swap-exchange", signed("1.5.0"));
+        let operation_path = fixture.operation.path().to_path_buf();
+        let outcome = swap_bundles(
+            &fixture.staged,
+            &fixture.destination,
+            &operation_path.join("previous"),
+        )
+        .unwrap();
+        assert_eq!(outcome, SwapOutcome::Exchanged);
+        assert_eq!(version_of(&fixture.destination), "1.5.0");
+        assert_eq!(version_of(&fixture.staged), "1.0.0");
+        unswap_bundles(
+            &outcome,
+            &fixture.staged,
+            &fixture.destination,
+            &operation_path,
+        )
+        .unwrap();
+        assert_eq!(version_of(&fixture.destination), "1.0.0");
+        drop(fixture.operation);
+        fs::remove_dir_all(fixture.root).unwrap();
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn read_only_parent_fails_with_permission_message_before_anything_else() {
+        let root = temp_root("readonly-parent");
+        let applications = root.join("Applications");
+        let destination = applications.join("Claude.app");
+        write_fake_bundle(&destination, &signed("1.0.0"));
+        fs::set_permissions(&applications, fs::Permissions::from_mode(0o555)).unwrap();
+        let result = OperationDir::beside(&destination, "Claude");
+        fs::set_permissions(&applications, fs::Permissions::from_mode(0o755)).unwrap();
+        let error = result.err().unwrap();
+        assert!(
+            error.starts_with("No hay permiso para escribir en"),
+            "{error}"
+        );
+        assert!(error.contains("«Abrir Claude»"));
+        assert_eq!(fs::read_dir(&applications).unwrap().count(), 1);
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn recovery_restores_previous_and_ignores_foreign_entries() {
+        use std::os::unix::fs::symlink;
+        let root = temp_root("recovery");
+        let applications = root.join("Applications");
+        let installation = applications.join("Claude.app");
+        let staging = root.join("original-update");
+        fs::create_dir_all(&staging).unwrap();
+
+        // Interrupted fallback swap: the original was moved to previous/ and never replaced.
+        let interrupted = applications.join(operation_dir_name(Uuid::new_v4()));
+        write_fake_bundle(&interrupted.join("previous/Claude.app"), &signed("1.0.0"));
+        // Foreign names and a symlink with a valid name are never touched.
+        let foreign = applications.join(".code-ai-profiles-original-not-a-uuid");
+        fs::create_dir_all(&foreign).unwrap();
+        let uppercase = applications.join(format!(
+            "{OPERATION_PREFIX}{}",
+            Uuid::new_v4().hyphenated().to_string().to_uppercase()
+        ));
+        fs::create_dir_all(&uppercase).unwrap();
+        let elsewhere = root.join("elsewhere");
+        fs::create_dir_all(&elsewhere).unwrap();
+        let linked = applications.join(operation_dir_name(Uuid::new_v4()));
+        symlink(&elsewhere, &linked).unwrap();
+        // A failed rollback is kept for a person to decide.
+        let kept = applications.join(operation_dir_name(Uuid::new_v4()));
+        fs::create_dir_all(&kept).unwrap();
+        fs::write(kept.join(ROLLBACK_FAILED_MARKER), b"").unwrap();
+        // Downloads: UUID folders go, anything else stays.
+        let download = staging.join(Uuid::new_v4().hyphenated().to_string());
+        fs::create_dir_all(&download).unwrap();
+        fs::write(download.join("package.zip"), b"zip").unwrap();
+        let stray = staging.join("keep-me");
+        fs::create_dir_all(&stray).unwrap();
+
+        recover_leftovers_in(&[installation.clone()], &staging);
+
+        assert_eq!(version_of(&installation), "1.0.0");
+        assert!(!interrupted.exists());
+        assert!(foreign.exists());
+        assert!(uppercase.exists());
+        assert!(fs::symlink_metadata(&linked)
+            .unwrap()
+            .file_type()
+            .is_symlink());
+        assert!(elsewhere.exists());
+        assert!(kept.exists());
+        assert!(!download.exists());
+        assert!(stray.exists());
+
+        // Installed and nothing to restore: the leftover is just removed.
+        let finished = applications.join(operation_dir_name(Uuid::new_v4()));
+        write_fake_bundle(&finished.join("staged/Claude.app"), &signed("0.9.0"));
+        recover_leftovers_in(&[installation.clone()], &staging);
+        assert!(!finished.exists());
+        assert_eq!(version_of(&installation), "1.0.0");
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn recovery_skips_operations_owned_by_a_live_process() {
+        let root = temp_root("recovery-live");
+        let installation = root.join("Applications/Claude.app");
+        write_fake_bundle(&installation, &signed("1.0.0"));
+        let live = OperationDir::beside(&installation, "Claude").unwrap();
+        let live_staging = OperationDir::staging(&root.join("original-update")).unwrap();
+        recover_leftovers_in(&[installation.clone()], &root.join("original-update"));
+        assert!(live.path().exists());
+        assert!(live_staging.path().exists());
+        let (live_path, staging_path) =
+            (live.path().to_path_buf(), live_staging.path().to_path_buf());
+        drop(live);
+        drop(live_staging);
+        assert!(!live_path.exists());
+        assert!(!staging_path.exists());
         fs::remove_dir_all(root).unwrap();
     }
 
