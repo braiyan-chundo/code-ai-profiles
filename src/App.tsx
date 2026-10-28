@@ -79,6 +79,11 @@ import {
   UnlinkIcon,
   XIcon,
 } from "./components/Icons";
+import { ConfirmDialog } from "./components/ConfirmDialog";
+import { EmptyState } from "./components/EmptyState";
+import { LoadingCards } from "./components/LoadingCards";
+import { Metric } from "./components/Metric";
+import { ModalFrame } from "./components/ModalFrame";
 
 interface ScanProgressEvent {
   progress: number;
@@ -887,15 +892,6 @@ function ScanProgressPanel({
   );
 }
 
-function Metric({ label, value, accent = false }: { label: string; value: string; accent?: boolean }) {
-  return (
-    <div className="metric">
-      <span>{label}</span>
-      <strong className={accent ? "danger" : ""}>{value}</strong>
-    </div>
-  );
-}
-
 function OriginalAppSection({
   appName,
   appPath,
@@ -1262,54 +1258,6 @@ function SessionContextMeter({ session }: { session: CodeSession }) {
   );
 }
 
-function LoadingCards() {
-  return (
-    <div className="instance-list" aria-label="Cargando instancias">
-      {[1, 2, 3].map((item) => <div className="skeleton-card" key={item}><span /><span /><span /></div>)}
-    </div>
-  );
-}
-
-function EmptyState({
-  searching,
-  sourceFound,
-  onCreate,
-  onClear,
-  onScan,
-}: {
-  searching: boolean;
-  sourceFound: boolean;
-  onCreate: () => void;
-  onClear: () => void;
-  onScan: () => void;
-}) {
-  if (searching) {
-    return (
-      <div className="empty-state">
-        <div className="empty-icon"><SearchIcon size={29} /></div>
-        <h2>Sin coincidencias</h2>
-        <p>No hay perfiles que coincidan con la búsqueda actual.</p>
-        <button className="secondary-button" onClick={onClear}>Limpiar búsqueda</button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="empty-state">
-      <div className="empty-icon"><CloudIcon size={34} /></div>
-      <h2>{sourceFound ? "Crea tu primer perfil aislado" : "No se detectó una aplicación compatible"}</h2>
-      <p>
-        {sourceFound
-          ? "Code AI Profiles creará una copia administrada y un directorio de datos independiente. Cada perfil podrá iniciar sesión con una cuenta distinta."
-          : "Instala una aplicación compatible y vuelve a escanear el sistema."}
-      </p>
-      <button className={sourceFound ? "primary-action" : "secondary-button"} onClick={sourceFound ? onCreate : onScan}>
-        {sourceFound ? <><PlusIcon size={17} /> Nueva instancia</> : <><RefreshIcon size={17} /> Escanear de nuevo</>}
-      </button>
-    </div>
-  );
-}
-
 function AppearanceDialog({
   preferences,
   onChange,
@@ -1457,32 +1405,6 @@ function OriginalApplicationUpdateDialog({
         </button>
       </div>
     </ModalFrame>
-  );
-}
-
-function ModalFrame({
-  title,
-  subtitle,
-  onClose,
-  closeDisabled = false,
-  children,
-}: {
-  title: string;
-  subtitle?: string;
-  onClose: () => void;
-  closeDisabled?: boolean;
-  children: ReactNode;
-}) {
-  return (
-    <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-      <section className="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <div className="modal-header">
-          <div><h2 id="modal-title">{title}</h2>{subtitle && <p>{subtitle}</p>}</div>
-          <button className="modal-close" onClick={onClose} disabled={closeDisabled} aria-label="Cerrar"><XIcon size={20} /></button>
-        </div>
-        {children}
-      </section>
-    </div>
   );
 }
 
@@ -1907,41 +1829,6 @@ function SessionTransferDialog({
                 ? hasExistingCopy ? "Mover y actualizar" : "Mover sesión"
                 : hasExistingCopy ? "Actualizar copia" : "Copiar sesión"
             }</>}
-        </button>
-      </div>
-    </ModalFrame>
-  );
-}
-
-function ConfirmDialog({
-  title,
-  confirmLabel,
-  busy,
-  busyLabel = "Eliminando…",
-  tone = "danger",
-  onCancel,
-  onConfirm,
-  children,
-}: {
-  title: string;
-  confirmLabel: string;
-  busy: boolean;
-  busyLabel?: string;
-  tone?: "danger" | "neutral";
-  onCancel: () => void;
-  onConfirm: () => Promise<void>;
-  children: ReactNode;
-}) {
-  return (
-    <ModalFrame title={title} onClose={busy ? () => undefined : onCancel}>
-      <div className="confirm-content">
-        <div className="confirm-warning"><AlertIcon size={23} /></div>
-        <p>{children}</p>
-      </div>
-      <div className="modal-actions">
-        <button className="secondary-button" onClick={onCancel} disabled={busy}>Cancelar</button>
-        <button className={tone === "danger" ? "destructive-button" : "primary-action modal-primary"} onClick={() => void onConfirm()} disabled={busy}>
-          {busy ? busyLabel : confirmLabel}
         </button>
       </div>
     </ModalFrame>

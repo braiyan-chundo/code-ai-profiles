@@ -45,8 +45,8 @@
     "semantic_hash": "4ef37201944f5f99cbc3aba02a781215"
   },
   "src/App.tsx": {
-    "mtime": 1793167470.66834,
-    "ast_hash": "581f063e8bc257957188299a4d60a51c",
+    "mtime": 1793167627.2717764,
+    "ast_hash": "d65920e6a97b4c21e9ba0ab993e54b7f",
     "semantic_hash": ""
   },
   "src/components/Icons.tsx": {
@@ -522,6 +522,31 @@
   "tests/result-messages.test.ts": {
     "mtime": 1793167566.285072,
     "ast_hash": "321cb8f730aa48c7d99ee57531ee5561",
+    "semantic_hash": ""
+  },
+  "src/components/ConfirmDialog.tsx": {
+    "mtime": 1793167627.2449284,
+    "ast_hash": "7ce95a7350ec5a715e7c56c7d95df906",
+    "semantic_hash": ""
+  },
+  "src/components/EmptyState.tsx": {
+    "mtime": 1793167627.2463562,
+    "ast_hash": "a10e65b07831d43d1bdf32f738aa1051",
+    "semantic_hash": ""
+  },
+  "src/components/LoadingCards.tsx": {
+    "mtime": 1793167627.2548723,
+    "ast_hash": "f397cf82f0ecd205e5ade0d45335ae6e",
+    "semantic_hash": ""
+  },
+  "src/components/Metric.tsx": {
+    "mtime": 1793167627.252317,
+    "ast_hash": "1c76ef3fa404550c49dcfe6d58e5272c",
+    "semantic_hash": ""
+  },
+  "src/components/ModalFrame.tsx": {
+    "mtime": 1793167627.2438378,
+    "ast_hash": "50cedf127afdbbaea28505fe0d391a68",
     "semantic_hash": ""
   }
 }
