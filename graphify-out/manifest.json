@@ -1,11 +1,11 @@
 {
   "package.json": {
-    "mtime": 1793163864.9977872,
+    "mtime": 1793165232.4939082,
     "ast_hash": "671de5cbe6a837db43a9742ed8d25e38",
     "semantic_hash": ""
   },
   "scripts/graphify.mjs": {
-    "mtime": 1793163847.7754283,
+    "mtime": 1793165232.4942162,
     "ast_hash": "c658069b6525d30ea4dcc95abd046965",
     "semantic_hash": ""
   },
@@ -105,7 +105,7 @@
     "semantic_hash": ""
   },
   ".github/workflows/validate.yml": {
-    "mtime": 1793163864.9983606,
+    "mtime": 1793165232.492107,
     "ast_hash": "93843073827f85b9a042ee245c766f93",
     "semantic_hash": ""
   },
@@ -135,7 +135,7 @@
     "semantic_hash": ""
   },
   "docs/graphify.document.md": {
-    "mtime": 1793163920.4455702,
+    "mtime": 1793165232.4923668,
     "ast_hash": "c551c607278f000453985a9f7add05d0",
     "semantic_hash": ""
   },
@@ -340,8 +340,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793151376.2709756,
-    "ast_hash": "3ecea62a8ae460c90af0462a1e368ba6",
+    "mtime": 1793166306.016132,
+    "ast_hash": "a1eff14ff043faf95d3aefb2c4f8978e",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -390,13 +390,43 @@
     "semantic_hash": "a52615e6cf79ee3f4c1d9c3150c196f2"
   },
   "scripts/graphify-memory.mjs": {
-    "mtime": 1793163840.5439231,
+    "mtime": 1793165232.4939976,
     "ast_hash": "3ff23b64660290c7c3ea18837c16fff7",
     "semantic_hash": ""
   },
   "scripts/graphify-memory.test.mjs": {
-    "mtime": 1793163864.8768945,
+    "mtime": 1793165232.4940794,
     "ast_hash": "98dcb3fbd42526a7a0a4360534a8f5e8",
+    "semantic_hash": ""
+  },
+  "docs/arquitectura/frontend.md": {
+    "mtime": 1793167039.7296586,
+    "ast_hash": "d58e152e67f49066ee8a805cfa35e4f5",
+    "semantic_hash": ""
+  },
+  "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md": {
+    "mtime": 1793166273.1802394,
+    "ast_hash": "a17d3a01c901003bc020f31cfec83ce1",
+    "semantic_hash": ""
+  },
+  "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/seguimiento.md": {
+    "mtime": 1793166273.1888576,
+    "ast_hash": "1674327390fffecbb3ebdd6284b593f7",
+    "semantic_hash": ""
+  },
+  "hu/HU-0015-frontend-escalable-componentes-features-/arquitectura.md": {
+    "mtime": 1793167049.7703433,
+    "ast_hash": "058475865a409ff8d2f9e4b3f191e902",
+    "semantic_hash": ""
+  },
+  "hu/HU-0015-frontend-escalable-componentes-features-/hu.md": {
+    "mtime": 1793166281.253455,
+    "ast_hash": "f59b68d317735110618e2bc452934e5f",
+    "semantic_hash": ""
+  },
+  "hu/HU-0015-frontend-escalable-componentes-features-/seguimiento.md": {
+    "mtime": 1793166306.0155184,
+    "ast_hash": "6e22d85cce23443c223b6811a6ae9a7a",
     "semantic_hash": ""
   }
 }

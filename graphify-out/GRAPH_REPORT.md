@@ -1,26 +1,26 @@
 # Graph Report - Code AI Profiles  (2026-10-28)
 
 ## Corpus Check
-- 75 files · ~86,268 words
+- 81 files · ~95,634 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1161 nodes · 2418 edges · 73 communities (66 shown, 7 thin omitted)
+- 1234 nodes · 2488 edges · 79 communities (70 shown, 9 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 4 edges (avg confidence: 0.5)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7e1bf896`
+- Built from commit: `fa2f80ff`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- AppHandle
 - Result
+- set_instance_icon_sync
 - scripts
 - App.tsx
 - lib.rs
-- Vec
+- Solución
 - types.ts
 - bundle
 - hu0008-macos-launch-ab-diagnostic.sh
@@ -28,7 +28,7 @@
 - source-update-controller.ts
 - compilerOptions
 - release-version.mjs
-- PathBuf
+- system_info_scoped
 - String
 - scan-controller.ts
 - graphify.mjs
@@ -38,8 +38,8 @@
 - Observaciones (no bloquean)
 - tauri.linux.conf.json
 - InstanceCard
+- PathBuf
 - Option
-- Path
 - HU-0002 — Actualizar la aplicación original y mostrar metadatos precisos por modelo y proveedor
 - HU-0003 — Transferencias conscientes de artefactos, actualización disponible y uso en vivo
 - HU-0004 — Sincronización desde la instancia más reciente, cierre robusto, artefactos locales e identidad visual
@@ -84,6 +84,12 @@
 - HU-0012-icono-distintivo-en-el-dock-de-macos/seguimiento.md
 - HU-0013-describir-lo-construido-reglas-arquitect/seguimiento.md
 - copy_code_session_sync
+- ManagedInstance
+- Design system con shadcn y showcase local
+- Frontend escalable: componentes, features y router
+- check_source_update_sync
+- HU-0014-design-system-con-shadcn-y-showcase-loca/seguimiento.md
+- HU-0015-frontend-escalable-componentes-features-/seguimiento.md
 
 ## God Nodes (most connected - your core abstractions)
 1. `copy_code_session_sync()` - 30 edges
@@ -112,15 +118,15 @@
 ## Import Cycles
 - None detected.
 
-## Communities (73 total, 7 thin omitted)
+## Communities (79 total, 9 thin omitted)
 
-### Community 0 - "AppHandle"
-Cohesion: 0.16
-Nodes (35): AppHandle, Mutex, apply_session_links(), clear_instance_icon(), copy_code_session(), create_instance(), dashboard_from_exact_scope(), dashboard_from_exact_scope_async() (+27 more)
+### Community 0 - "Result"
+Cohesion: 0.24
+Nodes (30): AppHandle, Result, clear_instance_icon(), copy_code_session(), create_instance(), dashboard_from_exact_scope(), dashboard_from_exact_scope_async(), dashboard_from_scope() (+22 more)
 
-### Community 1 - "Result"
-Cohesion: 0.25
-Nodes (25): Result, apply_macos_branding_after_update(), apply_macos_custom_icon(), clear_instance_icon_sync(), clear_macos_custom_icon(), clone_directory(), CustomIcon, fingerprint_label() (+17 more)
+### Community 1 - "set_instance_icon_sync"
+Cohesion: 0.15
+Nodes (14): Mutex, atomic_replace_file(), atomically_creates_and_replaces_session_index(), invalidate_application_cache(), managed_bytes(), normalized_icon_png(), normalizes_small_png_icons_and_rejects_invalid_input(), path_size() (+6 more)
 
 ### Community 2 - "scripts"
 Cohesion: 0.04
@@ -132,11 +138,11 @@ Nodes (30): AppearancePreferences, AppTheme, DEFAULT_APPEARANCE, EMPTY_STATE, fo
 
 ### Community 4 - "lib.rs"
 Cohesion: 0.05
-Nodes (41): clean_session_text(), clears_context_after_compaction_until_the_next_response(), contains_model_alias(), context_window_for_model(), CopyCodeSessionRequest, get_live_usage(), get_live_usage_sync(), latest_transcript_context() (+33 more)
+Nodes (45): OsString, application_fingerprint_changes_when_managed_bytes_change(), artifact_export_rejects_symlinks_and_depth_escapes(), ArtifactTransferOutcome, collect_opaque_artifact_files(), CopyCodeSessionRequest, desktop_entry_value(), get_live_usage() (+37 more)
 
-### Community 5 - "Vec"
-Cohesion: 0.14
-Nodes (15): OsString, artifact_export_rejects_symlinks_and_depth_escapes(), artifact_export_roots(), collect_opaque_artifact_files(), MacosOriginalLaunch, MacosSignatureSnapshot, ProcessInventoryEntry, SetInstanceIconRequest (+7 more)
+### Community 5 - "Solución"
+Cohesion: 0.06
+Nodes (31): Arquitectura del frontend, Añadir una feature, Añadir una pantalla, Dónde va cada cosa, Estado, Estilos, Estructura, Las features (+23 more)
 
 ### Community 6 - "types.ts"
 Cohesion: 0.07
@@ -166,13 +172,13 @@ Nodes (22): DOM, DOM.Iterable, ES2022, src, compilerOptions, allowJs, allowSynth
 Cohesion: 0.17
 Nodes (17): canonicalVersion(), cargoPackageBlocks(), checkVersions(), collectState(), main(), packageSection(), parseJson(), readSources() (+9 more)
 
-### Community 13 - "PathBuf"
-Cohesion: 0.05
-Nodes (67): ArtifactMonitorSummary, Child, CodeSession, CustomIcon, DashboardState, Duration, FnOnce, HashMap (+59 more)
+### Community 13 - "system_info_scoped"
+Cohesion: 0.12
+Nodes (22): ManagedInstance, Self, SourceUpdateInfo, annotates_a_session_linked_inside_the_original_app(), apply_session_links(), apply_session_links_to_profile(), detect_original_profile(), InstanceStatus (+14 more)
 
 ### Community 14 - "String"
-Cohesion: 0.15
-Nodes (30): SourceUpdateSource, SourceUpdateStatus, check_apt_update(), check_official_update_feed(), check_source_update(), check_source_update_sync(), create_instance_sync(), CreateInstanceRequest (+22 more)
+Cohesion: 0.17
+Nodes (28): Child, FnOnce, clear_instance_icon_sync(), create_instance_sync(), CreateInstanceRequest, delete_instance_sync(), instance_bundle_name(), launch_instance_sync() (+20 more)
 
 ### Community 15 - "scan-controller.ts"
 Cohesion: 0.19
@@ -206,13 +212,13 @@ Nodes (7): appimage, deb, app, windows, bundle, targets, $schema
 Cohesion: 0.33
 Nodes (7): formatCaptureTime(), formatModelName(), formatSessionTime(), InstanceCard(), InstanceEditor(), managedIconSource(), OriginalAppSection()
 
-### Community 23 - "Option"
-Cohesion: 0.17
-Nodes (20): Option, ArtifactMonitorEntry, ArtifactMonitorSummary, clean_monitor_state(), CodeSessionDocument, latest_artifact_monitor(), linux_desktop_name(), macos_bundle_value() (+12 more)
+### Community 23 - "PathBuf"
+Cohesion: 0.13
+Nodes (23): ArtifactMonitorSummary, DashboardState, HashMap, Instant, PathBuf, SessionTransferInfo, ApplicationFingerprint, applies_the_latest_model_context_and_clamps_percentage() (+15 more)
 
-### Community 24 - "Path"
-Cohesion: 0.14
-Nodes (33): Path, application_fingerprint(), application_fingerprint_changes_when_managed_bytes_change(), apply_external_icon_best_effort(), build_version_topology(), cached_source_version(), codesign_verification(), copy_provider_application() (+25 more)
+### Community 24 - "Option"
+Cohesion: 0.08
+Nodes (78): Option, Path, application_fingerprint(), apply_external_icon_best_effort(), apply_macos_branding_after_update(), apply_macos_custom_icon(), artifact_export_roots(), ArtifactMonitorEntry (+70 more)
 
 ### Community 25 - "HU-0002 — Actualizar la aplicación original y mostrar metadatos precisos por modelo y proveedor"
 Cohesion: 0.10
@@ -359,13 +365,29 @@ Cohesion: 0.50
 Nodes (3): Autorización previa, Resumen, Verificación
 
 ### Community 72 - "copy_code_session_sync"
-Cohesion: 0.14
-Nodes (26): Default, artifact_reference_count(), ArtifactTransferOutcome, atomic_replace_file(), atomically_creates_and_replaces_session_index(), canonical_code_session_id(), copy_code_session_sync(), export_local_artifacts() (+18 more)
+Cohesion: 0.18
+Nodes (20): artifact_reference_count(), canonical_code_session_id(), clean_session_text(), copy_code_session_sync(), find_code_session_index(), load_session_links(), migrate_session_links(), migrates_existing_round_trip_as_a_link_to_the_original() (+12 more)
+
+### Community 73 - "ManagedInstance"
+Cohesion: 0.15
+Nodes (17): CodeSession, CustomIcon, Duration, InstanceStatus, ManagedProcessIdentity, AccountPlan, custom_icon_contract_does_not_modify_the_application_path(), identity_matches_instance() (+9 more)
+
+### Community 74 - "Design system con shadcn y showcase local"
+Cohesion: 0.12
+Nodes (17): AC-01 · El showcase se abre en local, AC-02 · Los componentes tienen el aspecto de la app, AC-03 · Tema oscuro y claro, AC-04 · El showcase no llega a la app empaquetada, AC-05 · Una skill con índice y una ficha por componente, Alcance, Cierre, Criterios de aceptación (+9 more)
+
+### Community 75 - "Frontend escalable: componentes, features y router"
+Cohesion: 0.12
+Nodes (17): AC-01 · La app se ve y funciona igual, AC-02 · Cada pieza en su sitio, AC-03 · Hay un router listo para pantallas nuevas, AC-04 · Lo que ya funcionaba sigue en verde, AC-05 · La arquitectura queda escrita, Alcance, Cierre, Criterios de aceptación (+9 more)
+
+### Community 76 - "check_source_update_sync"
+Cohesion: 0.19
+Nodes (15): Default, SourceUpdateSource, SourceUpdateStatus, check_apt_update(), check_official_update_feed(), check_source_update(), check_source_update_sync(), parse_apt_policy() (+7 more)
 
 ## Knowledge Gaps
-- **519 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+514 more)
+- **575 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+570 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **7 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -375,12 +397,12 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `HU-0004 — Sincronización desde la instancia más reciente, cierre robusto, artefactos locales e identidad visual` connect `HU-0004 — Sincronización desde la instancia más reciente, cierre robusto, artefactos locales e identidad visual` to `index.md`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
 - **Why does `Code AI Profiles` connect `Code AI Profiles` to `README.md`?**
-  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+  _High betweenness centrality (0.009) - this node is a cross-community bridge._
 - **What connects `name`, `private`, `version` to the rest of the system?**
-  _519 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _575 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `scripts` be split into smaller, more focused modules?**
   _Cohesion score 0.043478260869565216 - nodes in this community are weakly interconnected._
 - **Should `App.tsx` be split into smaller, more focused modules?**
   _Cohesion score 0.06464646464646465 - nodes in this community are weakly interconnected._
 - **Should `lib.rs` be split into smaller, more focused modules?**
-  _Cohesion score 0.05084745762711865 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.049667178699436765 - nodes in this community are weakly interconnected._
