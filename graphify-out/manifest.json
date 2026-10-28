@@ -105,7 +105,7 @@
     "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1793163886.5482967,
+    "mtime": 1793170241.9575987,
     "ast_hash": "c66a601a02dbdaedf44371fad816c332",
     "semantic_hash": ""
   },
@@ -290,8 +290,8 @@
     "semantic_hash": ""
   },
   "docs/diseno/guias.md": {
-    "mtime": 1793139749.3115158,
-    "ast_hash": "5aee0d49f9d17c057619c57fd56ec3a7",
+    "mtime": 1793170246.8937693,
+    "ast_hash": "32861ac14917abd2aa4ae21835907f04",
     "semantic_hash": ""
   },
   "docs/producto/invariantes.md": {
@@ -335,7 +335,7 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793167185.4056973,
+    "mtime": 1793170260.420306,
     "ast_hash": "080994c5f5b9a36d1cd6cbe6d729e5be",
     "semantic_hash": ""
   },
@@ -420,8 +420,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/seguimiento.md": {
-    "mtime": 1793167185.4052114,
-    "ast_hash": "4f70bc202cd458552f76d26da212237f",
+    "mtime": 1793170260.4197392,
+    "ast_hash": "d390508acbf512de59be6e8c8094ed72",
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/briefs/frontend.md": {

@@ -2,7 +2,7 @@
 id: HU-0015
 titulo: "Frontend escalable: componentes, features y router"
 estado: en-proceso
-fase: arquitectura
+fase: implementacion
 area: interfaz
 entrega: 1
 prioridad: media

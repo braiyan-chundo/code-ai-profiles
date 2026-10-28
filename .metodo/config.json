@@ -100,8 +100,8 @@
       "code-ai-profiles": {
         "tipos": "npx tsc --noEmit -p tsconfig.json",
         "build": "npm run build",
-        "relacionadas": "npm run test:scan && npm run test:update && npm run test:release && npm run test:graph && cargo test --manifest-path src-tauri/Cargo.toml -q",
-        "suite": "npm run test:scan && npm run test:update && npm run test:release && npm run test:graph && cargo test --manifest-path src-tauri/Cargo.toml"
+        "relacionadas": "npm run test:scan && npm run test:update && npm run test:format && npm run test:appearance && npm run test:dashboard && npm run test:messages && npm run test:release && npm run test:graph && cargo test --manifest-path src-tauri/Cargo.toml -q",
+        "suite": "npm run test:scan && npm run test:update && npm run test:format && npm run test:appearance && npm run test:dashboard && npm run test:messages && npm run test:release && npm run test:graph && cargo test --manifest-path src-tauri/Cargo.toml"
       }
     }
   },
