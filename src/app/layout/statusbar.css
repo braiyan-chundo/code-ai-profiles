@@ -1,0 +1,11 @@
+.statusbar { justify-content: space-between; padding: 0 38px; color: #746d6a; background: rgba(255, 255, 255, 0.025); border-top: 1px solid rgba(255, 255, 255, 0.07); font-size: 9px; }
+.footer-group { min-width: 0; gap: 18px; }
+.footer-group > span:not(.footer-divider) { display: inline-flex; align-items: center; gap: 6px; }
+.footer-health { color: #8f8784; font-weight: 700; letter-spacing: 0.16em; }
+.footer-health.healthy { color: #eda28d; }
+.footer-health.warning { color: #dc7d70; }
+.mini-dot { width: 6px; height: 6px; background: currentColor; border-radius: 50%; }
+.footer-divider { width: 1px; height: 18px; background: var(--line); }
+.footer-build { gap: 14px; font: 500 8px/1 JetBrains Mono, monospace; letter-spacing: 0.14em; }
+.footer-build .mini-dot { width: 5px; height: 5px; color: #986c62; }
+

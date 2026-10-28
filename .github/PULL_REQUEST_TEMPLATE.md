@@ -11,10 +11,10 @@
 
 ## Verificación
 
-- [ ] Ejecuté `npm run build`.
+- [ ] Ejecuté `pnpm build`.
 - [ ] Ejecuté `cargo test --manifest-path src-tauri/Cargo.toml`.
 - [ ] No incluí credenciales, datos de cuentas ni sesiones privadas.
 - [ ] Actualicé la documentación cuando corresponde.
-- [ ] Ejecuté `npm run graph:update` y versioné los artefactos de Graphify.
+- [ ] Ejecuté `pnpm graph:update` y versioné los artefactos de Graphify.
 
 > Los PR externos dirigidos a `main` se cierran automáticamente. Solo el mantenedor publica cambios desde `develop` hacia `main`.

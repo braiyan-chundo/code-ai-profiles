@@ -38,6 +38,10 @@ El escaneo manual usa `scan()` y es el único que instala un listener de progres
 
 Si el usuario solicita un escaneo manual mientras hay un refresco de fondo, la solicitud queda visible como espera y se ejecuta después. El controlador conserva una generación y un lifecycle por operación: listeners, timers, resultados o eventos viejos no pueden reabrir el panel ni sobrescribir un ciclo más reciente, y se limpian al desmontar.
 
+## Peso del frontend
+
+Desde [HU-0015](hu/HU-0015-frontend-escalable-componentes-features-/hu.md) la interfaz usa React Router 7 en modo datos (`createHashRouter`). El JavaScript comprimido pasa de 85,0 a 119,6 kB; el router aporta unos 33 kB. La app carga su código desde el disco, así que el coste es de memoria y de análisis, no de red. Si hiciera falta recortarlo, `<HashRouter>` con `<Routes>` pesa 15,5 kB, a cambio de perder la carga diferida y el `errorElement` por ruta.
+
 ## Límites
 
 El alcance reduce lecturas redundantes, pero no fija un tiempo máximo. El rendimiento de una operación aún depende del filesystem, de la cantidad de sesiones, de procesos del proveedor y de las copias físicas de aplicaciones. Crear o sincronizar una aplicación puede tardar de forma perceptible porque copia archivos por diseño. Las pruebas de state machine son sintéticas; no sustituyen una medición temporal dependiente de cada equipo.

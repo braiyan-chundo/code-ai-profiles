@@ -120,7 +120,7 @@ if (action === "check") {
     process.exit(diff.status ?? 1);
   }
   if (diff.stdout.trim()) {
-    console.error("El grafo está desactualizado. Ejecuta `npm run graph:update` y versiona estos cambios:");
+    console.error("El grafo está desactualizado. Ejecuta `pnpm graph:update` y versiona estos cambios:");
     console.error(diff.stdout.trim());
     process.exit(1);
   }
@@ -130,7 +130,7 @@ if (action === "check") {
     encoding: "utf8",
   });
   if (committedManifest.status !== 0 || !existsSync(join(graphDir, "manifest.json"))) {
-    console.error("No existe un manifest.json versionado. Ejecuta `npm run graph:update` y agrégalo al commit.");
+    console.error("No existe un manifest.json versionado. Ejecuta `pnpm graph:update` y agrégalo al commit.");
     process.exit(1);
   }
 

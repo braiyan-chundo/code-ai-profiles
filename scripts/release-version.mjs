@@ -13,7 +13,6 @@ const VERSION_PATTERN = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 
 const SOURCE_FILES = {
   packageJson: "package.json",
-  packageLock: "package-lock.json",
   cargoToml: "src-tauri/Cargo.toml",
   cargoLock: "src-tauri/Cargo.lock",
   tauriConfig: "src-tauri/tauri.conf.json",
@@ -61,14 +60,10 @@ function tomlString(block, key) {
 
 function collectState(contents) {
   const packageJson = parseJson(contents.packageJson, SOURCE_FILES.packageJson);
-  const packageLock = parseJson(contents.packageLock, SOURCE_FILES.packageLock);
   const tauriConfig = parseJson(contents.tauriConfig, SOURCE_FILES.tauriConfig);
 
   if (packageJson.name !== OWN_PACKAGE) {
     throw new Error(`${SOURCE_FILES.packageJson} must describe ${OWN_PACKAGE}.`);
-  }
-  if (packageLock.name !== OWN_PACKAGE || packageLock.packages?.[""]?.name !== OWN_PACKAGE) {
-    throw new Error(`${SOURCE_FILES.packageLock} root package must be ${OWN_PACKAGE}.`);
   }
 
   const cargoTomlPackage = packageSection(contents.cargoToml, SOURCE_FILES.cargoToml)[0];
@@ -87,8 +82,6 @@ function collectState(contents) {
 
   const versions = [
     [SOURCE_FILES.packageJson, packageJson.version],
-    [`${SOURCE_FILES.packageLock} root`, packageLock.version],
-    [`${SOURCE_FILES.packageLock} packages[\"\"]`, packageLock.packages[""].version],
     [SOURCE_FILES.cargoToml, tomlString(cargoTomlPackage, "version")],
     [SOURCE_FILES.cargoLock, tomlString(ownCargoLockBlocks[0][0], "version")],
     [SOURCE_FILES.tauriConfig, tauriConfig.version],
@@ -106,7 +99,6 @@ function collectState(contents) {
   return {
     currentVersion: versions[0][1],
     packageJson,
-    packageLock,
     tauriConfig,
     cargoTomlPackage,
     ownCargoLockBlock: ownCargoLockBlocks[0][0],
@@ -151,19 +143,10 @@ function replaceTomlVersion(text, packageBlock, nextVersion, path) {
 
 function renderContents(contents, state, nextVersion) {
   const packageJson = { ...state.packageJson, version: nextVersion };
-  const packageLock = {
-    ...state.packageLock,
-    version: nextVersion,
-    packages: {
-      ...state.packageLock.packages,
-      "": { ...state.packageLock.packages[""], version: nextVersion },
-    },
-  };
   const tauriConfig = { ...state.tauriConfig, version: nextVersion };
 
   return {
     packageJson: `${JSON.stringify(packageJson, null, 2)}\n`,
-    packageLock: `${JSON.stringify(packageLock, null, 2)}\n`,
     cargoToml: replaceTomlVersion(
       contents.cargoToml,
       state.cargoTomlPackage,

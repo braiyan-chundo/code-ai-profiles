@@ -1,0 +1,47 @@
+.transfer-summary { display: flex; align-items: center; gap: 13px; padding: 14px 15px; background: rgba(255, 141, 108, 0.055); border: 1px solid rgba(255, 141, 108, 0.12); border-radius: 16px; }
+.transfer-session-icon { display: grid; flex: 0 0 auto; width: 38px; height: 38px; place-items: center; color: #e5a08d; background: rgba(255, 141, 108, 0.08); border-radius: 12px; }
+.transfer-summary > div { display: grid; gap: 3px; min-width: 0; }
+.transfer-summary small, .transfer-label { color: #826f69; font: 600 7px/1 JetBrains Mono, monospace; letter-spacing: 0.11em; }
+.transfer-summary strong { overflow: hidden; color: #e2d9d6; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.transfer-summary > div > span { color: #938885; font-size: 10px; }
+.transfer-section { display: grid; gap: 9px; margin-top: 18px; }
+.transfer-label { padding-left: 3px; text-transform: uppercase; }
+.transfer-mode-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.transfer-mode-option { display: grid; grid-template-columns: 20px minmax(0, 1fr); align-items: center; gap: 5px 11px; min-height: 67px; padding: 10px 12px; text-align: left; color: #aaa19e; background: rgba(10, 11, 10, 0.28); border: 1px solid rgba(255, 255, 255, 0.075); border-radius: 14px; cursor: pointer; transition: background 160ms ease, border-color 160ms ease; }
+.transfer-mode-option:hover { background: rgba(255, 255, 255, 0.035); border-color: rgba(255, 255, 255, 0.12); }
+.transfer-mode-option.selected { background: rgba(255, 141, 108, 0.06); border-color: rgba(255, 141, 108, 0.27); }
+.transfer-mode-option > span:nth-child(2) { display: grid; gap: 5px; min-width: 0; }
+.transfer-mode-option strong { color: #d7cfcc; font-size: 11px; }
+.transfer-mode-option small { color: #756c69; font-size: 8px; line-height: 1.3; }
+.transfer-mode-option em { grid-column: 2; width: fit-content; padding: 3px 5px; color: #d99b88; background: rgba(255, 141, 108, 0.07); border-radius: 5px; font: 600 6px/1 JetBrains Mono, monospace; font-style: normal; letter-spacing: 0.06em; }
+.transfer-target-list { display: grid; gap: 8px; }
+.transfer-target { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: center; gap: 11px; width: 100%; min-height: 58px; padding: 10px 12px; text-align: left; color: #aaa19e; background: rgba(10, 11, 10, 0.28); border: 1px solid rgba(255, 255, 255, 0.075); border-radius: 14px; cursor: pointer; transition: background 160ms ease, border-color 160ms ease; }
+.transfer-target:hover { background: rgba(255, 255, 255, 0.035); border-color: rgba(255, 255, 255, 0.12); }
+.transfer-target.selected { background: rgba(255, 141, 108, 0.06); border-color: rgba(255, 141, 108, 0.27); }
+.target-radio { display: grid; width: 18px; height: 18px; place-items: center; border: 1px solid #645b58; border-radius: 50%; }
+.transfer-target.selected .target-radio, .transfer-mode-option.selected .target-radio { border-color: #dc9a87; }
+.target-radio i { display: block; width: 8px; height: 8px; background: transparent; border-radius: 50%; }
+.transfer-target.selected .target-radio i, .transfer-mode-option.selected .target-radio i { background: #e8a18e; box-shadow: 0 0 8px rgba(232, 161, 142, 0.38); }
+.target-copy { display: grid; gap: 5px; min-width: 0; }
+.target-copy strong { overflow: hidden; color: #d7cfcc; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.target-copy small { color: #756c69; font-size: 8px; }
+.target-status { display: inline-flex; align-items: center; gap: 5px; color: #887f7c; font: 600 7px/1 JetBrains Mono, monospace; text-transform: uppercase; }
+.target-status i { width: 6px; height: 6px; background: currentColor; border-radius: 50%; }
+.target-status.status-stopped { color: #9a8f8b; }
+.target-status.status-running { color: #e49a84; }
+.target-status.status-missing { color: #c36f65; }
+.transfer-requirement, .transfer-warning { display: flex; align-items: flex-start; gap: 10px; margin-top: 13px; padding: 12px 13px; border-radius: 14px; }
+.transfer-requirement { color: #e5b18f; background: rgba(196, 116, 65, 0.08); border: 1px solid rgba(222, 149, 100, 0.14); font-size: 10px; line-height: 1.5; }
+.transfer-requirement svg, .transfer-warning svg { flex: 0 0 auto; margin-top: 1px; }
+.transfer-warning { color: #8f8582; background: rgba(255, 255, 255, 0.022); border: 1px solid rgba(255, 255, 255, 0.07); }
+.transfer-warning p { margin: 0; font-size: 9px; line-height: 1.55; }
+.transfer-warning > div { display: grid; gap: 8px; }
+.transfer-warning .artifact-transfer-note { padding-top: 8px; color: #c7a398; border-top: 1px solid rgba(255, 255, 255, 0.07); }
+.artifact-copy-option { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 10px; margin-top: 13px; padding: 12px 13px; color: #aaa19e; background: rgba(77, 137, 91, 0.055); border: 1px solid rgba(109, 171, 123, 0.12); border-radius: 14px; cursor: pointer; }
+.artifact-copy-option input { width: 16px; height: 16px; margin: 1px 0 0; accent-color: #d78d78; }
+.artifact-copy-option > span { display: grid; gap: 5px; }
+.artifact-copy-option strong { color: #c9d8cc; font-size: 10px; }
+.artifact-copy-option small { color: #7f8e82; font-size: 8px; line-height: 1.45; }
+.transfer-empty { margin-top: 18px; padding: 15px; color: #8f8582; background: rgba(255, 255, 255, 0.025); border: 1px dashed rgba(255, 255, 255, 0.09); border-radius: 14px; font-size: 11px; text-align: center; }
+.transfer-actions { margin-top: 19px; }
+

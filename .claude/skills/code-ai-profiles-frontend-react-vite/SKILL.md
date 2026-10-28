@@ -1,146 +1,164 @@
 ---
 name: code-ai-profiles-frontend-react-vite
-description: Cómo se construye la interfaz de Code AI Profiles con React 19 + Vite + TypeScript sobre Tauri - CSS propio con los tokens de DESIGN.md (sin Tailwind ni shadcn), iconos SVG propios, datos vía bridge.ts, controladores puros, temas, plataformas y pruebas con node --test y npm. Cárgala antes de escribir o cambiar cualquier pantalla, componente, estilo o controlador de src/.
+description: Cómo se construye la interfaz de Code AI Profiles con React 19 y Vite en Tauri - features, React Router 7 con hash, Context y useReducer, CSS propio de DESIGN.md sin Tailwind ni shadcn, iconos propios, datos vía bridge.ts, controladores puros, temas, plataformas y pruebas node --test. Cárgala antes de escribir o cambiar cualquier pantalla, ruta, feature, componente, estilo o controlador de src/.
 ---
 
 # React + Vite · Code AI Profiles
 
-<!-- Adaptada del pack frontend-react-vite (2026-10-24) al proyecto real el 2026-10-27 (HU-0011):
-     React 19, Vite 6, TypeScript 5.7, Node 24, npm. Sin revisar por el mantenedor.
-     Por debajo de 170 líneas; si crece, índice y fichas. -->
+<!-- Adaptada del pack frontend-react-vite (2026-10-24) al proyecto real el 2026-10-27 (HU-0011) y a la
+     estructura por features el 2026-10-28 (HU-0015). React 19, React Router 7, Vite 6, TypeScript 5.7,
+     Node 24, pnpm. Sin revisar por el mantenedor. Por debajo de 170 líneas; si crece, índice y fichas. -->
 
 ## La regla de oro
 
-**El sistema de diseño ya existe y está aprobado: `DESIGN.md` + `src/styles.css`.** Lo nuevo se
-construye con sus variables CSS, sus clases y sus patrones. No se trae otra librería de estilos o de
-componentes, no se restiliza de forma global y no se crean primitivas que ya existen. Una dependencia
-nueva necesita una historia y el sí del mantenedor: la app es local y pequeña por diseño.
+**El sistema de diseño ya existe y está aprobado: `DESIGN.md` + el CSS de `src/styles/index.css`.** Lo
+nuevo se construye con sus variables CSS, sus clases y sus patrones. No se trae otra librería de estilos
+o de componentes, no se restiliza de forma global y no se crean primitivas que ya existen. Una
+dependencia nueva necesita una historia y el sí del mantenedor: la app es local y pequeña por diseño.
 
 ## La estructura
 
+El detalle y las reglas de dependencias, en `docs/arquitectura/frontend.md`. Lo que cambia junto vive junto.
+
 ```text
 src/
-  main.tsx                 StrictMode, fuentes locales (@fontsource Inter y JetBrains Mono), styles.css
-  App.tsx                  la app: estado, efectos y los componentes de pantalla (InstanceCard,
-                           SessionTransferDialog, ModalFrame, ConfirmDialog…) en el mismo archivo
-  styles.css               los tokens (:root), los temas, las plataformas y todas las clases
-  components/Icons.tsx     los iconos SVG propios, sobre IconBase
-  lib/bridge.ts            el ÚNICO sitio que llama a invoke(), con mock para el navegador
-  lib/*-controller.ts      lógica con tiempo o concurrencia, pura y con dependencias inyectadas
-  types.ts                 el contrato con Rust (de backend; tú solo lo lees)
-tests/*.test.ts            pruebas de los controladores con node --test
+  main.tsx            StrictMode, fuentes locales (@fontsource), styles/index.css y <App />
+  app/                App.tsx (solo compone), router.tsx (createHashRouter), RouteErrorBoundary
+    providers/        AppProviders, DashboardRuntime (efectos en orden fijo), DialogsProvider
+    layout/           AppShell, Titlebar, Statusbar, DialogHost, window-actions.ts
+    routes/<pantalla> el componente de ruta y lo que solo usa esa pantalla (panel/: PanelRoute, Toolbar)
+  features/<feature>/ componentes, hooks, lógica pura, tipos y CSS; su API pública en index.ts
+                      dashboard (núcleo: store, selectores, useDashboard), scan, updates, instances,
+                      sessions, original-app, appearance
+  components/         piezas sin dominio: Icons, ModalFrame, ConfirmDialog, Metric, EmptyState, LoadingCards
+  lib/                sin React: bridge.ts (el ÚNICO invoke), *-controller.ts, format, errors, platform
+  styles/             index.css (el único que importa CSS), base, animations, theme-light, responsive
+  types.ts            el contrato con Rust (de backend; tú solo lo lees)
+tests/*.test.ts       node --test sobre los módulos puros
 ```
 
-Antes de crear un componente, busca en `App.tsx` uno que ya lo resuelva (`ModalFrame`,
-`ConfirmDialog`, `Metric`, `UsageMeter`, `EmptyState`, `LoadingCards`). Partir `App.tsx` en archivos
-lo decide una historia, no un despacho.
+- `app/` importa todo; nadie importa de `app/`. Entre features, **solo por su `index.ts`** y sin ciclos;
+  `features/dashboard` no importa ninguna feature. Dentro de una feature, imports directos. Imports relativos.
+- Antes de crear un componente, busca uno que ya lo resuelva en `components/` o en la feature.
+- **Pantalla nueva**: `app/routes/<pantalla>/<Pantalla>Route.tsx`, hija de `/` en `app/router.tsx` con
+  `lazy`. Pinta dos hijos sin envoltorio: su barra (fila 2) y su `.content` (fila 3). Se navega con
+  `<Link>` o `useNavigate()`. La URL nunca lleva nombres, rutas de disco ni títulos: a lo sumo un ID opaco.
+- **Feature nueva**: `features/<feature>/` con su `index.ts`; si tiene estado compartido, su contexto y
+  hook en `<feature>-context.ts` y el proveedor en su `.tsx` (fast refresh), montado en `AppProviders`.
 
 ## Estilos
 
-- **CSS plano con clases semánticas** en `styles.css` (`.instance-card`, `.theme-option`…). No se
-  usan CSS Modules, CSS-in-JS ni `style={{}}` con colores o medidas. `style` solo se acepta para
-  valores calculados, como el ancho de una barra de progreso.
+- **CSS plano con clases semánticas** (`.instance-card`, `.theme-option`…). No se usan CSS Modules,
+  CSS-in-JS ni `style={{}}` con colores o medidas. `style` solo para valores calculados (el ancho de
+  una barra de progreso).
+- **Ningún `.tsx` importa CSS.** Solo `src/styles/index.css`, con `@import`. Su orden es la cascada:
+  un import desde un componente la reordenaría según el grafo de módulos.
+- **CSS de una feature nueva**: `features/<feature>/<feature>.css` con clases de su prefijo, importado
+  después del último archivo de feature y antes de `styles/animations.css`. Sus `.theme-light …` y
+  `@media` van al final de su archivo. No sobrescribe clases compartidas (`.primary-action`, `.modal-card`).
+- **Lo existente** en tema claro o ventana reducida se cambia en `styles/theme-light.css` y
+  `styles/responsive.css`: repartirlos alteraría el orden de reglas de igual especificidad.
 - **Tokens**: `--surface`, `--surface-raised`, `--line`, `--text`, `--muted`, `--quiet`, `--primary`,
-  `--danger`… en `:root`. Úsalos en lugar de repetir hex sueltos. Hay reglas antiguas con
+  `--danger`… en `:root` (`styles/base.css`). Úsalos en lugar de hex sueltos. Hay reglas antiguas con
   `rgba(...)` directos: no las copies, y si tocas una, pásala al token.
-- **Temas**: el shell lleva `theme-dark` o `theme-light`; `system` se resuelve con `matchMedia` en
-  `App.tsx`. El oscuro es la base (`:root` y las reglas sin prefijo). `.theme-light …` lo
-  sobrescribe y `.theme-dark` no tiene reglas: no escribas reglas `.theme-dark` vacías. Cada regla
-  nueva con color lleva su contrapartida en `.theme-light`; si no, el tema claro sale roto.
-- **Plataformas**: el shell lleva `platform-macos`, `platform-windows` o `platform-linux`, y cada
-  una tiene su `tauri.<os>.conf.json`. En Windows la ventana no tiene decoraciones y usa las
-  `.window-controls` propias. En macOS los semáforos nativos van superpuestos (`titleBarStyle:
-  Overlay`, se les deja sitio con `padding-left`). En Linux la barra la pone el gestor de ventanas.
-  En los dos últimos se ocultan `.window-controls`.
-- **Densidad**: los tamaños de sesión salen de las variables `--session-*`, que cambian con
-  `session-text-compact` o `session-text-large`. No fijes px ahí.
-- **Ventana reducida**: la mínima es 980×680. Hay cortes en `@media (max-width: 1260px)` y
-  `(max-width: 1070px)`, y se respeta `prefers-reduced-motion`.
-- Las fuentes son locales (`@fontsource`). La CSP solo permite `font-src 'self' data:`, así que nada
-  de Google Fonts ni de CDNs.
+- **Temas**: el shell (`AppShell`) lleva `theme-dark` o `theme-light`; `system` lo resuelve
+  `AppearanceProvider` con `matchMedia`. El oscuro es la base; `.theme-light …` lo sobrescribe y
+  `.theme-dark` no tiene reglas. Cada regla nueva con color lleva su contrapartida en `.theme-light`.
+- **Plataformas**: el shell lleva `platform-macos`, `platform-windows` o `platform-linux`. En Windows
+  la ventana no tiene decoraciones y usa las `.window-controls` propias. En macOS los semáforos van
+  superpuestos (`titleBarStyle: Overlay`, se les deja sitio con `padding-left`). En Linux la barra la
+  pone el gestor de ventanas. En los dos últimos se ocultan `.window-controls`.
+- **DOM**: hay reglas con `:nth-of-type` y los diálogos van dentro de `.desktop-shell`, después de
+  `<main>` (`DialogHost`). Nada de envoltorios nuevos sin revisar el CSS, ni portales a `body`.
+- **Densidad**: los tamaños de sesión salen de `--session-*`, que cambian con `session-text-compact`
+  o `session-text-large`. **Ventana reducida**: mínima 980×680, cortes en 1260 y 1070 px y
+  `prefers-reduced-motion`. Fuentes locales: la CSP solo permite `font-src 'self' data:`.
 
 ## Iconos
 
 Son propios, en `components/Icons.tsx`: un `export const XIcon = (props) => <IconBase …>` con un
-`viewBox` de 24, `stroke="currentColor"` y `aria-hidden`. El color se hereda del texto. Un botón que
-solo tiene un icono lleva `aria-label` en español.
+`viewBox` de 24, `stroke="currentColor"` y `aria-hidden`. Un botón que solo tiene un icono lleva
+`aria-label` en español.
 
 ## Datos y estado
 
-- **`invoke` solo se usa en `lib/bridge.ts`**, con una función tipada por comando. En el navegador
-  (`npm run dev`, sin `__TAURI_INTERNALS__`) responde el mock. Si añades una función, añade también
-  su rama mock. Las funciones del bridge son de backend: si necesitas una nueva, la pides.
-  `listen`, `getCurrentWindow` y `convertFileSrc` se usan en `App.tsx`, y solo detrás de
-  `bridge.isDesktop()`.
-- Casi todos los comandos devuelven el `DashboardState` completo. Se reemplaza el estado con lo que
-  llega; no se parchea a mano ni se guarda una copia en otro sitio.
-- El estado vive en `App.tsx` con `useState` y `useRef`. No hay store global.
-- La lógica con temporizadores, reintentos o carreras (escaneo, comprobación de actualización) va en
-  un **controlador puro** en `lib/` (`createScanController`). Recibe por parámetro el reloj y las
-  funciones que llaman a Rust, no importa React y se prueba sin DOM. Los resultados viejos se
-  descartan por `generation`.
-- Eventos de Rust: `listen` de `@tauri-apps/api/event`. Guardas la función de baja y la llamas en
-  `finally` o al desmontar. Antes de usar el payload, compruebas con un ref que el ciclo del listener
-  sigue vigente: es el patrón de `scan-progress` en el `runManual` de `App.tsx`.
-- `localStorage` solo guarda preferencias de apariencia, y se validan campo por campo al leerlas.
-  Nunca guarda datos de perfiles ni de sesiones.
+- **`invoke` solo en `lib/bridge.ts`**, con una función tipada por comando y su rama mock para el
+  navegador (`pnpm dev`). Las funciones del bridge son de backend: si necesitas una, la pides. Las
+  otras APIs de Tauri, siempre detrás de `bridge.isDesktop()`, viven en tres sitios: `listen` en
+  `features/scan/useScanRuntime.ts`, `getCurrentWindow` en `app/layout/window-actions.ts` y
+  `convertFileSrc` en `features/instances/instance-icon.ts`.
+- **Store**: `features/dashboard` (`useReducer` con un reducer puro). `useDashboard()` da `dashboard`,
+  `loading`, `busy`, `error`, `notice`, `iconPreviews`, `busyRef` y acciones estables. El `DashboardState`
+  que devuelve Rust se **reemplaza** (`replaceDashboard`); las fusiones parciales son funciones puras
+  que pasan por `updateDashboard`. `runAction(key, action)` marca `busy`, limpia el error, reemplaza y libera.
+- **Otros contextos**: `useScan()`, `useSourceUpdate()`, `useAppearance()` y `useDialogs()` (siete
+  banderas independientes y Escape). Estado local de una pieza: `useState` en la pieza. Sin librería de estado.
+- **Efectos de toda la app**: un hook `use…Runtime` llamado desde `app/providers/DashboardRuntime.tsx`,
+  que fija el orden. El `focus` de la actualización oficial va **antes** que el del refresco en segundo
+  plano (lo consume). Ningún otro componente registra `focus`, `blur` ni `visibilitychange`. Si un hook
+  crea un controlador y además registra un efecto, se parte en dos (`useScanRuntime`/`useScanLifecycle`)
+  para que el orden de registro no cambie, y sus efectos solo dependen de valores estables (acciones del
+  store, refs): una dependencia nueva vuelve a registrar el listener en cada render.
+- **Controladores puros** en `lib/*-controller.ts` para tiempo, reintentos o carreras: reciben el reloj
+  y las llamadas a Rust, no importan React, se crean una vez (ref perezoso, encima del router) y
+  descartan resultados viejos por `generation`.
+- **Eventos de Rust**: guardas la función de baja y la llamas en `finally` o al desmontar; antes de usar
+  el payload compruebas con un ref que el ciclo sigue vigente (`scan-progress` en `useScanRuntime`).
+- Los manejadores leen el estado del render en el que se crearon; no se «arreglan» con refs.
+- `localStorage` solo guarda la apariencia (`code-ai-profiles:appearance`), validada campo a campo.
 
 ## Estados de cada superficie
 
 Cargando (`LoadingCards`), vacío (`EmptyState`), error con un mensaje que diga qué hacer, deshabilitado
-mientras hay una operación en curso (`busy`), foco visible (`:focus-visible` ya definido), ventana
-reducida, y tema claro, oscuro y del sistema. Los textos de la interfaz van en español; el código, en
-inglés.
+con `busy`, foco visible (`:focus-visible`), ventana reducida, y tema claro, oscuro y del sistema. Los
+textos de la interfaz van en español; el código, en inglés.
 
 ## Configuración y enlaces
 
-Hoy la interfaz no lee `import.meta.env`. Si alguna vez hace falta, se crea `src/config.ts` como único
-lector y se añade la ficha en `.env.example`. Las URLs fijas van al archivo de enlaces declarado
-(`src/lib/links.*`, todavía no existe), nunca escritas en un componente. Nada de `VITE_*` con secretos.
+Hoy la interfaz no lee `import.meta.env`. Si hace falta, se crea `src/config.ts` como único lector y se
+añade la ficha en `.env.example`. Las URLs fijas van a `src/lib/links.ts` (todavía no existe), nunca en
+un componente. Nada de `VITE_*` con secretos.
 
 ## Pruebas
 
-- `node --test` de Node 24, que ejecuta `.ts` quitando los tipos. Por eso:
-  - las pruebas importan con la extensión: `from "../src/lib/scan-controller.ts"`;
-  - en los archivos que se prueban, solo sintaxis TypeScript borrable: nada de `enum`, `namespace`
-    ni propiedades de parámetro, y `import type` para los tipos;
-  - el módulo que se prueba no importa React, el DOM ni `@tauri-apps/api`, y sus imports relativos
-    solo pueden ser `import type`: Node exige la extensión `.ts` y `tsc` la rechaza.
-- `node:assert/strict` y `node:test`, con dobles a mano (`deferred()`, un reloj falso). No hay
-  Vitest, Testing Library ni MSW.
-- `tsconfig.json` solo incluye `src/`, así que `npm run build` no revisa los tipos de `tests/`.
-- Un archivo de prueba nuevo lleva su script `test:<area>` en `package.json`, entra en
-  `stack.comandos` (`.metodo/config.json`) y tiene su paso en `.github/workflows/validate.yml`.
-- Lo que no se puede probar sin DOM (temas, ventana reducida, plataformas) se revisa a mano con
-  `npm run dev` y se anota en la entrega.
+- `node --test` de Node 24, que ejecuta `.ts` quitando los tipos. Por eso las pruebas importan el
+  archivo del módulo con extensión (`../src/lib/format.ts`), nunca el `index.ts` de la feature; el
+  módulo probado usa solo sintaxis borrable, no importa React, el DOM ni `@tauri-apps/api`, y sus
+  imports relativos son solo `import type`.
+- `node:assert/strict` y `node:test`, con dobles a mano. No hay Vitest, Testing Library ni MSW.
+- `tsconfig.json` solo incluye `src/`: `pnpm build` no revisa los tipos de `tests/`.
+- Un archivo de prueba nuevo lleva su script `test:<area>` en `package.json`, su entrada en
+  `stack.comandos` (`.metodo/config.json`) y su paso en `.github/workflows/validate.yml`.
+- Hooks, componentes, temas, plataformas y ventana reducida se revisan con la app abierta
+  (`pnpm dev`, `pnpm tauri dev`) y se anotan en la entrega.
 
 ## Lo que nunca
 
-- Llamar a `invoke` fuera de `bridge.ts`, o usar una API de Tauri sin `bridge.isDesktop()`: rompe el
-  modo navegador y el mock.
-- Colores, sombras o medidas nuevas fuera de los tokens, o una regla de color sin su `.theme-light`.
+- `invoke` fuera de `bridge.ts`, o una API de Tauri sin `bridge.isDesktop()`.
+- Colores, sombras o medidas fuera de los tokens, o una regla de color sin su `.theme-light`.
+- Un `import "./x.css"` en un componente, o un envoltorio nuevo en el DOM sin revisar el CSS.
 - Mostrar o guardar contenido de un perfil (prompts, respuestas, transcripts, credenciales) más allá
-  de los metadatos que da `types.ts`. Es la promesa central del producto.
-- Inventar en la interfaz datos que Rust no puede obtener de forma segura.
-- Cambiar `types.ts` o las firmas de `bridge.ts`: eso se devuelve al orquestador.
+  de los metadatos de `types.ts`, también en la URL. Es la promesa central del producto.
+- Inventar datos que Rust no puede obtener de forma segura, o cambiar `types.ts` o las firmas de
+  `bridge.ts`: eso se devuelve al orquestador.
 
 ## Lo que no se toma prestado
 
-- **Tailwind, shadcn/ui, `cn()`, `cva`**: aquí el CSS es propio. No se migra lo que hay.
+- **Tailwind, shadcn/ui, `cn()`, `cva`**: el CSS es propio (la HU-0014 reserva `components/ui/`).
 - **lucide-react** u otra librería de iconos: están en `Icons.tsx`.
-- **TanStack Query, Zustand, Redux, SWR**: los datos llegan por IPC, no por HTTP, y el estado vive
-  en `App.tsx` y en los controladores.
+- **TanStack Query, Zustand, Redux, SWR**: los datos llegan por IPC y el estado vive en los contextos.
 - **zod, react-hook-form**: los formularios son pocos y se validan a mano (y otra vez en Rust).
 - **Socket.IO o fetch a un servidor**: no hay servidor; solo `invoke` y los eventos de Tauri.
-- **Vitest, Jest, Testing Library, pnpm**: son `node --test` y npm.
-- **React Router**: es una sola ventana con diálogos.
+- **Vitest, Jest, Testing Library, npm, yarn**: son `node --test` y pnpm.
+- **`BrowserRouter` u otro router**: es `createHashRouter` de React Router 7; Tauri no resuelve rutas profundas.
 - **Next.js o Electron** (`"use client"`, `ipcRenderer`): esto es una SPA de Vite dentro de Tauri 2.
 
 ## Verificación
 
 ```bash
-npm run build
-npm run test:scan && npm run test:update
+pnpm build
+pnpm test:scan && pnpm test:update && pnpm test:format
+pnpm test:appearance && pnpm test:dashboard && pnpm test:messages
 ```
 
 Las relacionadas, con `node .metodo/scripts/pruebas.mjs relacionadas code-ai-profiles <archivos>`. La

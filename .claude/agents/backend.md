@@ -40,7 +40,7 @@ Si falta algo de fondo, lo devuelves en vez de improvisarlo. Sin brief no se imp
 - La regla de negocio vive en el servicio de dominio, nunca en el controlador.
 - Lo que se toma una sola vez, con una escritura condicionada; cambio de estado y su efecto, en la misma transacción.
 - **Ante una respuesta incierta** de algo que pudo cobrarse o enviarse (¿se cobró?, ¿salió el correo?), estado recuperable y **sin reintento automático**: lo decide una persona. Un envío idempotente (con clave de deduplicación) sí se reintenta por la cola, con su política.
-- Una dependencia nueva necesita un ADR del arquitecto. `npm`, siempre.
+- Una dependencia nueva necesita un ADR del arquitecto. `pnpm`, siempre.
 
 ## Pruebas
 
@@ -56,7 +56,7 @@ node .metodo/scripts/pruebas.mjs relacionadas <repo> <archivos que tocaste>
 
 - Tu capa es Rust y Tauri 2: comandos IPC, sistema de archivos, procesos, persistencia local, empaquetado e integraciones locales con la aplicación de IA compatible.
 - Antes de editar `src-tauri/` o el contrato (`src/types.ts`, `src/lib/bridge.ts`) cargas la skill `code-ai-profiles-rust-tauri`, porque recoge las rutas, procesos y plataformas que más caro sale romper.
-- Antes de entregar corres `cargo fmt --manifest-path src-tauri/Cargo.toml -- --check` y `cargo test --manifest-path src-tauri/Cargo.toml`, y también `npm run build` si cambia el contrato TypeScript.
+- Antes de entregar corres `cargo fmt --manifest-path src-tauri/Cargo.toml -- --check` y `cargo test --manifest-path src-tauri/Cargo.toml`, y también `pnpm build` si cambia el contrato TypeScript.
 - Validas rutas, identificadores y estado de procesos antes de copiar, mover, reemplazar o eliminar. Las operaciones son recuperables, los perfiles quedan aislados y nunca usas rutas amplias o destructivas, porque son datos reales del usuario.
 - Añades pruebas Rust para lógica, parsing, migraciones y operaciones destructivas o de sistema de archivos.
 - De `src/` solo tocas el contrato mínimo acordado (`src/types.ts`, `src/lib/bridge.ts`). Los componentes visuales son de frontend.
