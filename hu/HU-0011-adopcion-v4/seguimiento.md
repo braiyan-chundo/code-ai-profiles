@@ -18,3 +18,4 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-10-27 20:35 | orquestador | Revisión técnica: FAIL (R-1 rutas/entorno, R-2 relacionadas sin pruebas) → corregidos R-1…R-14 → re-revisión PASS. Skill rust-tauri instalada como skill del proyecto (D-1) y regla en reglas/backend.md; cargo test en stack.comandos.relacionadas; .graphifyignore ignora los adaptadores archivados; grafo actualizado. Pendientes de la adopción → HU-0013 (en espera). |
 | 2026-10-27 20:35 | orquestador | Veredicto de Braiyan Rodriguez: «cerra todo con lo recomendado». |
 | 2026-10-27 20:35 | hu.mjs | estado en-proceso → terminada |
+| 2026-10-27 20:36 | orquestador | Cierre: commit 70a2261 en adopcion-v4 (code-ai-profiles); suite en verde sobre ese SHA; graph:check al día. Sin push. |
