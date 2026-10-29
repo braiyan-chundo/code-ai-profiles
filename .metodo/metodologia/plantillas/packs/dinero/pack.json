@@ -1,0 +1,17 @@
+{
+  "nombre": "dinero",
+  "tipo": "dominio",
+  "roles": [
+    "architect",
+    "data",
+    "backend",
+    "fullstack"
+  ],
+  "siempre": [],
+  "skills": [
+    "dinero"
+  ],
+  "version": "0.1.0",
+  "origen": "skill de dinero de la v3",
+  "probado-en": []
+}

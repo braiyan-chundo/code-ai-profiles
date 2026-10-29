@@ -17,3 +17,6 @@ graphify-out/*
 
 # Graphify's generated Codex hook contains a machine-local executable path.
 .codex/hooks.json
+# metodología v4
+.metodo/pruebas/
+.metodo/actividad.log

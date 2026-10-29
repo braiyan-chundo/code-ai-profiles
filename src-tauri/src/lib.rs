@@ -17,6 +17,11 @@ use sysinfo::{ProcessRefreshKind, RefreshKind, System, UpdateKind};
 use tauri::{AppHandle, Emitter, Manager, WebviewWindow};
 use uuid::Uuid;
 
+mod config;
+#[cfg(target_os = "macos")]
+mod macos_icon;
+mod original_update;
+
 const REGISTRY_VERSION: u32 = 1;
 const ORIGINAL_INSTANCE_ID: &str = "__claude_original__";
 const UPDATE_CACHE_FRESH_MS: i64 = 6 * 60 * 60 * 1_000;
@@ -28,8 +33,8 @@ const ICON_MAX_DIMENSION: u32 = 4096;
 const ARTIFACT_EXPORT_MAX_FILES: usize = 256;
 const ARTIFACT_EXPORT_MAX_BYTES: u64 = 256 * 1024 * 1024;
 const MANAGED_BYTES_CACHE_TTL: Duration = Duration::from_secs(30);
-#[cfg(target_os = "macos")]
-const MACOS_WORKSPACE_ICON_STRICT_INCOMPATIBLE: &str = "workspace-icon-strict-incompatible";
+#[cfg(not(target_os = "macos"))]
+const DOCK_ICON_MACOS_ONLY: &str = "El icono del Dock solo se aplica en macOS.";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -117,6 +122,16 @@ struct CustomIcon {
     revision: u64,
     system_applied: bool,
     system_message: String,
+    /// macOS only: why the copy could not receive the Finder icon. `None` unless App Management blocked it.
+    #[serde(default)]
+    system_issue: Option<CustomIconSystemIssue>,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+enum CustomIconSystemIssue {
+    AppManagement,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq)]
@@ -373,9 +388,14 @@ impl RefreshScope {
         ..Self::LIGHT
     };
     const VERSIONS: Self = Self {
+        processes: true,
+        bundle_names: false,
         versions: true,
+        usage: false,
+        sessions: false,
         topology: true,
-        ..Self::LIGHT
+        storage: false,
+        force_storage: false,
     };
 }
 
@@ -385,6 +405,7 @@ struct RefreshWorkCounters {
     process_inventories: usize,
     transcript_catalogs: usize,
     version_refreshes: usize,
+    usage_refreshes: usize,
     topology_builds: usize,
     storage_walks: usize,
 }
@@ -525,6 +546,7 @@ struct UsageSnapshot {
 #[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 enum OriginalApplicationUpdateAction {
+    #[cfg_attr(target_os = "macos", allow(dead_code))]
     Download,
     Instructions,
 }
@@ -537,9 +559,17 @@ struct OriginalApplicationUpdateResult {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(target_os = "macos", allow(dead_code))]
 struct OriginalApplicationUpdateTarget {
     action: OriginalApplicationUpdateAction,
     url: &'static str,
+}
+
+#[cfg(target_os = "macos")]
+#[derive(Debug, PartialEq, Eq)]
+struct MacosOriginalLaunch {
+    executable: &'static str,
+    arguments: Vec<std::ffi::OsString>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -724,6 +754,7 @@ struct ManagedPaths {
     session_links: PathBuf,
     source_update_cache: PathBuf,
     artifact_exports: PathBuf,
+    original_update: PathBuf,
 }
 
 impl ManagedPaths {
@@ -741,6 +772,7 @@ impl ManagedPaths {
             session_links: app_data.join("session-links.json"),
             source_update_cache: app_data.join("source-update-cache.json"),
             artifact_exports: app_data.join("artifact-exports"),
+            original_update: app_data.join("original-update"),
             app_data,
             instances,
         })
@@ -1012,26 +1044,23 @@ fn source_display_name(source: &Path) -> Option<String> {
     }
 }
 
+#[cfg_attr(target_os = "macos", allow(dead_code))]
 fn original_application_update_target(
     platform: &str,
     arch: &str,
 ) -> Option<OriginalApplicationUpdateTarget> {
     match (platform, arch) {
-        ("macos", "x86_64" | "aarch64") => Some(OriginalApplicationUpdateTarget {
-            action: OriginalApplicationUpdateAction::Download,
-            url: "https://claude.ai/api/desktop/darwin/universal/dmg/latest/redirect",
-        }),
         ("windows", "x86_64") => Some(OriginalApplicationUpdateTarget {
             action: OriginalApplicationUpdateAction::Download,
-            url: "https://claude.ai/api/desktop/win32/x64/setup/latest/redirect",
+            url: config::windows_x64_download_url(),
         }),
         ("windows", "aarch64") => Some(OriginalApplicationUpdateTarget {
             action: OriginalApplicationUpdateAction::Download,
-            url: "https://claude.ai/api/desktop/win32/arm64/setup/latest/redirect",
+            url: config::windows_arm64_download_url(),
         }),
         ("linux", _) => Some(OriginalApplicationUpdateTarget {
             action: OriginalApplicationUpdateAction::Instructions,
-            url: "https://support.claude.com/en/articles/10065433-install-claude-desktop",
+            url: config::linux_install_guide_url(),
         }),
         _ => None,
     }
@@ -1043,14 +1072,19 @@ fn require_provider_source(source: Option<PathBuf>) -> Result<PathBuf, String> {
     })
 }
 
+#[cfg(target_os = "macos")]
+fn macos_provider_candidates() -> Vec<PathBuf> {
+    let mut candidates = vec![PathBuf::from("/Applications/Claude.app")];
+    if let Some(home) = dirs::home_dir() {
+        candidates.push(home.join("Applications/Claude.app"));
+    }
+    candidates
+}
+
 fn detect_provider_source() -> Option<PathBuf> {
     #[cfg(target_os = "macos")]
     {
-        let mut candidates = vec![PathBuf::from("/Applications/Claude.app")];
-        if let Some(home) = dirs::home_dir() {
-            candidates.push(home.join("Applications/Claude.app"));
-        }
-        candidates
+        macos_provider_candidates()
             .into_iter()
             .find(|path| provider_executable(path).exists())
     }
@@ -1592,65 +1626,14 @@ fn validate_provider_identity(candidate: &Path, original: &Path) -> Result<(), S
     result
 }
 
+/// Stored as `managed_fingerprint` for compatibility; no longer a gate (HU-0020, ★ D-E). macOS only.
+#[cfg(target_os = "macos")]
 fn fingerprint_label(path: &Path) -> Result<String, String> {
     let fingerprint = application_fingerprint(path)
         .ok_or_else(|| "No se pudo calcular el fingerprint de la aplicación.".to_string())?;
     let mut hasher = DefaultHasher::new();
     fingerprint.hash(&mut hasher);
     Ok(format!("{:016x}", hasher.finish()))
-}
-
-#[cfg(target_os = "macos")]
-fn validate_managed_provenance(
-    candidate: &Path,
-    original: &Path,
-    provenance: &ProviderProvenance,
-) -> Result<(), String> {
-    let status = Command::new("/usr/bin/codesign")
-        .args(["--verify", "--deep", "--strict"])
-        .arg(candidate)
-        .status()
-        .map_err(|error| format!("No se pudo validar la firma administrada: {error}"))?;
-    if !status.success() {
-        return Err("La firma de la copia administrada no es válida.".to_string());
-    }
-    let original_bundle = macos_bundle_value(original, "CFBundleIdentifier")
-        .ok_or_else(|| "La original no expone una identidad de bundle.".to_string())?;
-    let candidate_bundle = macos_bundle_value(candidate, "CFBundleIdentifier")
-        .ok_or_else(|| "La copia no expone una identidad de bundle.".to_string())?;
-    if provenance.bundle_identifier != original_bundle || candidate_bundle != original_bundle {
-        return Err("La provenance ya no coincide con la identidad del proveedor.".to_string());
-    }
-    if provenance.provider_team_identifier != macos_team_identifier(original) {
-        return Err(
-            "El proveedor original cambió de firmante; se requiere una copia nueva.".to_string(),
-        );
-    }
-    if provenance.provider_signature_preserved {
-        validate_provider_identity_uncached(candidate, original)?;
-    }
-    let expected_code_hash = provenance
-        .managed_code_hash
-        .as_deref()
-        .ok_or_else(|| "La copia no tiene un sello de provenance vigente.".to_string())?;
-    if macos_code_hash(candidate).as_deref() != Some(expected_code_hash) {
-        return Err("El sello firmado de la copia administrada cambió.".to_string());
-    }
-    if provenance.managed_fingerprint != fingerprint_label(candidate)? {
-        return Err(
-            "La copia administrada fue modificada fuera del flujo de branding.".to_string(),
-        );
-    }
-    Ok(())
-}
-
-#[cfg(not(target_os = "macos"))]
-fn validate_managed_provenance(
-    _candidate: &Path,
-    _original: &Path,
-    _provenance: &ProviderProvenance,
-) -> Result<(), String> {
-    Err("La provenance administrada solo aplica a bundles macOS.".to_string())
 }
 
 fn validate_managed_application_source(
@@ -1678,7 +1661,16 @@ fn validate_managed_application_source(
     }
     validate_source(app_path)?;
     // Donors are security-sensitive: verify their current deep signature instead
-    // of accepting a cached identity result.
+    // of accepting a cached identity result. On macOS a donor with the Finder icon
+    // passes the equivalent check of HU-0020 (A-2).
+    #[cfg(target_os = "macos")]
+    macos_icon::verify_managed_bundle(
+        app_path,
+        original,
+        instance.provider_provenance.as_ref(),
+        &instance.name,
+    )?;
+    #[cfg(not(target_os = "macos"))]
     validate_provider_identity_uncached(app_path, original)?;
     source_version(app_path)
         .filter(|version| valid_release_version(version))
@@ -1696,11 +1688,14 @@ fn validate_managed_application(
         return Err("La aplicación fuente quedó fuera de su root administrado.".to_string());
     }
     validate_source(app_path)?;
-    if let Some(provenance) = instance.provider_provenance.as_ref() {
-        validate_managed_provenance(app_path, original, provenance)?;
-    } else {
-        validate_provider_identity(app_path, original)?;
-    }
+    // HU-0020 (R-3): on macOS a sync target is replaced whole by a staging copy that already passed
+    // `--strict -R =<DR de la original>`, so the target's own signature is not a gate. Inherited ad hoc copies,
+    // copies with icon leftovers and copies that changed outside the app can be recovered by syncing them.
+    // Donors keep the full check in `validate_managed_application_source`.
+    #[cfg(target_os = "macos")]
+    let _ = original;
+    #[cfg(not(target_os = "macos"))]
+    validate_provider_identity(app_path, original)?;
     cached_source_version(app_path)
         .filter(|version| valid_release_version(version))
         .ok_or_else(|| "No se pudo identificar la versión de la instancia fuente.".to_string())
@@ -1869,6 +1864,9 @@ fn read_source_update_cache(
     }
     let mut result = cache.result;
     result.stale = age > UPDATE_CACHE_FRESH_MS;
+    if result.stale {
+        result.status = SourceUpdateStatus::Unavailable;
+    }
     Some(result)
 }
 
@@ -1888,16 +1886,13 @@ fn save_source_update_cache(
     atomic_replace_file(&paths.source_update_cache, &contents)
 }
 
-fn check_official_update_feed(
-    platform: &str,
-    arch: &str,
+/// Consulta el feed oficial y devuelve su JSON. Sin redirecciones, 5 s, 256 KiB y `device_id` nulo.
+fn fetch_official_feed(
+    feed_platform: &str,
+    feed_arch: &str,
     installed_version: &str,
-) -> Result<SourceUpdateInfo, String> {
-    let (feed_platform, feed_arch) = update_feed_target(platform, arch)
-        .ok_or_else(|| "No existe un feed oficial para esta plataforma.".to_string())?;
-    let url = format!(
-        "https://releases.claude.com/api/desktop/{feed_platform}/{feed_arch}/squirrel/update"
-    );
+) -> Result<Value, String> {
+    let url = config::feed_url(feed_platform, feed_arch);
     let client = reqwest::blocking::Client::builder()
         .timeout(std::time::Duration::from_secs(5))
         .redirect(reqwest::redirect::Policy::none())
@@ -1909,7 +1904,7 @@ fn check_official_update_feed(
             ("version", installed_version),
             ("device_id", NULL_DEVICE_ID),
         ])
-        .header(reqwest::header::USER_AGENT, "Code-AI-Profiles/0.1")
+        .header(reqwest::header::USER_AGENT, config::user_agent())
         .send()
         .map_err(|error| format!("No se pudo consultar el feed oficial: {error}"))?;
     if !response.status().is_success() {
@@ -1929,8 +1924,14 @@ fn check_official_update_feed(
     if body.len() as u64 > UPDATE_FEED_MAX_BYTES {
         return Err("La respuesta del feed oficial excede el límite permitido.".to_string());
     }
-    let document: Value = serde_json::from_slice(&body)
-        .map_err(|_| "El feed oficial devolvió metadata inválida.".to_string())?;
+    serde_json::from_slice(&body)
+        .map_err(|_| "El feed oficial devolvió metadata inválida.".to_string())
+}
+
+fn source_update_from_feed(
+    document: &Value,
+    installed_version: &str,
+) -> Result<SourceUpdateInfo, String> {
     let latest_version = document
         .get("currentRelease")
         .and_then(Value::as_str)
@@ -1944,6 +1945,17 @@ fn check_official_update_feed(
         stale: false,
         source: Some(SourceUpdateSource::OfficialFeed),
     })
+}
+
+fn check_official_update_feed(
+    platform: &str,
+    arch: &str,
+    installed_version: &str,
+) -> Result<SourceUpdateInfo, String> {
+    let (feed_platform, feed_arch) = update_feed_target(platform, arch)
+        .ok_or_else(|| "No existe un feed oficial para esta plataforma.".to_string())?;
+    let document = fetch_official_feed(feed_platform, feed_arch, installed_version)?;
+    source_update_from_feed(&document, installed_version)
 }
 
 fn parse_apt_policy(contents: &str) -> (Option<String>, Option<String>) {
@@ -2109,6 +2121,14 @@ fn copy_provider_application(source: &Path, instance_root: &Path) -> Result<Path
         let _ = (source, instance_root, application_root);
         Err("Esta plataforma todavía no está soportada.".to_string())
     }
+}
+
+/// A fresh copy never keeps the Finder icon of its source (HU-0020, A-4.3). Only macOS has one.
+fn strip_inherited_icon_after_copy(app_path: PathBuf) -> Result<PathBuf, String> {
+    #[cfg(target_os = "macos")]
+    macos_icon::strip_inherited_icon(&app_path)
+        .map_err(|error| format!("No se pudo quitar el icono heredado de la copia: {error}"))?;
+    Ok(app_path)
 }
 
 fn instance_bundle_name(name: &str) -> String {
@@ -3451,6 +3471,17 @@ impl ProcessInventory {
             .map(|process| process.start_time)
     }
 
+    /// Algún proceso cuyo ejecutable vive dentro del bundle (la app, sus *Helpers*, `ShipIt`…).
+    fn any_executable_within(&self, bundle: &Path) -> bool {
+        let root = fs::canonicalize(bundle).unwrap_or_else(|_| bundle.to_path_buf());
+        self.entries.iter().any(|process| {
+            process
+                .executable
+                .as_ref()
+                .is_some_and(|executable| executable.starts_with(&root))
+        })
+    }
+
     fn application_is_running(&self, application: &Path) -> bool {
         let executable = provider_executable(application);
         let executable = fs::canonicalize(&executable).unwrap_or(executable);
@@ -3549,6 +3580,8 @@ fn refresh_registry_scoped(
         refresh_instance_versions(registry);
     }
     if scope.usage {
+        #[cfg(test)]
+        record_refresh_work(|counters| counters.usage_refreshes += 1);
         refresh_instance_usage(registry);
     }
     scope.sessions.then(|| {
@@ -3645,16 +3678,8 @@ fn managed_bytes(paths: &ManagedPaths, force: bool) -> u64 {
     value
 }
 
-fn system_info_scoped(
-    paths: &ManagedPaths,
-    registry: &Registry,
-    session_links: &SessionLinkRegistry,
-    transcripts: Option<&HashMap<String, PathBuf>>,
-    inventory: Option<&ProcessInventory>,
-    scope: RefreshScope,
-    previous: Option<&SystemInfo>,
-) -> SystemInfo {
-    let mut info = previous.cloned().unwrap_or_else(|| SystemInfo {
+fn system_info_seed(previous: Option<&SystemInfo>) -> SystemInfo {
+    previous.cloned().unwrap_or_else(|| SystemInfo {
         app_version: env!("CARGO_PKG_VERSION").to_string(),
         platform: platform_name(),
         source_path: None,
@@ -3674,7 +3699,19 @@ fn system_info_scoped(
         original_code_sessions: Vec::new(),
         free_bytes: None,
         managed_bytes: 0,
-    });
+    })
+}
+
+fn system_info_scoped(
+    paths: &ManagedPaths,
+    registry: &Registry,
+    session_links: &SessionLinkRegistry,
+    transcripts: Option<&HashMap<String, PathBuf>>,
+    inventory: Option<&ProcessInventory>,
+    scope: RefreshScope,
+    previous: Option<&SystemInfo>,
+) -> SystemInfo {
+    let mut info = system_info_seed(previous);
     info.app_version = env!("CARGO_PKG_VERSION").to_string();
 
     if scope.versions || scope.topology {
@@ -3730,28 +3767,74 @@ fn dashboard_from_scope(
     app: &AppHandle,
     requested_scope: RefreshScope,
 ) -> Result<DashboardState, String> {
-    with_registry_operation(|| dashboard_from_scope_unlocked(app, requested_scope))
+    with_registry_operation(|| dashboard_from_scope_unlocked(app, requested_scope, true))
+}
+
+fn dashboard_from_exact_scope(
+    app: &AppHandle,
+    requested_scope: RefreshScope,
+) -> Result<DashboardState, String> {
+    with_registry_operation(|| dashboard_from_scope_unlocked(app, requested_scope, false))
+}
+
+fn effective_refresh_scope(
+    requested_scope: RefreshScope,
+    has_previous_dashboard: bool,
+    allow_full_bootstrap: bool,
+) -> RefreshScope {
+    if !has_previous_dashboard && allow_full_bootstrap {
+        RefreshScope::FULL
+    } else {
+        requested_scope
+    }
+}
+
+fn preserve_unrequested_instance_state(
+    registry: &mut Registry,
+    previous: Option<&DashboardState>,
+    scope: RefreshScope,
+) {
+    let Some(previous) = previous else {
+        return;
+    };
+    for instance in &mut registry.instances {
+        if let Some(previous_instance) = previous
+            .instances
+            .iter()
+            .find(|candidate| candidate.id == instance.id)
+        {
+            if !scope.sessions {
+                instance.code_sessions = previous_instance.code_sessions.clone();
+            }
+            if !scope.usage {
+                instance.usage = previous_instance.usage.clone();
+            }
+        }
+    }
 }
 
 fn dashboard_from_scope_unlocked(
     app: &AppHandle,
     requested_scope: RefreshScope,
+    allow_full_bootstrap: bool,
 ) -> Result<DashboardState, String> {
     let paths = ManagedPaths::resolve(app)?;
     let previous = runtime_cache()
         .lock()
         .ok()
         .and_then(|cache| cache.dashboard.clone());
-    let scope = if previous.is_some() {
-        requested_scope
-    } else {
-        RefreshScope::FULL
-    };
+    let scope = effective_refresh_scope(requested_scope, previous.is_some(), allow_full_bootstrap);
     let mut registry = load_registry(&paths)?;
+    preserve_unrequested_instance_state(&mut registry, previous.as_ref(), scope);
     let inventory = scope.processes.then(ProcessInventory::capture);
     let transcripts = refresh_registry_scoped(&mut registry, scope, inventory.as_ref());
-    let session_links = load_session_links(&paths)?;
-    apply_session_links(&mut registry, &session_links);
+    let session_links = if scope.sessions {
+        let links = load_session_links(&paths)?;
+        apply_session_links(&mut registry, &links);
+        links
+    } else {
+        SessionLinkRegistry::default()
+    };
     save_registry(&paths, &registry)?;
     let system = system_info_scoped(
         &paths,
@@ -3782,6 +3865,16 @@ async fn dashboard_from_scope_async(
         .map_err(|error| format!("{operation} terminó inesperadamente: {error}"))?
 }
 
+async fn dashboard_from_exact_scope_async(
+    app: AppHandle,
+    scope: RefreshScope,
+    operation: &'static str,
+) -> Result<DashboardState, String> {
+    tauri::async_runtime::spawn_blocking(move || dashboard_from_exact_scope(&app, scope))
+        .await
+        .map_err(|error| format!("{operation} terminó inesperadamente: {error}"))?
+}
+
 #[tauri::command]
 async fn get_dashboard_state(app: AppHandle) -> Result<DashboardState, String> {
     dashboard_from_scope_async(app, RefreshScope::FULL, "La carga").await
@@ -3794,6 +3887,12 @@ async fn check_source_update(app: AppHandle) -> Result<SourceUpdateInfo, String>
         .map_err(|error| {
             format!("La comprobación de actualización terminó inesperadamente: {error}")
         })?
+}
+
+#[tauri::command]
+async fn refresh_versions(app: AppHandle) -> Result<DashboardState, String> {
+    invalidate_application_cache();
+    dashboard_from_exact_scope_async(app, RefreshScope::VERSIONS, "El refresco de versiones").await
 }
 
 #[tauri::command]
@@ -3950,11 +4049,6 @@ fn update_instance_application_from_source_sync(
         .position(|instance| instance.id == id)
         .ok_or_else(|| "La instancia ya no existe.".to_string())?;
     let current = registry.instances[position].clone();
-    let source_provenance = registry
-        .instances
-        .iter()
-        .find(|instance| Path::new(&instance.app_path) == source)
-        .and_then(|instance| instance.provider_provenance.clone());
     if current.status == InstanceStatus::Running {
         return Err(format!(
             "Detén “{}” antes de actualizar su aplicación.",
@@ -3971,8 +4065,13 @@ fn update_instance_application_from_source_sync(
     let staging_root = instance_root.join(format!(".application-update-{operation_id}"));
     let destination_application = instance_root.join("application");
     let backup_application = instance_root.join(format!(".application-backup-{operation_id}"));
+    #[cfg(target_os = "macos")]
+    let original = detect_provider_source().ok_or_else(|| {
+        "La aplicación original no está disponible para verificar la copia.".to_string()
+    })?;
     let staged_app = match copy_provider_application(&source, &staging_root)
         .and_then(|path| personalize_application_path(&path, &current.name))
+        .and_then(strip_inherited_icon_after_copy)
     {
         Ok(path) => path,
         Err(error) => {
@@ -3992,6 +4091,15 @@ fn update_instance_application_from_source_sync(
         let _ = fs::remove_dir_all(&staging_root);
         return Err(
             "La fuente cambió durante la copia; no se aplicó la actualización.".to_string(),
+        );
+    }
+    // HU-0020: the clean staging copy keeps `--strict` and the original's requirement before the swap.
+    #[cfg(target_os = "macos")]
+    if macos_icon::check_clean_against_original(&staged_app, &original).is_err() {
+        let _ = fs::remove_dir_all(&staging_root);
+        return Err(
+            "La copia preparada no superó la verificación de firma; no se aplicó la actualización."
+                .to_string(),
         );
     }
     let staged_application = staging_root.join("application");
@@ -4020,15 +4128,12 @@ fn update_instance_application_from_source_sync(
     let updated_app_path = destination_application.join(relative_app_path);
     #[cfg(target_os = "macos")]
     let updated_branding = {
-        let original = detect_provider_source().ok_or_else(|| {
-            "La aplicación original no está disponible para verificar el branding.".to_string()
-        })?;
-        match apply_macos_branding_after_update(
+        match macos_icon::apply_branding_after_update(
+            &paths.instances,
             &updated_app_path,
             current.custom_icon.as_ref(),
             &original,
-            source,
-            source_provenance.as_ref(),
+            &current.name,
         ) {
             Ok(outcome) => outcome,
             Err(error) => {
@@ -4053,14 +4158,14 @@ fn update_instance_application_from_source_sync(
     registry.instances[position].status = InstanceStatus::Stopped;
     #[cfg(target_os = "macos")]
     {
-        registry.instances[position].provider_provenance = updated_branding.provenance;
-        if let (Some(icon), Some(system_applied), Some(system_message)) = (
-            registry.instances[position].custom_icon.as_mut(),
-            updated_branding.system_applied,
-            updated_branding.system_message,
-        ) {
-            icon.system_applied = system_applied;
-            icon.system_message = system_message;
+        let target = &mut registry.instances[position];
+        target.provider_provenance = updated_branding
+            .as_ref()
+            .map(|outcome| outcome.provenance.clone());
+        if let (Some(icon), Some(outcome)) =
+            (target.custom_icon.as_mut(), updated_branding.as_ref())
+        {
+            outcome.write_to(icon);
         }
     }
     #[cfg(not(target_os = "macos"))]
@@ -4337,6 +4442,7 @@ fn create_instance_sync(app: &AppHandle, request: CreateInstanceRequest) -> Resu
 
     let app_path = match copy_provider_application(&source, &instance_root)
         .and_then(|path| personalize_application_path(&path, &name))
+        .and_then(strip_inherited_icon_after_copy)
     {
         Ok(path) => path,
         Err(error) => {
@@ -4421,20 +4527,33 @@ fn launch_instance_sync(app: &AppHandle, id: String) -> Result<(), String> {
     let mut registry = load_registry(&paths)?;
     let inventory = ProcessInventory::capture();
     refresh_instance_statuses(&mut registry, &inventory);
-    let instance = registry
+    let position = registry
         .instances
-        .iter_mut()
-        .find(|instance| instance.id == id)
+        .iter()
+        .position(|instance| instance.id == id)
         .ok_or_else(|| "La instancia ya no existe.".to_string())?;
 
-    if instance.status == InstanceStatus::Running {
+    if registry.instances[position].status == InstanceStatus::Running {
         return save_registry(&paths, &registry);
     }
-    let app_path = PathBuf::from(&instance.app_path);
+    let app_path = PathBuf::from(&registry.instances[position].app_path);
     let executable = provider_executable(&app_path);
     if !executable.is_file() {
         return Err("La aplicación de esta instancia no está disponible.".to_string());
     }
+    // HU-0020 (A-4.5): a copy with a custom icon is verified, and its icon reapplied, before it launches.
+    #[cfg(target_os = "macos")]
+    if registry.instances[position].custom_icon.is_some() {
+        let original = detect_provider_source();
+        if macos_icon::launch_preflight(
+            &paths,
+            &mut registry.instances[position],
+            original.as_deref(),
+        )? {
+            save_registry(&paths, &registry)?;
+        }
+    }
+    let instance = &mut registry.instances[position];
     let profile_path = PathBuf::from(&instance.profile_path);
     fs::create_dir_all(&profile_path)
         .map_err(|error| format!("No se pudo preparar el perfil: {error}"))?;
@@ -4736,286 +4855,6 @@ fn clone_directory(source: &Path, destination: &Path) -> Result<(), String> {
         .ok_or_else(|| "No se pudo respaldar el bundle administrado.".to_string())
 }
 
-#[cfg(target_os = "macos")]
-fn set_macos_workspace_icon(bundle: &Path, icon_path: Option<&Path>) -> Result<(), String> {
-    use std::ffi::{c_char, c_void, CString};
-
-    type ObjcId = *mut c_void;
-    type ObjcSel = *mut c_void;
-    #[link(name = "AppKit", kind = "framework")]
-    extern "C" {}
-    #[link(name = "Foundation", kind = "framework")]
-    extern "C" {}
-    extern "C" {
-        fn objc_getClass(name: *const c_char) -> ObjcId;
-        fn sel_registerName(name: *const c_char) -> ObjcSel;
-        fn objc_msgSend();
-    }
-
-    fn c_string(value: &str, label: &str) -> Result<CString, String> {
-        CString::new(value).map_err(|_| format!("{label} contiene un carácter no válido."))
-    }
-
-    let bundle_text = bundle
-        .to_str()
-        .ok_or_else(|| "La ruta del bundle no es UTF-8 válida.".to_string())?;
-    let bundle_text = c_string(bundle_text, "La ruta del bundle")?;
-    let icon_text = icon_path
-        .map(|path| {
-            path.to_str()
-                .ok_or_else(|| "La ruta del icono no es UTF-8 válida.".to_string())
-                .and_then(|value| c_string(value, "La ruta del icono"))
-        })
-        .transpose()?;
-
-    let class_pool = c_string("NSAutoreleasePool", "Clase")?;
-    let class_string = c_string("NSString", "Clase")?;
-    let class_image = c_string("NSImage", "Clase")?;
-    let class_workspace = c_string("NSWorkspace", "Clase")?;
-    let selector_new = c_string("new", "Selector")?;
-    let selector_string = c_string("stringWithUTF8String:", "Selector")?;
-    let selector_alloc = c_string("alloc", "Selector")?;
-    let selector_init_image = c_string("initWithContentsOfFile:", "Selector")?;
-    let selector_workspace = c_string("sharedWorkspace", "Selector")?;
-    let selector_set_icon = c_string("setIcon:forFile:options:", "Selector")?;
-    let selector_release = c_string("release", "Selector")?;
-    let selector_drain = c_string("drain", "Selector")?;
-
-    unsafe {
-        let raw_message_send = objc_msgSend as *const ();
-        let send_id: unsafe extern "C" fn(ObjcId, ObjcSel) -> ObjcId =
-            std::mem::transmute(raw_message_send);
-        let send_id_cstr: unsafe extern "C" fn(ObjcId, ObjcSel, *const c_char) -> ObjcId =
-            std::mem::transmute(raw_message_send);
-        let send_id_id: unsafe extern "C" fn(ObjcId, ObjcSel, ObjcId) -> ObjcId =
-            std::mem::transmute(raw_message_send);
-        let send_set_icon: unsafe extern "C" fn(ObjcId, ObjcSel, ObjcId, ObjcId, usize) -> bool =
-            std::mem::transmute(raw_message_send);
-        let send_void: unsafe extern "C" fn(ObjcId, ObjcSel) =
-            std::mem::transmute(raw_message_send);
-
-        let pool = send_id(
-            objc_getClass(class_pool.as_ptr()),
-            sel_registerName(selector_new.as_ptr()),
-        );
-        let string_class = objc_getClass(class_string.as_ptr());
-        let path = send_id_cstr(
-            string_class,
-            sel_registerName(selector_string.as_ptr()),
-            bundle_text.as_ptr(),
-        );
-        if path.is_null() {
-            send_void(pool, sel_registerName(selector_drain.as_ptr()));
-            return Err("NSWorkspace no pudo representar la ruta del bundle.".to_string());
-        }
-        let image = if let Some(icon_text) = icon_text.as_ref() {
-            let icon_path = send_id_cstr(
-                string_class,
-                sel_registerName(selector_string.as_ptr()),
-                icon_text.as_ptr(),
-            );
-            let allocated = send_id(
-                objc_getClass(class_image.as_ptr()),
-                sel_registerName(selector_alloc.as_ptr()),
-            );
-            send_id_id(
-                allocated,
-                sel_registerName(selector_init_image.as_ptr()),
-                icon_path,
-            )
-        } else {
-            std::ptr::null_mut()
-        };
-        if icon_path.is_some() && image.is_null() {
-            send_void(pool, sel_registerName(selector_drain.as_ptr()));
-            return Err("NSWorkspace no pudo cargar la imagen personalizada.".to_string());
-        }
-        let workspace = send_id(
-            objc_getClass(class_workspace.as_ptr()),
-            sel_registerName(selector_workspace.as_ptr()),
-        );
-        let applied = send_set_icon(
-            workspace,
-            sel_registerName(selector_set_icon.as_ptr()),
-            image,
-            path,
-            0,
-        );
-        if !image.is_null() {
-            send_void(image, sel_registerName(selector_release.as_ptr()));
-        }
-        send_void(pool, sel_registerName(selector_drain.as_ptr()));
-        if !applied {
-            return Err("NSWorkspace rechazó el icono personalizado.".to_string());
-        }
-    }
-    Ok(())
-}
-
-#[cfg(target_os = "macos")]
-fn apply_macos_custom_icon(
-    bundle: &Path,
-    icon_path: &Path,
-    original: &Path,
-    inherited: Option<(&Path, &ProviderProvenance)>,
-) -> Result<ProviderProvenance, String> {
-    let bundle_identifier = macos_bundle_value(bundle, "CFBundleIdentifier")
-        .ok_or_else(|| "El bundle administrado no tiene CFBundleIdentifier.".to_string())?;
-    let original_identifier = macos_bundle_value(original, "CFBundleIdentifier")
-        .ok_or_else(|| "La aplicación original no tiene CFBundleIdentifier.".to_string())?;
-    if bundle_identifier != original_identifier {
-        return Err("La copia no conserva la identidad de bundle del proveedor.".to_string());
-    }
-    let provider_version = cached_source_version(bundle)
-        .ok_or_else(|| "No se pudo capturar la versión de provenance.".to_string())?;
-    let (provider_team_identifier, provider_source_fingerprint, original_icon_file) = if let Some(
-        (trusted_source, provenance),
-    ) =
-        inherited
-    {
-        validate_managed_provenance(trusted_source, original, provenance)?;
-        if !provenance.provider_signature_preserved {
-            return Err("La copia conserva una firma ad-hoc heredada. Sincronízala desde la original antes de reaplicar el icono.".to_string());
-        }
-        if provenance.bundle_identifier != original_identifier
-            || provenance.provider_team_identifier != macos_team_identifier(original)
-        {
-            return Err("La provenance heredada no coincide con el proveedor actual.".to_string());
-        }
-        (
-            provenance.provider_team_identifier.clone(),
-            provenance.provider_source_fingerprint.clone(),
-            provenance.original_icon_file.clone(),
-        )
-    } else {
-        validate_provider_identity_uncached(bundle, original)?;
-        (
-            macos_team_identifier(original),
-            fingerprint_label(bundle)?,
-            macos_bundle_value(bundle, "CFBundleIconFile"),
-        )
-    };
-
-    set_macos_workspace_icon(bundle, Some(icon_path))?;
-    // A workspace icon is stored as file metadata. The signed bundle contents,
-    // designated requirement and provider signature must remain untouched.
-    if let Err(validation_error) = validate_provider_identity_uncached(bundle, original) {
-        let rollback = set_macos_workspace_icon(bundle, None)
-            .and_then(|_| validate_provider_identity_uncached(bundle, original));
-        return Err(match rollback {
-            Ok(()) => format!(
-                "{MACOS_WORKSPACE_ICON_STRICT_INCOMPATIBLE}: macOS aplicó metadata de icono que invalida la verificación estricta; se restauró el bundle: {validation_error}"
-            ),
-            Err(rollback_error) => format!(
-                "La metadata de icono invalidó la firma ({validation_error}) y no pudo restaurarse ({rollback_error})."
-            ),
-        });
-    }
-    invalidate_application_cache();
-    Ok(ProviderProvenance {
-        bundle_identifier,
-        provider_team_identifier,
-        provider_version,
-        provider_source_fingerprint,
-        managed_fingerprint: fingerprint_label(bundle)?,
-        managed_code_hash: macos_code_hash(bundle),
-        provider_signature_preserved: true,
-        original_icon_file,
-    })
-}
-
-#[cfg(target_os = "macos")]
-struct MacosUpdateBrandingOutcome {
-    provenance: Option<ProviderProvenance>,
-    system_applied: Option<bool>,
-    system_message: Option<String>,
-}
-
-#[cfg(target_os = "macos")]
-fn apply_macos_branding_after_update(
-    updated_bundle: &Path,
-    custom_icon: Option<&CustomIcon>,
-    original: &Path,
-    source: &Path,
-    source_provenance: Option<&ProviderProvenance>,
-) -> Result<MacosUpdateBrandingOutcome, String> {
-    if let Some(custom_icon) = custom_icon {
-        return match apply_macos_custom_icon(
-            updated_bundle,
-            Path::new(&custom_icon.path),
-            original,
-            source_provenance.map(|provenance| (source, provenance)),
-        ) {
-            Ok(provenance) => Ok(MacosUpdateBrandingOutcome {
-                provenance: Some(provenance),
-                system_applied: Some(true),
-                system_message: Some(
-                    "Icono reaplicado después de actualizar y firma verificada.".to_string(),
-                ),
-            }),
-            Err(error) if error.starts_with(MACOS_WORKSPACE_ICON_STRICT_INCOMPATIBLE) => {
-                // apply_macos_custom_icon already removed the workspace metadata and
-                // revalidated the provider bundle. Keep the provider update and the
-                // UI-only icon instead of rolling back the whole application.
-                Ok(MacosUpdateBrandingOutcome {
-                    provenance: None,
-                    system_applied: Some(false),
-                    system_message: Some(
-                        "La aplicación se actualizó y el icono sigue disponible en Code AI Profiles, pero macOS no permite dejarlo en el Dock sin invalidar la verificación estricta del bundle."
-                            .to_string(),
-                    ),
-                })
-            }
-            Err(error) => Err(error),
-        };
-    }
-
-    let provenance = if let Some(mut provenance) = source_provenance.cloned() {
-        provenance.managed_fingerprint = fingerprint_label(updated_bundle)?;
-        Some(clear_macos_custom_icon(
-            updated_bundle,
-            original,
-            &provenance,
-        )?)
-    } else {
-        None
-    };
-    Ok(MacosUpdateBrandingOutcome {
-        provenance,
-        system_applied: None,
-        system_message: None,
-    })
-}
-
-#[cfg(target_os = "macos")]
-fn restore_macos_workspace_icon_after_failure(
-    bundle: &Path,
-    previous_custom_icon: Option<&CustomIcon>,
-    original: &Path,
-) -> Result<(), String> {
-    let icon = previous_custom_icon
-        .filter(|icon| icon.system_applied)
-        .map(|icon| Path::new(&icon.path));
-    set_macos_workspace_icon(bundle, icon)?;
-    validate_provider_identity_uncached(bundle, original)
-}
-
-#[cfg(target_os = "macos")]
-fn clear_macos_custom_icon(
-    bundle: &Path,
-    original: &Path,
-    provenance: &ProviderProvenance,
-) -> Result<ProviderProvenance, String> {
-    validate_managed_provenance(bundle, original, provenance)?;
-    set_macos_workspace_icon(bundle, None)?;
-    validate_provider_identity_uncached(bundle, original)?;
-    invalidate_application_cache();
-    let mut updated = provenance.clone();
-    updated.managed_fingerprint = fingerprint_label(bundle)?;
-    updated.managed_code_hash = macos_code_hash(bundle);
-    Ok(updated)
-}
-
 #[cfg(target_os = "linux")]
 fn desktop_entry_value(value: &str) -> String {
     value
@@ -5102,6 +4941,7 @@ async fn set_instance_icon(
 
 fn set_instance_icon_sync(app: &AppHandle, request: SetInstanceIconRequest) -> Result<(), String> {
     let paths = ManagedPaths::resolve(app)?;
+    #[cfg_attr(target_os = "macos", allow(unused_variables))]
     let root = paths.root_for(&request.id)?;
     let normalized = normalized_icon_png(&request.bytes)?;
     let mut registry = load_registry(&paths)?;
@@ -5115,90 +4955,23 @@ fn set_instance_icon_sync(app: &AppHandle, request: SetInstanceIconRequest) -> R
     if registry.instances[position].status != InstanceStatus::Stopped {
         return Err("Detén la instancia antes de cambiar su icono.".to_string());
     }
-    let branding = root.join("branding");
-    let icon_path = branding.join("icon.png");
-    let previous_icon = fs::read(&icon_path).ok();
-    #[cfg(target_os = "macos")]
-    let previous_custom_icon = registry.instances[position].custom_icon.clone();
-    let revision = registry.instances[position]
-        .custom_icon
-        .as_ref()
-        .map(|icon| icon.revision.saturating_add(1))
-        .unwrap_or(1);
     #[cfg(target_os = "macos")]
     {
-        let app_path = PathBuf::from(&registry.instances[position].app_path);
-        if !path_is_within(&app_path, &root) {
-            return Err("El bundle quedó fuera del root administrado.".to_string());
-        }
         let original = detect_provider_source().ok_or_else(|| {
-            "No se encontró la aplicación original para validar provenance.".to_string()
+            "No se encontró la aplicación original para verificar la copia.".to_string()
         })?;
-        let inherited = registry.instances[position].provider_provenance.clone();
-        if let Some(provenance) = inherited.as_ref() {
-            validate_managed_provenance(&app_path, &original, provenance)?;
-        } else {
-            validate_provider_identity_uncached(&app_path, &original)?;
-        }
-        let transaction = (|| {
-            fs::create_dir_all(&branding)
-                .map_err(|error| format!("No se pudo preparar el icono administrado: {error}"))?;
-            atomic_replace_file(&icon_path, &normalized)?;
-            let applied = apply_macos_custom_icon(
-                &app_path,
-                &icon_path,
-                &original,
-                inherited
-                    .as_ref()
-                    .map(|provenance| (app_path.as_path(), provenance)),
-            );
-            let (system_applied, system_message) = match applied {
-                Ok(provenance) => {
-                    registry.instances[position].provider_provenance = Some(provenance);
-                    (
-                        true,
-                        "Icono aplicado mediante NSWorkspace; firma del proveedor verificada."
-                            .to_string(),
-                    )
-                }
-                Err(error) if error.starts_with(MACOS_WORKSPACE_ICON_STRICT_INCOMPATIBLE) => {
-                    registry.instances[position].provider_provenance = None;
-                    (
-                        false,
-                        "El icono se guardó para Code AI Profiles, pero macOS no permite dejarlo en el Dock sin invalidar la verificación estricta del bundle."
-                            .to_string(),
-                    )
-                }
-                Err(error) => return Err(error),
-            };
-            registry.instances[position].custom_icon = Some(CustomIcon {
-                path: icon_path.to_string_lossy().to_string(),
-                revision,
-                system_applied,
-                system_message,
-            });
-            save_registry(&paths, &registry)
-        })();
-        if let Err(error) = transaction {
-            restore_optional_file(&icon_path, previous_icon.as_deref());
-            let rollback = restore_macos_workspace_icon_after_failure(
-                &app_path,
-                previous_custom_icon.as_ref(),
-                &original,
-            );
-            return Err(match rollback {
-                Ok(()) => format!("No se aplicó el icono y se restauró la metadata: {error}"),
-                Err(rollback_error) => format!(
-                    "Falló el icono ({error}) y el rollback de metadata ({rollback_error})."
-                ),
-            });
-        }
-        invalidate_application_cache();
-        invalidate_managed_bytes_cache();
-        return Ok(());
+        macos_icon::set_instance_icon(&paths, &mut registry, position, &original, &normalized)
     }
     #[cfg(not(target_os = "macos"))]
     {
+        let branding = root.join("branding");
+        let icon_path = branding.join("icon.png");
+        let previous_icon = fs::read(&icon_path).ok();
+        let revision = registry.instances[position]
+            .custom_icon
+            .as_ref()
+            .map(|icon| icon.revision.saturating_add(1))
+            .unwrap_or(1);
         fs::create_dir_all(&branding)
             .map_err(|error| format!("No se pudo preparar el icono administrado: {error}"))?;
         atomic_replace_file(&icon_path, &normalized)?;
@@ -5209,6 +4982,7 @@ fn set_instance_icon_sync(app: &AppHandle, request: SetInstanceIconRequest) -> R
             revision,
             system_applied,
             system_message,
+            system_issue: None,
         });
         if let Err(error) = save_registry(&paths, &registry) {
             if let Some(bytes) = previous_icon.as_deref() {
@@ -5237,6 +5011,7 @@ async fn clear_instance_icon(app: AppHandle, id: String) -> Result<DashboardStat
 
 fn clear_instance_icon_sync(app: &AppHandle, id: String) -> Result<(), String> {
     let paths = ManagedPaths::resolve(app)?;
+    #[cfg_attr(target_os = "macos", allow(unused_variables))]
     let root = paths.root_for(&id)?;
     let mut registry = load_registry(&paths)?;
     let position = registry
@@ -5249,82 +5024,20 @@ fn clear_instance_icon_sync(app: &AppHandle, id: String) -> Result<(), String> {
     if registry.instances[position].status != InstanceStatus::Stopped {
         return Err("Detén la instancia antes de restaurar su icono.".to_string());
     }
-    let managed_icon = root.join("branding/icon.png");
-    let previous_icon = fs::read(&managed_icon).ok();
-    let launcher = root.join("launcher.desktop");
-    let previous_launcher = fs::read(&launcher).ok();
-    #[cfg(target_os = "macos")]
-    let previous_custom_icon = registry.instances[position].custom_icon.clone();
     #[cfg(target_os = "macos")]
     {
-        let app_path = PathBuf::from(&registry.instances[position].app_path);
-        if !path_is_within(&app_path, &root) {
-            return Err("El bundle quedó fuera del root administrado.".to_string());
-        }
         let original = detect_provider_source().ok_or_else(|| {
             "No se encontró la aplicación original para restaurar el icono.".to_string()
         })?;
-        let provenance = registry.instances[position].provider_provenance.clone();
-        if let Some(provenance) = provenance.as_ref() {
-            validate_managed_provenance(&app_path, &original, provenance)?;
-        } else {
-            validate_provider_identity_uncached(&app_path, &original)?;
-        }
-        let transaction = (|| {
-            if let Some(provenance) = provenance.as_ref() {
-                clear_macos_custom_icon(&app_path, &original, provenance)?;
-            } else {
-                set_macos_workspace_icon(&app_path, None)?;
-                validate_provider_identity_uncached(&app_path, &original)?;
-            }
-            if registry.instances[position]
-                .custom_icon
-                .as_ref()
-                .is_some_and(|icon| Path::new(&icon.path) == managed_icon)
-            {
-                match fs::remove_file(&managed_icon) {
-                    Ok(()) => {}
-                    Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
-                    Err(error) => {
-                        return Err(format!("No se pudo retirar el icono administrado: {error}"));
-                    }
-                }
-            }
-            match fs::remove_file(&launcher) {
-                Ok(()) => {}
-                Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
-                Err(error) => {
-                    return Err(format!(
-                        "No se pudo retirar el launcher administrado: {error}"
-                    ));
-                }
-            }
-            registry.instances[position].custom_icon = None;
-            registry.instances[position].provider_provenance = None;
-            save_registry(&paths, &registry)
-        })();
-        if let Err(error) = transaction {
-            restore_optional_file(&managed_icon, previous_icon.as_deref());
-            restore_optional_file(&launcher, previous_launcher.as_deref());
-            let rollback = restore_macos_workspace_icon_after_failure(
-                &app_path,
-                previous_custom_icon.as_ref(),
-                &original,
-            );
-            return Err(match rollback {
-                Ok(()) => format!("No se restauró el icono; se recuperó la metadata: {error}"),
-                Err(rollback_error) => format!(
-                    "Falló la restauración ({error}) y el rollback de metadata ({rollback_error})."
-                ),
-            });
-        }
-        invalidate_application_cache();
-        invalidate_managed_bytes_cache();
-        return Ok(());
+        macos_icon::clear_instance_icon(&paths, &mut registry, position, &original)
     }
 
     #[cfg(not(target_os = "macos"))]
     {
+        let managed_icon = root.join("branding/icon.png");
+        let previous_icon = fs::read(&managed_icon).ok();
+        let launcher = root.join("launcher.desktop");
+        let previous_launcher = fs::read(&launcher).ok();
         if registry.instances[position]
             .custom_icon
             .as_ref()
@@ -5343,6 +5056,44 @@ fn clear_instance_icon_sync(app: &AppHandle, id: String) -> Result<(), String> {
         invalidate_managed_bytes_cache();
         Ok(())
     }
+}
+
+#[tauri::command]
+async fn reapply_instance_icon(app: AppHandle, id: String) -> Result<DashboardState, String> {
+    let worker_app = app.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        with_registry_operation(|| reapply_instance_icon_sync(&worker_app, id))
+    })
+    .await
+    .map_err(|error| format!("El reintento del icono terminó inesperadamente: {error}"))??;
+    dashboard_from_scope_async(app, RefreshScope::LIGHT, "La actualización del panel").await
+}
+
+#[cfg(target_os = "macos")]
+fn reapply_instance_icon_sync(app: &AppHandle, id: String) -> Result<(), String> {
+    let paths = ManagedPaths::resolve(app)?;
+    paths.root_for(&id)?;
+    let mut registry = load_registry(&paths)?;
+    let inventory = ProcessInventory::capture();
+    refresh_instance_statuses(&mut registry, &inventory);
+    let position = registry
+        .instances
+        .iter()
+        .position(|instance| instance.id == id)
+        .ok_or_else(|| "La instancia ya no existe.".to_string())?;
+    if registry.instances[position].status != InstanceStatus::Stopped {
+        return Err("Detén la instancia antes de reintentar el icono.".to_string());
+    }
+    let original = detect_provider_source().ok_or_else(|| {
+        "No se encontró la aplicación original para verificar la copia.".to_string()
+    })?;
+    macos_icon::reapply_instance_icon(&paths, &mut registry, position, &original)
+}
+
+#[cfg(not(target_os = "macos"))]
+fn reapply_instance_icon_sync(app: &AppHandle, id: String) -> Result<(), String> {
+    let _ = (app, id);
+    Err(DOCK_ICON_MACOS_ONLY.to_string())
 }
 
 #[tauri::command]
@@ -5374,46 +5125,124 @@ fn open_instance_folder(app: AppHandle, id: String) -> Result<(), String> {
 }
 
 #[tauri::command]
-fn update_original_application() -> Result<OriginalApplicationUpdateResult, String> {
-    require_provider_source(detect_provider_source())?;
-
-    let platform = platform_name();
-    let target =
-        original_application_update_target(&platform, std::env::consts::ARCH).ok_or_else(|| {
-            "La actualización oficial no está soportada en esta plataforma.".to_string()
-        })?;
+fn update_original_application(app: AppHandle) -> Result<OriginalApplicationUpdateResult, String> {
+    if original_update::original_update_in_flight() {
+        return Err(
+            "Hay una actualización de la original en curso. Espera a que termine.".to_string(),
+        );
+    }
+    let source = require_provider_source(detect_provider_source())?;
 
     #[cfg(target_os = "macos")]
-    let status = Command::new("/usr/bin/open").arg(target.url).status();
-    #[cfg(target_os = "windows")]
-    let status = Command::new("rundll32.exe")
-        .args(["url.dll,FileProtocolHandler", target.url])
-        .status();
-    #[cfg(target_os = "linux")]
-    let status = Command::new("xdg-open").arg(target.url).status();
-    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
-    let status: Result<std::process::ExitStatus, std::io::Error> = unreachable!();
-
-    let status = status
-        .map_err(|error| format!("No se pudo abrir el canal oficial de actualización: {error}"))?;
-    if !status.success() {
-        return Err(format!(
-            "El sistema no pudo abrir el canal oficial de actualización (código {}).",
-            status
-        ));
+    {
+        let paths = ManagedPaths::resolve(&app)?;
+        return launch_macos_original_application_with(&paths, &source, |launch| {
+            let status = Command::new(launch.executable)
+                .args(&launch.arguments)
+                .status()
+                .map_err(|error| format!("No se pudo abrir la aplicación original: {error}"))?;
+            if status.success() {
+                Ok(())
+            } else {
+                Err(format!(
+                    "El sistema no pudo abrir la aplicación original (código {status})."
+                ))
+            }
+        });
     }
 
-    let message = match target.action {
-        OriginalApplicationUpdateAction::Download => {
-            "Se abrió la descarga oficial. Ejecuta el instalador para actualizar la aplicación original; las instancias permanecen intactas."
+    #[cfg(not(target_os = "macos"))]
+    {
+        let _ = source;
+        let _ = app;
+        let platform = platform_name();
+        let target = original_application_update_target(&platform, std::env::consts::ARCH)
+            .ok_or_else(|| {
+                "La actualización oficial no está soportada en esta plataforma.".to_string()
+            })?;
+
+        #[cfg(target_os = "windows")]
+        let status = Command::new("rundll32.exe")
+            .args(["url.dll,FileProtocolHandler", target.url])
+            .status();
+        #[cfg(target_os = "linux")]
+        let status = Command::new("xdg-open").arg(target.url).status();
+        #[cfg(not(any(target_os = "windows", target_os = "linux")))]
+        let status: Result<std::process::ExitStatus, std::io::Error> = unreachable!();
+
+        let status = status.map_err(|error| {
+            format!("No se pudo abrir el canal oficial de actualización: {error}")
+        })?;
+        if !status.success() {
+            return Err(format!(
+                "El sistema no pudo abrir el canal oficial de actualización (código {}).",
+                status
+            ));
         }
-        OriginalApplicationUpdateAction::Instructions => {
-            "Se abrieron las instrucciones oficiales para actualizar Claude Desktop en Linux; las instancias permanecen intactas."
-        }
-    };
+
+        let message = match target.action {
+            OriginalApplicationUpdateAction::Download => {
+                "Se abrió la descarga oficial. Ejecuta el instalador para actualizar la aplicación original; las instancias permanecen intactas."
+            }
+            OriginalApplicationUpdateAction::Instructions => {
+                "Se abrieron las instrucciones oficiales para actualizar Claude Desktop en Linux; las instancias permanecen intactas."
+            }
+        };
+        Ok(OriginalApplicationUpdateResult {
+            action: target.action,
+            message: message.to_string(),
+        })
+    }
+}
+
+#[tauri::command]
+async fn install_original_update(
+    app: AppHandle,
+    request: original_update::InstallOriginalUpdateRequest,
+    on_progress: tauri::ipc::Channel<original_update::OriginalInstallProgress>,
+) -> Result<original_update::OriginalInstallResult, String> {
+    let worker_app = app.clone();
+    let outcome = tauri::async_runtime::spawn_blocking(move || {
+        original_update::install_original_update_sync(&worker_app, request, &|progress| {
+            let _ = on_progress.send(progress);
+        })
+    })
+    .await
+    .map_err(|error| {
+        format!("La actualización de la original terminó inesperadamente: {error}")
+    })??;
+    let dashboard =
+        dashboard_from_scope_async(app, RefreshScope::VERSIONS, "La actualización del panel")
+            .await?;
+    Ok(outcome.into_result(dashboard))
+}
+
+#[tauri::command]
+fn cancel_original_update() -> bool {
+    original_update::cancel_original_update()
+}
+
+#[cfg(target_os = "macos")]
+fn launch_macos_original_application_with(
+    paths: &ManagedPaths,
+    detected_source: &Path,
+    launch: impl FnOnce(&MacosOriginalLaunch) -> Result<(), String>,
+) -> Result<OriginalApplicationUpdateResult, String> {
+    let source = fs::canonicalize(detected_source)
+        .map_err(|error| format!("No se pudo validar la ruta original detectada: {error}"))?;
+    if path_is_within(&source, &paths.instances) {
+        return Err("La ruta detectada pertenece a una instancia administrada.".to_string());
+    }
+    validate_source(&source)?;
+    validate_provider_identity_uncached(&source, &source)?;
+    launch(&MacosOriginalLaunch {
+        executable: "/usr/bin/open",
+        arguments: vec!["-n".into(), "-a".into(), source.into_os_string()],
+    })?;
     Ok(OriginalApplicationUpdateResult {
-        action: target.action,
-        message: message.to_string(),
+        action: OriginalApplicationUpdateAction::Instructions,
+        message: "Se abrió exclusivamente la aplicación original. En Claude, elige Claude > Check for Updates; las instancias permanecen intactas."
+            .to_string(),
     })
 }
 
@@ -5469,13 +5298,16 @@ fn delete_instance_sync(app: &AppHandle, id: String) -> Result<(), String> {
 pub fn run() {
     tauri::Builder::default()
         .setup(|app| {
+            config::validate().map_err(std::io::Error::other)?;
             let handle = app.handle().clone();
-            ManagedPaths::resolve(&handle).map_err(std::io::Error::other)?;
+            let paths = ManagedPaths::resolve(&handle).map_err(std::io::Error::other)?;
+            original_update::recover_original_update_leftovers(&paths);
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             get_dashboard_state,
             check_source_update,
+            refresh_versions,
             get_live_usage,
             scan_system,
             create_instance,
@@ -5488,8 +5320,11 @@ pub fn run() {
             stop_instance,
             set_instance_icon,
             clear_instance_icon,
+            reapply_instance_icon,
             open_instance_folder,
             update_original_application,
+            install_original_update,
+            cancel_original_update,
             delete_instance
         ])
         .run(tauri::generate_context!())
@@ -5500,7 +5335,20 @@ pub fn run() {
 mod tests {
     use super::*;
 
-    fn test_instance(root: &Path) -> ManagedInstance {
+    pub(crate) fn test_managed_paths(root: &Path) -> ManagedPaths {
+        ManagedPaths {
+            app_data: root.to_path_buf(),
+            instances: root.join("managed-instances"),
+            registry: root.join("instances.json"),
+            session_backups: root.join("session-transfer-backups"),
+            session_links: root.join("session-links.json"),
+            source_update_cache: root.join("source-update-cache.json"),
+            artifact_exports: root.join("artifact-exports"),
+            original_update: root.join("original-update"),
+        }
+    }
+
+    pub(crate) fn test_instance(root: &Path) -> ManagedInstance {
         ManagedInstance {
             id: Uuid::new_v4().to_string(),
             name: "Test profile".to_string(),
@@ -5528,7 +5376,7 @@ mod tests {
 
     #[cfg(target_os = "macos")]
     #[derive(Debug, PartialEq, Eq)]
-    struct MacosSignatureSnapshot {
+    pub(crate) struct MacosSignatureSnapshot {
         deep_status: Option<i32>,
         deep_diagnostic: String,
         strict_status: Option<i32>,
@@ -5586,7 +5434,7 @@ mod tests {
     }
 
     #[cfg(target_os = "macos")]
-    fn macos_signature_snapshot(bundle: &Path) -> MacosSignatureSnapshot {
+    pub(crate) fn macos_signature_snapshot(bundle: &Path) -> MacosSignatureSnapshot {
         let (deep_status, deep_diagnostic) = codesign_verification(bundle, false);
         let (strict_status, strict_diagnostic) = codesign_verification(bundle, true);
         MacosSignatureSnapshot {
@@ -5619,9 +5467,114 @@ mod tests {
                 process_inventories: 1,
                 transcript_catalogs: 0,
                 version_refreshes: 0,
+                usage_refreshes: 1,
                 topology_builds: 0,
                 storage_walks: 0,
             }
+        );
+    }
+
+    #[test]
+    fn versions_refresh_preserves_sessions_and_skips_profile_and_storage_work() {
+        let root = env::temp_dir().join(format!("code-ai-versions-refresh-{}", Uuid::new_v4()));
+        fs::create_dir_all(root.join("managed-instances")).unwrap();
+        let session = CodeSession {
+            id: "local_96812ba4-6864-40d5-a70a-0470f244022c".to_string(),
+            title: "Session sentinel".to_string(),
+            model: None,
+            effort: None,
+            completed_turns: 1,
+            created_at: None,
+            last_activity_at: None,
+            is_archived: false,
+            context_tokens: None,
+            context_window_tokens: None,
+            context_percent: None,
+            published_artifact_count: 0,
+            artifact_monitor: None,
+            transfer: None,
+            cli_session_id: None,
+        };
+        let usage = UsageStats {
+            session_percent: Some(11.0),
+            weekly_percent: Some(22.0),
+            captured_at: Some(33),
+        };
+        let mut previous_instance = test_instance(&root);
+        previous_instance.code_sessions = vec![session.clone()];
+        previous_instance.usage = Some(usage.clone());
+        let previous_system = SystemInfo {
+            app_version: env!("CARGO_PKG_VERSION").to_string(),
+            platform: platform_name(),
+            source_path: None,
+            source_name: None,
+            source_version: None,
+            source_update: SourceUpdateInfo::default(),
+            version_topology: VersionTopology {
+                latest_installed_version: None,
+                latest_source: None,
+                stale_instance_ids: Vec::new(),
+                original_behind: false,
+                can_synchronize_managed: false,
+                reason: None,
+            },
+            original_profile_path: Some("/private/not-read".to_string()),
+            original_status: InstanceStatus::Stopped,
+            original_code_sessions: vec![session.clone()],
+            free_bytes: Some(44),
+            managed_bytes: 55,
+        };
+        let previous = DashboardState {
+            instances: vec![previous_instance.clone()],
+            system: previous_system.clone(),
+        };
+        let mut registry = Registry {
+            version: REGISTRY_VERSION,
+            instances: vec![test_instance(&root)],
+        };
+        registry.instances[0].id = previous_instance.id.clone();
+        preserve_unrequested_instance_state(&mut registry, Some(&previous), RefreshScope::VERSIONS);
+
+        reset_refresh_work_counters();
+        let inventory = ProcessInventory::capture();
+        let transcripts =
+            refresh_registry_scoped(&mut registry, RefreshScope::VERSIONS, Some(&inventory));
+        let system = system_info_seed(Some(&previous_system));
+
+        assert!(transcripts.is_none());
+        assert_eq!(registry.instances[0].code_sessions[0].id, session.id);
+        assert_eq!(
+            registry.instances[0].usage.as_ref().unwrap().captured_at,
+            usage.captured_at
+        );
+        assert_eq!(system.original_code_sessions[0].title, session.title);
+        assert_eq!(
+            refresh_work_counters(),
+            RefreshWorkCounters {
+                process_inventories: 1,
+                transcript_catalogs: 0,
+                version_refreshes: 1,
+                usage_refreshes: 0,
+                topology_builds: 0,
+                storage_walks: 0,
+            }
+        );
+        assert!(!RefreshScope::VERSIONS.bundle_names);
+        assert!(!RefreshScope::VERSIONS.usage);
+        assert!(!RefreshScope::VERSIONS.sessions);
+        assert!(!RefreshScope::VERSIONS.storage);
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn versions_refresh_never_promotes_a_cold_cache_to_full_scope() {
+        assert_eq!(
+            effective_refresh_scope(RefreshScope::VERSIONS, false, false),
+            RefreshScope::VERSIONS
+        );
+        assert_eq!(
+            effective_refresh_scope(RefreshScope::VERSIONS, false, true),
+            RefreshScope::FULL
         );
     }
 
@@ -5646,11 +5599,23 @@ mod tests {
     }
 
     #[cfg(target_os = "macos")]
-    fn write_signed_fixture_bundle(bundle: &Path) {
+    pub(crate) fn write_signed_fixture_bundle(bundle: &Path) {
+        write_signed_fixture_bundle_with(bundle, "1.0.0", None);
+    }
+
+    /// Ad hoc signed fixture. `requirement` is an explicit designated requirement (`=designated => …`);
+    /// without it the requirement is the implicit `cdhash H"…"`.
+    #[cfg(target_os = "macos")]
+    pub(crate) fn write_signed_fixture_bundle_with(
+        bundle: &Path,
+        version: &str,
+        requirement: Option<&str>,
+    ) {
         let contents = bundle.join("Contents");
         let executable = contents.join("MacOS/Claude");
         fs::create_dir_all(executable.parent().unwrap()).unwrap();
         fs::create_dir_all(contents.join("Resources")).unwrap();
+        fs::write(contents.join("Resources/fixture.txt"), b"sealed resource").unwrap();
         let source = contents.join("fixture.m");
         fs::write(
             &source,
@@ -5687,150 +5652,27 @@ int main(int argc, const char **argv) {
         fs::remove_file(source).unwrap();
         fs::write(
             contents.join("Info.plist"),
-            br#"<?xml version="1.0" encoding="UTF-8"?>
+            r#"<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
 <key>CFBundleExecutable</key><string>Claude</string>
 <key>CFBundleIdentifier</key><string>com.codeaiprofiles.fixture</string>
 <key>CFBundleName</key><string>Fixture</string>
 <key>CFBundlePackageType</key><string>APPL</string>
-<key>CFBundleShortVersionString</key><string>1.0.0</string>
+<key>CFBundleShortVersionString</key><string>__VERSION__</string>
 <key>CFBundleVersion</key><string>1</string>
 <key>NSPrincipalClass</key><string>NSApplication</string>
-</dict></plist>"#,
+</dict></plist>"#
+                .replace("__VERSION__", version),
         )
         .unwrap();
-        let status = Command::new("/usr/bin/codesign")
-            .args(["--force", "--deep", "--sign", "-"])
-            .arg(bundle)
-            .status()
-            .unwrap();
+        let mut command = Command::new("/usr/bin/codesign");
+        command.args(["--force", "--deep", "--sign", "-"]);
+        if let Some(requirement) = requirement {
+            command.args(["-r", requirement]);
+        }
+        let status = command.arg(bundle).status().unwrap();
         assert!(status.success());
-    }
-
-    #[cfg(target_os = "macos")]
-    #[test]
-    fn macos_branding_fixture_verifies_launches_and_preserves_profile_bytes() {
-        let root = env::temp_dir().join(format!("code-ai-dock-fixture-{}", Uuid::new_v4()));
-        let original = root.join("Original.app");
-        let managed = root.join("managed/application/Fixture.app");
-        let profile = root.join("managed/profile/state.bin");
-        fs::create_dir_all(profile.parent().unwrap()).unwrap();
-        fs::write(&profile, b"private-profile-sentinel").unwrap();
-        let before = fs::read(&profile).unwrap();
-        write_signed_fixture_bundle(&original);
-        clone_directory(&original, &managed).unwrap();
-
-        let icon =
-            image::DynamicImage::ImageRgba8(image::ImageBuffer::from_fn(512, 512, |x, y| {
-                if (x / 64 + y / 64) % 2 == 0 {
-                    image::Rgba([32, 96, 255, 255])
-                } else {
-                    image::Rgba([255, 96, 48, 255])
-                }
-            }));
-        let mut encoded = Cursor::new(Vec::new());
-        icon.write_to(&mut encoded, image::ImageFormat::Png)
-            .unwrap();
-        let icon_path = root.join("managed/branding/icon.png");
-        fs::create_dir_all(icon_path.parent().unwrap()).unwrap();
-        fs::write(&icon_path, encoded.into_inner()).unwrap();
-
-        let plist = managed.join("Contents/Info.plist");
-        let plist_before = fs::read(&plist).unwrap();
-        let code_hash_before = macos_code_hash(&managed);
-        let error = apply_macos_custom_icon(&managed, &icon_path, &original, None).unwrap_err();
-        assert!(error.contains("verificación estricta"));
-        validate_provider_identity_uncached(&managed, &original).unwrap();
-        assert_eq!(macos_code_hash(&managed), code_hash_before);
-        assert_eq!(fs::read(&plist).unwrap(), plist_before);
-        let launched = Command::new(provider_executable(&managed))
-            .arg("--smoke")
-            .status()
-            .unwrap();
-        assert!(launched.success());
-        assert_eq!(fs::read(&profile).unwrap(), before);
-
-        fs::write(
-            managed.join("Contents/Resources/external-tamper"),
-            b"tamper",
-        )
-        .unwrap();
-        assert!(validate_provider_identity_uncached(&managed, &original).is_err());
-        fs::remove_dir_all(root).unwrap();
-    }
-
-    #[cfg(target_os = "macos")]
-    #[test]
-    fn macos_update_keeps_new_bundle_when_workspace_icon_is_strict_incompatible() {
-        let root = env::temp_dir().join(format!("code-ai-update-icon-{}", Uuid::new_v4()));
-        let original = root.join("Original.app");
-        let updated = root.join("managed/application/Updated.app");
-        write_signed_fixture_bundle(&original);
-        clone_directory(&original, &updated).unwrap();
-        let baseline = macos_signature_snapshot(&updated);
-
-        let icon = image::DynamicImage::new_rgba8(512, 512);
-        let mut encoded = Cursor::new(Vec::new());
-        icon.write_to(&mut encoded, image::ImageFormat::Png)
-            .unwrap();
-        let icon_path = root.join("managed/branding/icon.png");
-        fs::create_dir_all(icon_path.parent().unwrap()).unwrap();
-        fs::write(&icon_path, encoded.into_inner()).unwrap();
-        let custom_icon = CustomIcon {
-            path: icon_path.to_string_lossy().to_string(),
-            revision: 1,
-            system_applied: false,
-            system_message: "UI only".to_string(),
-        };
-
-        let outcome = apply_macos_branding_after_update(
-            &updated,
-            Some(&custom_icon),
-            &original,
-            &original,
-            None,
-        )
-        .unwrap();
-        assert_eq!(outcome.system_applied, Some(false));
-        assert!(outcome.provenance.is_none());
-        assert!(outcome
-            .system_message
-            .as_deref()
-            .is_some_and(|message| message.contains("se actualizó")));
-        assert_eq!(macos_signature_snapshot(&updated), baseline);
-        validate_provider_identity_uncached(&updated, &original).unwrap();
-        fs::remove_dir_all(root).unwrap();
-    }
-
-    #[cfg(target_os = "macos")]
-    #[test]
-    fn macos_ui_only_icon_rollback_clears_workspace_metadata() {
-        let root = env::temp_dir().join(format!("code-ai-icon-rollback-{}", Uuid::new_v4()));
-        let original = root.join("Original.app");
-        let managed = root.join("managed/application/Fixture.app");
-        write_signed_fixture_bundle(&original);
-        clone_directory(&original, &managed).unwrap();
-        let baseline = macos_signature_snapshot(&managed);
-
-        let icon = image::DynamicImage::new_rgba8(512, 512);
-        let mut encoded = Cursor::new(Vec::new());
-        icon.write_to(&mut encoded, image::ImageFormat::Png)
-            .unwrap();
-        let icon_path = root.join("managed/branding/icon.png");
-        fs::create_dir_all(icon_path.parent().unwrap()).unwrap();
-        fs::write(&icon_path, encoded.into_inner()).unwrap();
-        set_macos_workspace_icon(&managed, Some(&icon_path)).unwrap();
-        let previous = CustomIcon {
-            path: icon_path.to_string_lossy().to_string(),
-            revision: 1,
-            system_applied: false,
-            system_message: "UI only".to_string(),
-        };
-
-        restore_macos_workspace_icon_after_failure(&managed, Some(&previous), &original).unwrap();
-        assert_eq!(macos_signature_snapshot(&managed), baseline);
-        fs::remove_dir_all(root).unwrap();
     }
 
     #[cfg(target_os = "macos")]
@@ -5870,7 +5712,7 @@ int main(int argc, const char **argv) {
         icon.write_to(&mut encoded, image::ImageFormat::Png)
             .unwrap();
         fs::write(&icon_path, encoded.into_inner()).unwrap();
-        set_macos_workspace_icon(&managed, Some(&icon_path)).unwrap();
+        macos_icon::set_workspace_icon(&root, &managed, Some(&icon_path)).unwrap();
         let iconized = macos_signature_snapshot(&managed);
         assert_eq!(iconized.code_hash, baseline.code_hash);
         assert_eq!(iconized.team_identifier, baseline.team_identifier);
@@ -5892,7 +5734,7 @@ int main(int argc, const char **argv) {
             .and_then(|value| value.parse::<u64>().ok())
             .unwrap_or(1_500);
         thread::sleep(Duration::from_millis(capture_ms));
-        set_macos_workspace_icon(&managed, None).unwrap();
+        macos_icon::set_workspace_icon(&root, &managed, None).unwrap();
         let restored = macos_signature_snapshot(&managed);
         assert_eq!(
             restored, baseline,
@@ -6006,9 +5848,33 @@ int main(int argc, const char **argv) {
             revision: 1,
             system_applied: false,
             system_message: "UI only".to_string(),
+            system_issue: None,
         });
         assert_eq!(instance.app_path, original_app_path);
         assert!(!instance.custom_icon.unwrap().system_applied);
+    }
+
+    #[test]
+    fn custom_icon_without_system_issue_reads_as_none_and_serializes_camel_case() {
+        let icon: CustomIcon = serde_json::from_value(serde_json::json!({
+            "path": "/managed/branding/icon.png",
+            "revision": 3,
+            "systemApplied": false,
+            "systemMessage": "UI only"
+        }))
+        .unwrap();
+        assert_eq!(icon.system_issue, None);
+        let blocked = CustomIcon {
+            system_issue: Some(CustomIconSystemIssue::AppManagement),
+            ..icon
+        };
+        let value = serde_json::to_value(&blocked).unwrap();
+        assert_eq!(value["systemIssue"], "appManagement");
+        let back: CustomIcon = serde_json::from_value(value).unwrap();
+        assert_eq!(
+            back.system_issue,
+            Some(CustomIconSystemIssue::AppManagement)
+        );
     }
 
     #[test]
@@ -6044,40 +5910,76 @@ int main(int argc, const char **argv) {
 
     #[test]
     fn selects_official_update_targets_by_platform_and_architecture() {
-        for arch in ["x86_64", "aarch64"] {
-            let target = original_application_update_target("macos", arch).unwrap();
-            assert_eq!(target.action, OriginalApplicationUpdateAction::Download);
-            assert_eq!(
-                target.url,
-                "https://claude.ai/api/desktop/darwin/universal/dmg/latest/redirect"
-            );
-        }
+        assert_eq!(original_application_update_target("macos", "aarch64"), None);
 
         assert_eq!(
             original_application_update_target("windows", "x86_64"),
             Some(OriginalApplicationUpdateTarget {
                 action: OriginalApplicationUpdateAction::Download,
-                url: "https://claude.ai/api/desktop/win32/x64/setup/latest/redirect",
+                url: config::windows_x64_download_url(),
             })
         );
         assert_eq!(
             original_application_update_target("windows", "aarch64"),
             Some(OriginalApplicationUpdateTarget {
                 action: OriginalApplicationUpdateAction::Download,
-                url: "https://claude.ai/api/desktop/win32/arm64/setup/latest/redirect",
+                url: config::windows_arm64_download_url(),
             })
         );
         assert_eq!(
             original_application_update_target("linux", "x86_64"),
             Some(OriginalApplicationUpdateTarget {
                 action: OriginalApplicationUpdateAction::Instructions,
-                url: "https://support.claude.com/en/articles/10065433-install-claude-desktop",
+                url: config::linux_install_guide_url(),
             })
         );
         assert_eq!(
             original_application_update_target("unknown", "x86_64"),
             None
         );
+    }
+
+    #[test]
+    fn source_update_cache_is_bound_to_installed_version_and_stale_is_unavailable() {
+        let root = env::temp_dir().join(format!("code-ai-update-cache-{}", Uuid::new_v4()));
+        fs::create_dir_all(&root).unwrap();
+        let paths = test_managed_paths(&root);
+        let fresh = SourceUpdateInfo {
+            status: SourceUpdateStatus::Current,
+            latest_version: Some("2.0.0".to_string()),
+            checked_at: Some(Utc::now().timestamp_millis()),
+            stale: false,
+            source: Some(SourceUpdateSource::OfficialFeed),
+        };
+        save_source_update_cache(&paths, "macos", "2.0.0", &fresh).unwrap();
+
+        assert_eq!(
+            read_source_update_cache(&paths, "macos", "2.0.0", UPDATE_CACHE_FRESH_MS)
+                .unwrap()
+                .status,
+            SourceUpdateStatus::Current
+        );
+        assert!(
+            read_source_update_cache(&paths, "macos", "2.0.1", UPDATE_CACHE_STALE_MS).is_none()
+        );
+
+        let stale = SourceUpdateInfo {
+            status: SourceUpdateStatus::Available,
+            latest_version: Some("2.1.0".to_string()),
+            checked_at: Some(
+                Utc::now()
+                    .timestamp_millis()
+                    .saturating_sub(UPDATE_CACHE_FRESH_MS + 1_000),
+            ),
+            stale: false,
+            source: Some(SourceUpdateSource::OfficialFeed),
+        };
+        save_source_update_cache(&paths, "macos", "2.0.0", &stale).unwrap();
+        let cached =
+            read_source_update_cache(&paths, "macos", "2.0.0", UPDATE_CACHE_STALE_MS).unwrap();
+        assert!(cached.stale);
+        assert_eq!(cached.status, SourceUpdateStatus::Unavailable);
+        fs::remove_dir_all(root).unwrap();
     }
 
     #[test]
@@ -6088,6 +5990,67 @@ int main(int argc, const char **argv) {
             require_provider_source(None),
             Err("No se encontró la instalación original de la aplicación compatible.".to_string())
         );
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn macos_update_launcher_receives_only_the_validated_exact_original_path() {
+        use std::cell::RefCell;
+
+        let root = env::temp_dir().join(format!("code-ai-update-launch-{}", Uuid::new_v4()));
+        let original = root.join("Original.app");
+        fs::create_dir_all(&root).unwrap();
+        write_signed_fixture_bundle(&original);
+        let paths = test_managed_paths(&root);
+        fs::create_dir_all(&paths.instances).unwrap();
+        let launched = RefCell::new(None);
+
+        let result = launch_macos_original_application_with(&paths, &original, |launch| {
+            launched.replace(Some(MacosOriginalLaunch {
+                executable: launch.executable,
+                arguments: launch.arguments.clone(),
+            }));
+            Ok(())
+        })
+        .unwrap();
+
+        assert_eq!(
+            launched.into_inner(),
+            Some(MacosOriginalLaunch {
+                executable: "/usr/bin/open",
+                arguments: vec![
+                    "-n".into(),
+                    "-a".into(),
+                    fs::canonicalize(&original).unwrap().into_os_string(),
+                ],
+            })
+        );
+        assert_eq!(result.action, OriginalApplicationUpdateAction::Instructions);
+        assert!(result.message.contains("Claude > Check for Updates"));
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn macos_update_launcher_rejects_a_managed_application_without_launching() {
+        use std::cell::Cell;
+
+        let root = env::temp_dir().join(format!("code-ai-update-managed-{}", Uuid::new_v4()));
+        let paths = test_managed_paths(&root);
+        let managed = paths.instances.join("fixture/application/Managed.app");
+        fs::create_dir_all(managed.join("Contents/MacOS")).unwrap();
+        fs::write(managed.join("Contents/MacOS/Claude"), b"fixture").unwrap();
+        let launched = Cell::new(false);
+
+        let error = launch_macos_original_application_with(&paths, &managed, |_| {
+            launched.set(true);
+            Ok(())
+        })
+        .unwrap_err();
+
+        assert!(error.contains("instancia administrada"));
+        assert!(!launched.get());
+        fs::remove_dir_all(root).unwrap();
     }
 
     #[test]
@@ -6401,6 +6364,63 @@ int main(int argc, const char **argv) {
     }
 
     #[test]
+    fn detects_any_process_running_from_inside_a_bundle() {
+        let root = env::temp_dir().join(format!("code-ai-inventory-{}", Uuid::new_v4()));
+        let bundle = root.join("Claude.app");
+        fs::create_dir_all(bundle.join("Contents/Frameworks")).unwrap();
+        let canonical = fs::canonicalize(&bundle).unwrap();
+        let entry = |executable: PathBuf| ProcessInventoryEntry {
+            pid: 1,
+            start_time: 1,
+            executable: Some(executable),
+            command: Vec::new(),
+        };
+        let helper = ProcessInventory {
+            entries: vec![entry(
+                canonical.join("Contents/Frameworks/Helper.app/Contents/MacOS/Helper"),
+            )],
+        };
+        assert!(helper.any_executable_within(&bundle));
+        let sibling = ProcessInventory {
+            entries: vec![
+                entry(root.join("Claude.app2/Contents/MacOS/Claude")),
+                entry(root.join("Other.app/Contents/MacOS/Claude")),
+                ProcessInventoryEntry {
+                    pid: 2,
+                    start_time: 2,
+                    executable: None,
+                    command: Vec::new(),
+                },
+            ],
+        };
+        assert!(!sibling.any_executable_within(&bundle));
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn maps_official_feed_document_to_source_update() {
+        let document = serde_json::json!({ "currentRelease": "1.22400.0", "releases": [] });
+        let newer = source_update_from_feed(&document, "1.22300.0").unwrap();
+        assert_eq!(newer.status, SourceUpdateStatus::Available);
+        assert_eq!(newer.latest_version.as_deref(), Some("1.22400.0"));
+        assert_eq!(newer.source, Some(SourceUpdateSource::OfficialFeed));
+        assert!(!newer.stale);
+        assert!(newer.checked_at.is_some());
+        assert_eq!(
+            source_update_from_feed(&document, "1.22400.0")
+                .unwrap()
+                .status,
+            SourceUpdateStatus::Current
+        );
+        assert!(source_update_from_feed(&serde_json::json!({}), "1.0.0").is_err());
+        assert!(source_update_from_feed(
+            &serde_json::json!({ "currentRelease": "https://invalid.example" }),
+            "1.0.0"
+        )
+        .is_err());
+    }
+
+    #[test]
     fn parses_apt_policy_without_treating_missing_candidates_as_updates() {
         assert_eq!(
             parse_apt_policy(
@@ -6567,6 +6587,7 @@ int main(int argc, const char **argv) {
             session_links: root.join("session-links.json"),
             source_update_cache: root.join("source-update-cache.json"),
             artifact_exports: root.join("artifact-exports"),
+            original_update: root.join("original-update"),
         };
         let session_id = "local_96812ba4-6864-40d5-a70a-0470f244022c";
         let manifest = |transfer_id: &str, created_at: &str, source_id: &str, target_id: &str| {

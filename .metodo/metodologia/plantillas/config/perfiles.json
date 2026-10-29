@@ -1,0 +1,367 @@
+{
+  "$comentario": "Fuente de verdad de los diales y de los perfiles. La leen metodo.mjs, hu.mjs y los hooks. Ver configuracion.md y perfiles.md.",
+  "diales": {
+    "propuesta": {
+      "valores": [
+        "no",
+        "si"
+      ],
+      "que": "Propuesta formal al cliente antes de construir"
+    },
+    "enfoque": {
+      "valores": [
+        "tecnico",
+        "producto"
+      ],
+      "que": "producto = Steve Jobs: experiencia aprobada primero, tecnología después"
+    },
+    "modo": {
+      "valores": [
+        "fase-a-fase",
+        "construir-todo",
+        "bloque"
+      ],
+      "que": "Cuándo se espera la aprobación de la persona"
+    },
+    "alcance": {
+      "valores": [
+        "off",
+        "lista-viva",
+        "sellado"
+      ],
+      "que": "off: sin alcance · lista-viva: lista editable, sin actas · sellado: solo cambia por acta"
+    },
+    "agentes": {
+      "tipo": "lista",
+      "valores": [
+        "product-owner",
+        "architect",
+        "explorador",
+        "data",
+        "product-design",
+        "backend",
+        "frontend",
+        "fullstack",
+        "qa",
+        "devops",
+        "seguridad"
+      ],
+      "que": "Roles activos en el proyecto"
+    },
+    "diseno": {
+      "valores": [
+        "off",
+        "por-hu",
+        "sistema"
+      ],
+      "que": "sistema = fundación de diseño (marca, showcase, componentes, guías) antes de la primera maqueta"
+    },
+    "herramientaDiseno": {
+      "valores": [
+        "claude-design",
+        "html-local"
+      ],
+      "que": "Dónde se construyen sistema de diseño y maquetas"
+    },
+    "arquitectura": {
+      "valores": [
+        "ligera",
+        "dos-pasos"
+      ],
+      "que": "dos-pasos = análisis con preguntas, y briefs solo tras las respuestas"
+    },
+    "exploradores": {
+      "valores": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "que": "Exploradores de solo lectura que el arquitecto lanza en paralelo antes de sintetizar"
+    },
+    "datos": {
+      "valores": [
+        "skill",
+        "agente"
+      ],
+      "que": "skill por motor siempre; agente data además si el dato es complejo"
+    },
+    "revisionTecnica": {
+      "valores": [
+        "off",
+        "riesgo",
+        "siempre"
+      ],
+      "que": "Revisión del arquitecto después de implementar"
+    },
+    "dosTiempos": {
+      "valores": [
+        false,
+        true
+      ],
+      "que": "Revisión técnica separada de servidor y de pantallas"
+    },
+    "qa": {
+      "valores": [
+        "off",
+        "bajo-demanda"
+      ],
+      "que": "Agente QA no bloqueante, se llama con /qa"
+    },
+    "seguridad": {
+      "valores": [
+        "off",
+        "bajo-demanda",
+        "riesgo"
+      ],
+      "que": "Agente de seguridad no bloqueante: bajo-demanda con /seguridad; riesgo = además se ofrece en cada historia riesgosa y es parte del paso a producción"
+    },
+    "contratos": {
+      "valores": [
+        "flexibles",
+        "estrictos-en-produccion",
+        "estrictos"
+      ],
+      "que": "Cuándo un contrato exige compatibilidad y versionado"
+    },
+    "grafo": {
+      "valores": [
+        "off",
+        "graphify"
+      ],
+      "que": "Grafo de conocimiento del código y del gobierno"
+    },
+    "observabilidad": {
+      "valores": [
+        "off",
+        "basica",
+        "completa"
+      ],
+      "que": "ODD: señales por historia (básica = logs estructurados y errores)"
+    },
+    "pruebas": {
+      "tipo": "objeto",
+      "que": "Cuánto y cuándo se prueba",
+      "campos": {
+        "implementador": {
+          "valores": [
+            "relacionadas",
+            "modulo"
+          ],
+          "que": "Lo que corre quien implementa"
+        },
+        "suite": {
+          "valores": [
+            "cierre-hu",
+            "cierre-lote"
+          ],
+          "que": "Cuándo corre la suite completa, una sola vez"
+        },
+        "timeoutMin": {
+          "tipo": "numero",
+          "que": "Minutos máximos de cualquier ejecución de pruebas"
+        }
+      }
+    },
+    "gates": {
+      "tipo": "objeto",
+      "que": "Nivel de cada gate: off | aviso | bloqueo",
+      "campos": {
+        "historias": {
+          "valores": [
+            "off",
+            "aviso",
+            "bloqueo"
+          ]
+        },
+        "alcance": {
+          "valores": [
+            "off",
+            "aviso",
+            "bloqueo"
+          ]
+        },
+        "contratos": {
+          "valores": [
+            "off",
+            "aviso",
+            "bloqueo"
+          ]
+        },
+        "grafo": {
+          "valores": [
+            "off",
+            "aviso",
+            "bloqueo"
+          ]
+        },
+        "territorio": {
+          "valores": [
+            "off",
+            "bloqueo"
+          ],
+          "que": "La guarda impide que un agente escriba fuera de su territorio"
+        }
+      }
+    }
+  },
+  "fijos": {
+    "$comentario": "No son diales: aplican en todos los perfiles y no se pueden apagar.",
+    "configuracion": "bloqueo",
+    "entorno": "bloqueo"
+  },
+  "perfiles": {
+    "S": {
+      "que": "Ligero: landing, script, MVP de una o dos semanas, una persona",
+      "propuesta": "no",
+      "enfoque": "producto",
+      "modo": "construir-todo",
+      "alcance": "off",
+      "agentes": [
+        "fullstack",
+        "product-design"
+      ],
+      "diseno": "por-hu",
+      "herramientaDiseno": "claude-design",
+      "arquitectura": "ligera",
+      "exploradores": 0,
+      "datos": "skill",
+      "revisionTecnica": "off",
+      "dosTiempos": false,
+      "qa": "off",
+      "seguridad": "off",
+      "contratos": "flexibles",
+      "grafo": "off",
+      "observabilidad": "off",
+      "pruebas": {
+        "implementador": "relacionadas",
+        "suite": "cierre-lote",
+        "timeoutMin": 5
+      },
+      "gates": {
+        "historias": "aviso",
+        "alcance": "off",
+        "contratos": "off",
+        "grafo": "off",
+        "territorio": "off"
+      }
+    },
+    "M": {
+      "que": "Estándar: producto con varias pantallas, servidor y una o dos apps",
+      "propuesta": "no",
+      "enfoque": "tecnico",
+      "modo": "fase-a-fase",
+      "alcance": "lista-viva",
+      "agentes": [
+        "product-owner",
+        "architect",
+        "explorador",
+        "product-design",
+        "backend",
+        "frontend",
+        "qa",
+        "devops",
+        "seguridad"
+      ],
+      "diseno": "sistema",
+      "herramientaDiseno": "claude-design",
+      "arquitectura": "dos-pasos",
+      "exploradores": 2,
+      "datos": "skill",
+      "revisionTecnica": "riesgo",
+      "dosTiempos": false,
+      "qa": "bajo-demanda",
+      "seguridad": "bajo-demanda",
+      "contratos": "estrictos-en-produccion",
+      "grafo": "off",
+      "observabilidad": "basica",
+      "pruebas": {
+        "implementador": "relacionadas",
+        "suite": "cierre-hu",
+        "timeoutMin": 10
+      },
+      "gates": {
+        "historias": "bloqueo",
+        "alcance": "aviso",
+        "contratos": "aviso",
+        "grafo": "off",
+        "territorio": "bloqueo"
+      }
+    },
+    "L": {
+      "que": "Contrato: varios repos o apps, dinero o datos sensibles, cliente con contrato formal",
+      "propuesta": "si",
+      "enfoque": "tecnico",
+      "modo": "fase-a-fase",
+      "alcance": "sellado",
+      "agentes": [
+        "product-owner",
+        "architect",
+        "explorador",
+        "data",
+        "product-design",
+        "backend",
+        "frontend",
+        "qa",
+        "devops",
+        "seguridad"
+      ],
+      "diseno": "sistema",
+      "herramientaDiseno": "claude-design",
+      "arquitectura": "dos-pasos",
+      "exploradores": 4,
+      "datos": "agente",
+      "revisionTecnica": "riesgo",
+      "dosTiempos": true,
+      "qa": "bajo-demanda",
+      "seguridad": "riesgo",
+      "contratos": "estrictos-en-produccion",
+      "grafo": "graphify",
+      "observabilidad": "completa",
+      "pruebas": {
+        "implementador": "relacionadas",
+        "suite": "cierre-hu",
+        "timeoutMin": 15
+      },
+      "gates": {
+        "historias": "bloqueo",
+        "alcance": "bloqueo",
+        "contratos": "bloqueo",
+        "grafo": "aviso",
+        "territorio": "bloqueo"
+      }
+    }
+  },
+  "fase": {
+    "$comentario": "La fase del proyecto sube mínimos, nunca los baja. Ver entornos.md.",
+    "desarrollo": {},
+    "produccion": {
+      "minimos": {
+        "revisionTecnica": "riesgo",
+        "observabilidad": "basica"
+      }
+    }
+  },
+  "talla": {
+    "$comentario": "Señales para estimar la talla en el arranque. Suma puntos; S < 4 <= M < 9 <= L.",
+    "senales": {
+      "repos": "1 punto por repo o app más allá del primero",
+      "integraciones": "1 punto por integración externa que el producto usa (pagos, CMS, correo, mapas…); un simple enlace (WhatsApp, redes) no cuenta",
+      "dinero": 2,
+      "datosPersonales": 1,
+      "datosDeMenores": 2,
+      "tiempoReal": 1,
+      "sinConexion": 1,
+      "colas": 1,
+      "contratoFormal": 2,
+      "masDeUnaPersonaDesarrollando": 1,
+      "masDeVeinteRequerimientos": 2,
+      "plazoDeOchoSemanasOMas": 1
+    },
+    "cortes": {
+      "M": 4,
+      "L": 9
+    }
+  }
+}

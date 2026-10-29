@@ -31,11 +31,13 @@ Aplicación de escritorio open source creada con Tauri, React y Rust para admini
 
 ## Plataformas
 
-| Plataforma | Arquitectura | Paquetes | Estado |
+| Plataforma | Arquitectura | Paquetes | Mínimo |
 | --- | --- | --- | --- |
-| macOS | Apple Silicon | `.app`, `.dmg` | Compatible |
-| Windows | x64 | `.msi`, `.exe` NSIS | Compatible |
-| Linux | x64 y ARM64 | `.deb`, `.AppImage` | Compatible |
+| macOS | Apple Silicon | `.app`, `.dmg` | macOS 13.3 o posterior |
+| Windows | x64 | `.msi`, `.exe` NSIS | WebView2 |
+| Linux | x64 y ARM64 | `.deb`, `.AppImage` | WebKitGTK 2.40 o posterior |
+
+La interfaz necesita un motor web de nivel Safari 16.4. En Ubuntu 22.04 eso es el WebKitGTK de `jammy-updates` (`libwebkit2gtk-4.1-0`): el 2.36 con que salió no basta. El `.deb` usa el WebKitGTK del sistema y el `.AppImage` lleva el del runner. Si el motor no basta, la app lo avisa al abrirse.
 
 Los instaladores de cada plataforma se compilan en runners nativos mediante [`.github/workflows/build-desktop.yml`](.github/workflows/build-desktop.yml). Los paquetes generados aún no están firmados ni notarizados.
 
@@ -43,57 +45,59 @@ Los instaladores de cada plataforma se compilan en runners nativos mediante [`.g
 
 Requisitos comunes:
 
-- Node.js 24 y npm.
+- Node.js 24 y pnpm 12 (la versión exacta está en `packageManager` de `package.json`).
 - Rust estable mediante `rustup`.
 - Las dependencias de sistema de Tauri 2 para la plataforma.
 
 Instala dependencias y abre el modo de desarrollo:
 
 ```bash
-npm ci
-npm run tauri -- dev
+pnpm install --frozen-lockfile
+pnpm tauri dev
 ```
+
+El catálogo de componentes (shadcn/ui con el tema de la app) se ve en local con `pnpm dev`, en `http://127.0.0.1:1420/showcase.html`. No entra en el build ni en los instaladores.
 
 Verifica el frontend y las pruebas de Rust:
 
 ```bash
-npm run build
-npm run test:scan
+pnpm build
+pnpm test:scan
 cargo test --manifest-path src-tauri/Cargo.toml
 ```
 
 ## Versionado
 
-El repositorio usa Semantic Versioning y actualmente está en `0.2.1`. Para preparar una versión compatible, una funcionalidad o un cambio incompatible, ejecuta:
+El repositorio usa Semantic Versioning y actualmente está en `0.3.0`. Para preparar una versión compatible, una funcionalidad o un cambio incompatible, ejecuta:
 
 ```bash
-npm run release:version -- patch
-npm run release:version -- minor
-npm run release:version -- major
-npm run release:version -- 0.2.2
-npm run release:check
+pnpm release:version patch
+pnpm release:version minor
+pnpm release:version major
+pnpm release:version 0.3.0
+pnpm release:check
 ```
 
 `patch` corresponde a fixes compatibles, `minor` a funcionalidades compatibles y `major` a incompatibilidades. Mientras la versión sea `0.y.z`, un `minor` puede incluir incompatibilidades conforme al estándar; el proyecto procurará documentarlas de forma explícita. La herramienta sincroniza las fuentes de versión de Node y Tauri de forma atómica, y `release:check` comprueba que no diverjan. Cambiar una versión no publica un instalador ni crea una release. Consulta [la política completa](docs/versionado.document.md) y el [changelog](CHANGELOG.md).
 
 ## Desarrollo asistido por IA y Graphify
 
-El repositorio incluye cuatro agentes de desarrollo: `architect`, `backend`, `frontend` y `document`. Sus instrucciones neutrales viven en [`.agents/roles/`](.agents/roles/README.md) y Codex dispone de adaptadores con modelos independientes en [`.codex/agents/`](.codex/agents/). Toda feature o fix requiere una HU única en [`docs/hu/`](docs/hu/index.md).
+El repositorio sigue la metodología agéntica v4 (perfil S) con tres agentes: `architect`, `backend` y `frontend`. La configuración vive en [`.metodo/config.json`](.metodo/config.json) y el contrato generado está en [`AGENTS.md`](AGENTS.md). Toda feature o fix es una historia en [`hu/`](hu/INDEX.md) y se trabaja con `/hu-new`, `/hu-work`, `/hu-close` y `/fix`. Las historias y los roles anteriores se archivaron en [`docs/archivo/previo/`](docs/archivo/previo/) ([ADR-0001](docs/decisiones/ADR-0001-adopcion-metodologia-v4.md)).
 
 Graphify mantiene un grafo local del código que debe consultarse antes del análisis y actualizarse al cerrar cada iteración. Instala la versión fijada por el proyecto y genera o actualiza sus artefactos:
 
 ```bash
 uv tool install graphifyy==0.9.32
-npm run graph:update
+pnpm graph:update
 ```
 
 Antes de enviar cambios, comprueba que el grafo versionado coincide con el código:
 
 ```bash
-npm run graph:check
+pnpm graph:check
 ```
 
-El grafo se extrae localmente mediante AST y no requiere claves ni envía el código a un modelo externo. Consulta [la documentación del flujo de agentes](docs/agents.document.md) y [la integración de Graphify](docs/graphify.document.md).
+El grafo se extrae localmente mediante AST y no requiere claves ni envía el código a un modelo externo. Consulta [la integración de Graphify](docs/graphify.document.md).
 
 ## Crear cada versión
 
@@ -110,8 +114,8 @@ xcode-select --install
 Compila la aplicación y el DMG:
 
 ```bash
-npm ci
-npm run build:macos
+pnpm install --frozen-lockfile
+pnpm build:macos
 ```
 
 Resultados:
@@ -121,15 +125,15 @@ src-tauri/target/release/bundle/macos/Code AI Profiles.app
 src-tauri/target/release/bundle/dmg/*.dmg
 ```
 
-La entrega local verificada de `0.2.1` para Apple Silicon es `src-tauri/target/release/bundle/dmg/Code AI Profiles_0.2.1_aarch64.dmg`. Pasó build, verificación del DMG y verificación estricta de la app; el binario es `arm64`. Está firmada ad-hoc y no está notarizada, por lo que macOS puede requerir clic derecho → **Abrir**. Este artefacto local no implica una publicación o GitHub Release.
+Como referencia histórica, la entrega local de Apple Silicon `0.2.1` fue verificada. La generación de `0.3.0` se realiza únicamente después de que el merge protegido llegue a `main`; la ruta esperada del DMG y la `.app`, su hash y su verificación se reportan junto con ese artefacto. Un paquete local puede estar firmado ad-hoc y no estar notarizado, por lo que macOS puede requerir clic derecho → **Abrir**. Un artefacto local no implica una publicación o GitHub Release.
 
 ### Windows x64
 
 Instala Microsoft C++ Build Tools con la carga de trabajo «Desktop development with C++», WebView2 y Rust para el target MSVC. Después ejecuta en PowerShell:
 
 ```powershell
-npm ci
-npm run build:windows
+pnpm install --frozen-lockfile
+pnpm build:windows
 ```
 
 Resultados:
@@ -141,7 +145,7 @@ src-tauri\target\release\bundle\nsis\*.exe
 
 ### Linux x64 o ARM64
 
-En Ubuntu/Debian instala las dependencias usadas por el CI:
+Necesitas WebKitGTK 2.40 o posterior (en Ubuntu 22.04, con `jammy-updates` activado). En Ubuntu/Debian instala las dependencias usadas por el CI:
 
 ```bash
 sudo apt-get update
@@ -151,8 +155,8 @@ sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev 
 Compila el paquete DEB y el AppImage en una máquina de la arquitectura objetivo:
 
 ```bash
-npm ci
-npm run build:linux
+pnpm install --frozen-lockfile
+pnpm build:linux
 ```
 
 Resultados:
@@ -180,7 +184,7 @@ Code AI Profiles/
 - En Windows se copia el directorio de la aplicación y cada proceso recibe su propio directorio de datos.
 - En Linux se crea un lanzador hacia el binario instalado para conservar su sandbox y permitir que el gestor de paquetes actualice el ejecutable compartido.
 
-La actualización de la aplicación original y la sincronización de instancias son operaciones separadas. Code AI Profiles abre la descarga oficial en macOS/Windows o las instrucciones apt en Linux para que el usuario complete la actualización; nunca sobrescribe la original. Después del escaneo, una instalación gestionada válida que tenga la mayor versión puede sincronizar otras instancias detenidas sin tocar sus perfiles. En Linux, las instancias siguen el binario actualizado por el gestor de paquetes. Consulta [la guía de actualizaciones](docs/actualizaciones.document.md).
+La actualización de la aplicación original y la sincronización de instancias son operaciones separadas. En macOS, Code AI Profiles valida y abre exclusivamente la aplicación original; dentro de ella el usuario elige `Claude > Check for Updates`. En Windows abre la descarga oficial y en Linux las instrucciones apt. Nunca sobrescribe la original. Al volver del handoff, refresca únicamente versiones y topología, sin escaneo manual ni lectura de sesiones. Después, una instalación gestionada válida con la mayor versión puede sincronizar otras instancias detenidas sin tocar sus perfiles. Consulta [la guía de actualizaciones](docs/actualizaciones.document.md).
 
 ## Sesiones y contexto
 
@@ -211,7 +215,7 @@ Las referencias cloud, la propiedad remota y los monitores de artefactos no se t
 
 El botón **Detener** verifica que el proceso pertenezca a la aplicación y perfil de la instancia antes de cerrarlo, intenta un cierre normal y solo después escala dentro del árbol o grupo verificado. Si aún quedan procesos, conserva el estado ejecutándose y explica el error en vez de informar un cierre falso.
 
-Puedes asignar un icono PNG o JPEG de hasta 5 MiB a cada instancia. El icono se muestra dentro de Code AI Profiles y sobrevive a la sincronización de su aplicación. En macOS, `NSWorkspace.setIcon` se está evaluando para el Dock, pero su metadata impide la verificación estricta mientras está aplicada; producción la revierte y conserva el icono personalizado dentro de Code AI Profiles. Windows conserva el icono del ejecutable firmado; Linux crea un launcher opcional cuyo resultado depende del compositor. Consulta [la guía de instancias](docs/instancias.document.md).
+Puedes asignar un icono PNG o JPEG de hasta 5 MiB a cada instancia. El icono se muestra dentro de Code AI Profiles y sobrevive a la sincronización de su aplicación. En macOS el icono también se ve en el Dock, con la forma de los iconos de macOS y sin tocar la firma de Anthropic; para las copias que Claude actualizó por su cuenta, macOS pide el permiso «Gestión de apps». Windows conserva el icono del ejecutable firmado; Linux crea un launcher opcional cuyo resultado depende del compositor. Consulta [la guía de instancias](docs/instancias.document.md).
 
 ## Privacidad y seguridad
 

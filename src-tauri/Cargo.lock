@@ -382,7 +382,7 @@ dependencies = [
 
 [[package]]
 name = "code-ai-profiles"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "chrono",
  "dirs",
@@ -392,6 +392,7 @@ dependencies = [
  "reqwest",
  "serde",
  "serde_json",
+ "sha2",
  "sysinfo",
  "tauri",
  "tauri-build",

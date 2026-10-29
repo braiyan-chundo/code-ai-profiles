@@ -52,7 +52,7 @@ export interface CodeSession {
   transfer?: SessionTransferInfo | null;
 }
 
-export type SourceUpdateStatus = "current" | "available" | "unavailable";
+export type SourceUpdateStatus = "current" | "available" | "unavailable" | "unknown" | "error";
 export type SourceUpdateSource = "officialFeed" | "aptCache";
 
 export interface SourceUpdateInfo {
@@ -88,11 +88,17 @@ export interface ManagedProcessIdentity {
   profileArgument: string;
 }
 
+export type CustomIconSystemIssue = "appManagement";
+
 export interface CustomIcon {
   path: string;
   revision: number;
+  /** true = el icono está puesto en la copia y la comprobación equivalente pasó (solo macOS). */
   systemApplied: boolean;
+  /** Texto para la persona. */
   systemMessage: string;
+  /** Solo macOS; null salvo bloqueo de «Gestión de apps». */
+  systemIssue?: CustomIconSystemIssue | null;
 }
 
 export interface SessionProfile {
@@ -193,4 +199,29 @@ export interface SynchronizeManagedApplicationsResult {
 export interface UnlinkCodeSessionRequest {
   instanceId: string;
   sessionId: string;
+}
+
+export interface InstallOriginalUpdateRequest {
+  expectedVersion: string;
+}
+
+export type OriginalInstallPhase = "preparing" | "downloading" | "verifying" | "installing" | "synchronizing";
+
+export interface OriginalInstallProgress {
+  phase: OriginalInstallPhase;
+  targetVersion: string | null;
+  receivedBytes: number;
+  totalBytes: number;
+  cancellable: boolean;
+}
+
+export type OriginalInstallStatus = "installed" | "cancelled";
+
+export interface OriginalInstallResult {
+  status: OriginalInstallStatus;
+  previousVersion: string | null;
+  installedVersion: string | null;
+  synchronization: SynchronizationItemResult[];
+  pendingInstanceIds: string[];
+  dashboard: DashboardState;
 }

@@ -1,0 +1,185 @@
+<!doctype html>
+<!--
+  Estructura fija de maqueta (diseno.md §6). Se copia a hu/HU-####-*/diseno/maqueta.html.
+
+  LA MAQUETA ES ESTÁTICA: pantallas en HTML y CSS, sin lógica. El único script es el de este marco.
+  Nada de formularios que validan, datos que cambian, fetch, estado, rutas ni simulación de la API; nada
+  de React, Vite, npm ni servidor. Una interacción se enseña como otro estado estático («menú abierto»,
+  «error en el correo»). Si escribes una función que no es de este marco, eso ya es construir.
+
+  - Declara en MAQUETA las pantallas, estados, tamaños y variantes de la historia (solo lo que existe).
+  - Cada pantalla es un <template data-pantalla data-estado [data-variante]>; si falta la combinación
+    exacta, se usa la de "con-datos" y luego la primera de esa pantalla. Un estado sin ninguna
+    plantilla en la pantalla elegida no aparece en la barra.
+  - Variantes (★): dos o tres alternativas de lo que se propone, cada una con su nota de una línea.
+    «Comparar» las pone lado a lado.
+  - Para ir de una pantalla a otra: data-ir="pantalla=pago&estado=con-datos" en cualquier elemento.
+    Es toda la navegación que hace falta.
+  - Los tokens van en <style id="tokens">: se copian del sistema de diseño, nunca se inventan. Los
+    componentes se dibujan con el aspecto de la librería (sus clases y estilos copiados), no se importan.
+  - Enlace directo a cada combinación: #pantalla=pago&estado=error&ancho=390&tema=oscuro&variante=B
+-->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HU-#### · Maqueta</title>
+<style>
+  :root { --shell-bg:#f6f6f7; --shell-fg:#1d1d1f; --shell-muted:#6e6e73; --shell-line:#e3e3e6; --shell-accent:#3b5bdb; }
+  @media (prefers-color-scheme: dark) { :root { --shell-bg:#161618; --shell-fg:#f2f2f3; --shell-muted:#9a9aa1; --shell-line:#2c2c30; --shell-accent:#748ffc; } }
+  * { box-sizing: border-box; }
+  body { margin:0; font: 14px/1.4 system-ui, sans-serif; background: var(--shell-bg); color: var(--shell-fg); display:grid; grid-template-columns: 240px 1fr; height:100vh; }
+  body.sin-panel { grid-template-columns: 1fr; } body.sin-panel aside { display:none; }
+  aside { border-right:1px solid var(--shell-line); padding:16px; overflow:auto; }
+  aside h1 { font-size:13px; margin:0 0 16px; }
+  aside h2 { font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--shell-muted); margin:18px 0 6px; }
+  aside button { display:block; width:100%; text-align:left; background:none; border:0; color:inherit; padding:5px 8px; border-radius:6px; cursor:pointer; font:inherit; }
+  aside button[aria-pressed="true"] { background: color-mix(in srgb, var(--shell-accent) 14%, transparent); color: var(--shell-accent); font-weight:600; }
+  .fila { display:flex; gap:4px; flex-wrap:wrap; } .fila button { width:auto; }
+  main { overflow:auto; padding:24px; display:flex; gap:24px; justify-content:center; align-items:flex-start; }
+  .marco { display:flex; flex-direction:column; gap:6px; flex:none; }
+  .marco .rotulo { font-size:12px; color:var(--shell-muted); } .marco .rotulo b { color:var(--shell-fg); }
+  .caja { overflow:hidden; border:1px solid var(--shell-line); border-radius:10px; background:#fff; }
+  iframe { border:0; display:block; transform-origin: 0 0; }
+  .nota { color:var(--shell-muted); font-size:12px; margin-top:8px; }
+  #mostrar { position:fixed; top:10px; left:10px; display:none; border:1px solid var(--shell-line); background:var(--shell-bg); color:inherit; border-radius:6px; padding:4px 10px; cursor:pointer; font:inherit; font-size:12px; }
+  body.sin-panel #mostrar { display:block; }
+  @media (max-width: 720px) { body { grid-template-columns: 1fr; grid-template-rows: auto 1fr; } aside { border-right:0; border-bottom:1px solid var(--shell-line); } }
+</style>
+</head>
+<body>
+<aside>
+  <h1 id="titulo"></h1>
+  <h2>Pantallas</h2><div id="pantallas"></div>
+  <h2>Estados</h2><div id="estados"></div>
+  <h2>Tamaños</h2><div id="anchos" class="fila"></div>
+  <h2>Variantes (★)</h2><div id="variantes" class="fila"></div><p class="nota" id="notaVariante"></p>
+  <h2>Tema</h2><div id="temas" class="fila"></div>
+  <h2>Ver</h2><div class="fila"><button id="comparar">Comparar variantes</button><button id="ocultar">Ocultar panel</button></div>
+  <p class="nota" id="enlace"></p>
+</aside>
+<button id="mostrar">Panel</button>
+<main id="escena"></main>
+
+<!-- Tokens reales del sistema de diseño (se copian, no se inventan). -->
+<style id="tokens">
+  :root { --color-fondo:#ffffff; --color-texto:#1d1d1f; --color-primario:#3b5bdb; --espacio-1:4px; --espacio-2:8px; --espacio-3:16px; --radio:8px; --fuente: system-ui, sans-serif; }
+  [data-tema="oscuro"] { --color-fondo:#121214; --color-texto:#f2f2f3; --color-primario:#748ffc; }
+  body { margin:0; font-family: var(--fuente); background: var(--color-fondo); color: var(--color-texto); }
+</style>
+
+<!-- Pantallas de la historia: una plantilla por pantalla × estado (× variante). Solo HTML y CSS. -->
+<template data-pantalla="principal" data-estado="con-datos" data-variante="A">
+  <div style="padding:var(--espacio-3)"><h1>Pantalla principal</h1><p>Con datos verosímiles del cliente. Variante A: lista.</p></div>
+</template>
+<template data-pantalla="principal" data-estado="con-datos" data-variante="B">
+  <div style="padding:var(--espacio-3)"><h1>Pantalla principal</h1><p>Con datos verosímiles del cliente. Variante B: tarjetas.</p></div>
+</template>
+<template data-pantalla="principal" data-estado="vacio">
+  <div style="padding:var(--espacio-3)"><h1>Pantalla principal</h1><p>Todavía no hay nada aquí. <button data-ir="pantalla=principal&estado=con-datos">Crear el primero</button></p></div>
+</template>
+
+<script>
+const MAQUETA = {
+  titulo: "HU-#### · <título>",
+  pantallas: [{ id: "principal", nombre: "Principal" }],
+  // Solo los estados que la historia tiene: con datos, vacío, cargando, error, sin conexión, sin permiso, primera vez…
+  estados: [{ id: "con-datos", nombre: "Con datos" }, { id: "vacio", nombre: "Vacío" }],
+  anchos: [1440, 768, 390],
+  variantes: [
+    { id: "A", nombre: "A ★", nota: "Lista densa: se ven más registros a la vez (recomendada)." },
+    { id: "B", nombre: "B", nota: "Tarjetas: más aire, menos registros por pantalla." },
+  ],
+};
+
+// ── El marco. No hace falta tocar nada de aquí abajo. ─────────────────────────
+const variantes = MAQUETA.variantes.map((v) => (typeof v === "string" ? { id: v, nombre: v } : v));
+const estado = { pantalla: MAQUETA.pantallas[0].id, estado: MAQUETA.estados[0].id, ancho: MAQUETA.anchos[0], variante: variantes[0].id, tema: "claro", comparar: "no" };
+const $ = (id) => document.getElementById(id);
+const plantillas = () => [...document.querySelectorAll("template[data-pantalla]")];
+
+function leerHash() {
+  const p = new URLSearchParams(location.hash.slice(1));
+  for (const k of Object.keys(estado)) if (p.get(k)) estado[k] = k === "ancho" ? Number(p.get(k)) : p.get(k);
+}
+function escribirHash() {
+  history.replaceState(null, "", "#" + new URLSearchParams(Object.entries(estado)).toString());
+  $("enlace").textContent = "Enlace: maqueta.html" + location.hash;
+}
+function plantilla(variante) {
+  const todas = plantillas().filter((t) => t.dataset.pantalla === estado.pantalla);
+  const con = (e) => todas.find((t) => t.dataset.estado === e && (!t.dataset.variante || t.dataset.variante === variante));
+  return con(estado.estado) ?? con("con-datos") ?? todas[0];
+}
+function documento(t) {
+  return `<!doctype html><html data-tema="${estado.tema}"><head><meta charset="utf-8"><style>${$("tokens").textContent}[data-ir]{cursor:pointer}</style></head>` +
+    `<body>${t ? t.innerHTML : "<p style='padding:16px'>Falta esta combinación.</p>"}</body></html>`;
+}
+function ir(destino) {
+  for (const [k, v] of new URLSearchParams(destino)) if (k in estado) estado[k] = k === "ancho" ? Number(v) : v;
+  pintar();
+}
+function marco(variante, escala) {
+  const v = variantes.find((x) => x.id === variante);
+  const alto = innerHeight - 80;
+  const div = document.createElement("div");
+  div.className = "marco";
+  if (estado.comparar === "si") div.innerHTML = `<div class="rotulo"><b>${v.nombre}</b>${v.nota ? " · " + v.nota : ""}</div>`;
+  const caja = document.createElement("div");
+  caja.className = "caja";
+  caja.style.width = estado.ancho * escala + "px";
+  caja.style.height = alto + "px";
+  const f = document.createElement("iframe");
+  f.title = `Pantalla, variante ${v.nombre}`;
+  f.style.width = estado.ancho + "px";
+  f.style.height = alto / escala + "px";
+  f.style.transform = `scale(${escala})`;
+  f.srcdoc = documento(plantilla(variante));
+  f.onload = () => f.contentDocument.addEventListener("click", (e) => {
+    const el = e.target.closest("[data-ir]");
+    if (el) { e.preventDefault(); if (estado.comparar === "si") estado.variante = variante; ir(el.dataset.ir); }
+  });
+  caja.append(f);
+  div.append(caja);
+  return div;
+}
+function pintar() {
+  const lista = estado.comparar === "si" && variantes.length > 1 ? variantes.map((v) => v.id) : [estado.variante];
+  const disponible = $("escena").clientWidth - 48 - 24 * (lista.length - 1);
+  const escala = Math.min(1, disponible / (estado.ancho * lista.length));
+  $("escena").replaceChildren(...lista.map((v) => marco(v, escala)));
+  // Solo los estados dibujados en la pantalla elegida.
+  const dibujados = new Set(plantillas().filter((t) => t.dataset.pantalla === estado.pantalla).map((t) => t.dataset.estado));
+  for (const b of $("estados").children) b.hidden = !dibujados.has(b.dataset.valor);
+  for (const [grupo, clave] of [["pantallas", "pantalla"], ["estados", "estado"], ["anchos", "ancho"], ["variantes", "variante"], ["temas", "tema"]])
+    for (const b of $(grupo).children) b.setAttribute("aria-pressed", String(b.dataset.valor === String(estado[clave])));
+  $("comparar").setAttribute("aria-pressed", String(estado.comparar === "si"));
+  $("comparar").hidden = variantes.length < 2;
+  $("notaVariante").textContent = variantes.find((v) => v.id === estado.variante)?.nota ?? "";
+  escribirHash();
+}
+function botones(grupo, clave, items) {
+  for (const it of items) {
+    const b = document.createElement("button");
+    b.textContent = it.nombre ?? String(it.id ?? it);
+    b.dataset.valor = String(it.id ?? it);
+    b.onclick = () => { estado[clave] = clave === "ancho" ? Number(b.dataset.valor) : b.dataset.valor; pintar(); };
+    $(grupo).append(b);
+  }
+}
+$("titulo").textContent = MAQUETA.titulo;
+botones("pantallas", "pantalla", MAQUETA.pantallas);
+botones("estados", "estado", MAQUETA.estados);
+botones("anchos", "ancho", MAQUETA.anchos);
+botones("variantes", "variante", variantes);
+botones("temas", "tema", [{ id: "claro", nombre: "Claro" }, { id: "oscuro", nombre: "Oscuro" }]);
+$("comparar").onclick = () => { estado.comparar = estado.comparar === "si" ? "no" : "si"; pintar(); };
+$("ocultar").onclick = () => { document.body.classList.add("sin-panel"); pintar(); };
+$("mostrar").onclick = () => { document.body.classList.remove("sin-panel"); pintar(); };
+leerHash();
+pintar();
+addEventListener("hashchange", () => { leerHash(); pintar(); });
+addEventListener("resize", pintar);
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "nombre": "eventos",
+  "tipo": "dominio",
+  "roles": [
+    "architect",
+    "backend",
+    "fullstack"
+  ],
+  "siempre": [],
+  "skills": [
+    "eventos"
+  ],
+  "version": "0.1.0",
+  "origen": "skill de eventos de la v3",
+  "probado-en": []
+}

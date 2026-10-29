@@ -1,0 +1,129 @@
+{
+  "hu": "HU-0020",
+  "generado": "2026-10-29T04:22:26.462Z",
+  "perfil": "S",
+  "fases": [
+    {
+      "fase": "requisitos",
+      "desde": "2026-10-29T02:03:00.000Z",
+      "hasta": "2026-10-29T03:01:00.000Z",
+      "minutos": 58
+    },
+    {
+      "fase": "arquitectura",
+      "desde": "2026-10-29T03:01:00.000Z",
+      "hasta": "2026-10-29T03:01:00.000Z",
+      "minutos": 0
+    },
+    {
+      "fase": "implementacion",
+      "desde": "2026-10-29T03:01:00.000Z",
+      "hasta": "2026-10-29T04:19:00.000Z",
+      "minutos": 78
+    },
+    {
+      "fase": "verificacion",
+      "desde": "2026-10-29T04:19:00.000Z",
+      "hasta": "2026-10-29T04:22:00.000Z",
+      "minutos": 3
+    }
+  ],
+  "minutosTotales": 139,
+  "agentes": [
+    {
+      "agente": "frontend",
+      "rol": "frontend",
+      "fase": "implementacion",
+      "modelos": [
+        "claude-sonnet-5-5",
+        "sonnet"
+      ],
+      "despachos": 1,
+      "minutos": 40,
+      "tokens": {
+        "entrada": 110,
+        "salida": 42282,
+        "cacheEscritura": 268160,
+        "cacheLectura": 4533659,
+        "total": 4844211
+      }
+    },
+    {
+      "agente": "backend",
+      "rol": "backend",
+      "fase": "implementacion",
+      "modelos": [
+        "claude-opus-5-5",
+        "opus"
+      ],
+      "despachos": 1,
+      "minutos": 65,
+      "tokens": {
+        "entrada": 226,
+        "salida": 196871,
+        "cacheEscritura": 927020,
+        "cacheLectura": 24428286,
+        "total": 25552403
+      }
+    },
+    {
+      "agente": "architect",
+      "rol": "architect",
+      "fase": "requisitos",
+      "modelos": [
+        "claude-opus-5-5"
+      ],
+      "despachos": 1,
+      "minutos": 55,
+      "tokens": {
+        "entrada": 154,
+        "salida": 96384,
+        "cacheEscritura": 440486,
+        "cacheLectura": 10619160,
+        "total": 11156184
+      }
+    }
+  ],
+  "orquestador": {
+    "aproximado": true,
+    "porFase": [
+      {
+        "fase": "requisitos",
+        "tokens": {
+          "entrada": 118,
+          "salida": 41171,
+          "cacheEscritura": 82000,
+          "cacheLectura": 25263079,
+          "total": 25386368
+        }
+      },
+      {
+        "fase": "implementacion",
+        "tokens": {
+          "entrada": 88,
+          "salida": 25975,
+          "cacheEscritura": 58236,
+          "cacheLectura": 19593796,
+          "total": 19678095
+        }
+      },
+      {
+        "fase": "verificacion",
+        "tokens": {
+          "entrada": 16,
+          "salida": 6167,
+          "cacheEscritura": 9432,
+          "cacheLectura": 4386123,
+          "total": 4401738
+        }
+      }
+    ]
+  },
+  "totales": {
+    "tokensAgentes": 41552798,
+    "tokensOrquestador": 49466201,
+    "tokens": 91018999,
+    "despachos": 3
+  },
+  "notas": []
+}

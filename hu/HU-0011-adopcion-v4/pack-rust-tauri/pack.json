@@ -1,0 +1,25 @@
+{
+  "$comentario": "Capa nativa de una app de escritorio Tauri 2. «servidor» es el tipo más cercano: lo carga backend, aunque no es un servidor HTTP.",
+  "nombre": "rust-tauri",
+  "tipo": "servidor",
+  "roles": ["backend", "fullstack", "architect"],
+  "siempre": ["backend", "fullstack"],
+  "skills": ["rust-tauri"],
+  "comandos": {
+    "tipos": "cargo check --manifest-path src-tauri/Cargo.toml",
+    "build": "cargo build --manifest-path src-tauri/Cargo.toml",
+    "relacionadas": "cargo test --manifest-path src-tauri/Cargo.toml -q",
+    "suite": "cargo test --manifest-path src-tauri/Cargo.toml -q"
+  },
+  "modulo-config": "src-tauri/src/config.rs",
+  "fuentes": [
+    "https://v2.tauri.app/develop/calling-rust/",
+    "https://v2.tauri.app/develop/calling-frontend/",
+    "https://v2.tauri.app/security/capabilities/",
+    "https://v2.tauri.app/security/csp/",
+    "https://v2.tauri.app/distribute/pipelines/github/",
+    "https://doc.rust-lang.org/std/process/struct.Command.html"
+  ],
+  "version": "0.1.0",
+  "probado-en": []
+}

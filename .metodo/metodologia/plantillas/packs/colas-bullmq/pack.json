@@ -1,0 +1,10 @@
+{
+  "nombre": "colas-bullmq",
+  "tipo": "infra",
+  "roles": ["architect", "backend", "fullstack", "devops"],
+  "siempre": [],
+  "skills": ["colas-bullmq"],
+  "fuentes": ["https://docs.bullmq.io/", "https://docs.nestjs.com/techniques/queues", "https://redis.io/docs/latest/develop/reference/eviction/"],
+  "version": "0.1.0",
+  "probado-en": []
+}

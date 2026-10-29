@@ -1,0 +1,19 @@
+{
+  "nombre": "contratos",
+  "tipo": "dominio",
+  "roles": [
+    "architect",
+    "backend",
+    "frontend",
+    "fullstack"
+  ],
+  "siempre": [
+    "architect"
+  ],
+  "skills": [
+    "contratos"
+  ],
+  "version": "0.1.0",
+  "origen": "skill de contratos de la v3",
+  "probado-en": []
+}

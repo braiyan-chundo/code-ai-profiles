@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api/core";
+import { Channel, invoke } from "@tauri-apps/api/core";
 import packageMetadata from "../../package.json";
 import type {
   CodeSession,
@@ -6,8 +6,12 @@ import type {
   CopyCodeSessionRequest,
   CreateInstanceRequest,
   DashboardState,
+  InstallOriginalUpdateRequest,
   InstanceStatus,
   OriginalApplicationUpdateResult,
+  OriginalInstallProgress,
+  OriginalInstallResult,
+  SynchronizationItemResult,
   SessionTransferResult,
   SourceUpdateInfo,
   SynchronizeManagedApplicationsRequest,
@@ -24,6 +28,9 @@ const now = new Date().toISOString();
 const latestMockVersion = "1.22300.0";
 const mockAvailableVersion = "1.22400.0";
 const mockSourceName = "Claude Desktop";
+const mockPackageBytes = 378_072_300;
+let mockSourceVersion = latestMockVersion;
+let mockInstall: { cancelled: boolean; cancellable: boolean } | null = null;
 let mockOriginalStatus: InstanceStatus = "stopped";
 let mockOriginalSessions: CodeSession[] = [
   { id: "local-original-1", title: "Qleo project context and corrections", model: "opus-4-8", effort: "high", completedTurns: 101, createdAt: Date.now() - 2_592_000_000, lastActivityAt: Date.now() - 1_800_000, isArchived: false, contextTokens: 45_521, contextWindowTokens: 1_000_000, contextPercent: 4.5521, publishedArtifactCount: 3, artifactMonitor: { monitorType: "artifact-comment-monitor", state: "armed", artifactCount: 3 } },
@@ -79,6 +86,26 @@ let mockInstances: ManagedInstance[] = [
   },
 ];
 
+const mockOriginalInstalled = () => mockSourceVersion === mockAvailableVersion;
+const mockLatestVersion = () => (mockOriginalInstalled() ? mockAvailableVersion : latestMockVersion);
+
+const mockTopology = (): DashboardState["system"]["versionTopology"] => {
+  const latest = mockLatestVersion();
+  const staleInstanceIds = mockInstances
+    .filter((instance) => instance.sourceVersion !== latest)
+    .map((instance) => instance.id);
+  return {
+    latestInstalledVersion: latest,
+    latestSource: mockOriginalInstalled()
+      ? { kind: "original", instanceId: null, name: mockSourceName }
+      : { kind: "managed", instanceId: "demo-lab", name: "Experimental Lab" },
+    staleInstanceIds,
+    originalBehind: mockSourceVersion !== latest,
+    canSynchronizeManaged: staleInstanceIds.length > 0,
+    reason: null,
+  };
+};
+
 const mockState = (): DashboardState => ({
   instances: mockInstances,
   system: {
@@ -86,22 +113,15 @@ const mockState = (): DashboardState => ({
     platform: "macos",
     sourcePath: "/Applications/Claude.app",
     sourceName: mockSourceName,
-    sourceVersion: latestMockVersion,
+    sourceVersion: mockSourceVersion,
     sourceUpdate: {
-      status: "available",
+      status: mockOriginalInstalled() ? "current" : "available",
       latestVersion: mockAvailableVersion,
       checkedAt: Date.now(),
       stale: false,
       source: "officialFeed",
     },
-    versionTopology: {
-      latestInstalledVersion: latestMockVersion,
-      latestSource: { kind: "managed", instanceId: "demo-lab", name: "Experimental Lab" },
-      staleInstanceIds: ["demo-work", "demo-personal"],
-      originalBehind: false,
-      canSynchronizeManaged: true,
-      reason: null,
-    },
+    versionTopology: mockTopology(),
     originalProfilePath: "~/Library/Application Support/Claude",
     originalStatus: mockOriginalStatus,
     originalCodeSessions: mockOriginalSessions,
@@ -109,6 +129,9 @@ const mockState = (): DashboardState => ({
     managedBytes: 2_140_000_000,
   },
 });
+
+const mockWait = (milliseconds: number) =>
+  new Promise((resolve) => window.setTimeout(resolve, milliseconds));
 
 const mockProfiles = () => [
   {
@@ -149,6 +172,10 @@ export const bridge = {
     return isTauri() ? call("scan_system") : mockState();
   },
 
+  async refreshVersions(): Promise<DashboardState> {
+    return isTauri() ? call("refresh_versions") : mockState();
+  },
+
   async create(request: CreateInstanceRequest): Promise<DashboardState> {
     if (isTauri()) return call("create_instance", { request });
     mockInstances = [
@@ -156,7 +183,7 @@ export const bridge = {
       {
         id: crypto.randomUUID(),
         name: request.name,
-        sourceVersion: latestMockVersion,
+        sourceVersion: mockLatestVersion(),
         appPath: `~/Library/Application Support/Code AI Profiles/${request.name}/${request.name}.app`,
         profilePath: `~/Library/Application Support/Code AI Profiles/${request.name}/profile`,
         createdAt: new Date().toISOString(),
@@ -189,7 +216,7 @@ export const bridge = {
     }
     await new Promise((resolve) => window.setTimeout(resolve, 180));
     mockInstances = mockInstances.map((item) =>
-      item.id === id ? { ...item, sourceVersion: latestMockVersion, status: "stopped", pid: null } : item,
+      item.id === id ? { ...item, sourceVersion: mockLatestVersion(), status: "stopped", pid: null } : item,
     );
     return mockState();
   },
@@ -201,31 +228,120 @@ export const bridge = {
     const results = request.targetInstanceIds.map((instanceId) => {
       const instance = mockInstances.find((item) => item.id === instanceId);
       if (!instance) {
-        return { instanceId, status: "failed" as const, fromVersion: null, toVersion: latestMockVersion, message: "La instancia ya no existe." };
+        return { instanceId, status: "failed" as const, fromVersion: null, toVersion: mockLatestVersion(), message: "La instancia ya no existe." };
       }
       if (instance.status !== "stopped") {
-        return { instanceId, status: "failed" as const, fromVersion: instance.sourceVersion, toVersion: latestMockVersion, message: "La instancia debe estar detenida." };
+        return { instanceId, status: "failed" as const, fromVersion: instance.sourceVersion, toVersion: mockLatestVersion(), message: "La instancia debe estar detenida." };
       }
-      mockInstances = mockInstances.map((item) => item.id === instanceId ? { ...item, sourceVersion: latestMockVersion } : item);
-      return { instanceId, status: "updated" as const, fromVersion: instance.sourceVersion, toVersion: latestMockVersion, message: "Aplicación sincronizada y perfil preservado." };
+      mockInstances = mockInstances.map((item) => item.id === instanceId ? { ...item, sourceVersion: mockLatestVersion() } : item);
+      return { instanceId, status: "updated" as const, fromVersion: instance.sourceVersion, toVersion: mockLatestVersion(), message: "Aplicación sincronizada y perfil preservado." };
     });
     return { dashboard: mockState(), results };
   },
 
   async updateOriginalApplication(): Promise<OriginalApplicationUpdateResult> {
     if (isTauri()) return call("update_original_application");
+    if (mockInstall) throw new Error("Hay una actualización de la original en curso. Espera a que termine.");
     await new Promise((resolve) => window.setTimeout(resolve, 320));
     return {
-      action: "download",
-      message: "Modo de demostración: se simuló la apertura de la descarga oficial; no se abrió ningún navegador.",
+      action: "instructions",
+      message: "Modo de demostración: se simuló abrir únicamente la aplicación original. En macOS usa Claude > Check for Updates; no se abrió ninguna aplicación real.",
     };
+  },
+
+  async installOriginalUpdate(
+    request: InstallOriginalUpdateRequest,
+    onProgress: (progress: OriginalInstallProgress) => void,
+  ): Promise<OriginalInstallResult> {
+    if (isTauri()) {
+      const channel = new Channel<OriginalInstallProgress>();
+      channel.onmessage = onProgress;
+      return call("install_original_update", { request, onProgress: channel });
+    }
+    if (mockInstall) throw new Error("Ya hay una actualización de la original en curso.");
+    if (mockState().system.originalStatus === "running") {
+      throw new Error(`Cierra ${mockSourceName} para actualizarla. La original no cambió.`);
+    }
+    if (mockOriginalInstalled()) {
+      throw new Error(`${mockSourceName} ya está al día. La original no cambió.`);
+    }
+    if (request.expectedVersion !== mockAvailableVersion) {
+      throw new Error("El feed oficial ya anuncia otra versión. Vuelve a comprobar. La original no cambió.");
+    }
+    const flight = { cancelled: false, cancellable: true };
+    mockInstall = flight;
+    const previousVersion = mockSourceVersion;
+    const report = (progress: Omit<OriginalInstallProgress, "targetVersion" | "totalBytes">) =>
+      onProgress({ ...progress, targetVersion: mockAvailableVersion, totalBytes: mockPackageBytes });
+    const cancelled = (): OriginalInstallResult => ({
+      status: "cancelled",
+      previousVersion,
+      installedVersion: null,
+      synchronization: [],
+      pendingInstanceIds: [],
+      dashboard: mockState(),
+    });
+    try {
+      onProgress({ phase: "preparing", targetVersion: null, receivedBytes: 0, totalBytes: 0, cancellable: true });
+      await mockWait(300);
+      if (flight.cancelled) return cancelled();
+      const steps = 12;
+      for (let step = 0; step <= steps; step += 1) {
+        report({ phase: "downloading", receivedBytes: Math.round((mockPackageBytes * step) / steps), cancellable: true });
+        await mockWait(250);
+        if (flight.cancelled) return cancelled();
+      }
+      report({ phase: "verifying", receivedBytes: 0, cancellable: true });
+      await mockWait(700);
+      if (flight.cancelled) return cancelled();
+      flight.cancellable = false;
+      report({ phase: "installing", receivedBytes: 0, cancellable: false });
+      await mockWait(600);
+      mockSourceVersion = mockAvailableVersion;
+      report({ phase: "synchronizing", receivedBytes: 0, cancellable: false });
+      await mockWait(500);
+      const synchronization: SynchronizationItemResult[] = [];
+      const pendingInstanceIds: string[] = [];
+      mockInstances = mockInstances.map((instance) => {
+        if (instance.sourceVersion === mockAvailableVersion) return instance;
+        if (instance.status !== "stopped") {
+          pendingInstanceIds.push(instance.id);
+          return instance;
+        }
+        synchronization.push({
+          instanceId: instance.id,
+          status: "updated",
+          fromVersion: instance.sourceVersion,
+          toVersion: mockAvailableVersion,
+          message: "Aplicación sincronizada y perfil preservado.",
+        });
+        return { ...instance, sourceVersion: mockAvailableVersion };
+      });
+      return {
+        status: "installed",
+        previousVersion,
+        installedVersion: mockAvailableVersion,
+        synchronization,
+        pendingInstanceIds,
+        dashboard: mockState(),
+      };
+    } finally {
+      mockInstall = null;
+    }
+  },
+
+  async cancelOriginalUpdate(): Promise<boolean> {
+    if (isTauri()) return call("cancel_original_update");
+    if (!mockInstall || !mockInstall.cancellable) return false;
+    mockInstall.cancelled = true;
+    return true;
   },
 
   async checkSourceUpdate(): Promise<SourceUpdateInfo> {
     if (isTauri()) return call("check_source_update");
     await new Promise((resolve) => window.setTimeout(resolve, 120));
     return {
-      status: "available",
+      status: mockOriginalInstalled() ? "current" : "available",
       latestVersion: mockAvailableVersion,
       checkedAt: Date.now(),
       stale: false,
@@ -309,7 +425,22 @@ export const bridge = {
         path: `mock://${id}/icon.png`,
         revision: (item.customIcon?.revision ?? 0) + 1,
         systemApplied: false,
-        systemMessage: "Modo de demostración: icono visible dentro de Code AI Profiles.",
+        systemMessage: "macOS no aplicó el icono a la copia. Pulsa «Reintentar» con la instancia detenida.",
+        systemIssue: null,
+      },
+    } : item);
+    return mockState();
+  },
+
+  async reapplyInstanceIcon(id: string): Promise<DashboardState> {
+    if (isTauri()) return call("reapply_instance_icon", { id });
+    mockInstances = mockInstances.map((item) => item.id === id && item.customIcon ? {
+      ...item,
+      customIcon: {
+        ...item.customIcon,
+        systemApplied: true,
+        systemMessage: "Se verá al abrir la instancia; la firma de la aplicación no cambia.",
+        systemIssue: null,
       },
     } : item);
     return mockState();

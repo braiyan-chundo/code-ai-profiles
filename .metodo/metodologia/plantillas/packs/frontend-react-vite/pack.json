@@ -1,0 +1,17 @@
+{
+  "nombre": "frontend-react-vite",
+  "tipo": "apps",
+  "roles": ["frontend", "fullstack", "architect"],
+  "siempre": ["frontend", "fullstack"],
+  "skills": ["frontend-react-vite"],
+  "comandos": {
+    "tipos": "pnpm exec tsc -b --noEmit",
+    "build": "pnpm build",
+    "relacionadas": "pnpm exec vitest related --run --reporter=dot {archivos}",
+    "suite": "pnpm exec vitest run --reporter=dot"
+  },
+  "modulo-config": "src/config.ts",
+  "fuentes": ["https://vite.dev/guide/", "https://ui.shadcn.com/docs", "https://tailwindcss.com/docs", "https://tanstack.com/query/latest/docs", "https://zustand.docs.pmnd.rs/", "https://lucide.dev/guide/packages/lucide-react", "https://socket.io/docs/v4/client-api/"],
+  "version": "0.1.0",
+  "probado-en": []
+}

@@ -2,6 +2,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
+import { withMemoryAside } from "./graphify-memory.mjs";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const graphDir = join(projectRoot, "graphify-out");
@@ -10,13 +11,18 @@ const reportPath = join(graphDir, "GRAPH_REPORT.md");
 const version = readFileSync(join(projectRoot, ".graphify-version"), "utf8").trim();
 const action = process.argv[2] ?? "update";
 
+// metodo:permitir herramienta de desarrollo: binario local de Graphify elegido por quien desarrolla
+const graphifyBin = process.env.GRAPHIFY_BIN;
+// metodo:permitir herramienta de desarrollo: carpeta personal para buscar ~/.local/bin/graphify
+const homeDir = process.env.HOME;
+
 const candidates = [];
-if (process.env.GRAPHIFY_BIN) {
-  candidates.push({ command: process.env.GRAPHIFY_BIN, prefix: [] });
+if (graphifyBin) {
+  candidates.push({ command: graphifyBin, prefix: [] });
 }
 candidates.push({ command: "graphify", prefix: [] });
-if (process.env.HOME && process.platform !== "win32") {
-  candidates.push({ command: join(process.env.HOME, ".local", "bin", "graphify"), prefix: [] });
+if (homeDir && process.platform !== "win32") {
+  candidates.push({ command: join(homeDir, ".local", "bin", "graphify"), prefix: [] });
 }
 candidates.push({
   command: "uvx",
@@ -76,28 +82,30 @@ function normalizeReportTitle() {
   }
 }
 
-let status = 0;
-if (action === "build") {
-  status = runGraphify(["extract", ".", "--code-only", "--force"]);
-  if (status === 0) {
-    status = runGraphify(["update", "."]);
-  }
-} else if (action === "update" || action === "check") {
-  status = updateGraph();
-} else {
+if (!["build", "update", "check"].includes(action)) {
   console.error("Uso: node scripts/graphify.mjs <build|update|check>");
   process.exit(2);
 }
 
-if (status !== 0) {
-  process.exit(status);
+// Sin process.exit dentro: withMemoryAside tiene que poder devolver la caché de consultas.
+function generateGraph() {
+  if (action !== "build") {
+    return updateGraph();
+  }
+  const status = runGraphify(["extract", ".", "--code-only", "--force"]);
+  if (status !== 0) {
+    return status;
+  }
+  const updateStatus = runGraphify(["update", "."]);
+  if (updateStatus !== 0) {
+    return updateStatus;
+  }
+  return runGraphify(["cluster-only", ".", "--no-label"]);
 }
 
-if (action === "build") {
-  status = runGraphify(["cluster-only", ".", "--no-label"]);
-  if (status !== 0) {
-    process.exit(status);
-  }
+const status = withMemoryAside(graphDir, generateGraph);
+if (status !== 0) {
+  process.exit(status);
 }
 
 normalizeReportTitle();
@@ -112,7 +120,7 @@ if (action === "check") {
     process.exit(diff.status ?? 1);
   }
   if (diff.stdout.trim()) {
-    console.error("El grafo está desactualizado. Ejecuta `npm run graph:update` y versiona estos cambios:");
+    console.error("El grafo está desactualizado. Ejecuta `pnpm graph:update` y versiona estos cambios:");
     console.error(diff.stdout.trim());
     process.exit(1);
   }
@@ -122,7 +130,7 @@ if (action === "check") {
     encoding: "utf8",
   });
   if (committedManifest.status !== 0 || !existsSync(join(graphDir, "manifest.json"))) {
-    console.error("No existe un manifest.json versionado. Ejecuta `npm run graph:update` y agrégalo al commit.");
+    console.error("No existe un manifest.json versionado. Ejecuta `pnpm graph:update` y agrégalo al commit.");
     process.exit(1);
   }
 

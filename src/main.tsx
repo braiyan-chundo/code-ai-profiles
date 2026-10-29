@@ -7,11 +7,35 @@ import "@fontsource/inter/latin-700.css";
 import "@fontsource/jetbrains-mono/latin-400.css";
 import "@fontsource/jetbrains-mono/latin-500.css";
 import "@fontsource/jetbrains-mono/latin-600.css";
-import App from "./App";
-import "./styles.css";
+import App from "./app/App";
+import { isWebviewSupported, UNSUPPORTED_WEBVIEW_MESSAGE } from "./lib/webview-support";
+import "./styles/index.css";
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
+const root = document.getElementById("root")!;
+
+if (isWebviewSupported(globalThis.CSS, globalThis.CSSLayerBlockRule)) {
+  createRoot(root).render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  );
+} else {
+  // A-16: sin Tailwind (el motor descartaría sus capas), con estilos en línea y colores del sistema. Sin enlaces ni red.
+  const notice = document.createElement("p");
+  notice.setAttribute("role", "alert");
+  notice.textContent = UNSUPPORTED_WEBVIEW_MESSAGE;
+  notice.style.cssText = [
+    "box-sizing: border-box",
+    "height: 100%",
+    "margin: 0",
+    "padding: 48px",
+    "display: flex",
+    "align-items: center",
+    "justify-content: center",
+    "text-align: center",
+    "font: 15px/1.5 Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    "background: Canvas",
+    "color: CanvasText",
+  ].join("; ");
+  root.replaceChildren(notice);
+}

@@ -29,9 +29,9 @@ También puede ejecutarse mediante `uvx`; el wrapper lo usa como fallback.
 ## Comandos
 
 ```bash
-npm run graph:build   # reconstrucción completa local, solo código/AST
-npm run graph:update  # actualización incremental después de una implementación
-npm run graph:check   # actualiza y falla si los artefactos versionados cambiaron
+pnpm graph:build   # reconstrucción completa local, solo código/AST
+pnpm graph:update  # actualización incremental después de una implementación
+pnpm graph:check   # actualiza y falla si los artefactos versionados cambiaron
 ```
 
 Consultas útiles:
@@ -51,4 +51,6 @@ La construcción usa `--code-only`, que extrae estructura mediante AST local y n
 
 El agente `architect`, nunca `document`, ejecuta la actualización tras el código y revisa una consulta de impacto. CI ejecuta la misma actualización incremental y falla si `graph.json`, `GRAPH_REPORT.md` o los hashes del manifiesto no coinciden con el código del commit. Graphify registra también el `mtime` local; `graph:check` ignora únicamente ese campo al comparar clones y conserva la validación de todos los hashes. El clustering completo se reserva para `graph:build`, porque reasignar comunidades en una comprobación sin cambios produciría diferencias innecesarias.
 
-Si una refactorización elimina muchos símbolos y Graphify activa su protección contra reducción accidental, ejecutar `npm run graph:build`, inspeccionar el resultado y versionarlo solo si la reducción era intencional.
+Graphify escanea siempre `graphify-out/memory/`, donde guarda las consultas, aunque esté ignorada. Como esa caché es local y no se versiona, `scripts/graphify.mjs` la aparta a `graphify-out/.memory-aside/` mientras Graphify corre y la devuelve al terminar, también si falla. Si una ejecución se corta a la fuerza, la siguiente la recupera. `pnpm test:graph` cubre ese comportamiento.
+
+Si una refactorización elimina muchos símbolos y Graphify activa su protección contra reducción accidental, ejecutar `pnpm graph:build`, inspeccionar el resultado y versionarlo solo si la reducción era intencional.

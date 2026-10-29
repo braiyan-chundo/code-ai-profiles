@@ -15,18 +15,41 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-          cache: npm
+          cache: pnpm
 
       - name: Verify release versioning
         run: |
-          npm run release:check
-          npm run test:release
+          pnpm release:check
+          pnpm test:release
 
       - name: Test scan controller
-        run: npm run test:scan
+        run: pnpm test:scan
+
+      - name: Test source update controller
+        run: pnpm test:update
+
+      - name: Test formatting, errors and platform
+        run: pnpm test:format
+
+      - name: Test appearance preferences
+        run: pnpm test:appearance
+
+      - name: Test dashboard store and selectors
+        run: pnpm test:dashboard
+
+      - name: Test result messages and icon validation
+        run: pnpm test:messages
+
+      - name: Test UI boundaries
+        run: pnpm test:ui
+
+      - name: Test Graphify query cache isolation
+        run: pnpm test:graph
 
       - uses: actions/setup-python@v6
         with:
@@ -38,7 +61,7 @@ jobs:
         run: python -m pip install "graphifyy==$(cat .graphify-version)"
 
       - name: Verify knowledge graph is current
-        run: npm run graph:check
+        run: pnpm graph:check
 
       - uses: dtolnay/rust-toolchain@stable
 
@@ -48,10 +71,13 @@ jobs:
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev
 
       - name: Install JavaScript dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build frontend
-        run: npm run build
+        run: pnpm build
+
+      - name: Verify the bundle has no showcase or sidebar cookie
+        run: 'test ! -e dist/showcase.html && ! grep -rq "sidebar_state" dist'
 
       - name: Run Rust tests
         run: cargo test --manifest-path src-tauri/Cargo.toml
