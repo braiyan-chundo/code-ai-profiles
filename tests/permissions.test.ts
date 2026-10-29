@@ -99,6 +99,23 @@ test("Archivos y carpetas: «No se puede comprobar», sin atención y con su pan
   assert.ok(card.info.rows.some((row) => row.label === "Estado"), "explica por qué no se comprueba");
 });
 
+test("HU-0023: Archivos y carpetas cuenta los proyectos anclados en carpetas protegidas y marca los que macOS negó", () => {
+  const none = byId({ projectsAvailable: true, protectedProjects: { count: 0, locations: [], deniedNames: [] } }, "filesAndFolders");
+  assert.equal(none.purpose, "Deja que Proyectos lea carpetas en Escritorio, Documentos o Descargas.", "sin proyectos, el texto de siempre");
+  const one = byId({ projectsAvailable: true, protectedProjects: { count: 1, locations: ["Documentos"], deniedNames: [] } }, "filesAndFolders");
+  assert.match(one.purpose, /Lo usa 1 proyecto anclado en Documentos\.$/);
+  assert.equal(one.tone, "unknown");
+  const many = byId({ projectsAvailable: true, protectedProjects: { count: 3, locations: ["Escritorio", "Documentos"], deniedNames: [] } }, "filesAndFolders");
+  assert.match(many.purpose, /Lo usan 3 proyectos anclados en Escritorio y Documentos\.$/);
+  const denied = cardsOf({ projectsAvailable: true, protectedProjects: { count: 2, locations: ["Documentos"], deniedNames: ["Vetcare"] } });
+  const card = denied.cards.find((item) => item.id === "filesAndFolders");
+  assert.equal(card?.tone, "needs");
+  assert.equal(card?.status, "Lo necesita: 1 proyecto");
+  assert.equal(card?.who, "Vetcare");
+  assert.equal(denied.attention, true, "un proyecto sin permiso enciende el punto de la pestaña");
+  assert.equal(cardsOf({ projectsAvailable: false, protectedProjects: { count: 2, locations: ["Documentos"], deniedNames: ["Vetcare"] } }).attention, false, "sin Proyectos, nada");
+});
+
 test("Windows y Linux: ninguna tarjeta y sin atención, aunque haya instancias con el aviso", () => {
   for (const platform of ["windows", "linux"] as const) {
     const result = permissionCards({ ...base, platform, instances: [withIssue("A")], projectsAvailable: true });

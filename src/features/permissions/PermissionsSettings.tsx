@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../../components/ui/empty";
 import { bridge } from "../../lib/bridge";
 import { useDashboard, useRuntimePlatform } from "../dashboard";
+import { selectProtectedProjects, useProjects } from "../projects";
 import { PermissionCard } from "./PermissionCard";
 import {
   EMPTY_PLATFORM_TEXT,
@@ -14,19 +15,23 @@ import {
   type AdminState,
 } from "./permission-cards";
 
-/**
- * Archivos y carpetas depende de Proyectos (HU-0023): la tarjeta está hecha y probada, pero oculta. HU-0023 solo cambia
- * este valor a `true` cuando exista `#/proyectos` (A-3.4).
- */
-const PROJECTS_AVAILABLE = false;
+/** Archivos y carpetas depende de Proyectos: desde HU-0023 existe `#/proyectos` y la tarjeta se muestra (A-3.4). */
+const PROJECTS_AVAILABLE = true;
 
 /** ¿Alguna instancia necesita un permiso? Lo usa la pestaña Permisos para su punto. No depende de la cuenta. */
 export function usePermissionsAttention(): boolean {
   const { dashboard } = useDashboard();
+  const { projects } = useProjects();
   const platform = useRuntimePlatform();
   return useMemo(
-    () => permissionCards({ platform, instances: dashboard.instances, admin: null, projectsAvailable: PROJECTS_AVAILABLE }).attention,
-    [dashboard.instances, platform],
+    () => permissionCards({
+      platform,
+      instances: dashboard.instances,
+      admin: null,
+      projectsAvailable: PROJECTS_AVAILABLE,
+      protectedProjects: selectProtectedProjects(projects),
+    }).attention,
+    [dashboard.instances, platform, projects],
   );
 }
 
@@ -36,6 +41,7 @@ export function usePermissionsAttention(): boolean {
  */
 export function PermissionsSettings() {
   const { dashboard } = useDashboard();
+  const { projects } = useProjects();
   const platform = useRuntimePlatform();
   const [admin, setAdmin] = useState<AdminState>("loading");
 
@@ -50,8 +56,14 @@ export function PermissionsSettings() {
   }, [platform]);
 
   const { cards } = useMemo(
-    () => permissionCards({ platform, instances: dashboard.instances, admin, projectsAvailable: PROJECTS_AVAILABLE }),
-    [admin, dashboard.instances, platform],
+    () => permissionCards({
+      platform,
+      instances: dashboard.instances,
+      admin,
+      projectsAvailable: PROJECTS_AVAILABLE,
+      protectedProjects: selectProtectedProjects(projects),
+    }),
+    [admin, dashboard.instances, platform, projects],
   );
 
   if (platform !== "macos") {

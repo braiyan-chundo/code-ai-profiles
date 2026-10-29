@@ -48,8 +48,19 @@ export interface PermissionCardsInput {
   platform: "macos" | "windows" | "linux";
   instances: ReadonlyArray<Pick<ManagedInstance, "name" | "customIcon">>;
   admin: AdminState;
-  /** `false` hasta que exista Proyectos (HU-0023): la tarjeta de Archivos y carpetas queda oculta. */
+  /** `false` si no existe Proyectos: la tarjeta de Archivos y carpetas queda oculta. Desde HU-0023 existe. */
   projectsAvailable: boolean;
+  /** Los proyectos anclados en carpetas que macOS protege (HU-0023, A-6). Sin dato, la tarjeta no dice nada de ellos. */
+  protectedProjects?: ProtectedProjectsUse;
+}
+
+/** Lo que Proyectos aporta a la tarjeta de Archivos y carpetas: cuántos anclados, dónde y cuáles macOS no dejó leer. */
+export interface ProtectedProjectsUse {
+  count: number;
+  /** Los nombres de las ubicaciones («Documentos»), sin repetir. */
+  locations: readonly string[];
+  /** Los nombres de los proyectos en `permissionDenied`. */
+  deniedNames: readonly string[];
 }
 
 export interface PermissionCardsResult {
@@ -114,14 +125,23 @@ function appManagementCard(instances: PermissionCardsInput["instances"]): Permis
   };
 }
 
-function filesAndFoldersCard(): PermissionCard {
+/** «Lo usa 1 proyecto anclado en Documentos.» / «Lo usan 2 proyectos anclados en Escritorio y Documentos.»; vacío si no hay ninguno. */
+export function protectedProjectsLine(use: ProtectedProjectsUse | undefined): string {
+  if (!use || use.count === 0) return "";
+  const where = use.locations.length > 0 ? ` en ${joinNames(use.locations)}` : "";
+  return use.count === 1 ? `Lo usa 1 proyecto anclado${where}.` : `Lo usan ${use.count} proyectos anclados${where}.`;
+}
+
+function filesAndFoldersCard(use: ProtectedProjectsUse | undefined): PermissionCard {
+  const denied = use?.deniedNames ?? [];
+  const line = protectedProjectsLine(use);
   return {
     id: "filesAndFolders",
     name: "Archivos y carpetas",
-    purpose: "Deja que Proyectos lea carpetas en Escritorio, Documentos o Descargas.",
-    tone: "unknown",
-    status: "No se puede comprobar",
-    who: null,
+    purpose: ["Deja que Proyectos lea carpetas en Escritorio, Documentos o Descargas.", line].filter(Boolean).join(" "),
+    tone: denied.length > 0 ? "needs" : "unknown",
+    status: denied.length > 0 ? `Lo necesita: ${denied.length} ${denied.length === 1 ? "proyecto" : "proyectos"}` : "No se puede comprobar",
+    who: denied.length > 0 ? joinNames(denied) : null,
     panel: "filesAndFolders",
     info: {
       rows: [
@@ -170,14 +190,14 @@ function adminCard(admin: AdminState): PermissionCard {
 }
 
 /**
- * Las tarjetas de la plataforma actual (D-2). macOS: Gestión de apps, Archivos y carpetas (solo con Proyectos) y Cuenta
+ * Las tarjetas de la plataforma actual (D-2). macOS: Gestión de apps, Archivos y carpetas (solo con Proyectos; lleva la línea de los anclados en carpetas protegidas, HU-0023) y Cuenta
  * de administrador, en ese orden. Windows y Linux: ninguna (la pantalla enseña su estado vacío).
  */
 export function permissionCards(input: PermissionCardsInput): PermissionCardsResult {
   if (input.platform !== "macos") return { cards: [], attention: false };
   const cards = [
     appManagementCard(input.instances),
-    ...(input.projectsAvailable ? [filesAndFoldersCard()] : []),
+    ...(input.projectsAvailable ? [filesAndFoldersCard(input.protectedProjects)] : []),
     adminCard(input.admin),
   ];
   return { cards, attention: cards.some((card) => card.tone === "needs") };
