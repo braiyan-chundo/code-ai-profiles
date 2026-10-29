@@ -1,0 +1,37 @@
+{
+  "hu": "HU-0012",
+  "generado": "2026-10-29T04:38:03.659Z",
+  "perfil": "S",
+  "fases": [
+    {
+      "fase": "requisitos",
+      "desde": "2026-10-27T22:45:00.000Z",
+      "hasta": "2026-10-29T04:38:00.000Z",
+      "minutos": 1793
+    }
+  ],
+  "minutosTotales": 1793,
+  "agentes": [],
+  "orquestador": {
+    "aproximado": true,
+    "porFase": [
+      {
+        "fase": "requisitos",
+        "tokens": {
+          "entrada": 1328,
+          "salida": 412484,
+          "cacheEscritura": 1535388,
+          "cacheLectura": 157104813,
+          "total": 159054013
+        }
+      }
+    ]
+  },
+  "totales": {
+    "tokensAgentes": 0,
+    "tokensOrquestador": 159054013,
+    "tokens": 159054013,
+    "despachos": 0
+  },
+  "notas": []
+}
