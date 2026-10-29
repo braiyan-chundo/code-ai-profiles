@@ -45,6 +45,9 @@ jobs:
       - name: Test result messages and icon validation
         run: pnpm test:messages
 
+      - name: Test permissions catalog
+        run: pnpm test:permissions
+
       - name: Test UI boundaries
         run: pnpm test:ui
 
