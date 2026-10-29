@@ -16,13 +16,8 @@ medidas salen de `diseno/vista.md` y de las secciones 5–6 de `diseno/maqueta.h
 | `tests/ui-isolation.test.ts` | Prueba 12 reescrita; 15 y 16 nuevas; canario 9 (A-5) |
 | `DESIGN.md`, `.claude/skills/code-ai-profiles-ui/{tema.md,componentes/<id>.md}` | A-1.7 y las fichas de los componentes que cambian |
 
-Orden recomendado:
-
-1. Tokens y prueba 12.
-2. Prueba 15 en rojo, que da la lista de infracciones.
-3. Corregir archivo por archivo hasta verde.
-4. Prueba 16.
-5. Medir el hover del primario (A-1.5).
+Orden: tokens y prueba 12; prueba 15 en rojo (te da la lista de infracciones); corregir archivo por archivo hasta
+verde; prueba 16; medir el hover del primario (A-1.5).
 
 ## Paso 2 · Configuración y permisos (cuando backend entregue `types.ts` y `bridge.ts`)
 
@@ -39,12 +34,9 @@ Orden recomendado:
 | `tests/permissions.test.ts` (nuevo), `package.json`, `.github/workflows/validate.yml` | Script `test:permissions` y su paso en CI |
 | `tests/ui-isolation.test.ts` | `SAMPLE_FILE` pasa a `AppearanceSettings.tsx` (prueba 13) |
 
-Notas:
-
-- **`admin`**: `bridge.accountFacts()` una vez al montar Permisos, solo en macOS. Mientras llega, «Comprobando…».
-- **Tarjetas**: `bridge.openSystemSettings(card.panel)` solo si `panel !== null`.
-- **El dato**: nunca se pasa ni se muestra una URL.
-- **Prohibido**: sin toasts y sin listeners nuevos de `focus`.
+Notas: `bridge.accountFacts()` una vez al montar Permisos, solo en macOS («Comprobando…» mientras llega);
+`bridge.openSystemSettings(card.panel)` solo si `panel !== null`. Nunca se pasa ni se muestra una URL. Sin toasts
+y sin listeners nuevos de `focus`.
 
 ## Variables de entorno nuevas
 
@@ -52,44 +44,26 @@ Ninguna en el frontend: las URLs viven en Rust (A-3.5).
 
 ## Pruebas
 
-Las de A-5:
+Las de A-5: `test:ui` (pruebas 9, 12, 13, 15 y 16) y `test:permissions` (estados, `projectsAvailable` y
+plataformas). Para comprobar: `pnpm build && pnpm test:ui && pnpm test:appearance && pnpm test:permissions`, más
+`node .metodo/scripts/pruebas.mjs relacionadas code-ai-profiles <archivos>`.
 
-- `test:ui` (pruebas 9, 12, 13, 15 y 16);
-- `test:permissions` (estados, `projectsAvailable` y plataformas).
-
-Para comprobar:
-
-```
-pnpm build
-pnpm test:ui
-pnpm test:appearance
-pnpm test:permissions
-```
-
-Más `node .metodo/scripts/pruebas.mjs relacionadas code-ai-profiles <archivos>`.
-
-Con la app abierta (`pnpm dev` y, en macOS, `pnpm tauri dev`) se revisa:
-
-- **Pantallas**: Dashboard, original, instancia, editor (nueva y existente), transferir, desvincular, actualizar,
-  borrar, escaneo, banners y Configuración.
-- **Combinaciones**: oscuro y claro; Compacto, Cómodo y Grande; 1440×920 y 980×680; sidebar desplegado y plegado;
-  foco con teclado.
-
-Lo que no puedas ver queda declarado como pendiente.
+Con la app abierta (`pnpm dev` y, en macOS, `pnpm tauri dev`): Dashboard, original, instancia, editor (nueva y
+existente), transferir, desvincular, actualizar, borrar, escaneo, banners y Configuración, en oscuro y claro,
+Compacto, Cómodo y Grande, 1440×920 y 980×680, sidebar desplegado y plegado, y foco con teclado. Lo que no puedas
+ver queda declarado como pendiente.
 
 ## Si dudas
 
-- `graphify explain "AppSidebar()"`, `graphify explain "AppearanceDialog"` y `graphify explain "iconRetryState"`.
-- Los números: `diseno/vista.md`, «Medidas clave».
-- Las skills `code-ai-profiles-frontend-react-vite` (rutas, `Tabs`, R-1) y `code-ai-profiles-ui` (fichas, `Popover`).
+`graphify explain "AppSidebar()"`, `graphify explain "AppearanceDialog"`, `graphify explain "iconRetryState"`. Los
+números, en `diseno/vista.md` («Medidas clave»). Las skills `code-ai-profiles-frontend-react-vite` (rutas, `Tabs`,
+R-1) y `code-ai-profiles-ui` (fichas, `Popover`).
 
 ## No toques
 
-- `src/types.ts`, `src/lib/bridge.ts` y `src-tauri/**` (son de backend).
-- `appearance-preferences.ts` ni la clave de `localStorage`: sin migración.
-- Los componentes del catálogo que la app no importa.
-- `hu/HU-0023-*`.
-- Nada de `.css` nuevo ni de tokens `--s*`.
+`src/types.ts`, `src/lib/bridge.ts` y `src-tauri/**` (son de backend); `appearance-preferences.ts` ni la clave de
+`localStorage` (sin migración); los componentes del catálogo que la app no importa; `hu/HU-0023-*`. Nada de `.css`
+nuevo ni de tokens `--s*`.
 
 ## Skills
 
