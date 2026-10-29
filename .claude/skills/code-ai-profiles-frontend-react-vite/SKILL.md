@@ -28,7 +28,7 @@ src/
     routes/<pantalla> dashboard (índice), original, instance y settings (lazy), con lo que solo usa esa pantalla
   features/<feature>/ componentes, hooks, lógica pura y tipos; su API pública en index.ts
                       dashboard (núcleo: store, selectores, useDashboard), scan, updates, instances,
-                      sessions, original-app, appearance, permissions
+                      sessions, original-app, appearance, permissions, projects
   components/         piezas sin dominio: BrandMark, EmptyState, NoticeAlert
     ui/               catálogo shadcn (63, `@/components/ui/<id>` dentro; imports relativos desde la app)
   hooks/              hooks del catálogo (use-mobile, use-highlighted-code); lib/utils.ts exporta `cn`
@@ -41,7 +41,7 @@ tests/*.test.ts       node --test sobre los módulos puros
 
 - `app/` importa todo; nadie importa de `app/`. Entre features, **solo por su `index.ts`** y sin ciclos;
   `features/dashboard` no importa ninguna feature. Dentro de una feature, imports directos. Imports relativos.
-- **Rutas** (hash): `#/` dashboard, `#/original`, `#/instancias/<id>` (UUID opaco), `#/configuracion/apariencia` y `#/configuracion/permisos` (pestañas controladas por la ruta; sin sección o con otra va a apariencia); cualquier otra vuelve a `#/`, y
+- **Rutas** (hash): `#/` dashboard, `#/original`, `#/instancias/<id>` (UUID opaco), `#/configuracion/apariencia` y `#/configuracion/permisos` (pestañas controladas por la ruta; sin sección o con otra va a apariencia), `#/proyectos` y `#/proyectos/<id>` (UUID opaco; HU-0023); cualquier otra vuelve a `#/`, y
   un id que no está, también. **Pantalla nueva**: `app/routes/<pantalla>/<Pantalla>Route.tsx`, hija de `/` en
   `app/router.tsx` con `lazy`, que pinta dos hijos sin envoltorio: `PageHeader` (fila 1) y `PageContent` (fila 3). Su
   entrada en `AppSidebar`. Se navega con `<Link>` o `useNavigate()`. La URL nunca lleva nombres, rutas ni títulos.
@@ -123,6 +123,7 @@ Las URLs fijas van a `src/lib/links.ts` (no existe aún), nunca en un componente
 - `node:assert/strict` y `node:test`, con dobles a mano (ni Vitest, Testing Library ni MSW). `tsconfig.json` solo
   incluye `src/`. `test:ui` vigila las fronteras: entradas de CSS, showcase, catálogo sin dominio, cookies, R-1,
   los cuatro `.css` y la ausencia de `Icons.tsx`.
+- `test:projects` cubre el reducer, los selectores y el formato de Proyectos (`tests/projects.test.ts`).
 - Un archivo de prueba nuevo lleva su script `test:<area>`, su entrada en `stack.comandos` (`.metodo/config.json`)
   y su paso en `.github/workflows/validate.yml`.
 - Hooks, componentes, temas, plataformas, diálogos con `busy` y ventana reducida se revisan con la app abierta

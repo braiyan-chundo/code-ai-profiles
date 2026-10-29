@@ -7,12 +7,13 @@ import {
   useSessionActions,
   useTransferProfiles,
 } from "../../features/sessions";
+import { PinProjectDialog, usePinProject } from "../../features/projects";
 import { ApplicationUpdateDialog, OriginalApplicationUpdateDialog, useUpdateActions } from "../../features/updates";
 import { useDialogs } from "../providers/dialogs-context";
 
 /**
- * Los seis diálogos, montados con su bandera de `useDialogs()` y en este orden: editor, borrar, transferir,
- * desvincular, sincronizar y original. Son `Dialog` y `AlertDialog` del catálogo (HU-0016, A-12): su portal cuelga de
+ * Los siete diálogos, montados con su bandera de `useDialogs()` y en este orden: editor, borrar, transferir,
+ * desvincular, sincronizar, original y anclar proyecto (HU-0023). Son `Dialog` y `AlertDialog` del catálogo (HU-0016, A-12): su portal cuelga de
  * `body` y toma el tema de `<html>` (A-3). Cada uno recibe su `busy`, que guarda Escape, la X y el clic fuera.
  */
 export function DialogHost() {
@@ -30,7 +31,10 @@ export function DialogHost() {
     setUpdateTargets,
     originalUpdateOpen,
     setOriginalUpdateOpen,
+    pinCandidate,
+    setPinCandidate,
   } = useDialogs();
+  const pinProject = usePinProject();
   const runtimePlatform = useRuntimePlatform();
   const navigate = useNavigate();
   const transferProfiles = useTransferProfiles();
@@ -125,6 +129,40 @@ export function DialogHost() {
           busy={busy === "update-original"}
           onClose={() => setOriginalUpdateOpen(false)}
           onConfirm={() => updateActions.updateOriginal(() => setOriginalUpdateOpen(false))}
+        />
+      )}
+
+      {pinCandidate && (
+        <PinProjectDialog
+          candidate={pinCandidate}
+          pinning={pinProject.pinning}
+          picking={pinProject.picking}
+          error={pinProject.pinError}
+          onClose={() => {
+            pinProject.clearPinError();
+            setPinCandidate(null);
+          }}
+          onPickAnother={async () => {
+            pinProject.clearPinError();
+            const result = await pinProject.pickFolder();
+            if (result.status === "picked") setPinCandidate(result.candidate);
+            else if (result.status === "failed") {
+              setPinCandidate(null);
+              navigate("/proyectos");
+            }
+          }}
+          onPin={async () => {
+            const project = await pinProject.pinFolder(pinCandidate.path);
+            if (project) {
+              setPinCandidate(null);
+              navigate("/proyectos");
+            }
+          }}
+          onView={(id) => {
+            pinProject.clearPinError();
+            setPinCandidate(null);
+            navigate(`/proyectos/${encodeURIComponent(id)}`);
+          }}
         />
       )}
     </>

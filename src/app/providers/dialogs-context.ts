@@ -1,10 +1,10 @@
 import { createContext, useContext, type Dispatch, type SetStateAction } from "react";
 import type { SessionTransferSelection, SessionUnlinkSelection } from "../../features/sessions";
-import type { ManagedInstance } from "../../types";
+import type { ManagedInstance, ProjectCandidate } from "../../types";
 
 type Setter<T> = Dispatch<SetStateAction<T>>;
 
-/** Las seis banderas de los diálogos. Son independientes: pueden convivir dos abiertos, como antes. */
+/** Las siete banderas de los diálogos. Son independientes: pueden convivir dos abiertos, como antes. */
 export interface DialogsContextValue {
   editor: ManagedInstance | "new" | null;
   setEditor: Setter<ManagedInstance | "new" | null>;
@@ -18,6 +18,9 @@ export interface DialogsContextValue {
   setUpdateTargets: Setter<ManagedInstance[] | null>;
   originalUpdateOpen: boolean;
   setOriginalUpdateOpen: Setter<boolean>;
+  /** La carpeta que la persona eligió en el selector, con lo que Rust encontró en ella (HU-0023). */
+  pinCandidate: ProjectCandidate | null;
+  setPinCandidate: Setter<ProjectCandidate | null>;
 }
 
 export const DialogsContext = createContext<DialogsContextValue | null>(null);

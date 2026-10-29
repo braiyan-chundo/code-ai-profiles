@@ -11,7 +11,7 @@ Datos en filas y columnas.
 
 **No**
 - Listas de elementos con acciones: `Item`.
-- Hoy no lo usa ninguna pantalla de la app (sí el showcase). Si una lo adopta, se usa con el tema de `ui-theme.css`, sin CSS propio.
+- La usa la tabla de historias de Proyectos (HU-0023); el showcase también. Con el tema de `ui-theme.css`, sin CSS propio.
 
 ## Importación
 
@@ -82,7 +82,9 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 ## Diferencias con el registro
 
-Ninguna: es el código del registro `radix-vega` (2026-10-28) tal como se descargó.
+- `Table` acepta `containerClassName` para el `div` que la envuelve (HU-0023): la tabla de historias se ensancha 12 px a cada
+  lado con `-mx-3 w-[calc(100%+24px)]` y cada celda lleva `px-3`, así que sus columnas caen en la retícula de 12 columnas
+  del cuerpo. El resto es el código del registro `radix-vega` (2026-10-28) tal como se descargó.
 
 ## Qué no hacer
 

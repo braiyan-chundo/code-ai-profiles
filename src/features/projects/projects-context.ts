@@ -2,6 +2,12 @@ import { createContext, useContext } from "react";
 import type { ProjectCandidate, ProjectSummary } from "../../types";
 import type { ProjectsStore } from "./projects-store";
 
+/** Lo que devolvió el selector nativo: una carpeta, «cancelar» o un fallo (su motivo queda en `actionError`). */
+export type PickResult =
+  | { status: "picked"; candidate: ProjectCandidate }
+  | { status: "cancelled" }
+  | { status: "failed" };
+
 export interface ProjectsContextValue extends ProjectsStore {
   /** Relee la lista entera. Las llamadas que coinciden en el tiempo (StrictMode, dos pantallas) comparten una. */
   refreshAll: () => Promise<void>;
@@ -11,8 +17,8 @@ export interface ProjectsContextValue extends ProjectsStore {
   unpin: (id: string) => Promise<boolean>;
   /** Abre su carpeta en el gestor de archivos. */
   openFolder: (id: string) => Promise<void>;
-  /** Abre el selector nativo. `null` si se canceló o falló (el fallo queda en `actionError`). */
-  pickFolder: () => Promise<ProjectCandidate | null>;
+  /** Abre el selector nativo. */
+  pickFolder: () => Promise<PickResult>;
   /** Ancla la carpeta del candidato. `null` si falló (el motivo queda en `pinError`). */
   pinFolder: (path: string) => Promise<ProjectSummary | null>;
   clearPinError: () => void;

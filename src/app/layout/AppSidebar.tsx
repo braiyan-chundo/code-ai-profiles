@@ -14,7 +14,6 @@ import {
   SidebarHeader,
   SidebarInput,
   SidebarMenu,
-  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSkeleton,
@@ -32,10 +31,10 @@ import { useScan } from "../../features/scan";
 import { shortcutModifierLabel } from "../../lib/platform";
 import { cn } from "../../lib/utils";
 import { useDialogs } from "../providers/dialogs-context";
+import { ProjectsSidebarGroup } from "./ProjectsSidebarGroup";
+import { GROUP_LABEL, MenuCount } from "./sidebar-parts";
 
 const NO_SOURCE_TITLE = "Instala una aplicación compatible o configura una ruta válida";
-/** DESIGN.md: las cabeceras del sidebar, en mayúsculas y con algo de espaciado. */
-const GROUP_LABEL = "h-auto px-2 pt-3 pb-1 text-(length:--fs-micro)/(--lh-micro) font-bold tracking-[0.1em] text-muted-foreground uppercase group-data-[collapsible=icon]:hidden";
 
 /**
  * La navegación de la app (HU-0016, AC-01): Dashboard, la aplicación original y una entrada por instancia, con
@@ -43,13 +42,16 @@ const GROUP_LABEL = "h-auto px-2 pt-3 pb-1 text-(length:--fs-micro)/(--lh-micro)
  * Es un panel flotante (HU-0019, A-2): `variant="floating"`, con la marca en su cabecera y, junto a cada perfil, el
  * número de sesiones. Se pinta debajo de la barra: el contenedor `fixed` del catálogo empieza en `--titlebar-height`.
  *
+ * Bajo «Instancias» va el grupo «Proyectos» (HU-0023). A 680 px de alto la lista se desplaza y su final se funde (la
+ * máscara de `SidebarContent`; el `pb-6` deja el último elemento fuera del fundido al llegar abajo).
+ *
  * La búsqueda (A-11) filtra las entradas con `filterInstances` y `matchesOriginalApp`. Ctrl/⌘ F la enfoca y, si el
  * sidebar está plegado, lo despliega antes. Plegado no filtra: la búsqueda no se ve.
  */
 export function AppSidebar() {
   const { dashboard: state, loading, busy, iconPreviews } = useDashboard();
   const { requestManual: scanManually } = useScan();
-  const { setEditor, editor, deleteTarget, transfer, unlinkTarget, updateTargets, originalUpdateOpen } = useDialogs();
+  const { setEditor, editor, deleteTarget, transfer, unlinkTarget, updateTargets, originalUpdateOpen, pinCandidate } = useDialogs();
   const navigate = useNavigate();
   const onDashboard = useMatch({ path: "/", end: true });
   const onOriginal = useMatch("/original");
@@ -69,7 +71,7 @@ export function AppSidebar() {
   const canCreate = sourceFound && busy === null;
   const originalSessions = sourceFound ? state.system.originalCodeSessions.length : 0;
   // ⌘ , no navega detrás de un modal (HU-0022, A-2).
-  const dialogOpen = Boolean(editor || deleteTarget || transfer || unlinkTarget || updateTargets || originalUpdateOpen);
+  const dialogOpen = Boolean(editor || deleteTarget || transfer || unlinkTarget || updateTargets || originalUpdateOpen || pinCandidate);
   const settingsShortcut = `${shortcutModifierLabel(navigator.platform)} ,`;
 
   useEffect(() => {
@@ -140,7 +142,7 @@ export function AppSidebar() {
           )}
         </div>
       </SidebarHeader>
-      <SidebarContent className="gap-0 pt-1">
+      <SidebarContent className="gap-0 pt-1 pb-6 [mask-image:linear-gradient(#000_calc(100%-24px),transparent)] group-data-[collapsible=icon]:pb-0 group-data-[collapsible=icon]:[mask-image:none]">
         <SidebarGroup className="px-2 py-0">
           <SidebarGroupLabel className={GROUP_LABEL}>General</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -166,7 +168,7 @@ export function AppSidebar() {
                       <span className="sr-only">{sourceFound ? instanceStatusLabel(state.system.originalStatus) : "No detectada"}</span>
                     </Link>
                   </SidebarMenuButton>
-                  {originalSessions > 0 && <SessionCount count={originalSessions} active={Boolean(onOriginal)} />}
+                  {originalSessions > 0 && <MenuCount count={originalSessions} active={Boolean(onOriginal)} singular="sesión" plural="sesiones" />}
                 </SidebarMenuItem>
               )}
             </SidebarMenu>
@@ -207,7 +209,7 @@ export function AppSidebar() {
                           <span className="sr-only">{instanceStatusLabel(instance.status, stopping)}</span>
                         </Link>
                       </SidebarMenuButton>
-                      {sessions > 0 && <SessionCount count={sessions} active={active} />}
+                      {sessions > 0 && <MenuCount count={sessions} active={active} singular="sesión" plural="sesiones" />}
                     </SidebarMenuItem>
                   );
                 })
@@ -240,6 +242,9 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        <SidebarSeparator className="mx-auto my-3 hidden w-5! bg-(--line-strong) group-data-[collapsible=icon]:block" />
+        <ProjectsSidebarGroup />
       </SidebarContent>
 
       <SidebarFooter className="shadow-[inset_0_1px_0_var(--sidebar-border)] group-data-[collapsible=icon]:shadow-none">
@@ -265,23 +270,5 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
-  );
-}
-
-/**
- * El número de sesiones de un perfil (A-2), a la derecha de su entrada. El mismo dato que ya enseña la página («3 sesiones»):
- * no sale ningún título. Plegado, el catálogo lo oculta.
- */
-function SessionCount({ count, active }: { count: number; active: boolean }) {
-  return (
-    <SidebarMenuBadge
-      className={cn(
-        "top-1/2! -translate-y-1/2 rounded-full bg-(--surface-soft) px-2 font-mono text-(length:--fs-micro)/(--lh-small) font-semibold text-muted-foreground",
-        active && "bg-(--line-strong) text-foreground",
-      )}
-    >
-      {count}
-      <span className="sr-only"> {count === 1 ? "sesión" : "sesiones"}</span>
-    </SidebarMenuBadge>
   );
 }

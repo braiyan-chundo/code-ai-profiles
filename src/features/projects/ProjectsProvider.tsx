@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, type ReactNode } from "react";
 import { bridge } from "../../lib/bridge";
 import { friendlyError } from "../../lib/errors";
-import type { ProjectCandidate, ProjectSummary } from "../../types";
-import { ProjectsContext, type ProjectsContextValue } from "./projects-context";
+import type { ProjectSummary } from "../../types";
+import { ProjectsContext, type PickResult, type ProjectsContextValue } from "./projects-context";
 import { initialProjectsStore, projectsReducer } from "./projects-store";
 
 /**
@@ -64,14 +64,15 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const pickFolder = useCallback(async (): Promise<ProjectCandidate | null> => {
+  const pickFolder = useCallback(async (): Promise<PickResult> => {
     dispatch({ type: "action-error/changed", error: null });
     dispatch({ type: "pick/changed", picking: true });
     try {
-      return await bridge.pickProjectFolder();
+      const candidate = await bridge.pickProjectFolder();
+      return candidate ? { status: "picked", candidate } : { status: "cancelled" };
     } catch (reason) {
       dispatch({ type: "action-error/changed", error: friendlyError(reason) });
-      return null;
+      return { status: "failed" };
     } finally {
       dispatch({ type: "pick/changed", picking: false });
     }
