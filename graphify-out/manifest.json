@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793239462.4111197,
-    "ast_hash": "dd9bbd4c91d597c87f19148924704afa",
+    "mtime": 1793239759.6942766,
+    "ast_hash": "0fc781fd7ad15824a3e70663c630f58f",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -1720,13 +1720,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/hu.md": {
-    "mtime": 1793237648.0290933,
-    "ast_hash": "7b32c5e94f0718a2091c746ac225e99c",
+    "mtime": 1793239736.4513273,
+    "ast_hash": "3e60fd949c7383265ebf3b34ab709fb0",
     "semantic_hash": ""
   },
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/seguimiento.md": {
-    "mtime": 1793239426.1889021,
-    "ast_hash": "86fe72dbdbfe95ef9c10e305681d7e0f",
+    "mtime": 1793239736.459736,
+    "ast_hash": "438de64079d56d1888db0a31696653c9",
     "semantic_hash": ""
   },
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/referencia-sidebar.png": {
@@ -1867,6 +1867,21 @@
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/hoy-original-1440-oscuro.png": {
     "mtime": 1793238560.3201485,
     "ast_hash": "55b58b1572a827f3822df914e3d31109",
+    "semantic_hash": ""
+  },
+  "hu/HU-0021-spike-relevo-del-retorno-de-inicio-de-se/analisis.md": {
+    "mtime": 1793239759.6508389,
+    "ast_hash": "28ea4de369f7f5cd6ccee177fbc731e0",
+    "semantic_hash": ""
+  },
+  "hu/HU-0021-spike-relevo-del-retorno-de-inicio-de-se/hu.md": {
+    "mtime": 1793239759.6542342,
+    "ast_hash": "1eb4b9c581558ad109eba8e912ac40ad",
+    "semantic_hash": ""
+  },
+  "hu/HU-0021-spike-relevo-del-retorno-de-inicio-de-se/seguimiento.md": {
+    "mtime": 1793239759.6931884,
+    "ast_hash": "2e4991a4a9625fa86085eb7494691c13",
     "semantic_hash": ""
   }
 }
