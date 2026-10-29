@@ -425,7 +425,7 @@ export const bridge = {
         path: `mock://${id}/icon.png`,
         revision: (item.customIcon?.revision ?? 0) + 1,
         systemApplied: false,
-        systemMessage: "Modo de demostración: icono visible dentro de Code AI Profiles.",
+        systemMessage: "macOS no aplicó el icono a la copia. Pulsa «Reintentar» con la instancia detenida.",
         systemIssue: null,
       },
     } : item);
@@ -439,7 +439,7 @@ export const bridge = {
       customIcon: {
         ...item.customIcon,
         systemApplied: true,
-        systemMessage: "Modo de demostración: icono reaplicado a la copia.",
+        systemMessage: "Se verá al abrir la instancia; la firma de la aplicación no cambia.",
         systemIssue: null,
       },
     } : item);

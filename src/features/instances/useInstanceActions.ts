@@ -21,9 +21,24 @@ export function useInstanceActions() {
 
   const launch = (instance: ManagedInstance) => void runAction(`launch:${instance.id}`, () => bridge.launch(instance.id));
   const stop = (instance: ManagedInstance) => void runAction(`stop:${instance.id}`, () => bridge.stop(instance.id));
-  /** Reaplica el icono al Dock con la instancia detenida (HU-0020, A-5); el panel se actualiza con el estado devuelto. */
-  const reapplyIcon = (instance: ManagedInstance) =>
-    runAction(`icon:${instance.id}`, () => bridge.reapplyInstanceIcon(instance.id));
+  /**
+   * Reaplica el icono al Dock con la instancia detenida (HU-0020, A-5); el panel se actualiza con el estado devuelto.
+   * Como `runAction`, pero devuelve el error de este intento (o `null`) para que el editor muestre solo ese.
+   */
+  const reapplyIcon = async (instance: ManagedInstance): Promise<string | null> => {
+    setBusy(`icon:${instance.id}`);
+    setError(null);
+    try {
+      replaceDashboard(await bridge.reapplyInstanceIcon(instance.id));
+      return null;
+    } catch (reason) {
+      const message = friendlyError(reason);
+      setError(message);
+      return message;
+    } finally {
+      setBusy(null);
+    }
+  };
   const openFolder = (instance: ManagedInstance) => void bridge.openFolder(instance.id).catch((reason) => setError(friendlyError(reason)));
 
   const save = async (

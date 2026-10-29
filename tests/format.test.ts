@@ -187,6 +187,6 @@ test("textos del icono: macOS habla del Dock y el resto no cambia", () => {
   assert.equal(iconBadgeLabel("macos", false), "solo en la app");
   assert.equal(iconBadgeLabel("windows", true), "sistema aplicado");
   assert.equal(iconBadgeLabel("linux", false), "solo en la app");
-  assert.equal(iconStatusLead(true), "En el Dock. ");
+  assert.equal(iconStatusLead(true), "Aplicado al Dock. ");
   assert.equal(iconStatusLead(false), "Solo en Code AI Profiles. ");
 });

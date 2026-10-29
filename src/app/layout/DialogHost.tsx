@@ -16,7 +16,7 @@ import { useDialogs } from "../providers/dialogs-context";
  * `body` y toma el tema de `<html>` (A-3). Cada uno recibe su `busy`, que guarda Escape, la X y el clic fuera.
  */
 export function DialogHost() {
-  const { dashboard: state, busy, error } = useDashboard();
+  const { dashboard: state, busy } = useDashboard();
   const { preferences: appearance, setPreferences: setAppearance } = useAppearance();
   const {
     appearanceOpen,
@@ -64,9 +64,8 @@ export function DialogHost() {
           platform={runtimePlatform}
           busy={busy === "create" || busy === "update"}
           iconBusy={editorInstance !== null && busy === `icon:${editorInstance.id}`}
-          actionError={error}
           onClose={() => setEditor(null)}
-          onRetryIcon={() => editorInstance ? instanceActions.reapplyIcon(editorInstance) : Promise.resolve()}
+          onRetryIcon={() => editorInstance ? instanceActions.reapplyIcon(editorInstance) : Promise.resolve(null)}
           onSave={(form, iconChange) => instanceActions.save(editor, form, iconChange, () => setEditor(null))}
         />
       )}

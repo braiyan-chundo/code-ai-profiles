@@ -45,5 +45,5 @@ export function iconBadgeLabel(platform: SystemInfo["platform"], systemApplied: 
 
 /** Primera frase de la línea de estado del editor en macOS; `systemMessage` se añade tal cual. */
 export function iconStatusLead(systemApplied: boolean): string {
-  return systemApplied ? "En el Dock. " : "Solo en Code AI Profiles. ";
+  return systemApplied ? "Aplicado al Dock. " : "Solo en Code AI Profiles. ";
 }

@@ -20,7 +20,6 @@ export function InstanceEditor({
   platform,
   busy,
   iconBusy,
-  actionError,
   onClose,
   onRetryIcon,
   onSave,
@@ -31,10 +30,9 @@ export function InstanceEditor({
   busy: boolean;
   /** «Reintentar» el icono del Dock en curso. */
   iconBusy: boolean;
-  /** El error de la última operación del panel: el aviso global queda tras el fondo del diálogo. */
-  actionError: string | null;
   onClose: () => void;
-  onRetryIcon: () => Promise<void>;
+  /** Devuelve el error de este reintento, o `null`. */
+  onRetryIcon: () => Promise<string | null>;
   onSave: (request: CreateInstanceRequest, iconChange: InstanceIconChange) => Promise<void>;
 }) {
   const [name, setName] = useState(instance?.name ?? "");
@@ -44,7 +42,8 @@ export function InstanceEditor({
   const [iconPreviewUrl, setIconPreviewUrl] = useState<string | null>(null);
   const [removeIcon, setRemoveIcon] = useState(false);
   const [iconError, setIconError] = useState<string | null>(null);
-  const [retried, setRetried] = useState(false);
+  // El error de ESTE reintento: el aviso global queda tras el fondo del diálogo y puede ser de otra acción.
+  const [retryError, setRetryError] = useState<string | null>(null);
   const isNew = !instance;
   const currentIconUrl = instance ? managedIconSource(instance) : null;
   const locked = busy || iconBusy;
@@ -86,9 +85,9 @@ export function InstanceEditor({
     }
   };
 
-  const retryIcon = () => {
-    setRetried(true);
-    return onRetryIcon();
+  const retryIcon = async () => {
+    setRetryError(null);
+    setRetryError(await onRetryIcon());
   };
 
   const submit = async (event: FormEvent) => {
@@ -215,10 +214,10 @@ export function InstanceEditor({
             </div>
           ))}
 
-          {retried && actionError && !iconBusy && (
+          {retryError && !iconBusy && (
             <Alert variant="destructive">
               <TriangleAlertIcon aria-hidden="true" />
-              <AlertDescription className="text-(length:--fs-small) leading-relaxed text-destructive">{actionError}</AlertDescription>
+              <AlertDescription className="text-(length:--fs-small) leading-relaxed text-destructive">{retryError}</AlertDescription>
             </Alert>
           )}
 
