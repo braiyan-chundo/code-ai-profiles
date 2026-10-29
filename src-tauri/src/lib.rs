@@ -1688,14 +1688,12 @@ fn validate_managed_application(
         return Err("La aplicación fuente quedó fuera de su root administrado.".to_string());
     }
     validate_source(app_path)?;
+    // HU-0020 (R-3): on macOS a sync target is replaced whole by a staging copy that already passed
+    // `--strict -R =<DR de la original>`, so the target's own signature is not a gate. Inherited ad hoc copies,
+    // copies with icon leftovers and copies that changed outside the app can be recovered by syncing them.
+    // Donors keep the full check in `validate_managed_application_source`.
     #[cfg(target_os = "macos")]
-    macos_icon::check_managed_bundle(
-        app_path,
-        original,
-        instance.provider_provenance.as_ref(),
-        macos_icon::IdentityCheck::Cached,
-    )
-    .map_err(|_| macos_icon::bundle_changed_message(&instance.name))?;
+    let _ = original;
     #[cfg(not(target_os = "macos"))]
     validate_provider_identity(app_path, original)?;
     cached_source_version(app_path)
