@@ -233,3 +233,48 @@ export interface AccountFacts {
   /** Solo macOS: la cuenta pertenece al grupo admin. null fuera de macOS o si no se pudo saber. */
   admin: boolean | null;
 }
+
+/* ── Proyectos anclados (HU-0023) ─────────────────────────────────────────── */
+
+export type ProjectStatus =
+  | "v4" | "notV4" | "noConfig" | "configBroken" | "notFound" | "notDirectory" | "permissionDenied" | "forbidden";
+export type ProjectProtectedLocation = "desktop" | "documents" | "downloads" | "icloud" | "external";
+export type ProjectHistoryState = "waiting" | "inProgress" | "done" | "discarded" | "unknown";
+export type ProjectRepoStatus = "ok" | "missing" | "outside" | "forbidden" | "unreadable";
+export type ProjectGitStatus = "ok" | "none" | "unsupported" | "unreadable";
+export type ProjectWarningScope = "config" | "history" | "metrics" | "timeline" | "repo" | "manifest" | "git" | "limit";
+
+export interface TokenBreakdown { input: number; output: number; cacheWrite: number; cacheRead: number; total: number }
+export interface ProjectWarning { scope: ProjectWarningScope; target: string | null; message: string }
+export interface ProjectCandidate {
+  path: string; displayPath: string; status: ProjectStatus; message: string | null;
+  configVersion: number | null; name: string | null; profile: string | null; phase: string | null;
+  historyCount: number | null; repoCount: number | null; alreadyPinnedId: string | null;
+}
+export interface ProjectGit {
+  status: ProjectGitStatus; branch: string | null; detached: boolean; shortSha: string | null; movedAt: string | null;
+}
+export interface ProjectRepo {
+  name: string; path: string; kind: string | null; status: ProjectRepoStatus; manifests: string[]; git: ProjectGit | null;
+}
+export interface ProjectTechnology { name: string; version: string | null; source: "pack" | "packageManager" | "manifest"; repo: string | null }
+export interface ProjectHistory {
+  id: string; folder: string; title: string; state: ProjectHistoryState; phase: string | null; area: string | null;
+  priority: string | null; created: string | null; minutes: number | null; tokens: TokenBreakdown | null;
+  countsInTotals: boolean;
+}
+export interface ProjectRoleUsage { role: string; tokens: TokenBreakdown; approximate: boolean }
+export interface ProjectCounts { total: number; waiting: number; inProgress: number; done: number; discarded: number; unknown: number }
+export interface ProjectTotals { histories: number; minutes: number; tokens: TokenBreakdown; byRole: ProjectRoleUsage[] }
+export interface ProjectInfo {
+  name: string; slug: string | null; summary: string | null; profile: string | null; phase: string | null;
+  approver: string | null; packageManager: string | null; packs: string[]; repos: ProjectRepo[];
+  technologies: ProjectTechnology[]; histories: ProjectHistory[]; counts: ProjectCounts;
+  firstCreated: string | null; lastActivity: string | null; spanDays: number | null; totals: ProjectTotals;
+}
+export interface ProjectSummary {
+  id: string; path: string; displayPath: string; lastName: string | null; pinnedAt: string;
+  lastReadAt: string | null; readAt: string; status: ProjectStatus; message: string | null;
+  protectedLocation: ProjectProtectedLocation | null; info: ProjectInfo | null; warnings: ProjectWarning[];
+}
+export interface ProjectsState { projects: ProjectSummary[]; readAt: string }
