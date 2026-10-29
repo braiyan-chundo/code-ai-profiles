@@ -317,6 +317,27 @@ function contrastProblems(css: string): string[] {
   return problems;
 }
 
+// 17. HU-0023 (A-4): Proyectos es «solo resumen». `features/projects` no importa instancias, sesiones, escaneo ni
+// actualizaciones; quien la usa entra por su `index.ts` y solo `app/` y `features/permissions` la usan; y el selector de
+// carpetas es solo de Rust (nadie importa `@tauri-apps/plugin-dialog`, que además no está en package.json).
+const PROJECTS_FORBIDDEN = /^features\/(instances|sessions|scan|updates)(\/|$)/;
+const PROJECTS_USERS = /^(app\/|features\/permissions\/|features\/projects\/)/;
+function projectsLeaks(local: string, source: string): string[] {
+  const path = toPosix(local);
+  const leaks: string[] = [];
+  for (const s of specifiers(source)) {
+    const to = target(local, s);
+    if (/^@tauri-apps\/plugin-dialog(\/|$)/.test(s)) leaks.push(`${s}: el selector de carpetas es de Rust`);
+    if (to === null) continue;
+    if (path.startsWith("features/projects/") && PROJECTS_FORBIDDEN.test(to)) leaks.push(`${s}: Proyectos no importa ${to.split("/")[1]}`);
+    if (!path.startsWith("features/projects/") && /^features\/projects(\/|$)/.test(to)) {
+      if (to !== "features/projects") leaks.push(`${s}: se entra por features/projects (su index.ts)`);
+      if (!PROJECTS_USERS.test(path)) leaks.push(`${s}: solo app/ y features/permissions usan Proyectos`);
+    }
+  }
+  return leaks;
+}
+
 const FOCUS_OWNERS = [
   "features/instances/useLiveUsage.ts",
   "features/scan/useBackgroundRefresh.ts",
@@ -583,6 +604,26 @@ test("9 · canario: cada detector marca fugas sintéticas, también con rutas de
   assert.equal(target("features\\scan\\x.ts", "../../lib/bridge"), "lib/bridge");
   assert.equal(target("components\\ui\\x.tsx", "@/hooks/use-mobile"), "hooks/use-mobile");
   assert.equal(target("x.ts", "react"), null);
+});
+
+test("17 · Proyectos es solo resumen: sin instancias, sesiones, escaneo ni actualizaciones, y sin selector de JS", () => {
+  assert.ok(files.some(({ local }) => local.startsWith("features/projects/")), "no se revisó features/projects");
+  for (const { local, source } of code) {
+    const leaks = projectsLeaks(local, source);
+    assert.deepEqual(leaks, [], `src/${local}: ${leaks.join("; ")}`);
+  }
+  assert.ok(!/plugin-dialog/.test(read(join(root, "package.json"))), "package.json declara @tauri-apps/plugin-dialog: el selector es de Rust");
+  // Canario: cada detector marca lo que debe, también con rutas de Windows.
+  assert.equal(projectsLeaks("features\\projects\\X.tsx", 'import { a } from "../instances";').length, 1);
+  assert.equal(projectsLeaks("features/projects/X.tsx", 'import { a } from "../sessions/session-types";').length, 1);
+  assert.equal(projectsLeaks("features/projects/X.tsx", 'import { a } from "../scan";').length, 1);
+  assert.equal(projectsLeaks("features/projects/X.tsx", 'import { a } from "../updates";').length, 1);
+  assert.equal(projectsLeaks("features/projects/X.tsx", 'import { a } from "../dashboard";').length, 0, "dashboard sí se puede (la plataforma)");
+  assert.equal(projectsLeaks("app/x.tsx", 'import { dialog } from "@tauri-apps/plugin-dialog";').length, 1);
+  assert.equal(projectsLeaks("app/layout/X.tsx", 'import { a } from "../../features/projects/projects-selectors";').length, 1, "se entra por el index");
+  assert.equal(projectsLeaks("app/layout/X.tsx", 'import { a } from "../../features/projects";').length, 0);
+  assert.equal(projectsLeaks("features/permissions/X.tsx", 'import { a } from "../projects";').length, 0);
+  assert.equal(projectsLeaks("features/instances/X.tsx", 'import { a } from "../projects";').length, 1, "una feature de instancias no usa Proyectos");
 });
 
 test("10 · los .css de src/ son solo index.css, tokens.css, ui-theme.css y showcase.css", () => {
