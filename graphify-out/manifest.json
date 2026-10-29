@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793242121.461673,
-    "ast_hash": "a7cd72a910905adc6be015230246a0c2",
+    "mtime": 1793242730.4180963,
+    "ast_hash": "2ae66e59d3f90efdd8369e18b7f2d32a",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -390,8 +390,8 @@
     "semantic_hash": ""
   },
   "docs/arquitectura/frontend.md": {
-    "mtime": 1793240519.3725114,
-    "ast_hash": "0229474dd8b2a8660f2d73b7c186da8a",
+    "mtime": 1793242299.5715685,
+    "ast_hash": "88e835a6fecf40e4ac640480ddd7346c",
     "semantic_hash": ""
   },
   "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md": {
@@ -725,8 +725,8 @@
     "semantic_hash": ""
   },
   "src/app/layout/Statusbar.tsx": {
-    "mtime": 1793241731.3426201,
-    "ast_hash": "c9de02b165995b10ae58c92ee96ca84e",
+    "mtime": 1793242556.9056556,
+    "ast_hash": "f406c14477dd51efb18b66c199f09add",
     "semantic_hash": ""
   },
   "src/app/layout/Titlebar.tsx": {
@@ -1475,8 +1475,8 @@
     "semantic_hash": ""
   },
   "tests/ui-isolation.test.ts": {
-    "mtime": 1793240710.7512023,
-    "ast_hash": "5cb96827175feabeb7c12900dd799f13",
+    "mtime": 1793242444.4329572,
+    "ast_hash": "41cfa12e4a0c172653c8dd5f1dc84f3c",
     "semantic_hash": ""
   },
   "showcase.html": {
@@ -1525,8 +1525,8 @@
     "semantic_hash": ""
   },
   "src/app/layout/PageHeader.tsx": {
-    "mtime": 1793240798.0405812,
-    "ast_hash": "323d1a33d36f79742cf1c8cde1c1057a",
+    "mtime": 1793242458.8356755,
+    "ast_hash": "55902e0eed5af31070a31c0ee122adfb",
     "semantic_hash": ""
   },
   "src/app/routes/instance/InstanceRoute.tsx": {
@@ -1590,7 +1590,7 @@
     "semantic_hash": ""
   },
   "src/components/NoticeAlert.tsx": {
-    "mtime": 1793240671.7140403,
+    "mtime": 1793242454.2247362,
     "ast_hash": "c95e39099a5518a623bcd740acde0742",
     "semantic_hash": ""
   },
@@ -1720,13 +1720,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/hu.md": {
-    "mtime": 1793240557.030779,
-    "ast_hash": "25da88dc677fc1568827a86314146c9d",
+    "mtime": 1793242730.4086962,
+    "ast_hash": "0c63f92bf1ee6bfe8e6af460b698b38b",
     "semantic_hash": ""
   },
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/seguimiento.md": {
-    "mtime": 1793242121.4605575,
-    "ast_hash": "e78bb4d7454fe14e3ae6006e75f7b8ad",
+    "mtime": 1793242730.4169729,
+    "ast_hash": "11dd616e3da0d1e93a28968f8143c0ea",
     "semantic_hash": ""
   },
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/referencia-sidebar.png": {
@@ -2064,14 +2064,59 @@
     "ast_hash": "951226a7c533d698e95a11d403b002bb",
     "semantic_hash": ""
   },
-  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/evidencias/showcase-dark.png": {
-    "mtime": 1793242063.1719818,
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/revision-tecnica.md": {
+    "mtime": 1793242357.3390627,
+    "ast_hash": "550e9e2b1a92b4305303eaefe1d77450",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/verificacion.md": {
+    "mtime": 1793242730.2236953,
+    "ast_hash": "4e854aacc7b1bf6152530144c3c56c9b",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/evidencias/showcase-claro.png": {
+    "mtime": 1793242642.4495175,
+    "ast_hash": "7576bc21f988120baee58e77b9eb2b56",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/evidencias/showcase-controles-button-claro.png": {
+    "mtime": 1793242668.26274,
+    "ast_hash": "cb71862d3e0476e039fbaaea31905d54",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/evidencias/showcase-controles-button-oscuro.png": {
+    "mtime": 1793242662.6282597,
+    "ast_hash": "443def51ce1e6d11585ce77a4c1da81a",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/evidencias/showcase-controles-input-claro.png": {
+    "mtime": 1793242669.5135734,
+    "ast_hash": "fc40bd5ac7cb2e5d78d256994f2cc684",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/evidencias/showcase-controles-input-oscuro.png": {
+    "mtime": 1793242663.8822186,
+    "ast_hash": "1d41a822979466079d12a0d456c80d0d",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/evidencias/showcase-oscuro.png": {
+    "mtime": 1793242637.429192,
     "ast_hash": "9046bd65c465072c76f0a9b68421ef02",
     "semantic_hash": ""
   },
-  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/evidencias/showcase-light.png": {
-    "mtime": 1793242065.7597585,
-    "ast_hash": "9046bd65c465072c76f0a9b68421ef02",
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/evidencias/statusbar-sin-original-linux-980-grande.png": {
+    "mtime": 1793242600.2582946,
+    "ast_hash": "6ead8f0fb6b3aa6ec94000bd368ca27d",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/evidencias/statusbar-sin-original-macos-980-grande.png": {
+    "mtime": 1793242563.55496,
+    "ast_hash": "85b025511eb9ba378ea520b37b6795bc",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/evidencias/statusbar-sin-original-windows-980-grande.png": {
+    "mtime": 1793242581.8927245,
+    "ast_hash": "7b120e7c8a4e943cf46e337c6245360f",
     "semantic_hash": ""
   }
 }
