@@ -18,6 +18,8 @@ use tauri::{AppHandle, Emitter, Manager, WebviewWindow};
 use uuid::Uuid;
 
 mod config;
+#[cfg(target_os = "macos")]
+mod macos_icon;
 mod original_update;
 
 const REGISTRY_VERSION: u32 = 1;
@@ -1712,7 +1714,16 @@ fn validate_managed_application_source(
     }
     validate_source(app_path)?;
     // Donors are security-sensitive: verify their current deep signature instead
-    // of accepting a cached identity result.
+    // of accepting a cached identity result. On macOS a donor with the Finder icon
+    // passes the equivalent check of HU-0020 (A-2).
+    #[cfg(target_os = "macos")]
+    macos_icon::verify_managed_bundle(
+        app_path,
+        original,
+        instance.provider_provenance.as_ref(),
+        &instance.name,
+    )?;
+    #[cfg(not(target_os = "macos"))]
     validate_provider_identity_uncached(app_path, original)?;
     source_version(app_path)
         .filter(|version| valid_release_version(version))
@@ -1730,11 +1741,16 @@ fn validate_managed_application(
         return Err("La aplicación fuente quedó fuera de su root administrado.".to_string());
     }
     validate_source(app_path)?;
-    if let Some(provenance) = instance.provider_provenance.as_ref() {
-        validate_managed_provenance(app_path, original, provenance)?;
-    } else {
-        validate_provider_identity(app_path, original)?;
-    }
+    #[cfg(target_os = "macos")]
+    macos_icon::check_managed_bundle(
+        app_path,
+        original,
+        instance.provider_provenance.as_ref(),
+        macos_icon::IdentityCheck::Cached,
+    )
+    .map_err(|_| macos_icon::bundle_changed_message(&instance.name))?;
+    #[cfg(not(target_os = "macos"))]
+    validate_provider_identity(app_path, original)?;
     cached_source_version(app_path)
         .filter(|version| valid_release_version(version))
         .ok_or_else(|| "No se pudo identificar la versión de la instancia fuente.".to_string())
@@ -6003,11 +6019,23 @@ mod tests {
     }
 
     #[cfg(target_os = "macos")]
-    fn write_signed_fixture_bundle(bundle: &Path) {
+    pub(crate) fn write_signed_fixture_bundle(bundle: &Path) {
+        write_signed_fixture_bundle_with(bundle, "1.0.0", None);
+    }
+
+    /// Ad hoc signed fixture. `requirement` is an explicit designated requirement (`=designated => …`);
+    /// without it the requirement is the implicit `cdhash H"…"`.
+    #[cfg(target_os = "macos")]
+    pub(crate) fn write_signed_fixture_bundle_with(
+        bundle: &Path,
+        version: &str,
+        requirement: Option<&str>,
+    ) {
         let contents = bundle.join("Contents");
         let executable = contents.join("MacOS/Claude");
         fs::create_dir_all(executable.parent().unwrap()).unwrap();
         fs::create_dir_all(contents.join("Resources")).unwrap();
+        fs::write(contents.join("Resources/fixture.txt"), b"sealed resource").unwrap();
         let source = contents.join("fixture.m");
         fs::write(
             &source,
@@ -6044,24 +6072,26 @@ int main(int argc, const char **argv) {
         fs::remove_file(source).unwrap();
         fs::write(
             contents.join("Info.plist"),
-            br#"<?xml version="1.0" encoding="UTF-8"?>
+            r#"<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
 <key>CFBundleExecutable</key><string>Claude</string>
 <key>CFBundleIdentifier</key><string>com.codeaiprofiles.fixture</string>
 <key>CFBundleName</key><string>Fixture</string>
 <key>CFBundlePackageType</key><string>APPL</string>
-<key>CFBundleShortVersionString</key><string>1.0.0</string>
+<key>CFBundleShortVersionString</key><string>__VERSION__</string>
 <key>CFBundleVersion</key><string>1</string>
 <key>NSPrincipalClass</key><string>NSApplication</string>
-</dict></plist>"#,
+</dict></plist>"#
+                .replace("__VERSION__", version),
         )
         .unwrap();
-        let status = Command::new("/usr/bin/codesign")
-            .args(["--force", "--deep", "--sign", "-"])
-            .arg(bundle)
-            .status()
-            .unwrap();
+        let mut command = Command::new("/usr/bin/codesign");
+        command.args(["--force", "--deep", "--sign", "-"]);
+        if let Some(requirement) = requirement {
+            command.args(["-r", requirement]);
+        }
+        let status = command.arg(bundle).status().unwrap();
         assert!(status.success());
     }
 
