@@ -20,8 +20,8 @@
     "semantic_hash": "dca85abae9a1b384a67b37f98b2f05ea"
   },
   "src-tauri/src/lib.rs": {
-    "mtime": 1793215211.075172,
-    "ast_hash": "d8e29046d7d72893df76f86c4ad37b9f",
+    "mtime": 1793245589.3347435,
+    "ast_hash": "8def98dea7023e950c81514b6c5c1d58",
     "semantic_hash": ""
   },
   "src-tauri/src/main.rs": {
@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/lib/bridge.ts": {
-    "mtime": 1793214091.8519902,
-    "ast_hash": "f0f4060670bc97d7278269fc2ce48551",
+    "mtime": 1793246882.9999442,
+    "ast_hash": "73d663c1062cdca1f061b15125ab71fc",
     "semantic_hash": ""
   },
   "src/main.tsx": {
@@ -55,8 +55,8 @@
     "semantic_hash": ""
   },
   "src/types.ts": {
-    "mtime": 1793214040.6709118,
-    "ast_hash": "ed6b553f19e3c50ef0337018aa419165",
+    "mtime": 1793243208.0661507,
+    "ast_hash": "5db66c310bf9ab85f553d76c81af0c5d",
     "semantic_hash": ""
   },
   "src/vite-env.d.ts": {
@@ -330,7 +330,7 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793242879.9571242,
+    "mtime": 1793246928.3259363,
     "ast_hash": "7f3d22cf556ef5888b2fcf8c6b7ef80e",
     "semantic_hash": ""
   },
@@ -505,8 +505,8 @@
     "semantic_hash": ""
   },
   "tests/format.test.ts": {
-    "mtime": 1793211133.7081175,
-    "ast_hash": "498d984afb0a620d3fed5eb237448a57",
+    "mtime": 1793246882.9998102,
+    "ast_hash": "a95c98b5b4ea95f56e2a1e86517e7a7e",
     "semantic_hash": ""
   },
   "tests/result-messages.test.ts": {
@@ -535,8 +535,8 @@
     "semantic_hash": ""
   },
   "src/features/instances/InstanceEditor.tsx": {
-    "mtime": 1793240671.7132998,
-    "ast_hash": "bde970e8c57885b3f1037ec20d71da6c",
+    "mtime": 1793246883.0004458,
+    "ast_hash": "c4f0609f1bb1dda57a7b1a2d9600a3e0",
     "semantic_hash": ""
   },
   "src/features/instances/UsageMeter.tsx": {
@@ -685,8 +685,8 @@
     "semantic_hash": ""
   },
   "src/features/instances/useInstanceActions.ts": {
-    "mtime": 1793192634.4897273,
-    "ast_hash": "cae5c3d52c84718374040ab35d665758",
+    "mtime": 1793246883.0002065,
+    "ast_hash": "f787e7847a21ee1bed0f257b4dab0d41",
     "semantic_hash": ""
   },
   "src/features/sessions/UnlinkSessionDialog.tsx": {
@@ -720,8 +720,8 @@
     "semantic_hash": ""
   },
   "src/app/layout/DialogHost.tsx": {
-    "mtime": 1793211133.6940348,
-    "ast_hash": "c4b977e68274ba402e4b056d611bf5cb",
+    "mtime": 1793246883.0003104,
+    "ast_hash": "4d29471b8b1aa5ac3232823dd98a46a6",
     "semantic_hash": ""
   },
   "src/app/layout/Statusbar.tsx": {
@@ -1595,8 +1595,8 @@
     "semantic_hash": ""
   },
   "src/features/instances/InstanceDetail.tsx": {
-    "mtime": 1793240691.350593,
-    "ast_hash": "6b971c60fe0acd6e7b1b538a4d485198",
+    "mtime": 1793244614.5720205,
+    "ast_hash": "f62887cf972e73b0f78ec65d2d5e5d73",
     "semantic_hash": ""
   },
   "src/features/instances/InstanceStatusBadge.tsx": {
@@ -1650,8 +1650,8 @@
     "semantic_hash": ""
   },
   "docs/arquitectura/backend.md": {
-    "mtime": 1793242846.6175678,
-    "ast_hash": "104460618e4d5bac85c48be96ccca414",
+    "mtime": 1793245419.0016627,
+    "ast_hash": "5ec1e906e7714a64f58b198e82969bdb",
     "semantic_hash": ""
   },
   "docs/decisiones/ADR-0002-modulos-rust-y-configuracion-en-compilacion.md": {
@@ -1755,8 +1755,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/seguimiento.md": {
-    "mtime": 1793242879.956105,
-    "ast_hash": "88441457bf21a8e7ebe678c6afc52fcd",
+    "mtime": 1793246928.3251786,
+    "ast_hash": "0a13cc206af8875e9d66fb5c144fc087",
     "semantic_hash": ""
   },
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/01-dashboard-avisos-A-1440-oscuro.png": {
@@ -2125,8 +2125,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/arquitectura.md": {
-    "mtime": 1793242763.0361369,
-    "ast_hash": "119b4bce30e0b6eb394572bf5ca9b17d",
+    "mtime": 1793245409.964647,
+    "ast_hash": "e4b82bebc3bda199d11f56561775b06f",
     "semantic_hash": ""
   },
   "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/briefs/backend.md": {
@@ -2137,6 +2137,21 @@
   "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/briefs/frontend.md": {
     "mtime": 1793242832.4261303,
     "ast_hash": "b9379ae205ea8ca11d064685a5dccb1f",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/macos_icon.rs": {
+    "mtime": 1793246724.4090261,
+    "ast_hash": "3aea236348254fd233c0197dc50ef011",
+    "semantic_hash": ""
+  },
+  "src/features/instances/icon-status.ts": {
+    "mtime": 1793246882.9996784,
+    "ast_hash": "0e195473c1cdd4834c4542f314ac9956",
+    "semantic_hash": ""
+  },
+  "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/revision-tecnica.md": {
+    "mtime": 1793245393.2452672,
+    "ast_hash": "96676962bf58383338f0a2af48b53f80",
     "semantic_hash": ""
   }
 }
