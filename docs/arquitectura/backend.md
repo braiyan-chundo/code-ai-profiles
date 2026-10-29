@@ -65,6 +65,30 @@ Es la única excepción a «la original no se toca», y solo por la acción expl
   Devuelve `previous/` si falta la original. Si no puede devolverla, no borra nada.
 - Una sola operación a la vez. Mientras dura, el handoff «Actualizar original» la rechaza.
 
+## Copias administradas con icono personalizado (macOS · HU-0020)
+
+`--strict` sigue siendo la regla para la original, la descarga de la HU-0017, el handoff y toda copia sin icono. La
+única excepción son las copias administradas con el icono de Finder puesto (`Icon\r` y `com.apple.FinderInfo` en la
+raíz). Se validan con `verify_managed_bundle` (`src-tauri/src/macos_icon.rs`):
+
+- `codesign --verify --deep --strict=symlinks -R =<DR de la original>`. Deja fuera solo la comprobación de
+  *sideband*, que es la que rompe el icono.
+- El CDHash, el bundle id y el Team ID registrados en `ProviderProvenance`.
+- Un barrido sin seguir symlinks: ningún FinderInfo ni ResourceFork fuera de la raíz y de `Icon\r`.
+- La raíz contiene solo `Contents` e `Icon\r`, y este es un archivo regular, de 0 bytes y sin bits de ejecución.
+
+El CDHash se registra solo justo después de un `--strict` en verde sobre la copia limpia, y nunca desde una copia con
+icono. `managed_fingerprint` ya no es puerta: depende de la ruta y de un hash que no es estable entre versiones de
+Rust.
+
+- Al copiar (crear o sincronizar), el icono heredado se quita en la copia nueva. En la sincronización, la copia de
+  *staging* pasa `--strict -R=<DR>` antes del swap.
+- Una copia con icono se verifica antes de lanzarse; si no pasa, no se lanza. Las copias sin icono se lanzan como
+  antes.
+- `setIcon` solo acepta rutas dentro de `ManagedPaths.instances`.
+- Un `EPERM` al escribir en el bundle se clasifica como «Gestión de apps» (`CustomIcon.systemIssue`). El permiso no
+  se pide de antemano.
+
 ## Progreso hacia la interfaz
 
 - El progreso de una operación larga ligada a una llamada va por `tauri::ipc::Channel<T>`, argumento del comando.

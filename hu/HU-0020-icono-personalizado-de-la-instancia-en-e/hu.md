@@ -2,7 +2,7 @@
 id: HU-0020
 titulo: "Icono personalizado de la instancia en el Dock de macOS"
 estado: en-proceso
-fase: requisitos
+fase: implementacion
 area: instancias
 entrega: 1
 prioridad: media

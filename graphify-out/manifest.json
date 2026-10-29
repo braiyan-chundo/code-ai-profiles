@@ -160,8 +160,8 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1793211133.6843321,
-    "ast_hash": "37e33c2c122684a4fcfb5a6ea15e2b28",
+    "mtime": 1793242797.9304025,
+    "ast_hash": "4838c9c1a9255c3abc64c03f9f2bede5",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793242730.4180963,
-    "ast_hash": "2ae66e59d3f90efdd8369e18b7f2d32a",
+    "mtime": 1793242879.9571242,
+    "ast_hash": "7f3d22cf556ef5888b2fcf8c6b7ef80e",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -1650,8 +1650,8 @@
     "semantic_hash": ""
   },
   "docs/arquitectura/backend.md": {
-    "mtime": 1793216512.9628894,
-    "ast_hash": "c1981eaa5f8c1a6d4a77c1b13588baf3",
+    "mtime": 1793242846.6175678,
+    "ast_hash": "104460618e4d5bac85c48be96ccca414",
     "semantic_hash": ""
   },
   "docs/decisiones/ADR-0002-modulos-rust-y-configuracion-en-compilacion.md": {
@@ -1720,13 +1720,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/hu.md": {
-    "mtime": 1793242730.4086962,
-    "ast_hash": "0c63f92bf1ee6bfe8e6af460b698b38b",
+    "mtime": 1793242797.9982219,
+    "ast_hash": "15bfba5dfbcc6598bd518f064268f750",
     "semantic_hash": ""
   },
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/seguimiento.md": {
-    "mtime": 1793242730.4169729,
-    "ast_hash": "11dd616e3da0d1e93a28968f8143c0ea",
+    "mtime": 1793242798.006805,
+    "ast_hash": "3ca289a6fc1994826416162e4441c395",
     "semantic_hash": ""
   },
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/referencia-sidebar.png": {
@@ -1750,13 +1750,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/hu.md": {
-    "mtime": 1793239453.6847813,
-    "ast_hash": "a31ee2da6f7c8fc3373e26217e54c59e",
+    "mtime": 1793242879.9482436,
+    "ast_hash": "84c4142c3e4d118d4a2d64f701141f49",
     "semantic_hash": ""
   },
   "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/seguimiento.md": {
-    "mtime": 1793239462.4102757,
-    "ast_hash": "b90e715ae29a7af0c3aa49644f94af1b",
+    "mtime": 1793242879.956105,
+    "ast_hash": "88441457bf21a8e7ebe678c6afc52fcd",
     "semantic_hash": ""
   },
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/01-dashboard-avisos-A-1440-oscuro.png": {
@@ -2070,8 +2070,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/verificacion.md": {
-    "mtime": 1793242730.2236953,
-    "ast_hash": "4e854aacc7b1bf6152530144c3c56c9b",
+    "mtime": 1793242797.9301574,
+    "ast_hash": "87f3284df1c89fb1ccfc1bd9ffc54c88",
     "semantic_hash": ""
   },
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/evidencias/showcase-claro.png": {
@@ -2117,6 +2117,26 @@
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/evidencias/statusbar-sin-original-windows-980-grande.png": {
     "mtime": 1793242581.8927245,
     "ast_hash": "7b120e7c8a4e943cf46e337c6245360f",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/metricas.json": {
+    "mtime": 1793242798.3287172,
+    "ast_hash": "d7e952bb55d6cc3c06d45dd3ef7e8125",
+    "semantic_hash": ""
+  },
+  "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/arquitectura.md": {
+    "mtime": 1793242763.0361369,
+    "ast_hash": "119b4bce30e0b6eb394572bf5ca9b17d",
+    "semantic_hash": ""
+  },
+  "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/briefs/backend.md": {
+    "mtime": 1793242832.4260125,
+    "ast_hash": "529b247b182d9dbc1aec4cb98091df1a",
+    "semantic_hash": ""
+  },
+  "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/briefs/frontend.md": {
+    "mtime": 1793242832.4261303,
+    "ast_hash": "b9379ae205ea8ca11d064685a5dccb1f",
     "semantic_hash": ""
   }
 }
