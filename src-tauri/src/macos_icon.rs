@@ -520,8 +520,9 @@ fn guard_managed_bundle(instances_root: &Path, bundle: &Path) -> Result<(), Work
     Ok(())
 }
 
-/// `NSWorkspace.setIcon:forFile:options:`. `Ok(false)` is NSWorkspace's own refusal.
-fn workspace_set_icon(bundle: &Path, icon_path: Option<&Path>) -> Result<bool, WorkspaceIconError> {
+/// `NSWorkspace.setIcon:forFile:options:` with an encoded image (`NSImage initWithData:`), or `None` to remove.
+/// `Ok(false)` is NSWorkspace's own refusal.
+fn workspace_set_icon(bundle: &Path, icon_png: Option<&[u8]>) -> Result<bool, WorkspaceIconError> {
     use std::ffi::c_void;
 
     type ObjcId = *mut c_void;
@@ -547,18 +548,17 @@ fn workspace_set_icon(bundle: &Path, icon_path: Option<&Path>) -> Result<bool, W
         || WorkspaceIconError::Refused("La ruta del icono no es válida para macOS.".to_string());
 
     let bundle_text = c_string(bundle.to_str().ok_or_else(unusable)?)?;
-    let icon_text = icon_path
-        .map(|path| path.to_str().ok_or_else(unusable).and_then(c_string))
-        .transpose()?;
 
     let class_pool = c_string("NSAutoreleasePool")?;
     let class_string = c_string("NSString")?;
     let class_image = c_string("NSImage")?;
+    let class_data = c_string("NSData")?;
     let class_workspace = c_string("NSWorkspace")?;
     let selector_new = c_string("new")?;
     let selector_string = c_string("stringWithUTF8String:")?;
     let selector_alloc = c_string("alloc")?;
-    let selector_init_image = c_string("initWithContentsOfFile:")?;
+    let selector_data = c_string("dataWithBytes:length:")?;
+    let selector_init_image = c_string("initWithData:")?;
     let selector_workspace = c_string("sharedWorkspace")?;
     let selector_set_icon = c_string("setIcon:forFile:options:")?;
     let selector_release = c_string("release")?;
@@ -581,6 +581,8 @@ fn workspace_set_icon(bundle: &Path, icon_path: Option<&Path>) -> Result<bool, W
             std::mem::transmute(raw_message_send);
         let send_void_id: unsafe extern "C" fn(ObjcId, ObjcSel, ObjcId) =
             std::mem::transmute(raw_message_send);
+        let send_id_bytes: unsafe extern "C" fn(ObjcId, ObjcSel, *const c_void, usize) -> ObjcId =
+            std::mem::transmute(raw_message_send);
 
         let pool = send_id(
             objc_getClass(class_pool.as_ptr()),
@@ -596,26 +598,31 @@ fn workspace_set_icon(bundle: &Path, icon_path: Option<&Path>) -> Result<bool, W
             send_void(pool, sel_registerName(selector_drain.as_ptr()));
             return Err(unusable());
         }
-        let image = if let Some(icon_text) = icon_text.as_ref() {
-            let icon_path = send_id_cstr(
-                string_class,
-                sel_registerName(selector_string.as_ptr()),
-                icon_text.as_ptr(),
+        let image = if let Some(bytes) = icon_png {
+            let data = send_id_bytes(
+                objc_getClass(class_data.as_ptr()),
+                sel_registerName(selector_data.as_ptr()),
+                bytes.as_ptr().cast(),
+                bytes.len(),
             );
             let allocated = send_id(
                 objc_getClass(class_image.as_ptr()),
                 sel_registerName(selector_alloc.as_ptr()),
             );
-            send_id_id(
-                allocated,
-                sel_registerName(selector_init_image.as_ptr()),
-                icon_path,
-            )
+            if data.is_null() {
+                std::ptr::null_mut()
+            } else {
+                send_id_id(
+                    allocated,
+                    sel_registerName(selector_init_image.as_ptr()),
+                    data,
+                )
+            }
         } else {
             std::ptr::null_mut()
         };
-        if icon_text.is_some() && image.is_null() {
-            // The saved PNG could not be read: macOS did not apply anything.
+        if icon_png.is_some() && image.is_null() {
+            // The image could not be decoded: macOS did not apply anything.
             send_void(pool, sel_registerName(selector_drain.as_ptr()));
             return Err(WorkspaceIconError::Rejected(None));
         }
@@ -697,6 +704,99 @@ fn announce_icon_change(bundle: &Path) -> Result<(), i32> {
     }
 }
 
+/// macOS icon template (Big Sur and later): 1024×1024 transparent canvas, an 824×824 body centered with a
+/// 100 px margin, rounded corners of radius ≈185 and a soft shadow below.
+const DOCK_ICON_CANVAS: u32 = 1024;
+const DOCK_ICON_BODY: u32 = 824;
+const DOCK_ICON_CORNER_RADIUS: f32 = 185.4;
+const DOCK_ICON_SHADOW_OFFSET: u32 = 12;
+const DOCK_ICON_SHADOW_SIGMA: f32 = 12.0;
+const DOCK_ICON_SHADOW_OPACITY: f32 = 0.3;
+
+/// Antialiased coverage of the rounded square of side `side` at the centre of pixel (`x`, `y`).
+fn rounded_square_coverage(x: u32, y: u32, side: f32, radius: f32) -> f32 {
+    let px = x as f32 + 0.5;
+    let py = y as f32 + 0.5;
+    let cx = px.clamp(radius, side - radius);
+    let cy = py.clamp(radius, side - radius);
+    let distance = ((px - cx).powi(2) + (py - cy).powi(2)).sqrt();
+    (radius - distance + 0.5).clamp(0.0, 1.0)
+}
+
+/// Turns a saved icon (any size, PNG or JPEG) into the Dock icon: centre square crop, 824×824 body with the
+/// rounded mask and a soft shadow on a transparent 1024×1024 canvas. Only `image`, no new dependency.
+pub(crate) fn dock_icon_png(source: &[u8]) -> Result<Vec<u8>, String> {
+    use image::{imageops, Rgba, RgbaImage};
+
+    let image = image::load_from_memory(source)
+        .map_err(|_| "No se pudo leer el icono guardado.".to_string())?;
+    let side = image.width().min(image.height());
+    if side == 0 {
+        return Err("No se pudo leer el icono guardado.".to_string());
+    }
+    let square = image.crop_imm(
+        (image.width() - side) / 2,
+        (image.height() - side) / 2,
+        side,
+        side,
+    );
+    let mut body = imageops::resize(
+        &square.to_rgba8(),
+        DOCK_ICON_BODY,
+        DOCK_ICON_BODY,
+        imageops::FilterType::Lanczos3,
+    );
+    let body_side = DOCK_ICON_BODY as f32;
+    for (x, y, pixel) in body.enumerate_pixels_mut() {
+        let coverage = rounded_square_coverage(x, y, body_side, DOCK_ICON_CORNER_RADIUS);
+        pixel[3] = (f32::from(pixel[3]) * coverage).round() as u8;
+    }
+    let margin = (DOCK_ICON_CANVAS - DOCK_ICON_BODY) / 2;
+    let mut shadow = RgbaImage::from_pixel(DOCK_ICON_CANVAS, DOCK_ICON_CANVAS, Rgba([0, 0, 0, 0]));
+    for (x, y, pixel) in body.enumerate_pixels() {
+        let alpha = (f32::from(pixel[3]) * DOCK_ICON_SHADOW_OPACITY).round() as u8;
+        shadow.put_pixel(
+            x + margin,
+            y + margin + DOCK_ICON_SHADOW_OFFSET,
+            Rgba([0, 0, 0, alpha]),
+        );
+    }
+    let mut canvas = imageops::fast_blur(&shadow, DOCK_ICON_SHADOW_SIGMA);
+    imageops::overlay(&mut canvas, &body, i64::from(margin), i64::from(margin));
+    let mut encoded = Cursor::new(Vec::new());
+    canvas
+        .write_to(&mut encoded, image::ImageFormat::Png)
+        .map_err(|_| "No se pudo preparar el icono del Dock.".to_string())?;
+    Ok(encoded.into_inner())
+}
+
+/// The same saved icon is reapplied on launch, after a sync and on rollbacks: its template is kept for the last
+/// few icons, keyed by the SHA-256 of the saved bytes.
+fn cached_dock_icon_png(source: &[u8]) -> Result<Vec<u8>, String> {
+    use sha2::{Digest, Sha256};
+
+    const CACHED_TEMPLATES: usize = 4;
+    static TEMPLATES: Mutex<Vec<([u8; 32], Vec<u8>)>> = Mutex::new(Vec::new());
+    let key: [u8; 32] = Sha256::digest(source).into();
+    if let Some(cached) = TEMPLATES.lock().ok().and_then(|templates| {
+        templates
+            .iter()
+            .find(|(cached_key, _)| *cached_key == key)
+            .map(|(_, png)| png.clone())
+    }) {
+        return Ok(cached);
+    }
+    let png = dock_icon_png(source)?;
+    if let Ok(mut templates) = TEMPLATES.lock() {
+        templates.retain(|(cached_key, _)| *cached_key != key);
+        if templates.len() >= CACHED_TEMPLATES {
+            templates.remove(0);
+        }
+        templates.push((key, png.clone()));
+    }
+    Ok(png)
+}
+
 /// Puts (`Some`) or removes (`None`) the Finder icon of a managed copy through NSWorkspace. A refusal is
 /// classified (A-5).
 pub(crate) fn set_workspace_icon(
@@ -705,6 +805,17 @@ pub(crate) fn set_workspace_icon(
     icon_path: Option<&Path>,
 ) -> Result<(), WorkspaceIconError> {
     guard_managed_bundle(instances_root, bundle)?;
+    // Failure 2 of the manual test: the saved icon (square, full bleed) becomes the macOS icon template. The
+    // saved `branding/icon.png` does not change; only the image handed to `setIcon` does.
+    let dock_png = match icon_path {
+        Some(path) => Some(
+            fs::read(path)
+                .ok()
+                .and_then(|bytes| cached_dock_icon_png(&bytes).ok())
+                .ok_or(WorkspaceIconError::Rejected(None))?,
+        ),
+        None => None,
+    };
     // NSWorkspace is not safe to drive from several threads at once: concurrent `setIcon` calls fail at random.
     // Commands already run inside `with_registry_operation`; this lock covers every other caller.
     static WORKSPACE_ICON_LOCK: Mutex<()> = Mutex::new(());
@@ -721,7 +832,7 @@ pub(crate) fn set_workspace_icon(
         }
         #[cfg(test)]
         WORKSPACE_ICON_CALLS.with(|calls| calls.set(calls.get() + 1));
-        if workspace_set_icon(bundle, icon_path)? {
+        if workspace_set_icon(bundle, dock_png.as_deref())? {
             invalidate_application_cache();
             let _ = announce_icon_change(bundle);
             return Ok(());
@@ -2510,6 +2621,63 @@ pub(crate) mod tests {
             .unwrap()
             .as_secs();
         assert_eq!(record_mod_date(&fixture.managed), Some(modified));
+    }
+
+    #[test]
+    fn the_dock_icon_follows_the_macos_template() {
+        // A non-square, fully opaque photo: red left half, blue right half.
+        let photo = image::RgbaImage::from_fn(900, 600, |x, _| {
+            if x < 450 {
+                image::Rgba([220, 40, 40, 255])
+            } else {
+                image::Rgba([40, 60, 220, 255])
+            }
+        });
+        let mut encoded = Cursor::new(Vec::new());
+        image::DynamicImage::ImageRgba8(photo)
+            .write_to(&mut encoded, image::ImageFormat::Png)
+            .unwrap();
+        let dock = image::load_from_memory(&dock_icon_png(&encoded.into_inner()).unwrap())
+            .unwrap()
+            .to_rgba8();
+        assert_eq!(dock.dimensions(), (1024, 1024));
+        let alpha = |x: u32, y: u32| dock.get_pixel(x, y)[3];
+        for (x, y) in [(0, 0), (1023, 0), (0, 1023), (1023, 1023)] {
+            assert_eq!(alpha(x, y), 0, "canvas corner ({x}, {y})");
+        }
+        for (x, y) in [(512, 20), (20, 512), (1003, 512), (512, 60)] {
+            assert_eq!(alpha(x, y), 0, "template margin ({x}, {y})");
+        }
+        // Inside the body's bounding square but outside its rounded corner.
+        assert!(alpha(104, 104) < 16, "rounded corner: {}", alpha(104, 104));
+        assert!(alpha(919, 104) < 16, "rounded corner: {}", alpha(919, 104));
+        // The body is opaque and keeps the centre of the crop.
+        for (x, y) in [(512, 512), (300, 512), (724, 512), (512, 110), (512, 913)] {
+            assert_eq!(alpha(x, y), 255, "body ({x}, {y})");
+        }
+        assert!(dock.get_pixel(400, 512)[0] > 180, "left half stays red");
+        assert!(dock.get_pixel(624, 512)[2] > 180, "right half stays blue");
+        // A soft shadow below the body, never above it.
+        assert!(alpha(512, 930) > 0, "shadow under the body");
+        assert_eq!(alpha(512, 70), 0);
+        assert!(dock_icon_png(b"not an image").is_err());
+        assert!(cached_dock_icon_png(b"not an image").is_err());
+    }
+
+    #[test]
+    fn the_saved_icon_does_not_change_when_the_dock_icon_is_applied() {
+        let fixture = IconFixture::new("template", Some(EXPLICIT_REQUIREMENT));
+        let mut registry = registry_for(&fixture);
+        let png = icon_png(&fixture);
+        set_instance_icon(&fixture.paths, &mut registry, 0, &fixture.original, &png).unwrap();
+        assert_eq!(fs::read(&fixture.icon).unwrap(), png);
+        assert!(
+            registry.instances[0]
+                .custom_icon
+                .as_ref()
+                .unwrap()
+                .system_applied
+        );
     }
 
     #[test]
