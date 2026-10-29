@@ -10,6 +10,8 @@ HU-0017 y manda sobre la skill hasta que esta se regenere.
 | `src-tauri/src/lib.rs` | Tipos serde, comandos IPC, lógica general y `run()` |
 | `src-tauri/src/config.rs` | El único sitio con URLs y hosts. Se fija al compilar desde `.env.example` (A-8 de HU-0017) |
 | `src-tauri/src/original_update.rs` | Descargar, verificar e instalar la original en macOS. La capa `MacosTools` es inyectable en las pruebas |
+| `src-tauri/src/projects.rs` (+ `projects/{method,tech,git,tests}.rs`) | Proyectos anclados con la metodología v4 (HU-0023): registro `projects.json`, `ReadContext`, lectura del método, manifiestos y `.git`. Ver § Proyectos anclados |
+| `src-tauri/Info.plist` | Textos de los avisos de TCC (`NS*FolderUsageDescription`). Tauri lo fusiona al empaquetar en macOS. No pide permisos |
 | `src-tauri/build.rs` | Pasa las claves `CAP_*` (del entorno, `.env.local` o `.env.example`) a `cargo:rustc-env` |
 
 Un comando nuevo sigue yendo en `lib.rs` como envoltorio fino. Su lógica puede vivir en un módulo hijo si es un
@@ -128,6 +130,95 @@ La raíz de confianza es la original instalada (`--strict`, con caché por finge
 - Las pruebas solo cubren las funciones puras (`system_settings_url`, `groups_include_admin`, el enum y la
   serialización). **Ninguna llama a `open_system_settings_sync` ni a `account_facts_sync`**, porque abrirían Ajustes
   en la máquina de quien las corre.
+
+## Proyectos anclados (HU-0023)
+
+Reglas de negocio: RN-02 a RN-04 (`docs/producto/reglas/proyectos.md`). El detalle está en
+`hu/HU-0023-…/arquitectura.md` (A-1 a A-6) y en su `revision-tecnica.md`.
+
+**Contrato IPC (aditivo, 0.x).** Los envoltorios están en `lib.rs`, con `spawn_blocking`. El espejo literal está en
+`src/types.ts` y `src/lib/bridge.ts`.
+
+| Comando | Argumentos | Devuelve |
+| --- | --- | --- |
+| `list_projects` | — | `ProjectsState` (todos los anclados, en el orden en que se guardaron) |
+| `read_project` | `id` | `ProjectSummary`, o `Err("El proyecto ya no está anclado.")` |
+| `pick_project_folder` | — | `ProjectCandidate \| null`: el selector nativo con `main` de padre; inspecciona sin anclar |
+| `pin_project` | `path` | `ProjectSummary`: vuelve a validar en Rust y es idempotente por ruta canónica |
+| `unpin_project` | `id` | `null`: borra solo la entrada; es idempotente |
+| `open_project_folder` | `id` | `null`: la ruta sale del registro, nunca del frontend |
+
+Un proyecto roto es un **estado** (`notFound`, `notDirectory`, `noConfig`, `notV4`, `configBroken`,
+`permissionDenied`, `forbidden`), con un `message` en español que la UI enseña tal cual. `Err(String)` queda para
+fallos reales: el registro dañado, un id desconocido, el selector o el gestor de archivos. `info` existe solo con
+`status === "v4"`.
+
+**Lectura (solo lectura, sin ejecutar nada y sin red).**
+
+- Toda lectura de la carpeta pasa por `ReadContext::{entry, list_dir, read}`. Cada una canonicaliza, exige que la ruta
+  quede dentro de la raíz canónica y fuera de la lista de exclusión, y se niega con un `Skip` (que se convierte en un
+  aviso con la ruta relativa, nunca con el contenido).
+  - `read` exige además un archivo regular, salta los de la nube y lee con tope (`Whole`, `Head` o `Tail`).
+  - Las rutas del método se unen con `join_relative`, que rechaza `..`, las rutas absolutas y los componentes con `:`.
+- **Una ruta que ya es léxicamente de fuera no se toca en disco**: ni `canonicalize`, ni `stat`. Así se evita la red
+  encubierta (SMB/UNC en Windows, volúmenes montados) y el aviso de TCC de una carpeta que la persona no eligió. Hoy
+  `resolve_repo` no lo cumple: es la R-1 de la revisión de la HU-0023.
+- **Lista de exclusión**: `<home>/.claude`, `app_data_dir` y `detect_original_profile()`. Se compara de forma léxica
+  antes de tocar nada y otra vez sobre la ruta canónica. Ni la raíz ni un repo ni un archivo pueden caer dentro. Si se
+  ancla una carpeta que contiene una de ellas (p. ej. `home`), se leen solo las rutas del método.
+- **Archivos en la nube**: los *dataless* de iCloud (`SF_DATALESS`) y los de OneDrive (`OFFLINE`, `RECALL_ON_OPEN`,
+  `RECALL_ON_DATA_ACCESS`) dan `Skip::Cloud` y no se leen. Lo mismo vale para listar una carpeta *placeholder* (R-2 de
+  la revisión).
+- **Topes**: config y JSON 1 MiB; frontmatter 64 KiB; métricas 2 MiB; bitácora, los últimos 1 MiB; manifiestos
+  512 KiB; `packed-refs` 8 MiB; reflog, los últimos 64 KiB; 2000 historias, 32 repos y 100 anclados. Los textos que
+  llegan a la UI van sin caracteres de control y con 200, 1000 o 120 caracteres como máximo.
+- **Git**: solo `HEAD`, la ref suelta o `packed-refs` y la última línea del reflog. No se leen objetos y no se ejecuta
+  `git`. Del reflog se toman el SHA nuevo y la fecha; **el nombre, el correo y el mensaje se descartan al parsear**.
+  Si `.git` es un archivo (worktree o submódulo), es `unsupported` y no se sigue.
+- **Métricas**: se suman `agentes[].tokens` y `orquestador.porFase[].tokens` (igual que `totales.tokens`), más
+  `minutosTotales`. Solo suman las historias **terminadas** con métricas válidas (`countsInTotals`). Las descartadas
+  conservan sus cifras en su fila. No se leen transcripciones.
+- **En `projects/*` está prohibido**: `Command::new`, `fs::write`, `OpenOptions`, `println!`, `unwrap` y `expect`.
+  La única escritura es `write_json_atomic` sobre `app_data`.
+
+**Registro `<app_data>/projects.json`** (`{ version: 1, projects: [{ id, path, lastName, pinnedAt, lastReadAt }] }`):
+
+- `path` es la ruta canónica sin `\\?\`. La misma carpeta (sin distinguir mayúsculas en macOS y Windows) conserva su
+  UUID.
+- `write_json_atomic` escribe un temporal `.projects-<uuid>.tmp` en la misma carpeta, hace `sync_all` y `rename`, y
+  borra el temporal si algo falla. No se usan `save_registry` ni `atomic_replace_file`.
+- `projects_mutex` es propio (no es `with_registry_operation`). Las lecturas de carpetas van fuera del cerrojo; dentro
+  se relee, se aplica y se guarda, y solo si algo cambió.
+- Un archivo dañado, un `version ≠ 1` o un id que no es UUID dan `Err` y **no se sobrescriben**. Si falta, la lista
+  está vacía.
+- No se guardan cifras, historias ni personas.
+
+**Permisos y plataformas.**
+
+- No hay sandbox ni *entitlements*. En macOS manda TCC: leer en Escritorio, Documentos, Descargas, iCloud Drive o
+  `/Volumes/*` puede mostrar el aviso del sistema.
+  - `protectedLocation` se calcula por prefijo, sin listar.
+  - Un `EPERM` en la raíz o en la config da `permissionDenied`. **Nunca se consulta ni se pide el permiso de
+    antemano.**
+  - La lista se lee al arrancar (pregunta 3). Con la firma ad hoc, los avisos vuelven tras cada actualización (R-6
+    de la revisión).
+- En Windows, `canonicalize` añade `\\?\`: `comparable` lo quita para comparar y `stored_path` para guardar. En Linux,
+  las rutas distinguen mayúsculas.
+- `open_project_folder` usa `open_in_file_manager`, extraído de `open_instance_folder`: `/usr/bin/open`,
+  `explorer.exe` o `xdg-open`.
+
+**`tauri-plugin-dialog` (2.7.3, fijado por `Cargo.lock`).**
+
+- Solo se usa desde Rust: `app.dialog().file().blocking_pick_folder()` dentro de `spawn_blocking`.
+- No hay paquete npm ni permiso en `capabilities/`. Sus comandos `open`, `save` y `message` existen, pero el webview
+  no los puede llamar.
+- Arrastra `rfd` (GTK3 en Linux, sin portal ni `zbus`) y `tauri-plugin-fs` como crate sin registrar.
+- **Efecto lateral:** su `init-iife.js` reemplaza `window.alert` y `window.confirm` en cada página. Ver la regla del
+  frontend.
+- No se sube de versión sin comprobar `cargo tree -i tauri`, porque 2.8 arrastra tauri 2.12.
+
+**Pruebas.** `#[cfg(test)] mod tests` en `projects/tests.rs`, con fixtures en `env::temp_dir()` y `ProjectEnv`
+inyectable (`home`, exclusión y topes). Ninguna prueba abre el selector ni lee carpetas reales de la persona.
 
 ## Progreso hacia la interfaz
 

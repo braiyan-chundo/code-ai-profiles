@@ -49,11 +49,14 @@ components.json         (HU-0014) configuración de la CLI de shadcn
 | `sessions` | `SessionList` (compartida por instancia y original), formato y contexto de sesiones, transferencia, desvinculación, perfiles de transferencia |
 | `original-app` | El detalle de la aplicación original (`OriginalDetail`) |
 | `appearance` | Preferencias (tema, tamaño de texto y sidebar plegado), su proveedor (que aplica el tema en `<html>`) y `AppearanceSettings`, la sección Apariencia de Configuración (HU-0022; el diálogo ya no existe) |
-| `permissions` | (HU-0022) El catálogo puro `permission-cards.ts` (tarjetas, textos, estado y `attention` por plataforma), `PermissionsSettings`, `PermissionCard` y `usePermissionsAttention`. El estado sale del registro de instancias y de `accountFacts()`; nunca de los perfiles |
+| `permissions` | (HU-0022) El catálogo puro `permission-cards.ts` (tarjetas, textos, estado y `attention` por plataforma), `PermissionsSettings`, `PermissionCard` y `usePermissionsAttention`. El estado sale del registro de instancias y de `accountFacts()`; nunca de los perfiles. Desde la HU-0023, la tarjeta «Archivos y carpetas» recibe `selectProtectedProjects` de `projects` |
+| `projects` | (HU-0023) Proyectos anclados con la metodología v4: `projects-store.ts` (reducer puro), `projects-selectors.ts` y `projects-format.ts` (orden, cifras, barra y tecnologías), `ProjectsProvider`, `useProjects`, `usePinProject`, `PinProjectDialog`, la lista, la página y la de proyecto roto. Es «solo resumen»: no importa `instances`, `sessions`, `scan` ni `updates` |
 
 Las pantallas (HU-0016) son `app/routes/dashboard/` (`#/`), `app/routes/original/` (`#/original`),
-`app/routes/instance/` (`#/instancias/:instanceId`) y, desde la HU-0022, `app/routes/settings/`
-(`#/configuracion/:section?`, con `apariencia` o `permisos`). La búsqueda vive en el sidebar.
+`app/routes/instance/` (`#/instancias/:instanceId`), desde la HU-0022 `app/routes/settings/`
+(`#/configuracion/:section?`, con `apariencia` o `permisos`) y, desde la HU-0023, `app/routes/projects/`
+(`#/proyectos`) y `app/routes/project/` (`#/proyectos/:projectId`). La búsqueda vive en el sidebar y filtra solo
+instancias.
 
 ## Reglas de dependencias
 
@@ -67,7 +70,12 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 - Una feature importa de otra **solo por su `index.ts`** y nunca en ciclo. Hoy: `instances` y
   `original-app` usan `sessions`; `original-app` usa además el tipo `OriginalInstallAvailability` de `updates`
   (HU-0017, solo `import type`); `scan`, `updates`, `instances` y `sessions` usan `dashboard`; `appearance` no
-  importa ninguna.
+  importa ninguna; `permissions` usa `projects` (HU-0023). A `projects` solo la usan `app/` y `permissions`, y ella
+  no importa `instances`, `sessions`, `scan` ni `updates` (`test:ui` 17).
+- **Sin diálogos del navegador.** `tauri-plugin-dialog` (HU-0023, solo desde Rust) inyecta un script que cambia
+  `window.alert` (deja de hacer nada) y `window.confirm` (devuelve una `Promise`, siempre verdadera). Ni `alert`, ni
+  `confirm`, ni `prompt`: una confirmación es un `AlertDialog` con su bandera en `DialogsProvider`. Tampoco se importa
+  `@tauri-apps/plugin-dialog`. Lo vigila `test:ui` (17 y el caso de la R-3 de la revisión de la HU-0023).
 - Dentro de una feature, imports relativos directos (no a través de su propio `index.ts`).
 - `components/` no conoce el dominio: recibe props, no usa `useDashboard`.
 - `lib/` no importa React ni features. Solo `bridge.ts` toca `window` (detección de Tauri y esperas del mock);
@@ -120,9 +128,29 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
   <AppearanceProvider>        preferencias, tema del sistema, persistencia en localStorage
     <DashboardProvider>       useReducer(dashboardReducer): dashboard, loading, busy, error, notice, iconPreviews
       <DashboardRuntime>      controladores y efectos; provee useScan y useSourceUpdate
-        <DialogsProvider>     banderas de los diálogos
-          <RouterProvider>    AppShell (SidebarProvider) > pantallas
+        <ProjectsProvider>    (HU-0023) useReducer(projectsReducer): proyectos anclados; sin listeners
+          <DialogsProvider>   banderas de los diálogos (desde HU-0023, también pinCandidate)
+            <RouterProvider>  AppShell (SidebarProvider) > pantallas
 ```
+
+- **Proyectos (HU-0023).** El registro de anclados vive en Rust; el store solo guarda en memoria `{ status, projects,
+  readAt, error, refreshing, listRefreshing, picking, pinning, pinError, actionError }`.
+  - **Cuándo se lee:** al montar el proveedor (el sidebar enseña el contador «en curso»), al entrar en `#/proyectos`
+    (`listProjects`), al entrar en `#/proyectos/:id` o cambiar el id (`readProject`) y con «Actualizar». Nada más.
+  - **Sin** `focus`, `blur`, `visibilitychange`, `listen`, intervalos ni sondeo: la R-1 de la HU-0015 no cambia.
+  - Las llamadas en vuelo se **deduplican por clave** (`list`, `one:<id>`) en un `useRef`, así que StrictMode, la carga
+    de montaje y la ruta comparten una sola llamada a Rust.
+  - `listProjects` reemplaza la lista; `readProject` y `pinProject` funden el proyecto en su sitio.
+  - Deuda R-9 de la revisión: una respuesta vieja puede volver a añadir un proyecto recién desanclado.
+  - **Anclar:** «Anclar proyecto» → `pickProjectFolder` (el selector es nativo, de Rust) → la bandera `pinCandidate` →
+    `PinProjectDialog` en `DialogHost` → `pinProject` → `#/proyectos`. Desanclar no pide confirmación.
+  - **Cálculos de pantalla** en selectores puros con prueba (`pnpm test:projects`): el orden (por última actividad, con
+    los rotos al final), «572 M», «98 % caché» (`cacheRead / total`), entrada + salida, «Tiempo en fases» en horas,
+    «Desde» con `spanDays` y las fracciones de la barra.
+  - **Las cifras no se recalculan en el frontend.** Los totales y `countsInTotals` vienen de Rust (RN-03); la UI solo
+    tacha las filas que no suman.
+  - `message` y los `warnings` de Rust se enseñan tal cual. La agrupación de tecnologías (`GROUP_OF`) repite la tabla
+    de `tech.rs`: es un acoplamiento conocido (R-8).
 
 - **Store.** `DashboardState` llega completo en casi cada comando y se **reemplaza**
   (`replaceDashboard`). Solo dos fusiones parciales, puras y probadas: el estado oficial de actualización
@@ -182,8 +210,11 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
   `tauri://localhost` y en `http://tauri.localhost`.
 - `/` es una ruta de layout (`AppShell`). La titlebar, el sidebar, `FeedbackArea`, el statusbar y `DialogHost`
   persisten, y `<Outlet />` pinta la pantalla dentro de `SidebarInset`, en su zona con scroll.
-- Rutas (HU-0016): la índice es el dashboard (no diferida), y `original`, `instancias/:instanceId` y
-  `configuracion/:section?` (HU-0022) van con `lazy`. Sin sección, o con una desconocida, Configuración redirige a
+- Rutas (HU-0016): la índice es el dashboard (no diferida), y `original`, `instancias/:instanceId`,
+  `configuracion/:section?` (HU-0022), `proyectos` y `proyectos/:projectId` (HU-0023) van con `lazy`. Un id de
+  proyecto que no está en el estado enseña «Este proyecto ya no está anclado», con un enlace a `#/proyectos`: no
+  redirige en silencio, porque el id puede venir de otra sesión. Un proyecto roto enseña su página de recuperación,
+  y uno en `permissionDenied` enlaza a `#/configuracion/permisos`. Sin sección, o con una desconocida, Configuración redirige a
   `/configuracion/apariencia`. Sus pestañas (`Tabs`) están controladas por la ruta y navegan con `replace`.
   `*` redirige a `/` con `<Navigate replace />`. La raíz lleva `hydrateFallbackElement` para arrancar en una ruta
   diferida.
@@ -193,7 +224,7 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 - `errorElement` relanza el error: un fallo de render se comporta como sin router. Una pantalla de error
   propia la decide una historia.
 - La URL nunca lleva nombres, rutas de disco, títulos de sesión ni nada del contenido de un perfil. A lo sumo, un ID opaco
-  de instancia.
+  de instancia o de proyecto (UUID del registro de anclados, nunca su ruta ni su nombre).
 - **Coste.** El modo datos (`createHashRouter` + `RouterProvider`) pesa unos 33 kB gzip en el JS de entrada
   (medido en HU-0015: de 85,0 a 119,6 kB). Las dependencias `cookie` y `set-cookie-parser` se instalan pero no
   llegan al bundle. Importar `RouterProvider` desde `react-router` en vez de `react-router/dom` no ahorra nada.
@@ -314,7 +345,8 @@ Lo que rige desde la HU-0016, con los pasos y la convivencia en `hu/HU-0016-…/
   `index.ts` de la feature.
 - Scripts: `test:scan`, `test:update` (controladores), `test:format`, `test:appearance`, `test:dashboard`,
   `test:messages`, `test:permissions` (HU-0022: el catálogo de permisos por plataforma, sus estados y que no lleve
-  URLs) y `test:ui`. `test:ui` revisa las fronteras de la UI y quién registra `focus`, `blur` y
+  URLs), `test:projects` (HU-0023: reducer, orden, cifras y formato de Proyectos con las cifras de este repo) y
+  `test:ui`. `test:ui` revisa las fronteras de la UI y quién registra `focus`, `blur` y
   `visibilitychange` (R-1), leyendo los archivos con `node:fs`. Desde HU-0019 vigila también:
   - la escala (prueba 12): el mínimo de 11 px, que grande sea mayor que normal, los `--lh-*` y `--ctl*` en la retícula,
     sin `--esc`, el puente `--text-*` con su interlineado, y que existan los `--fs-*` y `--lh-*` que se usan;
@@ -322,7 +354,10 @@ Lo que rige desde la HU-0016, con los pasos y la convivencia en `hu/HU-0016-…/
   - que no haya tamaños sueltos (`text-[<n>px|rem|em]` en `app/`, `features/` y `components/`, salvo las tres muestras
     de Apariencia; en `components/ui/`, solo se vigilan los `px`, porque `calendar` y `questionnaire` miden en `rem` y
     la app no los usa; el showcase queda fuera), ni restos de `--session-*` o `data-session-text`;
-  - que no haya texto en `--quiet` (`text-(--quiet)`).
+  - que no haya texto en `--quiet` (`text-(--quiet)`);
+  - desde la HU-0023 (prueba 17), que `features/projects` no importe `instances`, `sessions`, `scan` ni `updates`,
+    que a ella solo se entre por su `index.ts` desde `app/` y `permissions`, y que nadie importe
+    `@tauri-apps/plugin-dialog`. Falta un caso que prohíba `alert`, `confirm` y `prompt` (R-3 de su revisión).
   - Lo que no ve: utilidades con nombre propio (`text-micro`), `text-[length:…]`, `[font-size:…]` y tokens `--fs-*`
     redefinidos fuera de `tokens.css` (HU-0019, revisión técnica R-3).
 - El showcase y el aspecto de los componentes se revisan a mano en `http://127.0.0.1:1420/showcase.html`, en oscuro
@@ -346,6 +381,13 @@ Cómo usar cada componente, en la skill `code-ai-profiles-ui`. El detalle de las
   alert-dialog, tooltip con floating-ui, checkbox, radio-group, progress) y por lucide. No llegan al bundle recharts,
   shiki, date-fns, @base-ui, cmdk, vaul ni embla. Se carga del disco local, así que no se nota al arrancar. Si
   importara, hay dos palancas: excluir del `@source` lo que la app no usa y diferir los diálogos.
+  - **HU-0023:** el JS principal pasa de 596 a 632 kB. El plugin del diálogo aporta 0 bytes (no hay paquete npm).
+    - El aumento se reparte así: unos 12 kB de mocks de proyectos en `bridge.ts` (los mocks llegan a producción), 7
+      de `projects-selectors`, 4 de `PinProjectDialog` (lo carga `DialogHost` sin diferir) y el resto entre el
+      proveedor, el store, el sidebar y el formato.
+    - Las páginas sí van diferidas: `ProjectRoute` pesa 20 kB y `ProjectsRoute` 7,8 kB.
+    - Hay dos palancas, apuntadas como R-7 de su revisión: diferir `PinProjectDialog` y cargar los mocks con
+      `import()` solo fuera de Tauri. Lo segundo afecta a todos los mocks.
 - **`vite build` solo empaqueta `index.html`** porque no hay `build.rollupOptions.input`. Si algún día se declara,
   `showcase.html` no entra en él.
 - **En `pnpm dev` (y `pnpm tauri dev`) el optimizador de dependencias recorre todos los `*.html` de la raíz**, también
