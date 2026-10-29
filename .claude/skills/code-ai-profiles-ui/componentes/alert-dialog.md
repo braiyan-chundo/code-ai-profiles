@@ -97,8 +97,8 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 Ajuste 1 (velo): `bg-black/10 … backdrop-blur-xs` pasa a `bg-overlay … backdrop-blur-[18px]`, el velo de `.modal-backdrop`.
 
 Ajuste 2 (HU-0016, A-12): el aspecto del modal de la app. `AlertDialogContent` pasa de `rounded-xl p-6` a
-`rounded-3xl p-7`, y `AlertDialogTitle`, de `text-lg font-medium` a `text-[22px] leading-tight font-semibold
-tracking-[-0.035em]`, como `DialogTitle`.
+`rounded-3xl p-7`, y `AlertDialogTitle`, de `text-lg font-medium` a `text-(length:--fs-dialog) leading-tight font-semibold
+tracking-[-0.035em]`, como `DialogTitle` (HU-0019: antes `text-[22px]`).
 
 ## Qué no hacer
 

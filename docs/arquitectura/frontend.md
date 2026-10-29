@@ -19,7 +19,8 @@ src/
     RouteErrorBoundary.tsx
     providers/          AppProviders, DashboardRuntime, DialogsProvider (+ dialogs-context.ts)
     layout/             AppShell (SidebarProvider), Titlebar, AppSidebar, FeedbackArea, Statusbar, DialogHost,
-                        PageHeader, PageContent, PageSkeleton (las dos filas y el esqueleto de una pantalla) y window-actions.ts
+                        PageHeader, PageContent, PageSkeleton (las dos filas y el esqueleto de una pantalla) y window-actions.ts.
+                        Desde HU-0019, Titlebar es solo la zona de la barra sobre el sidebar y PageHeader es la barra de la página
     routes/<pantalla>/  un componente de ruta y las piezas que solo usa esa pantalla
   features/<feature>/   componentes, hooks, lógica pura y tipos de una funcionalidad (sin CSS desde la HU-0016)
     index.ts            su API pública
@@ -62,13 +63,15 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 
 - `app/` puede importar todo. Nada importa de `app/`.
 - Una feature importa de otra **solo por su `index.ts`** y nunca en ciclo. Hoy: `instances` y
-  `original-app` usan `sessions`; `scan`, `updates`, `instances` y `sessions` usan `dashboard`; `appearance` no
+  `original-app` usan `sessions`; `original-app` usa además el tipo `OriginalInstallAvailability` de `updates`
+  (HU-0017, solo `import type`); `scan`, `updates`, `instances` y `sessions` usan `dashboard`; `appearance` no
   importa ninguna.
 - Dentro de una feature, imports relativos directos (no a través de su propio `index.ts`).
 - `components/` no conoce el dominio: recibe props, no usa `useDashboard`.
 - `lib/` no importa React ni features. Solo `bridge.ts` toca `window` (detección de Tauri y esperas del mock);
   los demás módulos reciben del llamador lo que necesitan del entorno (`navigator.platform`, el reloj).
-- `invoke` **solo** en `lib/bridge.ts`. Las otras APIs de Tauri, siempre detrás de `bridge.isDesktop()`, viven en tres
+- `invoke` y `Channel` (HU-0017: el progreso de una llamada larga) **solo** en `lib/bridge.ts`; el resto de la app
+  recibe un callback. Las otras APIs de Tauri, siempre detrás de `bridge.isDesktop()`, viven en tres
   sitios: `listen` en `features/scan/useScanRuntime.ts`, `getCurrentWindow` en `app/layout/window-actions.ts` y
   `convertFileSrc` en `features/instances/instance-icon.ts`.
 - El alias `@/` → `src/` existe desde la HU-0014 (`tsconfig.json` `paths` y `vite.config.ts`). Lo usan
@@ -123,8 +126,15 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
   (`replaceDashboard`). Solo dos fusiones parciales, puras y probadas: el estado oficial de actualización
   (`mergeSourceUpdateForInstallation`) y el uso en vivo (`applyLiveUsage`). Pasan como `update` en la acción
   `dashboard/updated`. El reducer solo tiene `import type` y se prueba con `node --test`.
+- **Instalación de la original (HU-0017).** El store guarda también `originalInstall` (el último progreso, o `null`)
+  y `pendingSyncIds` (las instancias que estaban en marcha al instalar). Ninguno de los dos es persistente: al
+  cerrar la app, una pendiente vuelve a ser una instancia por detrás, como cualquier otra.
+  `installOriginal` pone `busy = "install-original"` durante todo el flujo, y deja de pintar el progreso del
+  `Channel` en cuanto llega la respuesta. La barra sin medida es `Progress` con `value=100` y `animate-pulse`. La
+  acción no tiene diálogo: el botón ya es la confirmación.
 - **Operación en curso.** `busy` es una clave (`scan`, `create`, `update`, `launch:<id>`, `stop:<id>`,
-  `delete:<id>`, `transfer:<sessionId>`, `unlink:<sessionId>`, `update-applications`, `update-original`) que
+  `delete:<id>`, `transfer:<sessionId>`, `unlink:<sessionId>`, `update-applications`, `update-original`,
+  `install-original`) que
   deshabilita controles. `busyRef` refleja su último valor para los listeners. `runAction(key, action)` es el
   patrón estándar: marca `busy`, limpia `error`, reemplaza el estado y libera `busy`.
 - **Hooks de acceso.** `useDashboard`, `useScan`, `useSourceUpdate`, `useAppearance` y `useDialogs`. Cada contexto
@@ -135,7 +145,8 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 - **Orden de los efectos de ejecución.** `DashboardRuntime` crea primero los dos controladores en el render
   (`useScanRuntime`, `useSourceUpdateController`) y después llama a los efectos en un orden fijo:
   `useInitialLoad` → `useScanLifecycle` → `useSourceUpdateRuntime` → `useLiveUsage` → `useSourceUpdatePolling` →
-  `useBackgroundRefresh`. El listener de `focus` de la actualización tiene que registrarse **antes** que el del
+  `useBackgroundRefresh` → `usePendingSynchronization` (HU-0017). Este último no registra listeners: reacciona al
+  store y solo sincroniza con `busy === null`. El listener de `focus` de la actualización tiene que registrarse **antes** que el del
   refresco en segundo plano: el primero marca `suppressNextGeneralFocus` y el segundo lo consume. Ningún otro
   archivo de `src/` registra `focus`, `blur` ni `visibilitychange` (lo vigila `test:ui`). Fuera de `DashboardRuntime`
   solo hay listeners de otro tipo:
@@ -155,8 +166,8 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 - `localStorage` solo guarda las preferencias de apariencia (`code-ai-profiles:appearance`: `theme`,
   `sessionTextSize` y, desde la HU-0016, `sidebar`), validadas campo a campo al leerlas. La app no usa cookies. El
   `sidebar.tsx` del catálogo no escribe `sidebar_state` ni registra Cmd/Ctrl+B.
-- **El tema va en `<html>`** (HU-0016). `AppearanceProvider` aplica `theme-dark`/`theme-light` y `data-session-text`
-  sobre `document.documentElement` con `useLayoutEffect`, y así los portales de Radix (menús, diálogos, tooltips),
+- **El tema va en `<html>`** (HU-0016). `AppearanceProvider` aplica `theme-dark`/`theme-light` y `data-text-size`
+  (HU-0019; antes `data-session-text`; el campo guardado sigue siendo `sessionTextSize`) sobre `document.documentElement` con `useLayoutEffect`, y así los portales de Radix (menús, diálogos, tooltips),
   que cuelgan de `body`, lo heredan. La plataforma no va en el DOM como gancho de CSS: los componentes que cambian
   por plataforma (`AppShell`, `Titlebar`) leen `useRuntimePlatform()` y eligen sus clases. La raíz conserva la clase
   `platform-*` solo como marca para inspeccionar.
@@ -223,20 +234,46 @@ Lo que rige desde la HU-0016, con los pasos y la convivencia en `hu/HU-0016-…/
   y `prefers-reduced-motion`. **`body` no lleva fondo**: en Windows la ventana es transparente con esquinas
   redondeadas, y el fondo lo pinta la raíz del shell.
 - Tokens (`styles/tokens.css`): oscuros en `:root, .theme-dark` (una muestra `.theme-dark` dentro del tema claro
-  también los toma), claros en `.theme-light` (detrás) y densidad en `:root[data-session-text=…]`. El puente a shadcn,
+  también los toma), claros en `.theme-light` (detrás) y la escala tipográfica en `:root[data-text-size=…]` (§ Escala). El puente a shadcn,
   en `ui-theme.css` (§ Design system). Lo que el aspecto de la app necesita y no es token de shadcn va como `--ui-*`
   (por ejemplo, el degradado, el borde y la sombra de la ventana).
-- Plataformas (`AppShell` y `Titlebar`, con `useRuntimePlatform()`): `--titlebar-height` es de 94 px en macOS, que
-  reserva 106 px a la izquierda para el semáforo nativo (`x:28, y:40` en `tauri.macos.conf.json`), y de 64 px en
-  Windows y Linux. Windows pinta sus controles arriba a la derecha y lleva un marco con esquinas de 20 px, borde y
-  sombra. Linux usa las decoraciones nativas.
+- **Una sola barra de 52 px** (HU-0019): `--titlebar-height: 52px` en las tres plataformas. No hay franja a todo el
+  ancho. Arriba a la izquierda, `Titlebar` (absoluta, sobre la columna del sidebar), con el hueco de la plataforma y
+  el botón de plegar. Arriba a la derecha, la fila 1 de `SidebarInset`: el `PageHeader` de cada ruta, con «Sección ›
+  Página» y sus acciones, a la altura de la barra. Sin portal: la rejilla lo pone en su sitio. Las zonas sin
+  controles de las dos llevan `data-tauri-drag-region`, en cada elemento, porque el atributo no se hereda.
+- Plataformas (`AppShell`, `Titlebar` y `PageHeader`, con `useRuntimePlatform()`):
+  - **macOS**: hueco de 84 px a la izquierda para los semáforos nativos (`x:20, y:19` en `tauri.macos.conf.json`).
+    Con el sidebar plegado, `PageHeader` lleva `pl-[68px]`.
+  - **Windows**: pinta sus tres controles arriba a la derecha, y `PageHeader` reserva 160 px. Marco con esquinas de
+    20 px, borde y sombra.
+  - **Linux**: decoraciones nativas, sin controles en la barra; hueco de 16 px.
+  - Cambiar la altura de la barra obliga a mover `trafficLightPosition` (es de backend o del orquestador).
+- **Sidebar flotante** (HU-0019): `Sidebar variant="floating"` del catálogo, con `--sidebar-width: 256px` (panel de
+  240 + 8 de margen) y `--sidebar: var(--surface-raised)`. La marca va en la cabecera del panel.
 - Los elementos estructurales se marcan con `data-slot` (`desktop-shell` en la raíz, `sidebar-wrapper` del catálogo
   en el marco), no con clases propias.
 - El sidebar del catálogo es `position: fixed`. El marco (`SidebarProvider`) lleva `transform: translateZ(0)` y
   `overflow-hidden` para que quede dentro de la ventana y lo recorten sus esquinas. `AppSidebar` lo baja con
   `top-(--titlebar-height)! h-auto!`. Los diálogos se pintan en `body`, fuera del marco: su velo cubre la ventana
   entera, también las esquinas transparentes de Windows, como antes.
-- Diálogos: el aspecto común (radio 26, relleno 28, ancho 580, título de 22 px) está en `components/ui/dialog.tsx` y
+- **Escala tipográfica** (HU-0019). El ajuste de Apariencia escala toda la interfaz, no solo las sesiones:
+  - **Tokens.** `tokens.css` declara `--fs-micro`, `--fs-small`, `--fs-body`, `--fs-heading`, `--fs-title`,
+    `--fs-figure` y `--fs-dialog`. También el factor `--esc` y las alturas `--ctl` (36), `--ctl-sm` (32), `--ctl-lg`
+    (40), `--ctl-xs` (24) y `--ctl-badge` (20), todas multiplicadas por `--esc`. Normal en `:root`; compacto y grande
+    en `:root[data-text-size=…]`. Los valores, en `hu/HU-0019-…/arquitectura.md` § A-3.
+  - **Mínimo de 11 px.** Ningún token baja de 11, y lo vigila `test:ui`.
+  - **El catálogo.** `ui-theme.css` engancha la escala de Tailwind: `text-xs` → `--fs-small`, `text-sm` →
+    `--fs-body`, y de `text-base` a `text-2xl`, multiplicados por `--esc`. Por eso el catálogo crece sin editar cada
+    componente. `button`, `input`, `badge`, `kbd` y el `SidebarMenuButton` toman su alto de `--ctl*`. Plegado, el
+    botón del sidebar sigue en `size-8`. Iconos y avatares no escalan.
+  - **En la app**, el tamaño se escribe **siempre** `text-(length:--fs-<x>)`. Una utilidad con nombre propio
+    (`text-micro`) no sirve: `cn` (drop-in de tailwind-merge) la toma por un color y la borra al combinarla con
+    `text-muted-foreground`. Tampoco se usa `text-[<n>px]`; la excepción son las tres muestras de Apariencia. El
+    interlineado va aparte (`leading-*`). `--session-*` ya no existe.
+  - **`--quiet` no colorea texto**: no llega a 4,5:1. El texto secundario es `text-muted-foreground`, y `--quiet`
+    queda para puntos y separadores.
+- Diálogos: el aspecto común (radio 26, relleno 28, ancho 580, título `--fs-dialog`, 22 px en normal) está en `components/ui/dialog.tsx` y
   `alert-dialog.tsx`, con `closeDisabled` en `DialogContent` (ver sus fichas). Confirmar es un `Button`, no
   `AlertDialogAction`, para que el diálogo siga abierto mientras la operación marca `busy`. Un `AlertDialog` no se
   cierra con el clic fuera.
@@ -254,7 +291,14 @@ Lo que rige desde la HU-0016, con los pasos y la convivencia en `hu/HU-0016-…/
   `index.ts` de la feature.
 - Scripts: `test:scan`, `test:update` (controladores), `test:format`, `test:appearance`, `test:dashboard`,
   `test:messages` y `test:ui`. `test:ui` revisa las fronteras de la UI y quién registra `focus`, `blur` y
-  `visibilitychange` (R-1), leyendo los archivos con `node:fs`.
+  `visibilitychange` (R-1), leyendo los archivos con `node:fs`. Desde HU-0019 vigila también:
+  - la escala: el mínimo de 11 px, que grande sea mayor que normal y que existan los `--fs-*` que se usan;
+  - que no haya tamaños sueltos (`text-[<n>px|rem|em]` en `app/`, `features/` y `components/`, salvo las tres muestras
+    de Apariencia; en `components/ui/`, solo se vigilan los `px`, porque `calendar` y `questionnaire` miden en `rem` y
+    la app no los usa; el showcase queda fuera), ni restos de `--session-*` o `data-session-text`;
+  - que no haya texto en `--quiet` (`text-(--quiet)`).
+  - Lo que no ve: utilidades con nombre propio (`text-micro`), `text-[length:…]`, `[font-size:…]` y tokens `--fs-*`
+    redefinidos fuera de `tokens.css` (HU-0019, revisión técnica R-3).
 - El showcase y el aspecto de los componentes se revisan a mano en `http://127.0.0.1:1420/showcase.html`, en oscuro
   y en claro.
 - Los hooks, los componentes, los temas (también en menús, diálogos y tooltips), las plataformas y la ventana mínima

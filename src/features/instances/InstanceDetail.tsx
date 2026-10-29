@@ -5,6 +5,7 @@ import { Card, CardAction, CardContent, CardHeader, CardTitle } from "../../comp
 import { formatCaptureTime } from "../../lib/format";
 import type { CodeSession, DashboardState, ManagedInstance } from "../../types";
 import { SessionList } from "../sessions";
+import { iconBadgeLabel } from "./icon-status";
 import { managedIconSource } from "./instance-icon";
 import { InstanceAvatar } from "./InstanceAvatar";
 import { InstanceStatusBadge } from "./InstanceStatusBadge";
@@ -15,6 +16,8 @@ export interface InstanceDetailProps {
   platform: DashboardState["system"]["platform"];
   busy: string | null;
   updateAvailable: boolean;
+  /** Quedó por detrás tras instalar la original y se sincronizará al detenerla (HU-0017). */
+  syncPending: boolean;
   iconPreviewUrl: string | null;
   onLaunch: () => void;
   onStop: () => void;
@@ -35,6 +38,7 @@ export function InstanceDetail({
   platform,
   busy,
   updateAvailable,
+  syncPending,
   iconPreviewUrl,
   onLaunch,
   onStop,
@@ -69,26 +73,29 @@ export function InstanceDetail({
             <div className="flex flex-wrap items-center gap-2">
               <InstanceStatusBadge status={instance.status} stopping={isStopping} />
               {updateAvailable && (
-                <Badge variant="outline" className="border-primary/30 font-mono text-[9px] tracking-[0.04em] text-primary-text uppercase">
+                <Badge variant="outline" className="border-primary/30 font-mono text-(length:--fs-micro) tracking-[0.04em] text-primary-text uppercase">
                   Actualización disponible
+                </Badge>
+              )}
+              {syncPending && (
+                <Badge variant="outline" className="border-warning/30 font-mono text-(length:--fs-micro) tracking-[0.04em] text-warning uppercase">
+                  Sincronización pendiente
                 </Badge>
               )}
               {instance.customIcon && (
                 <Badge
                   variant="outline"
-                  className="border-success/30 text-[10px] text-success"
+                  className="border-success/30 text-(length:--fs-micro) text-success"
                   title={instance.customIcon.systemMessage}
                 >
-                  Icono personalizado · {platform === "macos"
-                    ? instance.customIcon.systemApplied ? "Dock aplicado" : "Dock no aplicado"
-                    : instance.customIcon.systemApplied ? "sistema aplicado" : "solo en la app"}
+                  Icono personalizado · {iconBadgeLabel(platform, instance.customIcon.systemApplied)}
                 </Badge>
               )}
             </div>
-            <span className="truncate font-mono text-[11px] leading-[1.4] font-medium text-muted-foreground" title={instance.appPath}>
+            <span className="truncate font-mono text-(length:--fs-small) leading-[1.4] font-medium text-muted-foreground" title={instance.appPath}>
               {instance.appPath}
             </span>
-            <span className="font-mono text-[10px] leading-none text-(--quiet)">Versión {instance.sourceVersion ?? "—"}</span>
+            <span className="font-mono text-(length:--fs-small) leading-none text-muted-foreground">Versión {instance.sourceVersion ?? "—"}</span>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
@@ -127,18 +134,18 @@ export function InstanceDetail({
           <UsageMeter label="Uso de sesión" value={instance.usage?.sessionPercent ?? null} />
           <UsageMeter label="Límite semanal" value={instance.usage?.weeklyPercent ?? null} />
         </div>
-        <span className="text-right font-mono text-[9px] leading-tight font-medium text-(--quiet)">
+        <span className="text-right font-mono text-(length:--fs-small) leading-tight font-medium text-muted-foreground">
           {formatCaptureTime(instance.usage?.capturedAt)}
         </span>
       </div>
 
       <Card size="sm" role="region" aria-label={`Sesiones de Code de ${instance.name}`}>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+          <CardTitle className="flex items-center gap-2 text-(length:--fs-heading) font-semibold">
             <TerminalSquareIcon className="size-4 text-muted-foreground" aria-hidden="true" /> Sesiones de Code
           </CardTitle>
           <CardAction>
-            <Badge variant="secondary" className="font-mono text-[9px] tracking-[0.06em] uppercase">
+            <Badge variant="secondary" className="font-mono text-(length:--fs-micro) tracking-[0.06em] uppercase">
               {sessionCount} {sessionCount === 1 ? "sesión" : "sesiones"}
             </Badge>
           </CardAction>

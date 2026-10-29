@@ -5,6 +5,12 @@ import { formatBytes, formatCaptureTime } from "../src/lib/format.ts";
 import { resolveRuntimePlatform, shortcutModifierLabel } from "../src/lib/platform.ts";
 import { isWebviewSupported, UNSUPPORTED_WEBVIEW_MESSAGE, type CssSupports } from "../src/lib/webview-support.ts";
 import {
+  ICON_RETRY_RUNNING_HINT,
+  iconBadgeLabel,
+  iconRetryState,
+  iconStatusLead,
+} from "../src/features/instances/icon-status.ts";
+import {
   formatModelName,
   formatSessionTime,
   formatTokenCount,
@@ -128,4 +134,59 @@ test("isWebviewSupported: hacen falta las capas en cascada y color-mix (A-16)", 
   assert.equal(isWebviewSupported(throwing, LayerRule), false, "si CSS.supports lanza");
   assert.match(UNSUPPORTED_WEBVIEW_MESSAGE, /libwebkit2gtk-4\.1-0 a 2\.40/);
   assert.doesNotMatch(UNSUPPORTED_WEBVIEW_MESSAGE, /https?:/, "sin enlaces");
+});
+
+const dockIcon = (overrides: Record<string, unknown> = {}) => ({
+  path: "icon.png",
+  revision: 1,
+  systemApplied: false,
+  systemMessage: "texto de Rust",
+  systemIssue: null,
+  ...overrides,
+}) as Parameters<typeof iconRetryState>[0]["customIcon"];
+
+const retryInput = (overrides: Record<string, unknown> = {}) => ({
+  platform: "macos" as const,
+  customIcon: dockIcon(),
+  status: "stopped" as const,
+  removeIcon: false,
+  busy: false,
+  ...overrides,
+}) as Parameters<typeof iconRetryState>[0];
+
+test("iconRetryState: solo en macOS, con icono sin aplicar y sin «Quitar» marcado", () => {
+  assert.equal(iconRetryState(retryInput()).visible, true);
+  assert.equal(iconRetryState(retryInput({ platform: "windows" })).visible, false);
+  assert.equal(iconRetryState(retryInput({ platform: "linux" })).visible, false);
+  assert.equal(iconRetryState(retryInput({ platform: "unknown" })).visible, false);
+  assert.equal(iconRetryState(retryInput({ customIcon: null })).visible, false);
+  assert.equal(iconRetryState(retryInput({ customIcon: dockIcon({ systemApplied: true }) })).visible, false);
+  assert.equal(iconRetryState(retryInput({ removeIcon: true })).visible, false);
+});
+
+test("iconRetryState: activo solo con la instancia detenida y sin otra operación", () => {
+  assert.deepEqual(iconRetryState(retryInput()), { visible: true, enabled: true, hint: null, appManagement: false });
+  const running = iconRetryState(retryInput({ status: "running" }));
+  assert.equal(running.visible, true);
+  assert.equal(running.enabled, false);
+  assert.equal(running.hint, ICON_RETRY_RUNNING_HINT);
+  const missing = iconRetryState(retryInput({ status: "missing" }));
+  assert.equal(missing.enabled, false);
+  assert.equal(missing.hint, null);
+  assert.equal(iconRetryState(retryInput({ busy: true })).enabled, false);
+});
+
+test("iconRetryState: «Gestión de apps» solo con systemIssue appManagement", () => {
+  assert.equal(iconRetryState(retryInput({ customIcon: dockIcon({ systemIssue: "appManagement" }) })).appManagement, true);
+  assert.equal(iconRetryState(retryInput({ customIcon: dockIcon({ systemIssue: null }) })).appManagement, false);
+  assert.equal(iconRetryState(retryInput({ customIcon: dockIcon({ systemIssue: undefined }) })).appManagement, false);
+});
+
+test("textos del icono: macOS habla del Dock y el resto no cambia", () => {
+  assert.equal(iconBadgeLabel("macos", true), "en el Dock");
+  assert.equal(iconBadgeLabel("macos", false), "solo en la app");
+  assert.equal(iconBadgeLabel("windows", true), "sistema aplicado");
+  assert.equal(iconBadgeLabel("linux", false), "solo en la app");
+  assert.equal(iconStatusLead(true), "Aplicado al Dock. ");
+  assert.equal(iconStatusLead(false), "Solo en Code AI Profiles. ");
 });

@@ -14,7 +14,7 @@ importan las dos entradas, `src/styles/index.css` (la app) y `src/showcase/showc
 - **`bg-primary` es `--primary-bright`**, el relleno de `.primary-action` (naranja con texto blanco, 3,0:1). El
   naranja de **texto** es `text-primary-text` (`--ui-primary-text`: `--primary` en oscuro, #9c5947 en claro).
 - **A-9**: la clase `theme-dark` o `theme-light` va en `<html>`, para que los portales de Radix (que cuelgan de
-  `body`) hereden el tema. En la app la pone `AppearanceProvider` (HU-0016, A-3), con `data-session-text`, antes de
+  `body`) hereden el tema. En la app la pone `AppearanceProvider` (HU-0016, A-3), con `data-text-size`, antes de
   pintar; `body` sigue transparente.
 - Las variables de shadcn se declaran en `:root, .theme-dark, .theme-light`: una custom property se resuelve en el
   elemento que la declara, y un `.theme-light` dentro de `:root` no heredaría valores claros.
@@ -22,8 +22,16 @@ importan las dos entradas, `src/styles/index.css` (la app) y `src/showcase/showc
   ante las utilidades. No hay CSS sin capa: la app se pinta con utilidades y el catálogo.
 - Oscuro, la base, en `:root, .theme-dark`; claro en `.theme-light`, **después**. Así una muestra con `theme-dark` o
   `theme-light` dentro del otro tema toma sus propios tokens (las miniaturas de tema de `AppearanceDialog`).
-- `--session-*` (tamaño del texto de sesiones) va en `:root` y cambia con `:root[data-session-text=compact|large]`.
-  Se usa como `text-(length:--session-title-size)` o `h-(--session-track-height)`.
+- **Escala tipográfica (HU-0019)**: `--fs-micro`, `-small`, `-body`, `-heading`, `-title`, `-figure` y `-dialog`, más
+  el factor `--esc` y los altos `--ctl` (36), `--ctl-sm` (32), `--ctl-lg` (40), `--ctl-xs` (24) y `--ctl-badge` (20, que
+  se multiplican por `--esc`), van en `:root` y cambian con `:root[data-text-size=compact|large]`. Sustituyen a
+  `--session-*`. Mínimo 11 px (prueba 12 de `test:ui`). El detalle y la tabla, en `DESIGN.md`.
+- **El tamaño en la app es siempre `text-(length:--fs-<x>)`**, nunca una utilidad propia (`text-micro`): `cn` (como
+  tailwind-merge) la toma por un color y la borra. El interlineado va aparte (`leading-none`). El catálogo se engancha por
+  `@theme inline` en `ui-theme.css`: `--text-xs` = `--fs-small`, `--text-sm` = `--fs-body` y `--text-base`…`--text-2xl`
+  = 16, 18, 20 y 24 px por `--esc`. En normal, el catálogo no cambia ni un píxel.
+- **`--quiet` no colorea texto** (3,4:1 en oscuro, 2,9:1 en claro): usa `text-muted-foreground`. Queda para puntos y
+  rayas (`bg-(--quiet)`; prueba 14).
 
 ## Mapa
 

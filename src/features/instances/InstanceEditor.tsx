@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import type { CreateInstanceRequest, DashboardState, ManagedInstance } from "../../types";
-import { ChevronDownIcon, HardDriveIcon, ImageUpIcon, InfoIcon, PlusIcon } from "lucide-react";
+import { ChevronDownIcon, HardDriveIcon, ImageUpIcon, InfoIcon, PlusIcon, RotateCwIcon, TriangleAlertIcon } from "lucide-react";
 import { BrandMark } from "../../components/BrandMark";
 import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert";
 import { Button } from "../../components/ui/button";
@@ -9,6 +9,7 @@ import { Field, FieldError, FieldLabel } from "../../components/ui/field";
 import { Input } from "../../components/ui/input";
 import { Spinner } from "../../components/ui/spinner";
 import { cn } from "../../lib/utils";
+import { iconRetryState, iconStatusLead } from "./icon-status";
 import { iconDimensionsError, iconFileError } from "./icon-validation";
 import { managedIconSource } from "./instance-icon";
 import type { InstanceIconChange } from "./instance-types";
@@ -18,14 +19,20 @@ export function InstanceEditor({
   sourcePath,
   platform,
   busy,
+  iconBusy,
   onClose,
+  onRetryIcon,
   onSave,
 }: {
   instance: ManagedInstance | null;
   sourcePath: string | null;
   platform: DashboardState["system"]["platform"];
   busy: boolean;
+  /** «Reintentar» el icono del Dock en curso. */
+  iconBusy: boolean;
   onClose: () => void;
+  /** Devuelve el error de este reintento, o `null`. */
+  onRetryIcon: () => Promise<string | null>;
   onSave: (request: CreateInstanceRequest, iconChange: InstanceIconChange) => Promise<void>;
 }) {
   const [name, setName] = useState(instance?.name ?? "");
@@ -35,8 +42,18 @@ export function InstanceEditor({
   const [iconPreviewUrl, setIconPreviewUrl] = useState<string | null>(null);
   const [removeIcon, setRemoveIcon] = useState(false);
   const [iconError, setIconError] = useState<string | null>(null);
+  // El error de ESTE reintento: el aviso global queda tras el fondo del diálogo y puede ser de otra acción.
+  const [retryError, setRetryError] = useState<string | null>(null);
   const isNew = !instance;
   const currentIconUrl = instance ? managedIconSource(instance) : null;
+  const locked = busy || iconBusy;
+  const retry = iconRetryState({
+    platform,
+    customIcon: instance?.customIcon,
+    status: instance?.status ?? "stopped",
+    removeIcon,
+    busy: locked,
+  });
 
   const selectIcon = async (file: File | null) => {
     setIconError(null);
@@ -68,6 +85,11 @@ export function InstanceEditor({
     }
   };
 
+  const retryIcon = async () => {
+    setRetryError(null);
+    setRetryError(await onRetryIcon());
+  };
+
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     await onSave({
@@ -77,8 +99,8 @@ export function InstanceEditor({
   };
 
   return (
-    <Dialog open onOpenChange={(open) => { if (!open && !busy) onClose(); }}>
-      <DialogContent aria-busy={busy} closeDisabled={busy}>
+    <Dialog open onOpenChange={(open) => { if (!open && !locked) onClose(); }}>
+      <DialogContent aria-busy={locked} closeDisabled={locked}>
         <DialogHeader>
           <DialogTitle>{isNew ? "Nueva instancia" : "Editar instancia"}</DialogTitle>
           <DialogDescription>
@@ -112,11 +134,11 @@ export function InstanceEditor({
             </span>
             <div className="grid min-w-0 gap-1.5">
               <strong id="instance-icon-heading" className="text-xs font-semibold">Icono de la instancia</strong>
-              <span className="text-[11px] leading-snug text-muted-foreground">
+              <span className="text-(length:--fs-small) leading-snug text-muted-foreground">
                 Se guarda fuera de la aplicación compatible para sobrevivir a futuras sincronizaciones.
               </span>
               <div className="mt-1 flex flex-wrap gap-2">
-                <Button asChild variant="outline" size="sm" aria-disabled={busy} className="cursor-pointer text-xs has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50 aria-disabled:pointer-events-none aria-disabled:opacity-50">
+                <Button asChild variant="outline" size="sm" aria-disabled={locked} className="cursor-pointer text-xs has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50 aria-disabled:pointer-events-none aria-disabled:opacity-50">
                   <label>
                     <input
                       type="file"
@@ -127,7 +149,7 @@ export function InstanceEditor({
                         event.currentTarget.value = "";
                         void selectIcon(file);
                       }}
-                      disabled={busy}
+                      disabled={locked}
                     />
                     <ImageUpIcon />
                     {iconPreviewUrl || instance?.customIcon ? "Reemplazar imagen" : "Seleccionar imagen"}
@@ -138,7 +160,7 @@ export function InstanceEditor({
                     type="button"
                     variant="destructive"
                     size="sm"
-                    disabled={busy}
+                    disabled={locked}
                     onClick={() => {
                       setIconBytes(null);
                       setIconPreviewUrl(null);
@@ -150,30 +172,53 @@ export function InstanceEditor({
                   </Button>
                 )}
               </div>
-              {iconError && <FieldError className="text-[11px]">{iconError}</FieldError>}
+              {iconError && <FieldError className="text-(length:--fs-small)">{iconError}</FieldError>}
             </div>
           </section>
 
           <Alert className="border-primary/15 bg-primary/5 text-primary-text">
             <InfoIcon />
-            <AlertDescription className="text-[11px] leading-relaxed">
+            <AlertDescription className="text-(length:--fs-small) leading-relaxed">
               {platform === "macos"
-                ? "Al guardar, Code AI Profiles intentará aplicar el icono al Dock y verificará la copia administrada. El resultado aparecerá aquí cuando termine."
+                ? "Al guardar, el icono se pone en la copia de esta instancia y se verá en el Dock la próxima vez que la abras. La firma de la aplicación no cambia."
                 : platform === "windows"
                   ? "En Windows el ejecutable conserva su icono oficial; la imagen personalizada identifica la instancia dentro de Code AI Profiles."
                   : "En Linux se intenta aplicar el icono al launcher; Wayland o el compositor pueden conservar el icono oficial."}
             </AlertDescription>
           </Alert>
-          {instance?.customIcon && !removeIcon && (
-            <p
-              data-applied={instance.customIcon.systemApplied}
-              className="-mt-2 px-0.5 font-mono text-[10px] leading-snug text-muted-foreground data-[applied=true]:text-success"
-            >
-              {platform === "macos" && (
-                <strong>{instance.customIcon.systemApplied ? "Dock aplicado. " : "No se aplicó al Dock. "}</strong>
-              )}
-              {instance.customIcon.systemMessage}
-            </p>
+          {instance?.customIcon && !removeIcon && (retry.appManagement ? (
+            <Alert className="border-warning/30 text-warning">
+              <TriangleAlertIcon />
+              <AlertTitle className="text-xs">Permiso de Gestión de apps</AlertTitle>
+              <AlertDescription className="text-(length:--fs-small) leading-relaxed text-warning">
+                {instance.customIcon.systemMessage}
+              </AlertDescription>
+              <div className="col-start-2 mt-2 grid justify-items-start gap-1.5">
+                <RetryIconButton enabled={retry.enabled} loading={iconBusy} onRetry={retryIcon} />
+                {retry.hint && <span className="text-(length:--fs-small)">{retry.hint}</span>}
+              </div>
+            </Alert>
+          ) : (
+            <div className="-mt-2 grid gap-1.5">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                <p
+                  data-applied={instance.customIcon.systemApplied}
+                  className="min-w-0 flex-1 basis-60 px-0.5 font-mono text-(length:--fs-small) leading-snug text-muted-foreground data-[applied=true]:text-success"
+                >
+                  {platform === "macos" && <strong>{iconStatusLead(instance.customIcon.systemApplied)}</strong>}
+                  {instance.customIcon.systemMessage}
+                </p>
+                {retry.visible && <RetryIconButton enabled={retry.enabled} loading={iconBusy} onRetry={retryIcon} />}
+              </div>
+              {retry.hint && <p className="px-0.5 text-(length:--fs-small) text-muted-foreground">{retry.hint}</p>}
+            </div>
+          ))}
+
+          {retryError && !iconBusy && (
+            <Alert variant="destructive">
+              <TriangleAlertIcon aria-hidden="true" />
+              <AlertDescription className="text-(length:--fs-small) leading-relaxed text-destructive">{retryError}</AlertDescription>
+            </Alert>
           )}
 
           {isNew && (
@@ -181,7 +226,7 @@ export function InstanceEditor({
               <Alert className="border-primary/15 bg-primary/5 text-primary-text">
                 <HardDriveIcon />
                 <AlertTitle className="text-xs text-foreground">Copia aislada + perfil independiente</AlertTitle>
-                <AlertDescription className="text-[11px] leading-relaxed">
+                <AlertDescription className="text-(length:--fs-small) leading-relaxed">
                   La primera creación puede tardar. macOS intenta usar una copia APFS eficiente, Windows crea una copia administrada y Linux reutiliza el binario instalado con un perfil aislado.
                 </AlertDescription>
               </Alert>
@@ -213,8 +258,8 @@ export function InstanceEditor({
           )}
 
           <DialogFooter>
-            <Button type="button" variant="outline" size="lg" onClick={onClose} disabled={busy}>Cancelar</Button>
-            <Button type="submit" size="lg" className="min-w-36" disabled={busy || !name.trim()}>
+            <Button type="button" variant="outline" size="lg" onClick={onClose} disabled={locked}>Cancelar</Button>
+            <Button type="submit" size="lg" className="min-w-36" disabled={locked || !name.trim()}>
               {busy
                 ? <><Spinner aria-hidden="true" /> {isNew ? "Creando copia…" : "Guardando…"}</>
                 : isNew ? <><PlusIcon /> Crear instancia</> : "Guardar cambios"}
@@ -223,5 +268,13 @@ export function InstanceEditor({
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function RetryIconButton({ enabled, loading, onRetry }: { enabled: boolean; loading: boolean; onRetry: () => Promise<void> }) {
+  return (
+    <Button type="button" variant="outline" size="sm" disabled={!enabled} onClick={() => void onRetry()}>
+      {loading ? <Spinner aria-hidden="true" /> : <RotateCwIcon />} Reintentar
+    </Button>
   );
 }

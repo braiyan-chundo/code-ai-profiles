@@ -25,3 +25,4 @@ Retirada en HU-0018: ahora el RUC es obligatorio (RN-31).
 
 | Archivo | Qué cubre | Reglas |
 | --- | --- | --- |
+| [`instancias.md`](instancias.md) | Copias administradas: identidad visual | RN-01 |

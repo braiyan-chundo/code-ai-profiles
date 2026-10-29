@@ -53,14 +53,14 @@ function Stat({
   return (
     <Card size="sm" className={cn("min-w-0 gap-0 min-[1071px]:col-span-1", wide ? "col-span-2" : "col-span-3")}>
       <CardContent className="gap-2">
-        <span className="flex items-center gap-1.5 text-[9px] font-bold tracking-[0.08em] text-muted-foreground uppercase">
+        <span className="flex items-center gap-1.5 text-(length:--fs-micro) font-bold tracking-[0.08em] text-muted-foreground uppercase">
           {live && <span aria-hidden="true" className="size-1.5 rounded-full bg-(--primary) shadow-[0_0_6px_var(--primary)]" />}
           {label}
         </span>
-        <strong className={cn("truncate font-mono text-2xl/none font-semibold tracking-[-0.05em] text-foreground", warning && "text-primary-text")}>
+        <strong className={cn("truncate font-mono text-(length:--fs-figure) leading-[1.15] font-semibold tracking-[-0.05em] text-foreground", warning && "text-primary-text")}>
           {value}
         </strong>
-        <span className="truncate text-[11px] leading-none text-(--quiet)">{hint}</span>
+        <span className="truncate text-(length:--fs-small) leading-none text-muted-foreground">{hint}</span>
       </CardContent>
     </Card>
   );

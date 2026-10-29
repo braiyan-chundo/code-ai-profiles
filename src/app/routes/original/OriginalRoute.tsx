@@ -3,7 +3,7 @@ import { originalAppName as selectOriginalAppName, useDashboard, useRuntimePlatf
 import { OriginalDetail } from "../../../features/original-app";
 import { useScan } from "../../../features/scan";
 import { useTransferProfiles } from "../../../features/sessions";
-import { SourceUpdateBanner } from "../../../features/updates";
+import { originalInstallAvailability, SourceUpdateBanner, useUpdateActions } from "../../../features/updates";
 import { useDialogs } from "../../providers/dialogs-context";
 import { PageContent } from "../../layout/PageContent";
 import { PageHeader } from "../../layout/PageHeader";
@@ -19,6 +19,7 @@ export function OriginalRoute() {
   const { setTransfer, setUnlinkTarget, setOriginalUpdateOpen } = useDialogs();
   const runtimePlatform = useRuntimePlatform();
   const transferProfiles = useTransferProfiles();
+  const { installOriginal } = useUpdateActions();
   const appName = selectOriginalAppName(state.system);
   const sourcePath = state.system.sourcePath;
   const openOriginalUpdate = () => {
@@ -31,7 +32,7 @@ export function OriginalRoute() {
       <PageHeader eyebrow="Aplicación original" title={sourcePath ? appName : "Aplicación original"} />
       <PageContent aria-live="polite" aria-busy={loading}>
         {sourcePath ? (
-          <>
+          <div className="mx-auto grid w-full max-w-[1200px] gap-4">
             <SourceUpdateBanner onUpdate={openOriginalUpdate} />
             <OriginalDetail
               appName={appName}
@@ -42,6 +43,8 @@ export function OriginalRoute() {
               status={state.system.originalStatus}
               sessions={state.system.originalCodeSessions}
               busy={busy !== null}
+              install={originalInstallAvailability(state.system, busy)}
+              onInstall={() => void installOriginal()}
               onUpdate={openOriginalUpdate}
               onTransfer={(session) => {
                 clearFeedback();
@@ -52,7 +55,7 @@ export function OriginalRoute() {
                 setUnlinkTarget({ instance: transferProfiles[0], session });
               }}
             />
-          </>
+          </div>
         ) : loading ? (
           <PageSkeleton rows={2} />
         ) : (

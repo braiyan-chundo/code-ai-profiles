@@ -11,16 +11,21 @@ export function Statusbar() {
   const buildLabel = state.system.appVersion || (loading ? "cargando…" : "no disponible");
   const healthy = Boolean(state.system.sourcePath);
   return (
-    <footer className="row-start-4 flex h-13 shrink-0 items-center justify-between gap-4 border-t border-border bg-(--surface-soft)/60 px-[38px] text-[9px] text-(--quiet) max-[1070px]:h-12 max-[1070px]:px-[25px]">
-      <div className="flex min-w-0 items-center gap-[18px]">
+    <footer className="row-start-4 flex h-9 shrink-0 items-center overflow-hidden whitespace-nowrap justify-between gap-4 border-t border-border bg-(--surface-soft)/60 px-8 text-(length:--fs-micro) text-muted-foreground max-[1070px]:h-8 max-[1070px]:px-6">
+      <div className="flex min-w-0 items-center gap-[18px] max-[1070px]:gap-3">
         <span
           className={cn(
-            "inline-flex items-center gap-1.5 font-bold tracking-[0.16em]",
+            "inline-flex items-center gap-1.5 font-bold tracking-[0.16em] max-[1070px]:tracking-[0.08em]",
             healthy ? "text-primary-text" : "text-destructive",
           )}
         >
           <Dot />
-          {healthy ? `${originalAppName.toLocaleUpperCase()} DETECTADA` : "APLICACIÓN COMPATIBLE NO DETECTADA"}
+          {healthy ? (
+            `${originalAppName.toLocaleUpperCase()} DETECTADA`
+          ) : (
+            // Por debajo de 1071 px, con el texto en grande, la frase entera no cabe junto a lo demás: se lee «NO DETECTADA».
+            <span><span className="max-[1070px]:sr-only">APLICACIÓN COMPATIBLE </span>NO DETECTADA</span>
+          )}
         </span>
         <Divider />
         <span className="inline-flex items-center gap-1.5">
@@ -31,7 +36,7 @@ export function Statusbar() {
           {formatBytes(state.system.managedBytes)} administrados
         </span>
       </div>
-      <div className="flex shrink-0 items-center gap-3.5 font-mono text-[8px] leading-none font-medium tracking-[0.14em]">
+      <div className="flex shrink-0 items-center gap-3.5 font-mono text-(length:--fs-micro) leading-none font-medium tracking-[0.14em] max-[1070px]:gap-2.5 max-[1070px]:tracking-[0.06em]">
         <span>AUTO · 60S</span>
         <Dot className="size-[5px] text-primary-text/60" />
         <span aria-label={`Versión de Code AI Profiles ${buildLabel}`}>BUILD {buildLabel}</span>
@@ -47,5 +52,5 @@ function Dot({ className }: { className?: string }) {
 }
 
 function Divider({ className }: { className?: string }) {
-  return <span aria-hidden="true" className={cn("h-[18px] w-px shrink-0 bg-border", className)} />;
+  return <span aria-hidden="true" className={cn("h-3.5 w-px shrink-0 bg-border", className)} />;
 }

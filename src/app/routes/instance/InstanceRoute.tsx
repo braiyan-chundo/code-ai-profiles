@@ -18,7 +18,7 @@ import { PageSkeleton } from "../../layout/PageSkeleton";
  */
 export function InstanceRoute() {
   const { instanceId } = useParams();
-  const { dashboard: state, loading, busy, iconPreviews, clearFeedback } = useDashboard();
+  const { dashboard: state, loading, busy, iconPreviews, pendingSyncIds, clearFeedback } = useDashboard();
   const { setEditor, setDeleteTarget, setTransfer, setUnlinkTarget } = useDialogs();
   const runtimePlatform = useRuntimePlatform();
   const instanceActions = useInstanceActions();
@@ -32,7 +32,7 @@ export function InstanceRoute() {
     if (!loading) return <Navigate to="/" replace />;
     return (
       <>
-        <PageHeader eyebrow="Instancia" title="Cargando…" />
+        <PageHeader eyebrow="Instancias" title="Cargando…" />
         <PageContent aria-busy="true"><PageSkeleton /></PageContent>
       </>
     );
@@ -40,13 +40,16 @@ export function InstanceRoute() {
 
   return (
     <>
-      <PageHeader eyebrow="Instancia" title={instance.name} />
+      <PageHeader eyebrow="Instancias" title={instance.name} />
       <PageContent aria-live="polite">
         <InstanceDetail
           instance={instance}
           platform={runtimePlatform}
           busy={busy}
           updateAvailable={outdatedInstances.some((outdated) => outdated.id === instance.id)}
+          syncPending={
+            pendingSyncIds.includes(instance.id) && outdatedInstances.some((outdated) => outdated.id === instance.id)
+          }
           iconPreviewUrl={iconPreviews[instance.id] ?? null}
           onLaunch={() => instanceActions.launch(instance)}
           onStop={() => instanceActions.stop(instance)}

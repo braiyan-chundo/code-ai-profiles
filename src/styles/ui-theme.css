@@ -132,6 +132,15 @@
   /* la fuente mono de sesiones, versiones y etiquetas */
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
+  /* HU-0019 (A-3): el catálogo crece con el tamaño del texto sin tocar sus componentes. En normal, xs y sm valen lo
+     de siempre (12 y 14). Los --text-*--line-height por defecto son proporciones, así que siguen valiendo. */
+  --text-xs: var(--fs-small);
+  --text-sm: var(--fs-body);
+  --text-base: calc(16px * var(--esc));
+  --text-lg: calc(18px * var(--esc));
+  --text-xl: calc(20px * var(--esc));
+  --text-2xl: calc(24px * var(--esc));
+
   /* chips 9, cierre 13, acciones 14, tarjetas 16 (DESIGN.md), ventana 20, modal 26 */
   --radius-sm: 9px;
   --radius-md: 12px;

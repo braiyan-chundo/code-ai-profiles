@@ -54,7 +54,7 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 ## Diferencias con el registro
 
-Ninguna: es el código del registro `radix-vega` (2026-10-28) tal como se descargó.
+Ajuste 1 (HU-0019, A-3): `h-9` → `h-(--ctl)` (36 px por `--esc`), para que el campo siga el tamaño del texto de Apariencia.
 
 ## Qué no hacer
 

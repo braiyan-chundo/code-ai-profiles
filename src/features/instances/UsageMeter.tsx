@@ -10,8 +10,8 @@ export function UsageMeter({ label, value, className }: { label: string; value: 
     <Card size="sm" className={cn("min-w-0 gap-2.5", className)}>
       <CardContent className="gap-2.5">
         <div className="flex items-end justify-between gap-2.5">
-          <span className="truncate text-[9px] font-bold tracking-[0.08em] text-muted-foreground uppercase">{label}</span>
-          <strong className="font-mono text-2xl/[0.9] font-semibold tracking-[-0.06em] text-primary-text">
+          <span className="truncate text-(length:--fs-micro) font-bold tracking-[0.08em] text-muted-foreground uppercase">{label}</span>
+          <strong className="font-mono text-(length:--fs-figure) leading-[0.9] font-semibold tracking-[-0.06em] text-primary-text">
             {value == null ? "—" : `${Math.round(value)}%`}
           </strong>
         </div>
@@ -21,7 +21,7 @@ export function UsageMeter({ label, value, className }: { label: string; value: 
           aria-valuenow={value == null ? undefined : Math.round(progress)}
           className={cn("h-2", usageTone(progress))}
         />
-        <small className="text-right font-mono text-[8px] leading-none font-medium text-(--quiet) uppercase">
+        <small className="text-right font-mono text-(length:--fs-micro) leading-none font-medium text-muted-foreground uppercase">
           {value == null ? "Sin datos" : "usado"}
         </small>
       </CardContent>

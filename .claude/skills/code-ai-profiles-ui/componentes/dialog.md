@@ -102,8 +102,8 @@ Ajuste 2 (HU-0016, A-4): `Close` → `Cerrar` en el `sr-only` de la X de `Dialog
 Ajuste 3 (HU-0016, A-12): el aspecto del modal de la app. `DialogContent` pasa de `rounded-xl p-6 sm:max-w-md` a
 `rounded-3xl p-7 sm:max-w-[580px]` (radio 26, relleno 28 y ancho 580 del antiguo `.modal-card`) y gana
 `max-h-[calc(100%-2rem)] overflow-y-auto`, para que un diálogo largo quepa en 980×680. Prop nueva `closeDisabled`, que
-deshabilita la X. `DialogTitle` pasa de `leading-none font-medium` a `text-[22px] leading-tight font-semibold
-tracking-[-0.035em]` y `DialogDescription`, de `text-sm` a `text-xs` (los del antiguo `.modal-header`).
+deshabilita la X. `DialogTitle` pasa de `leading-none font-medium` a `text-(length:--fs-dialog) leading-tight font-semibold
+tracking-[-0.035em]` (HU-0019: antes `text-[22px]`, ahora crece con el tamaño del texto: 20, 22 o 25 px) y `DialogDescription`, de `text-sm` a `text-xs` (los del antiguo `.modal-header`).
 
 ## Qué no hacer
 

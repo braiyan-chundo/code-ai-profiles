@@ -75,7 +75,7 @@ export function SessionList({
 }
 
 /**
- * Una sesión: título, modelo, turnos, actividad y contexto, con el tamaño de `--session-*`. `children` son sus
+ * Una sesión: título, modelo, turnos, actividad y contexto, con la escala `--fs-*`. `children` son sus
  * acciones a la derecha. La usan `SessionList` y la vista previa de `AppearanceDialog`.
  */
 export function SessionItem({
@@ -90,10 +90,10 @@ export function SessionItem({
         <TerminalSquareIcon />
       </ItemMedia>
       <ItemContent className="min-w-0 gap-1.5">
-        <ItemTitle className="block max-w-full truncate text-(length:--session-title-size) font-semibold">
+        <ItemTitle className="block max-w-full truncate text-(length:--fs-body) font-semibold">
           {session.title}
         </ItemTitle>
-        <ItemDescription className="line-clamp-none flex flex-wrap items-center gap-x-1.5 font-mono text-(length:--session-meta-size)">
+        <ItemDescription className="line-clamp-none flex flex-wrap items-center gap-x-1.5 font-mono text-(length:--fs-small)">
           <span>{formatModelName(session.model)}</span>
           <Separator />
           <span>{session.completedTurns} {session.completedTurns === 1 ? "turno" : "turnos"}</span>
@@ -116,7 +116,7 @@ function SessionBadge({ tone, children }: { tone?: "copy" | "move"; children: st
     <Badge
       variant="outline"
       data-mode={tone}
-      className="h-auto font-mono text-(length:--session-badge-size) font-semibold tracking-[0.06em] text-muted-foreground uppercase data-[mode=copy]:border-primary/25 data-[mode=copy]:text-primary-text data-[mode=move]:border-success/30 data-[mode=move]:text-success"
+      className="h-auto font-mono text-(length:--fs-micro) font-semibold tracking-[0.06em] text-muted-foreground uppercase data-[mode=copy]:border-primary/25 data-[mode=copy]:text-primary-text data-[mode=move]:border-success/30 data-[mode=move]:text-success"
     >
       {children}
     </Badge>

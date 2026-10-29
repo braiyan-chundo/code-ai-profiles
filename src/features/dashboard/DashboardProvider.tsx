@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useReducer, useRef, type ReactNode } from "react";
 import { friendlyError } from "../../lib/errors";
-import type { DashboardState } from "../../types";
+import type { DashboardState, OriginalInstallProgress } from "../../types";
 import { DashboardContext, type DashboardContextValue } from "./dashboard-context";
 import { dashboardReducer, initialDashboardStore } from "./dashboard-store";
 
@@ -29,6 +29,20 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   );
   const removeIconPreview = useCallback((instanceId: string) => dispatch({ type: "icon-preview/removed", instanceId }), []);
 
+  const setOriginalInstall = useCallback(
+    (progress: OriginalInstallProgress) => dispatch({ type: "original-install/progressed", progress }),
+    [],
+  );
+  const finishOriginalInstall = useCallback(() => dispatch({ type: "original-install/finished" }), []);
+  const addPendingSync = useCallback(
+    (instanceIds: string[]) => dispatch({ type: "pending-sync/added", instanceIds }),
+    [],
+  );
+  const removePendingSync = useCallback(
+    (instanceIds: string[]) => dispatch({ type: "pending-sync/removed", instanceIds }),
+    [],
+  );
+
   const runAction = useCallback(async (key: string, action: () => Promise<DashboardState>) => {
     setBusy(key);
     setError(null);
@@ -54,6 +68,10 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     finishLoading,
     storeIconPreview,
     removeIconPreview,
+    setOriginalInstall,
+    finishOriginalInstall,
+    addPendingSync,
+    removePendingSync,
     runAction,
   }), [
     store,
@@ -67,6 +85,10 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     finishLoading,
     storeIconPreview,
     removeIconPreview,
+    setOriginalInstall,
+    finishOriginalInstall,
+    addPendingSync,
+    removePendingSync,
     runAction,
   ]);
 

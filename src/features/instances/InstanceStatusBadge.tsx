@@ -19,7 +19,7 @@ export function InstanceStatusBadge({
       variant="outline"
       data-status={tone}
       className={cn(
-        "gap-1.5 font-mono text-[9px] font-semibold tracking-[0.06em] text-muted-foreground uppercase",
+        "gap-1.5 font-mono text-(length:--fs-micro) font-semibold tracking-[0.06em] text-muted-foreground uppercase",
         "data-[status=running]:border-primary/30 data-[status=running]:bg-primary/10 data-[status=running]:text-primary-text",
         "data-[status=stopping]:border-primary/20 data-[status=stopping]:text-primary-text",
         "data-[status=missing]:border-destructive/30 data-[status=missing]:text-destructive",

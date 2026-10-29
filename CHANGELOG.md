@@ -8,10 +8,12 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ### Added
 
+- En macOS, el icono personalizado de cada instancia se ve también en el Dock, con la forma de los iconos de macOS y sin tocar la firma de Anthropic. Para las copias que Claude actualizó por su cuenta, macOS pide el permiso «Gestión de apps»; el editor lo explica y ofrece «Reintentar».
 - Catálogo de 63 componentes shadcn/ui con el tema de la app y un showcase local en `/showcase.html` (`pnpm dev`), fuera del build y de los instaladores. Skill `code-ai-profiles-ui` con una ficha por componente y la prueba `test:ui`, que vigila que nada del catálogo entre en la app.
 
 ### Changed
 
+- Cabecera compacta de una sola barra (el contenido empieza a 60 px del borde, antes 193 px en macOS), sidebar flotante plegable a iconos y escala tipográfica global: el tamaño de Apariencia (Compacto, Cómodo, Grande) escala toda la interfaz y ningún texto baja de 11 px.
 - La interfaz se organiza por funcionalidades (`src/app`, `src/features`, `src/components`, `src/lib`, `src/styles`), con React Router 7 por hash y estado compartido con Context y `useReducer`. No cambia nada visible.
 - Requisitos mínimos: macOS 13.3 o posterior (antes 12.0) y WebKitGTK 2.40 o posterior en Linux, porque la interfaz necesita un motor web de nivel Safari 16.4.
 - El proyecto usa pnpm en lugar de npm: `pnpm-lock.yaml`, versión fijada en `packageManager` y CI con `pnpm install --frozen-lockfile`.

@@ -118,6 +118,15 @@ HU-0016 (A-4), sobre el código del registro `radix-vega` (2026-10-28):
 3. **Textos en español**: «Alternar barra lateral» en `SidebarTrigger` (`sr-only`) y `SidebarRail` (`aria-label` y
    `title`), y «Barra lateral» / «Muestra la barra lateral.» en la cabecera `sr-only` del `Sheet` móvil.
 
+HU-0019 (A-2 y A-3): 4. **Alturas con el tamaño del texto**: `SidebarInput` y `SidebarMenuButton` (tamaño `default`)
+pasan de `h-8` a `h-(--ctl-sm)`, y `SidebarMenuBadge`, de `h-5 min-w-5` a `h-(--ctl-badge) min-w-(--ctl-badge)`. El
+plegado a iconos sigue en `size-8!`: el panel de 50 px no crece con el texto.
+
+La app lo usa con `variant="floating"` (panel de 240 px con 8 px de margen; plegado, 50 px y una columna de 64), con
+`--sidebar` = `--surface-raised` en el marco y el anillo `*:data-[slot=sidebar-inner]:ring-foreground/10`. El contenedor
+`fixed` empieza bajo la barra (`top-(--titlebar-height)! h-auto!`). Los contadores usan `SidebarMenuBadge` con
+`top-1/2! -translate-y-1/2` y la raya entre grupos plegado, `SidebarSeparator`.
+
 `pnpm test:ui` (prueba 7) vigila que no vuelvan la cookie ni el `keydown`.
 
 ## Qué no hacer

@@ -40,18 +40,47 @@
   --danger: #be4f42;
 }
 
-/* Tamaño del texto de sesiones (A-3): en <html>, para que también lo hereden los diálogos en portales. */
+/*
+ * HU-0019 (A-3): la escala tipográfica de toda la interfaz. El tamaño del texto (Apariencia) cambia estos valores en
+ * <html data-text-size>, así que también lo heredan los diálogos y menús que Radix pinta en `body`. Ningún valor baja
+ * de 11 px (lo vigila test:ui, prueba 12). --esc es el factor del alto de los controles (--ctl*). En la app el tamaño
+ * es siempre `text-(length:--fs-<x>)`; el catálogo lo toma por el puente --text-* de ui-theme.css.
+ */
 :root {
-  --session-title-size: 12px;
-  --session-meta-size: 9px;
-  --session-context-size: 8px;
-  --session-hint-size: 8px;
-  --session-badge-size: 7px;
-  --session-row-height: 104px;
-  --session-track-height: 4px;
+  --fs-micro: 11px;
+  --fs-small: 12px;
+  --fs-body: 14px;
+  --fs-heading: 15px;
+  --fs-title: 17px;
+  --fs-figure: 22px;
+  --fs-dialog: 22px;
+  --esc: 1;
+  --ctl: calc(36px * var(--esc));
+  --ctl-sm: calc(32px * var(--esc));
+  --ctl-lg: calc(40px * var(--esc));
+  --ctl-xs: calc(24px * var(--esc));
+  --ctl-badge: calc(20px * var(--esc));
 }
-:root[data-session-text="compact"] { --session-title-size: 10px; --session-meta-size: 7px; --session-context-size: 7px; --session-hint-size: 6px; --session-badge-size: 6px; --session-row-height: 90px; --session-track-height: 3px; }
-:root[data-session-text="large"] { --session-title-size: 14px; --session-meta-size: 11px; --session-context-size: 10px; --session-hint-size: 9px; --session-badge-size: 8px; --session-row-height: 120px; --session-track-height: 5px; }
+:root[data-text-size="compact"] {
+  --fs-micro: 11px;
+  --fs-small: 11px;
+  --fs-body: 13px;
+  --fs-heading: 14px;
+  --fs-title: 15px;
+  --fs-figure: 20px;
+  --fs-dialog: 20px;
+  --esc: 0.93;
+}
+:root[data-text-size="large"] {
+  --fs-micro: 12px;
+  --fs-small: 14px;
+  --fs-body: 16px;
+  --fs-heading: 17px;
+  --fs-title: 19px;
+  --fs-figure: 26px;
+  --fs-dialog: 25px;
+  --esc: 1.143;
+}
 
 :root {
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;

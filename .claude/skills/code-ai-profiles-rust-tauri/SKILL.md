@@ -21,14 +21,19 @@ una ruta mal calculada borra el perfil de alguien.
 src-tauri/
   src/main.rs            solo llama a code_ai_profiles_lib::run(); windows_subsystem en release
   src/lib.rs             tipos serde, comandos, lógica, rutas por plataforma y #[cfg(test)] mod tests al final
+  src/config.rs          URLs y hosts fijados al compilar desde .env.example (ADR-0002); validate() en setup
+  src/original_update.rs descargar, verificar e instalar la original en macOS (HU-0017); MacosTools inyectable
+  build.rs               pasa las claves CAP_* (entorno > .env.local > .env.example) a cargo:rustc-env
   capabilities/*.json    permisos de la ventana "main" (mínimos)
   tauri.conf.json        CSP, assetProtocol con scope estrecho, ventana base (Windows: sin decoraciones)
   tauri.<os>.conf.json   ventana de macOS (Overlay) y de Linux (decoraciones nativas), bundles
 src/types.ts             el contrato en TypeScript: refleja los structs serde
-src/lib/bridge.ts        el único sitio que llama a invoke(); con mock para el modo navegador
+src/lib/bridge.ts        el único sitio que llama a invoke() y crea Channel; con mock para el modo navegador
 ```
 
-`lib.rs` es un solo archivo: lo nuevo va junto a sus vecinos. Partirlo lo decide un ADR del architect.
+`lib.rs` es el archivo principal: lo nuevo va junto a sus vecinos. Un flujo largo y autocontenido puede vivir en
+un módulo hijo (`mod x;` en `lib.rs`, `use super::*`), con sus comandos como envoltorios finos en `lib.rs`
+(ADR-0002, `docs/arquitectura/backend.md`). Partir el resto lo decide un ADR del architect.
 
 ## Añadir un comando IPC
 
@@ -93,7 +98,8 @@ src/lib/bridge.ts        el único sitio que llama a invoke(); con mock para el 
   la forzada.
 - `launch_generation` solo sirve para descartar eventos viejos del reaper. `spawn_process_reaper`
   emite `instance-process-exited` con la generación, aunque hoy ningún código de `src/` lo escucha.
-  Los eventos hacia la ventana se envían con `emit` (`scan-progress`).
+  Los eventos de ventana se envían con `emit` (`scan-progress`). El progreso de una llamada larga va por
+  `tauri::ipc::Channel<T>`, argumento del comando (`install_original_update`).
 
 ## Tres plataformas
 
@@ -120,16 +126,18 @@ src/lib/bridge.ts        el único sitio que llama a invoke(); con mock para el 
 
 ## Red y configuración
 
-- La única salida a la red es el feed oficial de actualizaciones: `reqwest::blocking` con rustls,
-  timeout de 5 s, sin redirecciones y con `device_id` nulo. No se añade otra conexión ni telemetría
-  sin una historia y la autorización del mantenedor.
-- Nada de `std::env::var` para configuración propia. Si hace falta, va a `src-tauri/src/config.rs`
-  con su ficha en `.env.example`. Se exceptúan las variables de ubicación del sistema operativo de
-  la sección de sistema de archivos.
-- **El gate de configuración no revisa `.rs`**, así que la regla de no dejar URLs en el código la
-  cumples tú. Deuda conocida (HU-0011): cuatro URLs escritas en `lib.rs` (el feed y las de
-  `original_application_update_target`) y el `User-Agent` fijo en `0.1` (debería usar
-  `env!("CARGO_PKG_VERSION")`).
+- Hay dos salidas a la red, las dos con `reqwest::blocking` y rustls, sin cookies y sin identificadores
+  (`device_id` nulo en el feed): el feed oficial (5 s, sin redirecciones, 256 KiB) y, solo cuando la persona
+  pulsa «Descargar e instalar» en macOS, el host del paquete (`https_only`, host exacto de
+  `config::download_hosts()`, hasta 3 redirecciones a hosts permitidos, `size` del feed como tope, 60 s sin
+  bytes, 30 min en total, cancelable). En `blocking`, `timeout` es por lectura. No se añade otra conexión ni
+  telemetría sin una historia y la autorización del mantenedor.
+- Ninguna URL, host ni identificador de servicio en `.rs` fuera de `src-tauri/src/config.rs`, que los recibe al
+  compilar desde `.env.example` vía `build.rs` (`env!`). Una clave nueva: su ficha `[PUBLICO]` en `.env.example`,
+  su nombre en `KEYS` de `build.rs` y su validación en `config::validate()`. Nada de `std::env::var` en
+  ejecución; se exceptúan las variables de ubicación del sistema operativo de la sección de sistema de archivos.
+- **El gate de configuración no revisa `.rs`**: la regla la cumples tú. El `User-Agent` es
+  `config::user_agent()`.
 
 ## Pruebas
 
@@ -144,7 +152,9 @@ src/lib/bridge.ts        el único sitio que llama a invoke(); con mock para el 
 ## Lo que nunca
 
 - `remove_dir_all` o `rename` sobre una ruta que no salió de `ManagedPaths`, del registro o de
-  `detect_original_profile`, porque son los datos reales del perfil.
+  `detect_original_profile`, porque son los datos reales del perfil. La única excepción es `original_update.rs`:
+  renombra la original que devuelven `detect_provider_source` y `prepare_destination`, y solo borra sus carpetas
+  `.code-ai-profiles-original-<uuid>` y `<app_data>/original-update/<uuid>` cuando la original está en su sitio.
 - Copiar, mover o devolver sesiones con un perfil en marcha: la aplicación las tiene abiertas y la
   copia sale corrupta.
 - Leer, registrar o devolver por IPC contenido de un perfil (credenciales, cookies, prompts,

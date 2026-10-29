@@ -49,7 +49,7 @@ function ChoiceCard({ id, value, title, description, children }: {
         <RadioGroupItem value={value} id={id} />
         <FieldContent className="min-w-0 gap-0.5">
           <FieldTitle className="text-xs">{title}</FieldTitle>
-          {description && <FieldDescription className="truncate text-[11px]">{description}</FieldDescription>}
+          {description && <FieldDescription className="text-(length:--fs-small) leading-snug">{description}</FieldDescription>}
         </FieldContent>
       </Field>
     </FieldLabel>
@@ -102,12 +102,12 @@ export function AppearanceDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Apariencia</DialogTitle>
-          <DialogDescription>Personaliza la lectura de tus sesiones</DialogDescription>
+          <DialogDescription>Personaliza el tema y el tamaño del texto</DialogDescription>
         </DialogHeader>
 
         <FieldSet className="gap-3">
           <FieldLegend variant="label" className="mb-0 flex w-full items-baseline justify-between gap-4">
-            Tema <span className="text-[11px] font-normal text-muted-foreground">Se aplica inmediatamente</span>
+            Tema <span className="text-(length:--fs-small) font-normal text-muted-foreground">Se aplica inmediatamente</span>
           </FieldLegend>
           <RadioGroup
             aria-label="Tema de la aplicación"
@@ -125,10 +125,10 @@ export function AppearanceDialog({
 
         <FieldSet className="gap-3">
           <FieldLegend variant="label" className="mb-0 flex w-full items-baseline justify-between gap-4">
-            Tamaño del texto de sesiones <span className="text-[11px] font-normal text-muted-foreground">También amplía modelos y contexto</span>
+            Tamaño del texto <span className="text-(length:--fs-small) font-normal text-muted-foreground">Se aplica a toda la interfaz</span>
           </FieldLegend>
           <RadioGroup
-            aria-label="Tamaño del texto de las sesiones"
+            aria-label="Tamaño del texto"
             value={preferences.sessionTextSize}
             onValueChange={(size) => onChange({ ...preferences, sessionTextSize: size as SessionTextSize })}
             className="grid-cols-3 gap-2"
@@ -141,7 +141,7 @@ export function AppearanceDialog({
           </RadioGroup>
         </FieldSet>
 
-        <SessionItem session={previewSession} aria-label="Vista previa del texto de sesión" className="min-h-(--session-row-height)" />
+        <SessionItem session={previewSession} aria-label="Vista previa del texto de sesión" />
 
         <DialogFooter>
           <Button size="lg" className="min-w-36" onClick={onClose}>Listo</Button>

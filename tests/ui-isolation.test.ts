@@ -90,6 +90,79 @@ const CSS_FILES = ["showcase/showcase.css", "styles/index.css", "styles/tokens.c
 const importsIcons = (local: string, source: string) =>
   specifiers(source).filter((s) => /^components\/Icons(\.tsx)?$/.test(target(local, s) ?? ""));
 
+// 12. HU-0019 (A-3): la escala tipográfica. Siete tamaños y un factor, en :root y en los dos tamaños del texto.
+const FS_TOKENS = ["micro", "small", "body", "heading", "title", "figure", "dialog"];
+const TEXT_SIZES = ["compact", "large"];
+const MIN_FONT_PX = 11;
+
+/** Las declaraciones `--nombre: valor` del bloque cuyo selector es exactamente `selector` (el último gana). */
+function declarations(css: string, selector: string): Map<string, string> {
+  const found = new Map<string, string>();
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  for (const block of css.matchAll(new RegExp(`(?:^|\\n)${escaped}\\s*\\{([^}]*)\\}`, "g"))) {
+    for (const item of block[1].matchAll(/(--[a-z0-9-]+)\s*:\s*([^;]+);/g)) found.set(item[1], item[2].trim());
+  }
+  return found;
+}
+const fontPx = (value: string | undefined) => (value && /^\d+(\.\d+)?px$/.test(value) ? parseFloat(value) : NaN);
+/** Problemas de la escala en el texto de tokens.css; vacío si está bien. */
+function scaleProblems(css: string): string[] {
+  const problems: string[] = [];
+  const normal = declarations(css, ":root");
+  const sizes = new Map(TEXT_SIZES.map((size) => [size, declarations(css, `:root[data-text-size="${size}"]`)]));
+  if (!normal.has("--esc")) problems.push(":root no declara --esc");
+  for (const [size, map] of sizes) if (!map.has("--esc")) problems.push(`:root[data-text-size="${size}"] no declara --esc`);
+  for (const name of FS_TOKENS) {
+    const token = `--fs-${name}`;
+    const values = [["normal", normal], ...sizes].map(([label, map]) => [label as string, fontPx((map as Map<string, string>).get(token))] as const);
+    for (const [label, px] of values) {
+      if (Number.isNaN(px)) problems.push(`${token} no está en px en ${label}`);
+      else if (px < MIN_FONT_PX) problems.push(`${token} vale ${px}px en ${label} (mínimo ${MIN_FONT_PX})`);
+    }
+    const [normalPx, largePx] = [values[0][1], values[2][1]];
+    if (!Number.isNaN(normalPx) && !Number.isNaN(largePx) && largePx <= normalPx) problems.push(`${token}: grande (${largePx}) no supera a normal (${normalPx})`);
+  }
+  // Cada declaración de la escala vive en uno de los tres bloques: ninguna en `.theme-light` ni suelta.
+  const inBlocks = [normal, ...sizes.values()].reduce((sum, map) => sum + [...map.keys()].filter((key) => /^--(?:fs-|esc$|ctl)/.test(key)).length, 0);
+  const total = scaleDeclarations(css).length;
+  if (total !== inBlocks) problems.push(`tokens.css declara ${total} valores de la escala, pero solo ${inBlocks} están en :root y :root[data-text-size]`);
+  return problems;
+}
+/** Una declaración (no un uso) de la escala: `--fs-x:`, `--esc:` o `--ctl*:`, también como `[--fs-x:…]` o `"--fs-x":`. */
+const SCALE_DECLARATION = /--(?:fs-[a-z0-9-]+|esc|ctl(?:-[a-z]+)?)["']?\s*:/g;
+const scaleDeclarations = (source: string) => source.match(SCALE_DECLARATION) ?? [];
+/** `--text-base`…`--text-2xl` del puente: siguen a `--esc`, así que crecen con el tamaño del texto (A-3). */
+const TEXT_BRIDGE = ["base", "lg", "xl", "2xl"];
+const bridgeProblems = (css: string) => {
+  const problems: string[] = [];
+  if (!/--text-xs:\s*var\(--fs-small\)/.test(css)) problems.push("--text-xs no sigue a --fs-small");
+  if (!/--text-sm:\s*var\(--fs-body\)/.test(css)) problems.push("--text-sm no sigue a --fs-body");
+  for (const name of TEXT_BRIDGE) {
+    if (!new RegExp(`--text-${name}:\\s*calc\\(\\s*\\d+(?:\\.\\d+)?px\\s*\\*\\s*var\\(--esc\\)\\s*\\)`).test(css)) problems.push(`--text-${name} no escala con --esc`);
+  }
+  return problems;
+};
+/** Cada `--fs-<x>` que usa un texto debe existir en la escala. */
+const usedFontTokens = (source: string) => [...source.matchAll(/--fs-([a-z0-9-]+)/g)].map((m) => m[1]);
+
+// 13. Sin tamaños sueltos: `text-[<n>px|rem|em]`. Las tres muestras de AppearanceDialog enseñan cada opción con un
+// tamaño fijo (lista cerrada).
+// Cubre `text-[9px]`, `text-[length:9px]`, `text-(length:9px)` y `[font-size:9px]`.
+const looseSizeRegex = (units: string) => new RegExp(`\\btext-\\[\\s*(?:length:)?\\s*\\d*\\.?\\d+\\s*(?:${units})\\s*\\]|\\btext-\\(\\s*length:\\s*\\d*\\.?\\d+\\s*(?:${units})\\s*\\)|\\[font-size:\\s*\\d*\\.?\\d+\\s*(?:${units})\\s*\\]`, "g");
+const LOOSE_TEXT_SIZE = looseSizeRegex("px|rem|em");
+// En components/ui/ solo los px: calendar y questionnaire (que la app no usa) miden en rem.
+const LOOSE_TEXT_PX = looseSizeRegex("px");
+// Una utilidad con nombre propio (`text-micro`): `cn` la toma por un color y la borra (A-3). El tamaño es `text-(length:--fs-x)`.
+const OWN_NAME_UTILITY = /\btext-(?:micro|small|body|heading|title|figure|dialog)\b/;
+const SAMPLE_FILE = "features/appearance/AppearanceDialog.tsx";
+const SAMPLE_SIZES = ["text-[11px]", "text-[15px]", "text-[19px]"];
+const looseSizes = (source: string, catalog = false) => source.match(catalog ? LOOSE_TEXT_PX : LOOSE_TEXT_SIZE) ?? [];
+// ...y nada de la escala anterior de sesiones.
+const OLD_SESSION_SCALE = /--session-|data-session-text|dataset\s*\.\s*sessionText\b/;
+
+// 14. `--quiet` no colorea texto: da 3,4:1 en oscuro y 2,9:1 en claro. Queda para puntos, rayas y separadores.
+const QUIET_TEXT = /\btext-\(--quiet\)/;
+
 const FOCUS_OWNERS = [
   "features/instances/useLiveUsage.ts",
   "features/scan/useBackgroundRefresh.ts",
@@ -231,6 +304,58 @@ test("9 · canario: cada detector marca fugas sintéticas, también con rutas de
   assert.ok(importsIcons("app/x.tsx", 'import { A } from "@/components/Icons";').length > 0);
   assert.deepEqual(importsIcons("app/x.tsx", 'import { XIcon } from "lucide-react";'), []);
 
+  // 12
+  const goodScale = [
+    ":root {",
+    ...FS_TOKENS.map((n) => `  --fs-${n}: 12px;`),
+    "  --esc: 1;",
+    "}",
+    ...TEXT_SIZES.flatMap((size, i) => [`:root[data-text-size="${size}"] {`, ...FS_TOKENS.map((n) => `  --fs-${n}: ${i ? 14 : 11}px;`), "  --esc: 1;", "}"]),
+  ].join("\n");
+  assert.deepEqual(scaleProblems(goodScale), [], "la escala de muestra es válida");
+  assert.ok(scaleProblems(goodScale.replace("--fs-body: 12px;", "--fs-body: 15px;")).some((p) => p.includes("--fs-body")), "no marcó un grande que no supera a normal");
+  assert.ok(scaleProblems(goodScale.replace("--fs-micro: 11px;", "--fs-micro: 10px;")).some((p) => p.includes("10px")), "no marcó un valor bajo 11 px");
+  assert.ok(scaleProblems(goodScale.replace(/ {2}--fs-title: 12px;\n/, "")).some((p) => p.includes("--fs-title")), "no marcó un token que falta");
+  assert.ok(scaleProblems(goodScale.replace("--fs-small: 12px;", "--fs-small: 0.7rem;")).some((p) => p.includes("--fs-small")), "no marcó una unidad que no es px");
+  assert.ok(scaleProblems(goodScale.replace("  --esc: 1;\n}\n:root[data-text-size=\"compact\"]", "}\n:root[data-text-size=\"compact\"]")).some((p) => p.includes("--esc")), "no marcó --esc ausente");
+  assert.deepEqual(usedFontTokens("text-(length:--fs-micro) text-(length:--fs-tiny)"), ["micro", "tiny"]);
+  assert.ok(scaleProblems(goodScale + "\n.theme-light {\n  --fs-body: 14px;\n}").some((p) => p.includes("tokens.css declara")), "no marcó un --fs-* fuera de los tres bloques");
+  const goodBridge = "--text-xs: var(--fs-small);\n--text-sm: var(--fs-body);\n--text-base: calc(16px * var(--esc));\n--text-lg: calc(18px * var(--esc));\n--text-xl: calc(20px * var(--esc));\n--text-2xl: calc(24px * var(--esc));";
+  assert.deepEqual(bridgeProblems(goodBridge), []);
+  for (const name of TEXT_BRIDGE) {
+    assert.ok(bridgeProblems(goodBridge.replace(new RegExp(`--text-${name}: calc\\(\\d+px \\* var\\(--esc\\)\\)`), `--text-${name}: 16px`)).some((p) => p.includes(`--text-${name}`)), `no marcó --text-${name} fijo`);
+  }
+  assert.ok(bridgeProblems(goodBridge.replace("var(--fs-body)", "14px")).some((p) => p.includes("--text-sm")), "no marcó --text-sm suelto");
+  assert.ok(bridgeProblems("").length === 6, "no marcó un puente vacío");
+  for (const sample of ["--fs-body: 20px;", "[--fs-micro:9px]", '"--fs-title": "10px"', "--esc: 2;", "--ctl-sm: 20px;", "--ctl: 10px;"]) {
+    assert.equal(scaleDeclarations(sample).length, 1, `no marcó la redefinición ${sample}`);
+  }
+  assert.deepEqual(scaleDeclarations("text-(length:--fs-body) var(--esc) h-(--ctl-sm) calc(1px * var(--esc))"), [], "un uso no es una declaración");
+
+  // 13
+  assert.deepEqual(looseSizes('className="text-[11px] text-[0.7rem] text-[.8em] text-[ 9px ]"').length, 4);
+  assert.deepEqual(looseSizes('className="text-[0.8rem] text-[13px]"', true), ["text-[13px]"], "el catálogo solo marca los px");
+  for (const sample of ["text-[length:9px]", "text-(length:9px)", "text-(length:0.7rem)", "[font-size:9px]", "[font-size:0.7rem]", "md:[font-size: 11px]", "data-[x=y]:text-[9px]"]) {
+    assert.equal(looseSizes(sample).length, 1, `no marcó ${sample}`);
+  }
+  assert.equal(looseSizes("text-[length:var(--x)] [font-size:var(--x)] text-(length:--fs-micro) [font-size:inherit]").length, 0, "marcó un tamaño que viene de una variable");
+  for (const name of ["micro", "small", "body", "heading", "title", "figure", "dialog"]) {
+    assert.ok(OWN_NAME_UTILITY.test(`className="text-${name} font-mono"`), `no marcó text-${name}`);
+    assert.ok(OWN_NAME_UTILITY.test(`className="hover:text-${name}"`), `no marcó hover:text-${name}`);
+  }
+  assert.ok(!OWN_NAME_UTILITY.test('className="text-(length:--fs-micro) text-muted-foreground data-text-size text-xs"'), "marcó un uso legítimo");
+  assert.deepEqual(looseSizes('className="text-xs text-(length:--fs-micro) text-[var(--x)] text-[color:red]"'), []);
+  for (const sample of ["--session-title-size: 12px;", 'root.dataset.sessionText = "a"', 'root[data-session-text="large"]', "text-(length:--session-meta-size)"]) {
+    assert.ok(OLD_SESSION_SCALE.test(sample), sample);
+  }
+  assert.ok(!OLD_SESSION_SCALE.test("sessionTextSize: comfortable"), "el campo guardado sessionTextSize se queda");
+
+  // 14
+  assert.ok(QUIET_TEXT.test('className="text-(--quiet) font-mono"'));
+  assert.ok(QUIET_TEXT.test('className="hover:text-(--quiet)"'));
+  assert.ok(!QUIET_TEXT.test('className="bg-(--quiet) h-px"'));
+  assert.ok(!QUIET_TEXT.test('className="text-muted-foreground"'));
+
   // Rutas de Windows
   assert.equal(toPosix("features\\scan\\useBackgroundRefresh.ts"), FOCUS_OWNERS[1]);
   assert.equal(target("features\\scan\\x.ts", "../../lib/bridge"), "lib/bridge");
@@ -249,5 +374,40 @@ test("11 · components/Icons.tsx no existe: los iconos son de lucide y la marca 
   for (const { local, source } of code) {
     const leaks = importsIcons(local, source);
     assert.deepEqual(leaks, [], `src/${local} importa ${leaks.join(", ")}`);
+  }
+});
+
+test("12 · la escala tipográfica: siete --fs-* y --esc en los tres tamaños, ninguno bajo 11 px, y el catálogo enganchado", () => {
+  const tokens = read(join(src, "styles", "tokens.css"));
+  assert.deepEqual(scaleProblems(tokens), []);
+  const theme = read(join(src, "styles", "ui-theme.css"));
+  assert.deepEqual(bridgeProblems(theme), [], "ui-theme.css: el puente de la escala");
+  for (const { local, source } of files) {
+    if (local === "styles/tokens.css") continue;
+    assert.deepEqual(scaleDeclarations(source), [], `src/${local} declara un valor de la escala: solo tokens.css los fija`);
+  }
+  for (const { local, source } of code) {
+    for (const name of usedFontTokens(source)) {
+      assert.ok(FS_TOKENS.includes(name), `src/${local} usa --fs-${name}, que no existe en tokens.css`);
+    }
+  }
+});
+
+test("13 · sin tamaños sueltos de texto ni restos de --session-* o data-session-text", () => {
+  for (const { local, source } of code) {
+    if (local.startsWith("showcase/")) continue;
+    const loose = looseSizes(source, local.startsWith("components/ui/"));
+    if (local === SAMPLE_FILE) assert.deepEqual([...new Set(loose)].sort(), SAMPLE_SIZES, `${local}: las muestras cambiaron`);
+    else assert.deepEqual(loose, [], `src/${local} fija un tamaño de texto: usa text-(length:--fs-<x>)`);
+    assert.ok(!OWN_NAME_UTILITY.test(source), `src/${local} usa una utilidad con nombre propio (text-micro…): cn la borra; usa text-(length:--fs-<x>)`);
+  }
+  for (const { local, source } of files) {
+    assert.ok(!OLD_SESSION_SCALE.test(source), `src/${local} menciona la escala anterior (--session-*, data-session-text)`);
+  }
+});
+
+test("14 · --quiet no colorea texto: text-(--quiet) no existe en src/", () => {
+  for (const { local, source } of code) {
+    assert.ok(!QUIET_TEXT.test(source), `src/${local} usa text-(--quiet): usa text-muted-foreground`);
   }
 });
