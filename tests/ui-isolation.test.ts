@@ -90,6 +90,55 @@ const CSS_FILES = ["showcase/showcase.css", "styles/index.css", "styles/tokens.c
 const importsIcons = (local: string, source: string) =>
   specifiers(source).filter((s) => /^components\/Icons(\.tsx)?$/.test(target(local, s) ?? ""));
 
+// 12. HU-0019 (A-3): la escala tipográfica. Siete tamaños y un factor, en :root y en los dos tamaños del texto.
+const FS_TOKENS = ["micro", "small", "body", "heading", "title", "figure", "dialog"];
+const TEXT_SIZES = ["compact", "large"];
+const MIN_FONT_PX = 11;
+
+/** Las declaraciones `--nombre: valor` del bloque cuyo selector es exactamente `selector` (el último gana). */
+function declarations(css: string, selector: string): Map<string, string> {
+  const found = new Map<string, string>();
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  for (const block of css.matchAll(new RegExp(`(?:^|\\n)${escaped}\\s*\\{([^}]*)\\}`, "g"))) {
+    for (const item of block[1].matchAll(/(--[a-z0-9-]+)\s*:\s*([^;]+);/g)) found.set(item[1], item[2].trim());
+  }
+  return found;
+}
+const fontPx = (value: string | undefined) => (value && /^\d+(\.\d+)?px$/.test(value) ? parseFloat(value) : NaN);
+/** Problemas de la escala en el texto de tokens.css; vacío si está bien. */
+function scaleProblems(css: string): string[] {
+  const problems: string[] = [];
+  const normal = declarations(css, ":root");
+  const sizes = new Map(TEXT_SIZES.map((size) => [size, declarations(css, `:root[data-text-size="${size}"]`)]));
+  if (!normal.has("--esc")) problems.push(":root no declara --esc");
+  for (const [size, map] of sizes) if (!map.has("--esc")) problems.push(`:root[data-text-size="${size}"] no declara --esc`);
+  for (const name of FS_TOKENS) {
+    const token = `--fs-${name}`;
+    const values = [["normal", normal], ...sizes].map(([label, map]) => [label as string, fontPx((map as Map<string, string>).get(token))] as const);
+    for (const [label, px] of values) {
+      if (Number.isNaN(px)) problems.push(`${token} no está en px en ${label}`);
+      else if (px < MIN_FONT_PX) problems.push(`${token} vale ${px}px en ${label} (mínimo ${MIN_FONT_PX})`);
+    }
+    const [normalPx, largePx] = [values[0][1], values[2][1]];
+    if (!Number.isNaN(normalPx) && !Number.isNaN(largePx) && largePx <= normalPx) problems.push(`${token}: grande (${largePx}) no supera a normal (${normalPx})`);
+  }
+  return problems;
+}
+/** Cada `--fs-<x>` que usa un texto debe existir en la escala. */
+const usedFontTokens = (source: string) => [...source.matchAll(/--fs-([a-z0-9-]+)/g)].map((m) => m[1]);
+
+// 13. Sin tamaños sueltos: `text-[<n>px|rem|em]`. Las tres muestras de AppearanceDialog enseñan cada opción con un
+// tamaño fijo (lista cerrada).
+const LOOSE_TEXT_SIZE = /\btext-\[\s*\d*\.?\d+\s*(?:px|rem|em)\s*\]/g;
+const SAMPLE_FILE = "features/appearance/AppearanceDialog.tsx";
+const SAMPLE_SIZES = ["text-[11px]", "text-[15px]", "text-[19px]"];
+const looseSizes = (source: string) => source.match(LOOSE_TEXT_SIZE) ?? [];
+// ...y nada de la escala anterior de sesiones.
+const OLD_SESSION_SCALE = /--session-|data-session-text|dataset\s*\.\s*sessionText\b/;
+
+// 14. `--quiet` no colorea texto: da 3,4:1 en oscuro y 2,9:1 en claro. Queda para puntos, rayas y separadores.
+const QUIET_TEXT = /\btext-\(--quiet\)/;
+
 const FOCUS_OWNERS = [
   "features/instances/useLiveUsage.ts",
   "features/scan/useBackgroundRefresh.ts",
@@ -231,6 +280,36 @@ test("9 · canario: cada detector marca fugas sintéticas, también con rutas de
   assert.ok(importsIcons("app/x.tsx", 'import { A } from "@/components/Icons";').length > 0);
   assert.deepEqual(importsIcons("app/x.tsx", 'import { XIcon } from "lucide-react";'), []);
 
+  // 12
+  const goodScale = [
+    ":root {",
+    ...FS_TOKENS.map((n) => `  --fs-${n}: 12px;`),
+    "  --esc: 1;",
+    "}",
+    ...TEXT_SIZES.flatMap((size, i) => [`:root[data-text-size="${size}"] {`, ...FS_TOKENS.map((n) => `  --fs-${n}: ${i ? 14 : 11}px;`), "  --esc: 1;", "}"]),
+  ].join("\n");
+  assert.deepEqual(scaleProblems(goodScale), [], "la escala de muestra es válida");
+  assert.ok(scaleProblems(goodScale.replace("--fs-body: 12px;", "--fs-body: 15px;")).some((p) => p.includes("--fs-body")), "no marcó un grande que no supera a normal");
+  assert.ok(scaleProblems(goodScale.replace("--fs-micro: 11px;", "--fs-micro: 10px;")).some((p) => p.includes("10px")), "no marcó un valor bajo 11 px");
+  assert.ok(scaleProblems(goodScale.replace(/ {2}--fs-title: 12px;\n/, "")).some((p) => p.includes("--fs-title")), "no marcó un token que falta");
+  assert.ok(scaleProblems(goodScale.replace("--fs-small: 12px;", "--fs-small: 0.7rem;")).some((p) => p.includes("--fs-small")), "no marcó una unidad que no es px");
+  assert.ok(scaleProblems(goodScale.replace("  --esc: 1;\n}\n:root[data-text-size=\"compact\"]", "}\n:root[data-text-size=\"compact\"]")).some((p) => p.includes("--esc")), "no marcó --esc ausente");
+  assert.deepEqual(usedFontTokens("text-(length:--fs-micro) text-(length:--fs-tiny)"), ["micro", "tiny"]);
+
+  // 13
+  assert.deepEqual(looseSizes('className="text-[11px] text-[0.7rem] text-[.8em] text-[ 9px ]"').length, 4);
+  assert.deepEqual(looseSizes('className="text-xs text-(length:--fs-micro) text-[var(--x)] text-[color:red]"'), []);
+  for (const sample of ["--session-title-size: 12px;", 'root.dataset.sessionText = "a"', 'root[data-session-text="large"]', "text-(length:--session-meta-size)"]) {
+    assert.ok(OLD_SESSION_SCALE.test(sample), sample);
+  }
+  assert.ok(!OLD_SESSION_SCALE.test("sessionTextSize: comfortable"), "el campo guardado sessionTextSize se queda");
+
+  // 14
+  assert.ok(QUIET_TEXT.test('className="text-(--quiet) font-mono"'));
+  assert.ok(QUIET_TEXT.test('className="hover:text-(--quiet)"'));
+  assert.ok(!QUIET_TEXT.test('className="bg-(--quiet) h-px"'));
+  assert.ok(!QUIET_TEXT.test('className="text-muted-foreground"'));
+
   // Rutas de Windows
   assert.equal(toPosix("features\\scan\\useBackgroundRefresh.ts"), FOCUS_OWNERS[1]);
   assert.equal(target("features\\scan\\x.ts", "../../lib/bridge"), "lib/bridge");
@@ -249,5 +328,35 @@ test("11 · components/Icons.tsx no existe: los iconos son de lucide y la marca 
   for (const { local, source } of code) {
     const leaks = importsIcons(local, source);
     assert.deepEqual(leaks, [], `src/${local} importa ${leaks.join(", ")}`);
+  }
+});
+
+test("12 · la escala tipográfica: siete --fs-* y --esc en los tres tamaños, ninguno bajo 11 px, y el catálogo enganchado", () => {
+  const tokens = read(join(src, "styles", "tokens.css"));
+  assert.deepEqual(scaleProblems(tokens), []);
+  const theme = read(join(src, "styles", "ui-theme.css"));
+  assert.match(theme, /--text-xs:\s*var\(--fs-small\)/, "ui-theme.css no engancha --text-xs a --fs-small");
+  assert.match(theme, /--text-sm:\s*var\(--fs-body\)/, "ui-theme.css no engancha --text-sm a --fs-body");
+  for (const { local, source } of code) {
+    for (const name of usedFontTokens(source)) {
+      assert.ok(FS_TOKENS.includes(name), `src/${local} usa --fs-${name}, que no existe en tokens.css`);
+    }
+  }
+});
+
+test("13 · sin tamaños sueltos de texto ni restos de --session-* o data-session-text", () => {
+  for (const { local, source } of code) {
+    const loose = looseSizes(source);
+    if (local === SAMPLE_FILE) assert.deepEqual([...new Set(loose)].sort(), SAMPLE_SIZES, `${local}: las muestras cambiaron`);
+    else assert.deepEqual(loose, [], `src/${local} fija un tamaño de texto: usa text-(length:--fs-<x>)`);
+  }
+  for (const { local, source } of files) {
+    assert.ok(!OLD_SESSION_SCALE.test(source), `src/${local} menciona la escala anterior (--session-*, data-session-text)`);
+  }
+});
+
+test("14 · --quiet no colorea texto: text-(--quiet) no existe en src/", () => {
+  for (const { local, source } of code) {
+    assert.ok(!QUIET_TEXT.test(source), `src/${local} usa text-(--quiet): usa text-muted-foreground`);
   }
 });

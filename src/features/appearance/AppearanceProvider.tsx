@@ -31,10 +31,10 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
   useLayoutEffect(() => {
     const root = document.documentElement;
     root.classList.add(`theme-${resolvedTheme}`);
-    root.dataset.sessionText = sessionTextSize;
+    root.dataset.textSize = sessionTextSize;
     return () => {
       root.classList.remove(`theme-${resolvedTheme}`);
-      delete root.dataset.sessionText;
+      delete root.dataset.textSize;
     };
   }, [resolvedTheme, sessionTextSize]);
 
