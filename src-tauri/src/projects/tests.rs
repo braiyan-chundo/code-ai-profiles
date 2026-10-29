@@ -1185,17 +1185,216 @@ fn projects_serializes_contract_names() {
 }
 
 #[test]
-fn projects_join_relative_never_leaves_the_base() {
-    let base = Path::new("/base");
+fn projects_split_parts_never_leaves_the_base() {
+    let parts = |rel: &str, parent: bool| split_parts(Path::new(rel), parent);
     assert_eq!(
-        join_relative(base, Path::new("apps/web/./package.json")),
-        Some(base.join("apps").join("web").join("package.json"))
+        parts("apps/web/./package.json", false),
+        Some(vec!["apps".into(), "web".into(), "package.json".into()])
     );
     assert_eq!(
-        join_relative(base, Path::new("apps\\web")),
-        Some(base.join("apps").join("web"))
+        parts("apps\\web", false),
+        Some(vec!["apps".into(), "web".into()])
     );
-    assert_eq!(join_relative(base, Path::new("../fuera")), None);
-    assert_eq!(join_relative(base, Path::new("a/../../b")), None);
-    assert_eq!(join_relative(base, Path::new("/etc/passwd")), None);
+    assert_eq!(parts("../fuera", false), None);
+    assert_eq!(parts("a/../../b", false), None);
+    assert_eq!(parts("/etc/passwd", false), None);
+    assert_eq!(
+        parts("../hermano/x", true),
+        Some(vec!["..".into(), "hermano".into(), "x".into()])
+    );
+}
+
+/// Entorno sin `canonicalize`: las pruebas léxicas no tocan el disco.
+fn lexical_env(deny: &[&str]) -> ProjectEnv {
+    ProjectEnv {
+        home: None,
+        deny: deny.iter().map(PathBuf::from).collect(),
+        limits: Limits::default(),
+        cloud: |_, _| false,
+    }
+}
+
+// R-1 · La ruta de un repo se decide de forma léxica, sin tocar el disco.
+#[test]
+fn projects_repo_paths_are_decided_lexically() {
+    let root = Path::new("/no-existe-code-ai/p");
+    let env = lexical_env(&["/no-existe-code-ai/home/.claude"]);
+    let unix = |raw: &str| lexical_repo_path(root, raw, &env, false);
+    let windows = |raw: &str| lexical_repo_path(root, raw, &env, true);
+
+    assert_eq!(
+        unix("apps/./web"),
+        RepoPath::Inside(PathBuf::from("apps").join("web"))
+    );
+    assert_eq!(unix("."), RepoPath::Inside(PathBuf::new()));
+    assert_eq!(unix("apps/../web"), RepoPath::Inside(PathBuf::from("web")));
+    assert_eq!(unix("../fuera"), RepoPath::Outside);
+    assert_eq!(unix("apps/../../fuera"), RepoPath::Outside);
+    assert_eq!(unix("/srv/repo"), RepoPath::Outside);
+    assert_eq!(unix("../home/.claude/x"), RepoPath::Forbidden);
+    assert_eq!(unix("/no-existe-code-ai/home/.claude"), RepoPath::Forbidden);
+
+    assert_eq!(windows(r"\\host\share\repo"), RepoPath::Outside, "UNC");
+    assert_eq!(
+        windows("//host/share/repo"),
+        RepoPath::Outside,
+        "UNC with slashes"
+    );
+    assert_eq!(windows("C:x"), RepoPath::Outside, "drive-relative");
+    assert_eq!(windows(r"C:\repo"), RepoPath::Outside);
+    assert_eq!(windows(r"\repo"), RepoPath::Outside);
+    assert_eq!(
+        windows(r"apps\web"),
+        RepoPath::Inside(PathBuf::from("apps").join("web"))
+    );
+}
+
+#[cfg(unix)]
+fn set_mode(path: &Path, mode: u32) {
+    use std::os::unix::fs::PermissionsExt;
+    fs::set_permissions(path, fs::Permissions::from_mode(mode)).expect("set mode");
+}
+
+// R-1 · Una ruta de fuera bajo una carpeta sin permisos da `outside` sin intentar abrirla.
+#[cfg(unix)]
+#[test]
+fn projects_outside_repo_is_not_touched_on_disk() {
+    let fixture = Fixture::new("outside-locked");
+    fixture.write("cerrada/repo/package.json", "{}");
+    fixture.write(
+        "p/.metodo/config.json",
+        config(json!([
+            { "nombre": "absoluto", "ruta": fixture.path("cerrada/repo").to_string_lossy() },
+            { "nombre": "relativo", "ruta": "../cerrada/repo" }
+        ])),
+    );
+    set_mode(&fixture.path("cerrada"), 0o000);
+    let outcome = read_project_folder(&fixture.path("p"), &fixture.env());
+    set_mode(&fixture.path("cerrada"), 0o755);
+
+    let info = outcome.info.expect("info");
+    assert_eq!(info.repos[0].status, ProjectRepoStatus::Outside);
+    assert_eq!(info.repos[1].status, ProjectRepoStatus::Outside);
+    assert!(outcome
+        .warnings
+        .iter()
+        .all(|warning| warning.scope != ProjectWarningScope::Repo));
+}
+
+// R-4 · Un symlink que sale de la carpeta no se sigue: su destino ni se consulta.
+#[cfg(unix)]
+#[test]
+fn projects_symlink_targets_outside_are_not_followed() {
+    use std::os::unix::fs::symlink;
+    let fixture = Fixture::new("symlink-locked");
+    write_reference_project(&fixture, "p");
+    fixture.write("cerrada/metricas.json", metrics(1, &[], None));
+    let metrics_link = fixture.path("p/hu/HU-0002-registro/metricas.json");
+    fs::remove_file(&metrics_link).expect("remove metrics");
+    symlink(fixture.path("cerrada/metricas.json"), &metrics_link).expect("absolute symlink");
+    // Cadena relativa dentro de la carpeta: se sigue.
+    fixture.write("p/docs/real.md", timeline(&["2026-11-02 09:30"]));
+    symlink("real.md", fixture.path("p/docs/enlace.md")).expect("inner link");
+    let timeline_link = fixture.path("p/hu/HU-0001-agenda/seguimiento.md");
+    fs::remove_file(&timeline_link).expect("remove timeline");
+    symlink("../../docs/enlace.md", &timeline_link).expect("relative chain");
+    // Relativo que sube por encima de la carpeta.
+    symlink(
+        "../../../../cerrada/metricas.json",
+        fixture.path("p/hu/HU-0003-portal/seguimiento.md"),
+    )
+    .expect("relative escape");
+    // Bucle.
+    symlink("bucle-b", fixture.path("p/hu/HU-0001-agenda/bucle-a")).expect("loop a");
+    symlink("bucle-a", fixture.path("p/hu/HU-0001-agenda/bucle-b")).expect("loop b");
+
+    set_mode(&fixture.path("cerrada"), 0o000);
+    let (info, warnings) = read_v4(&fixture, "p");
+    let ctx = ReadContext {
+        root: fixture.path("p"),
+        env: &fixture.env(),
+    };
+    let looped = ctx.read(Path::new("hu/HU-0001-agenda/bucle-a"), ReadMode::Whole(10));
+    set_mode(&fixture.path("cerrada"), 0o755);
+
+    let metrics_warning = warnings_for(&warnings, ProjectWarningScope::Metrics, "HU-0002");
+    assert_eq!(metrics_warning.len(), 1);
+    assert!(
+        metrics_warning[0].message.contains("fuera"),
+        "{}",
+        metrics_warning[0].message
+    );
+    let timeline_warning = warnings_for(&warnings, ProjectWarningScope::Timeline, "HU-0003");
+    assert_eq!(timeline_warning.len(), 1);
+    assert!(
+        timeline_warning[0].message.contains("fuera"),
+        "{}",
+        timeline_warning[0].message
+    );
+    assert_eq!(info.last_activity.as_deref(), Some("2026-11-02T09:30"));
+    assert_eq!(looped, Err(Skip::Unreadable));
+}
+
+// R-2 · Una carpeta que solo está en la nube no se lista.
+#[test]
+fn projects_cloud_only_folders_are_not_listed() {
+    let fixture = Fixture::new("cloud");
+    write_reference_project(&fixture, "p");
+    let mut env = fixture.env();
+    env.cloud = |path, metadata| metadata.is_dir() && path.ends_with("hu");
+    let outcome = read_project_folder(&fixture.path("p"), &env);
+    let info = outcome.info.expect("info");
+    assert!(info.histories.is_empty());
+    let warning = warnings_for(&outcome.warnings, ProjectWarningScope::History, "hu");
+    assert_eq!(warning.len(), 1);
+    assert!(
+        warning[0].message.contains("nube"),
+        "{}",
+        warning[0].message
+    );
+
+    let mut env = fixture.env();
+    env.cloud = |path, _| path.ends_with("metricas.json");
+    let outcome = read_project_folder(&fixture.path("p"), &env);
+    let warning = warnings_for(&outcome.warnings, ProjectWarningScope::Metrics, "HU-0002");
+    assert!(warning[0].message.contains("nube"));
+    assert_eq!(outcome.info.expect("info").totals.histories, 0);
+}
+
+// R-10 · Tope de avisos.
+#[test]
+fn projects_warnings_are_capped() {
+    let fixture = Fixture::new("warnings");
+    fixture.write("p/.metodo/config.json", config(json!([])));
+    for index in 0..30 {
+        fixture.write(&format!("p/hu/HU-{index:04}-x/hu.md"), "sin encabezado\n");
+    }
+    let (info, warnings) = read_v4(&fixture, "p");
+    assert_eq!(info.histories.len(), 30);
+    assert_eq!(warnings.len(), MAX_WARNINGS);
+    let last = warnings.last().expect("summary");
+    assert_eq!(last.scope, ProjectWarningScope::Limit);
+    assert_eq!(last.target, None);
+    assert!(last.message.contains("11"), "{}", last.message);
+}
+
+// R-5 · Textos de TCC.
+#[test]
+fn projects_info_plist_explains_every_protected_location() {
+    let plist = include_str!("../../Info.plist");
+    for key in [
+        "NSDesktopFolderUsageDescription",
+        "NSDocumentsFolderUsageDescription",
+        "NSDownloadsFolderUsageDescription",
+        "NSRemovableVolumesUsageDescription",
+        "NSNetworkVolumesUsageDescription",
+    ] {
+        assert!(plist.contains(&format!("<key>{key}</key>")), "{key}");
+    }
+    assert_eq!(
+        plist
+            .matches("<string>Code AI Profiles lee, sin cambiar nada,")
+            .count(),
+        5
+    );
 }

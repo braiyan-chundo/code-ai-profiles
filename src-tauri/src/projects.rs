@@ -4,13 +4,13 @@
 //! `hu/HU-*/hu.md`, `metricas.json`, la fecha de cada fila de `seguimiento.md`, los manifiestos de la
 //! raíz de cada repo y, de `.git`, la rama, el SHA y la fecha del reflog. No se escribe nada en la
 //! carpeta, no se ejecuta nada de ella (ningún `Command::new` aquí) y no se usa la red. Todo pasa por
-//! `ReadContext`, que canonicaliza cada ruta, exige que quede dentro de la carpeta y fuera de la lista
-//! de exclusión (`~/.claude`, `app_data` y el perfil de la original). Lo único que se escribe es
+//! `ReadContext`, que recorre cada ruta componente a componente sin seguir symlinks que salgan de la
+//! carpeta, y exige que quede dentro de ella y fuera de la lista de exclusión (`~/.claude`, `app_data` y el perfil de la original). Lo único que se escribe es
 //! `<app_data>/projects.json`, con `write_json_atomic`.
 
 use super::*;
 use chrono::{NaiveDate, NaiveDateTime, SecondsFormat};
-use std::{io::ErrorKind, path::Component};
+use std::{collections::VecDeque, io::ErrorKind, path::Component};
 
 mod git;
 mod method;
@@ -37,6 +37,9 @@ const REFLOG_TAIL: u64 = 64 * KIB;
 const TITLE_CHARS: usize = 200;
 const SUMMARY_CHARS: usize = 1_000;
 const TEXT_CHARS: usize = 120;
+/// Avisos por proyecto: los primeros y uno final «y N más».
+const MAX_WARNINGS: usize = 20;
+const MAX_SYMLINK_HOPS: usize = 40;
 
 // ── Contrato IPC (A-3) ──────────────────────────────────────────────────────
 
@@ -404,6 +407,8 @@ pub(crate) struct ProjectEnv {
     home: Option<PathBuf>,
     deny: Vec<PathBuf>,
     limits: Limits,
+    /// Detecta archivos y carpetas que solo están en la nube. Inyectable en pruebas.
+    cloud: fn(&Path, &fs::Metadata) -> bool,
 }
 
 impl ProjectEnv {
@@ -419,6 +424,7 @@ impl ProjectEnv {
             home,
             deny: normalized,
             limits,
+            cloud: |_, metadata| is_cloud_placeholder(metadata),
         }
     }
 
@@ -509,18 +515,58 @@ pub(crate) struct ReadContext<'a> {
 }
 
 impl<'a> ReadContext<'a> {
-    /// Canonicaliza `root.join(rel)`, exige que quede dentro de la carpeta y fuera de `deny`.
+    /// Recorre `rel` desde la raíz componente a componente con `symlink_metadata`. Un symlink se
+    /// resuelve con `read_link` y su destino se comprueba de forma léxica **antes** de tocarlo: si sale
+    /// de la carpeta o cae en `deny`, no se sigue (ni siquiera un `stat` del destino). Devuelve una
+    /// ruta dentro de la raíz sin symlinks y sus metadatos.
     fn resolve(&self, rel: &Path) -> Result<(PathBuf, fs::Metadata), Skip> {
-        let joined = join_relative(&self.root, rel).ok_or(Skip::Outside)?;
-        let canonical = fs::canonicalize(joined).map_err(|error| io_skip(&error))?;
-        if self.env.is_denied(&canonical) {
-            return Err(Skip::Forbidden);
+        let root = &self.root;
+        let mut pending: VecDeque<String> = split_parts(rel, false).ok_or(Skip::Outside)?.into();
+        let mut current = root.clone();
+        let mut hops = 0;
+        while let Some(part) = pending.pop_front() {
+            if part == ".." {
+                // `current` no contiene symlinks, así que subir de forma léxica es correcto.
+                if current == *root {
+                    return Err(Skip::Outside);
+                }
+                current.pop();
+                continue;
+            }
+            let next = current.join(&part);
+            if self.env.is_denied(&next) {
+                return Err(Skip::Forbidden);
+            }
+            let metadata = fs::symlink_metadata(&next).map_err(|error| io_skip(&error))?;
+            if !metadata.file_type().is_symlink() {
+                current = next;
+                continue;
+            }
+            hops += 1;
+            if hops > MAX_SYMLINK_HOPS {
+                return Err(Skip::Unreadable);
+            }
+            let target = fs::read_link(&next).map_err(|error| io_skip(&error))?;
+            let mut parts: VecDeque<String> = if target.is_absolute() || target.has_root() {
+                let target = lexical_normalize(&comparable(&target));
+                if self.env.is_denied(&target) {
+                    return Err(Skip::Forbidden);
+                }
+                if !is_within(&target, &comparable(root)) {
+                    return Err(Skip::Outside);
+                }
+                current = root.clone();
+                split_parts(&relative_to(&target, &comparable(root)), false)
+                    .ok_or(Skip::Unreadable)?
+                    .into()
+            } else {
+                split_parts(&target, true).ok_or(Skip::Outside)?.into()
+            };
+            parts.extend(pending.drain(..));
+            pending = parts;
         }
-        if !is_within(&comparable(&canonical), &comparable(&self.root)) {
-            return Err(Skip::Outside);
-        }
-        let metadata = fs::metadata(&canonical).map_err(|error| io_skip(&error))?;
-        Ok((canonical, metadata))
+        let metadata = fs::metadata(&current).map_err(|error| io_skip(&error))?;
+        Ok((current, metadata))
     }
 
     pub(crate) fn entry(&self, rel: &Path) -> Result<EntryKind, Skip> {
@@ -539,6 +585,10 @@ impl<'a> ReadContext<'a> {
         if !metadata.is_dir() {
             return Err(Skip::NotFile);
         }
+        // Listar una carpeta que solo está en la nube obliga al sistema a descargar su contenido.
+        if (self.env.cloud)(&canonical, &metadata) {
+            return Err(Skip::Cloud);
+        }
         let entries = fs::read_dir(&canonical).map_err(|error| io_skip(&error))?;
         Ok(entries
             .filter_map(Result::ok)
@@ -552,7 +602,7 @@ impl<'a> ReadContext<'a> {
         if !metadata.is_file() {
             return Err(Skip::NotFile);
         }
-        if is_cloud_placeholder(&metadata) {
+        if (self.env.cloud)(&canonical, &metadata) {
             return Err(Skip::Cloud);
         }
         let size = metadata.len();
@@ -662,24 +712,22 @@ fn comparable(path: &Path) -> PathBuf {
     }
 }
 
-/// Une `rel` a `base` partiendo por `/` y `\\`, para que una ruta del método (`apps/web`,
-/// `.metodo/config.json`) funcione igual en las tres plataformas. `None` si `rel` intenta subir o es
-/// absoluta.
-fn join_relative(base: &Path, rel: &Path) -> Option<PathBuf> {
+/// Los componentes de una ruta relativa, partidos por `/` y `\`, sin `.`. `None` si es absoluta, si
+/// tiene `..` y no se permite, o si en Windows un componente lleva `:` (`C:x`).
+fn split_parts(rel: &Path, allow_parent: bool) -> Option<Vec<String>> {
     if rel.has_root() || rel.is_absolute() {
         return None;
     }
-    let text = rel.to_str()?;
-    let mut joined = base.to_path_buf();
-    for part in text.split(['/', '\\']) {
+    let mut parts = Vec::new();
+    for part in rel.to_str()?.split(['/', '\\']) {
         match part {
             "" | "." => {}
-            ".." => return None,
+            ".." if !allow_parent => return None,
             part if cfg!(target_os = "windows") && part.contains(':') => return None,
-            part => joined.push(part),
+            part => parts.push(part.to_string()),
         }
     }
-    Some(joined)
+    Some(parts)
 }
 
 fn component_eq(left: Component<'_>, right: Component<'_>) -> bool {
@@ -963,6 +1011,7 @@ fn read_project_folder(path: &Path, env: &ProjectEnv) -> ReadOutcome {
     };
     let mut warnings = Vec::new();
     let info = build_info(&opened.ctx, &config, &opened.folder_name, &mut warnings);
+    cap_warnings(&mut warnings);
     ReadOutcome {
         canonical,
         status: ProjectStatus::V4,
@@ -970,6 +1019,20 @@ fn read_project_folder(path: &Path, env: &ProjectEnv) -> ReadOutcome {
         info: Some(info),
         warnings,
     }
+}
+
+/// Deja los primeros avisos y uno final «y N más», para que un proyecto muy roto no llene la página.
+fn cap_warnings(warnings: &mut Vec<ProjectWarning>) {
+    if warnings.len() <= MAX_WARNINGS {
+        return;
+    }
+    let hidden = warnings.len() - (MAX_WARNINGS - 1);
+    warnings.truncate(MAX_WARNINGS - 1);
+    warnings.push(ProjectWarning::new(
+        ProjectWarningScope::Limit,
+        None,
+        format!("Y {hidden} avisos más que no se muestran."),
+    ));
 }
 
 fn build_info(
@@ -1056,7 +1119,60 @@ fn build_info(
     }
 }
 
-/// Un repo se lee solo si su ruta queda dentro de la carpeta y fuera de `deny`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) enum RepoPath {
+    Forbidden,
+    Outside,
+    /// Ruta relativa a la raíz, ya normalizada (sin `.` ni `..`).
+    Inside(PathBuf),
+}
+
+/// Decide, **sin tocar el disco**, dónde cae la `ruta` de un repo. Una ruta absoluta, con raíz, UNC
+/// (`\\host\share`), relativa a unidad (`C:x`) o que sube por encima de la carpeta queda fuera: así
+/// nunca se abre una ruta de red (SMB), se monta un volumen ni se pide permiso por una carpeta que la
+/// persona no eligió. La exclusión se mira antes, también de forma léxica.
+pub(crate) fn lexical_repo_path(
+    root: &Path,
+    raw: &str,
+    env: &ProjectEnv,
+    windows: bool,
+) -> RepoPath {
+    let path = Path::new(raw);
+    let rooted = path.is_absolute()
+        || path.has_root()
+        || raw.starts_with('/')
+        || (windows && (raw.starts_with('\\') || raw.contains(':')));
+    if rooted {
+        return if env.is_denied(&lexical_normalize(path)) {
+            RepoPath::Forbidden
+        } else {
+            RepoPath::Outside
+        };
+    }
+    let mut joined = root.to_path_buf();
+    for part in raw.split(['/', '\\']) {
+        match part {
+            "" | "." => {}
+            ".." => {
+                joined.pop();
+            }
+            part => joined.push(part),
+        }
+    }
+    if env.is_denied(&joined) {
+        return RepoPath::Forbidden;
+    }
+    let root = comparable(root);
+    let joined = comparable(&joined);
+    if !is_within(&joined, &root) {
+        return RepoPath::Outside;
+    }
+    RepoPath::Inside(relative_to(&joined, &root))
+}
+
+/// Un repo se lee solo si su ruta queda dentro de la carpeta y fuera de `deny`. Lo que queda fuera
+/// se decide de forma léxica; lo de dentro se recorre con `ReadContext`, sin seguir symlinks que
+/// salgan.
 fn resolve_repo(
     ctx: &ReadContext<'_>,
     entry: &method::RepoEntry,
@@ -1070,47 +1186,26 @@ fn resolve_repo(
         ));
         return (ProjectRepoStatus::Unreadable, None);
     };
-    let raw_path = Path::new(raw);
-    let joined = if raw_path.is_absolute() || raw_path.has_root() {
-        lexical_normalize(raw_path)
-    } else {
-        let mut joined = ctx.root.clone();
-        for part in raw.split(['/', '\\']).filter(|part| !part.is_empty()) {
-            joined.push(part);
-        }
-        lexical_normalize(&joined)
+    let rel = match lexical_repo_path(&ctx.root, raw, ctx.env, cfg!(target_os = "windows")) {
+        RepoPath::Forbidden => return (ProjectRepoStatus::Forbidden, None),
+        RepoPath::Outside => return (ProjectRepoStatus::Outside, None),
+        RepoPath::Inside(rel) => rel,
     };
-    if ctx.env.is_denied(&joined) {
-        return (ProjectRepoStatus::Forbidden, None);
-    }
-    let lexically_inside = is_within(&comparable(&joined), &comparable(&ctx.root));
-    let canonical = match fs::canonicalize(&joined) {
-        Ok(canonical) => canonical,
-        Err(error) => {
-            let status = match io_skip(&error) {
-                Skip::Missing if !lexically_inside => ProjectRepoStatus::Outside,
-                Skip::Missing => ProjectRepoStatus::Missing,
-                _ => {
-                    warnings.push(ProjectWarning::new(
-                        ProjectWarningScope::Repo,
-                        Some(&entry.name),
-                        "No se pudo acceder a la carpeta del repo.",
-                    ));
-                    ProjectRepoStatus::Unreadable
-                }
-            };
-            return (status, None);
+    let (resolved, metadata) = match ctx.resolve(&rel) {
+        Ok(resolved) => resolved,
+        Err(Skip::Missing) => return (ProjectRepoStatus::Missing, None),
+        Err(Skip::Outside) => return (ProjectRepoStatus::Outside, None),
+        Err(Skip::Forbidden) => return (ProjectRepoStatus::Forbidden, None),
+        Err(_) => {
+            warnings.push(ProjectWarning::new(
+                ProjectWarningScope::Repo,
+                Some(&entry.name),
+                "No se pudo acceder a la carpeta del repo.",
+            ));
+            return (ProjectRepoStatus::Unreadable, None);
         }
     };
-    if ctx.env.is_denied(&canonical) {
-        return (ProjectRepoStatus::Forbidden, None);
-    }
-    let root = comparable(&ctx.root);
-    let canonical = comparable(&canonical);
-    if !is_within(&canonical, &root) {
-        return (ProjectRepoStatus::Outside, None);
-    }
-    if !canonical.is_dir() {
+    if !metadata.is_dir() {
         warnings.push(ProjectWarning::new(
             ProjectWarningScope::Repo,
             Some(&entry.name),
@@ -1118,7 +1213,10 @@ fn resolve_repo(
         ));
         return (ProjectRepoStatus::Unreadable, None);
     }
-    (ProjectRepoStatus::Ok, Some(relative_to(&canonical, &root)))
+    (
+        ProjectRepoStatus::Ok,
+        Some(relative_to(&comparable(&resolved), &comparable(&ctx.root))),
+    )
 }
 
 // ── Operaciones (A-3) ───────────────────────────────────────────────────────
