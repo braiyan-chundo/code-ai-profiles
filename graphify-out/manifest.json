@@ -1,7 +1,7 @@
 {
   "package.json": {
-    "mtime": 1793248694.2953522,
-    "ast_hash": "b0c323ad5b156506e176a04fcfd0e380",
+    "mtime": 1793256878.1169841,
+    "ast_hash": "24a915dc9b760555e0205356feea8ae7",
     "semantic_hash": ""
   },
   "scripts/graphify.mjs": {
@@ -10,8 +10,8 @@
     "semantic_hash": ""
   },
   "src-tauri/build.rs": {
-    "mtime": 1793248079.0759096,
-    "ast_hash": "d7a605872f0ad2a37c4b2e82bc23479a",
+    "mtime": 1793254494.0695837,
+    "ast_hash": "63478bfabaea68106103582ce1e25f78",
     "semantic_hash": ""
   },
   "src-tauri/capabilities/default.json": {
@@ -20,8 +20,8 @@
     "semantic_hash": "dca85abae9a1b384a67b37f98b2f05ea"
   },
   "src-tauri/src/lib.rs": {
-    "mtime": 1793248079.0763562,
-    "ast_hash": "8def98dea7023e950c81514b6c5c1d58",
+    "mtime": 1793255603.5242627,
+    "ast_hash": "d2158a8bbcdb0d3527186c9c3327b2ed",
     "semantic_hash": ""
   },
   "src-tauri/src/main.rs": {
@@ -30,7 +30,7 @@
     "semantic_hash": "a85314b3cde4f5d5b64d48e0c7b18194"
   },
   "src-tauri/tauri.conf.json": {
-    "mtime": 1793248694.2959507,
+    "mtime": 1793249717.5888107,
     "ast_hash": "b343d0001ca322044f8e42d1fd0249a6",
     "semantic_hash": ""
   },
@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/lib/bridge.ts": {
-    "mtime": 1793248079.0815449,
-    "ast_hash": "73d663c1062cdca1f061b15125ab71fc",
+    "mtime": 1793254711.0466185,
+    "ast_hash": "14f4ed1cce5d566a1cefbe257b57fded",
     "semantic_hash": ""
   },
   "src/main.tsx": {
@@ -55,8 +55,8 @@
     "semantic_hash": ""
   },
   "src/types.ts": {
-    "mtime": 1793248079.0818222,
-    "ast_hash": "5db66c310bf9ab85f553d76c81af0c5d",
+    "mtime": 1793254633.259701,
+    "ast_hash": "373e4832118cea31746c682310fbbf4d",
     "semantic_hash": ""
   },
   "src/vite-env.d.ts": {
@@ -95,12 +95,12 @@
     "semantic_hash": ""
   },
   ".github/workflows/validate.yml": {
-    "mtime": 1793211133.6838255,
-    "ast_hash": "19e1de0d135a52d920d4e65d9cf66eae",
+    "mtime": 1793257859.1569796,
+    "ast_hash": "3dc5acdb3cabacf4eee93fab82c5dc9a",
     "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1793209030.586793,
+    "mtime": 1793256451.5455067,
     "ast_hash": "410c38c8000293668a2519c2682b53c0",
     "semantic_hash": ""
   },
@@ -110,12 +110,12 @@
     "semantic_hash": ""
   },
   "DESIGN.md": {
-    "mtime": 1793248079.0269308,
-    "ast_hash": "84a2dad92af138e6a9457bdbc81f2563",
+    "mtime": 1793255603.5191388,
+    "ast_hash": "14568f7bc811af88f0ca5b3f1fdbfb7f",
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1793248712.822723,
+    "mtime": 1793249717.5840127,
     "ast_hash": "ebb9b4ff539a63cfa986a15bd34edec6",
     "semantic_hash": ""
   },
@@ -160,7 +160,7 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1793248703.9794273,
+    "mtime": 1793249717.5838673,
     "ast_hash": "f409df3084c59cf7c60bcd5ce00d9e54",
     "semantic_hash": ""
   },
@@ -170,7 +170,7 @@
     "semantic_hash": ""
   },
   "docs/versionado.document.md": {
-    "mtime": 1793248712.8249018,
+    "mtime": 1793249717.5841222,
     "ast_hash": "8df0c5e5ecc603fa75c2278e2117380b",
     "semantic_hash": ""
   },
@@ -305,13 +305,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0010-publicar-el-fix-de-actualizacion-como-ve/hu.md": {
-    "mtime": 1793139698.048063,
-    "ast_hash": "2cefc8b38240e984ff3d03523220587b",
+    "mtime": 1793251563.6315553,
+    "ast_hash": "3c29dda614ee2c2d419a9f92b073a3d1",
     "semantic_hash": ""
   },
   "hu/HU-0010-publicar-el-fix-de-actualizacion-como-ve/seguimiento.md": {
-    "mtime": 1793248720.934934,
-    "ast_hash": "8bc68e775fd6d1a16cca452c12a4ed32",
+    "mtime": 1793251549.9372199,
+    "ast_hash": "3e64f92d2c624a7b15a089aba28747a7",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/arquitectura.md": {
@@ -325,13 +325,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/seguimiento.md": {
-    "mtime": 1793151376.2704172,
-    "ast_hash": "03b2dfce533f61253cdbb9af1e11d731",
+    "mtime": 1793251556.068558,
+    "ast_hash": "7b26e55a3af83eb26bf98850fec0b3f6",
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793248720.9361048,
-    "ast_hash": "18d223362d1aa08e6425b4dab91e7fa8",
+    "mtime": 1793258835.0965695,
+    "ast_hash": "2763a410a344d48302f4dfc40d8c65eb",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -345,23 +345,23 @@
     "semantic_hash": ""
   },
   "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md": {
-    "mtime": 1793248683.2831995,
+    "mtime": 1793249717.5876954,
     "ast_hash": "431d7c87e4c99c1207f11c6743a197ce",
     "semantic_hash": ""
   },
   "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/seguimiento.md": {
-    "mtime": 1793248683.7138104,
+    "mtime": 1793249717.5878928,
     "ast_hash": "0cb7759bcad33e19d0c8acdc38e20914",
     "semantic_hash": ""
   },
   "hu/HU-0013-describir-lo-construido-reglas-arquitect/hu.md": {
-    "mtime": 1793150906.1075335,
-    "ast_hash": "ab69a34d96e86fe3e79cf0deb5e15199",
+    "mtime": 1793251555.6795459,
+    "ast_hash": "e03f56a77d3d73ea28316f6e8f8f8013",
     "semantic_hash": ""
   },
   "hu/HU-0013-describir-lo-construido-reglas-arquitect/seguimiento.md": {
-    "mtime": 1793150900.2321014,
-    "ast_hash": "5bf51bf2a4699c8d2bb1220ccc6946cd",
+    "mtime": 1793251555.688844,
+    "ast_hash": "a814d2847a58f55368c1a2b3fcbd35bc",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/revision-tecnica.md": {
@@ -390,8 +390,8 @@
     "semantic_hash": ""
   },
   "docs/arquitectura/frontend.md": {
-    "mtime": 1793248079.027418,
-    "ast_hash": "88e835a6fecf40e4ac640480ddd7346c",
+    "mtime": 1793258447.835995,
+    "ast_hash": "3d3d3fe29488cbced2a343791d559cbd",
     "semantic_hash": ""
   },
   "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md": {
@@ -400,8 +400,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/seguimiento.md": {
-    "mtime": 1793202402.0316432,
-    "ast_hash": "c9d2f32813442863fe5ca2d735bb2fde",
+    "mtime": 1793251556.1073773,
+    "ast_hash": "c91d2be779e4fb9471eb3dd326cb8ccb",
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/arquitectura.md": {
@@ -415,8 +415,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/seguimiento.md": {
-    "mtime": 1793192634.4825969,
-    "ast_hash": "25148813fc6524999ee815ef94df8e57",
+    "mtime": 1793251556.1479692,
+    "ast_hash": "d5b846a8415c2a8a10fc532bfc702acf",
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/briefs/frontend.md": {
@@ -519,14 +519,9 @@
     "ast_hash": "5039ed152d22c9a8f58c9a526bdbde5d",
     "semantic_hash": ""
   },
-  "src/features/appearance/AppearanceDialog.tsx": {
-    "mtime": 1793248079.0791442,
-    "ast_hash": "a3ee56c3f3ede64a514cff1e5df84104",
-    "semantic_hash": ""
-  },
   "src/features/appearance/index.ts": {
-    "mtime": 1793211133.7002313,
-    "ast_hash": "aac80411aa5b800b92961fd9f0490e25",
+    "mtime": 1793255923.715467,
+    "ast_hash": "9def3a6317406561efde5dfe58ec0354",
     "semantic_hash": ""
   },
   "src/features/dashboard/index.ts": {
@@ -535,13 +530,13 @@
     "semantic_hash": ""
   },
   "src/features/instances/InstanceEditor.tsx": {
-    "mtime": 1793248079.079706,
-    "ast_hash": "c4f0609f1bb1dda57a7b1a2d9600a3e0",
+    "mtime": 1793255987.1639454,
+    "ast_hash": "e5d3b503db3d9df737fa4361da0b393e",
     "semantic_hash": ""
   },
   "src/features/instances/UsageMeter.tsx": {
-    "mtime": 1793248079.0799725,
-    "ast_hash": "506aa4214819fbfee7a5b36ce4b170e5",
+    "mtime": 1793255603.5292907,
+    "ast_hash": "ce186407847b5fb657f702848b9fad6c",
     "semantic_hash": ""
   },
   "src/features/instances/index.ts": {
@@ -570,13 +565,13 @@
     "semantic_hash": ""
   },
   "src/features/sessions/SessionContextMeter.tsx": {
-    "mtime": 1793248079.0803382,
-    "ast_hash": "f1c34f5f686a6d72378ce51bb8b9c443",
+    "mtime": 1793255603.5295148,
+    "ast_hash": "1a474f3f5d5f3245c48116ac5174b76d",
     "semantic_hash": ""
   },
   "src/features/sessions/SessionTransferDialog.tsx": {
-    "mtime": 1793248079.080564,
-    "ast_hash": "4ad48fbb7ebe49def17d651e08ffbbda",
+    "mtime": 1793255603.5297642,
+    "ast_hash": "b0b0651863d72e2188b201b5dc9eedb0",
     "semantic_hash": ""
   },
   "src/features/sessions/index.ts": {
@@ -585,13 +580,13 @@
     "semantic_hash": ""
   },
   "src/features/updates/ApplicationUpdateDialog.tsx": {
-    "mtime": 1793248079.0806782,
-    "ast_hash": "757d668e43c272a6c6e5b55a539c6fb3",
+    "mtime": 1793255603.5299892,
+    "ast_hash": "8d296e23597e483b4cf41a4c2a3cdda3",
     "semantic_hash": ""
   },
   "src/features/updates/OriginalApplicationUpdateDialog.tsx": {
-    "mtime": 1793248079.0808015,
-    "ast_hash": "78c89eaa114557dbad1726e26e4fd07c",
+    "mtime": 1793255603.5300925,
+    "ast_hash": "00a208f180d07d4d37158ab014288bcb",
     "semantic_hash": ""
   },
   "src/features/updates/index.ts": {
@@ -660,13 +655,13 @@
     "semantic_hash": ""
   },
   "src/app/providers/DialogsProvider.tsx": {
-    "mtime": 1793211133.6955507,
-    "ast_hash": "1455f724151c443639085e16f4a3a823",
+    "mtime": 1793257166.1024864,
+    "ast_hash": "4b31c90731587a14e4dd9d6a99ad553b",
     "semantic_hash": ""
   },
   "src/app/providers/dialogs-context.ts": {
-    "mtime": 1793192634.4855208,
-    "ast_hash": "d6ca49b3088dad353550f0dc49de9da2",
+    "mtime": 1793257166.1023235,
+    "ast_hash": "ace15f38a9e8cba2ad2681cd5251ae60",
     "semantic_hash": ""
   },
   "src/features/appearance/AppearanceProvider.tsx": {
@@ -680,8 +675,8 @@
     "semantic_hash": ""
   },
   "src/features/instances/DeleteInstanceDialog.tsx": {
-    "mtime": 1793211133.7010546,
-    "ast_hash": "d9ef595d4ae2541f33ce76d470f952e6",
+    "mtime": 1793255603.5284932,
+    "ast_hash": "9365e74fbafcf77000fac3144de10c68",
     "semantic_hash": ""
   },
   "src/features/instances/useInstanceActions.ts": {
@@ -690,8 +685,8 @@
     "semantic_hash": ""
   },
   "src/features/sessions/UnlinkSessionDialog.tsx": {
-    "mtime": 1793211133.704767,
-    "ast_hash": "0c854e1f4b0ca6ddf242afda7ada972e",
+    "mtime": 1793255603.5298727,
+    "ast_hash": "6b8f15a610ed5fe5df563b3ccdc960d0",
     "semantic_hash": ""
   },
   "src/features/sessions/useSessionActions.ts": {
@@ -715,23 +710,23 @@
     "semantic_hash": ""
   },
   "src/app/layout/AppShell.tsx": {
-    "mtime": 1793248079.0769565,
-    "ast_hash": "197250140e6c6702b61b4e81842bdc2d",
+    "mtime": 1793255603.5244331,
+    "ast_hash": "514929d815d9b90af2db96f449aaee63",
     "semantic_hash": ""
   },
   "src/app/layout/DialogHost.tsx": {
-    "mtime": 1793248079.077156,
-    "ast_hash": "4d29471b8b1aa5ac3232823dd98a46a6",
+    "mtime": 1793258606.0076754,
+    "ast_hash": "cb1ba63fd3615f95339efa66c8cc2d9f",
     "semantic_hash": ""
   },
   "src/app/layout/Statusbar.tsx": {
-    "mtime": 1793248079.0775452,
-    "ast_hash": "f406c14477dd51efb18b66c199f09add",
+    "mtime": 1793255603.524942,
+    "ast_hash": "32c765f828bc32d687385a9536087b98",
     "semantic_hash": ""
   },
   "src/app/layout/Titlebar.tsx": {
-    "mtime": 1793248079.0777147,
-    "ast_hash": "59ffa534f768ce6420ab4b687b5728bc",
+    "mtime": 1793255603.525065,
+    "ast_hash": "2c316050b10b8263dd3cbf946f2979b9",
     "semantic_hash": ""
   },
   "src/app/layout/window-actions.ts": {
@@ -740,13 +735,13 @@
     "semantic_hash": ""
   },
   "src/app/providers/AppProviders.tsx": {
-    "mtime": 1793192634.4851055,
-    "ast_hash": "3ea38dfe036c857e083b9ae0186c64c8",
+    "mtime": 1793257166.1026886,
+    "ast_hash": "5198735d54762e81793a994e5ef3a11d",
     "semantic_hash": ""
   },
   "src/app/router.tsx": {
-    "mtime": 1793211133.6957154,
-    "ast_hash": "8cdcac376dda73aa2bdf07b51a720fb4",
+    "mtime": 1793257223.032857,
+    "ast_hash": "b70cf6f99de38b63d5ce686c95f89cc2",
     "semantic_hash": ""
   },
   "src/features/dashboard/FeedbackBanners.tsx": {
@@ -810,13 +805,13 @@
     "semantic_hash": ""
   },
   "src/components/ui/alert-dialog.tsx": {
-    "mtime": 1793248079.0784953,
-    "ast_hash": "df2bf8a48246f0b9e345926c103925c9",
+    "mtime": 1793255603.5257313,
+    "ast_hash": "8706e3a379214e05cd71a9c1b37f1e2b",
     "semantic_hash": ""
   },
   "src/components/ui/alert.tsx": {
-    "mtime": 1793202402.0342212,
-    "ast_hash": "7e7fc6c9ee0505dbbcb98601c360a248",
+    "mtime": 1793255603.525853,
+    "ast_hash": "c90dea5dfecf3b5bb78c23d964ae0445",
     "semantic_hash": ""
   },
   "src/components/ui/aspect-ratio.tsx": {
@@ -835,8 +830,8 @@
     "semantic_hash": ""
   },
   "src/components/ui/badge.tsx": {
-    "mtime": 1793248079.0785758,
-    "ast_hash": "034083b458c67a1664e3a9f6a560449c",
+    "mtime": 1793255603.5261552,
+    "ast_hash": "86e0be7b6d6e3240faacb761fb73b481",
     "semantic_hash": ""
   },
   "src/components/ui/breadcrumb.tsx": {
@@ -855,8 +850,8 @@
     "semantic_hash": ""
   },
   "src/components/ui/button.tsx": {
-    "mtime": 1793248079.0786707,
-    "ast_hash": "30729be365d14eed8bad49d5277af35c",
+    "mtime": 1793255603.5263045,
+    "ast_hash": "1a3bbbf15295d4772ada6d29fa554a31",
     "semantic_hash": ""
   },
   "src/components/ui/calendar.tsx": {
@@ -865,8 +860,8 @@
     "semantic_hash": ""
   },
   "src/components/ui/card.tsx": {
-    "mtime": 1793202402.0365317,
-    "ast_hash": "da336d86cb7a0738c8fa2a96cca9b435",
+    "mtime": 1793255603.5264487,
+    "ast_hash": "589ceca9de93f3c3103b9f4715434178",
     "semantic_hash": ""
   },
   "src/components/ui/carousel.tsx": {
@@ -880,8 +875,8 @@
     "semantic_hash": ""
   },
   "src/components/ui/checkbox.tsx": {
-    "mtime": 1793202402.0372174,
-    "ast_hash": "f7b43d868379fe7edc25b27f3aab9bb8",
+    "mtime": 1793255603.526571,
+    "ast_hash": "5bdcddbe4a10069aa16a7537aaafc63b",
     "semantic_hash": ""
   },
   "src/components/ui/code-block.tsx": {
@@ -910,8 +905,8 @@
     "semantic_hash": ""
   },
   "src/components/ui/dialog.tsx": {
-    "mtime": 1793248079.0787592,
-    "ast_hash": "f1bd66bf0f6840e7d558062c397996bd",
+    "mtime": 1793255603.526699,
+    "ast_hash": "86e8c97c4487fb7814377edda52ff671",
     "semantic_hash": ""
   },
   "src/components/ui/direction.tsx": {
@@ -930,13 +925,13 @@
     "semantic_hash": ""
   },
   "src/components/ui/empty.tsx": {
-    "mtime": 1793202402.038786,
-    "ast_hash": "75cd8d3d75f0b3440de5667bcd5e68d4",
+    "mtime": 1793255603.5268269,
+    "ast_hash": "702fd7df0376bc95709b70a08c7b9100",
     "semantic_hash": ""
   },
   "src/components/ui/field.tsx": {
-    "mtime": 1793202402.0389848,
-    "ast_hash": "76207f3fa4f80f31291f2603d209c3b8",
+    "mtime": 1793255603.5269635,
+    "ast_hash": "f8a92e9b54ec75f71a4895e53a4ceb7d",
     "semantic_hash": ""
   },
   "src/components/ui/hover-card.tsx": {
@@ -955,23 +950,23 @@
     "semantic_hash": ""
   },
   "src/components/ui/input.tsx": {
-    "mtime": 1793248079.0788383,
-    "ast_hash": "985a0e6d3b4e44cc1864faa17170e582",
+    "mtime": 1793255603.527075,
+    "ast_hash": "1f3ddaa4a08ce4621b9c644ad325ffcc",
     "semantic_hash": ""
   },
   "src/components/ui/item.tsx": {
-    "mtime": 1793202402.039699,
-    "ast_hash": "ea6f6259ce33d586802534705386644c",
+    "mtime": 1793255603.5272007,
+    "ast_hash": "7ffb9e1856ce17396a237d387a380b94",
     "semantic_hash": ""
   },
   "src/components/ui/kbd.tsx": {
-    "mtime": 1793248079.0789256,
-    "ast_hash": "c43efcdee62761bbf87045ab54222365",
+    "mtime": 1793255603.527333,
+    "ast_hash": "8a0550dd3aa469b0ded287e0a670a00c",
     "semantic_hash": ""
   },
   "src/components/ui/label.tsx": {
-    "mtime": 1793202402.040031,
-    "ast_hash": "e58d3e796d3b58fcc1dafe3262d9cb4e",
+    "mtime": 1793255603.5274866,
+    "ast_hash": "2528990d9f0ed315622ea8475dd7754f",
     "semantic_hash": ""
   },
   "src/components/ui/marker.tsx": {
@@ -1025,8 +1020,8 @@
     "semantic_hash": ""
   },
   "src/components/ui/radio-group.tsx": {
-    "mtime": 1793202402.0422184,
-    "ast_hash": "3110d3751562c049986843e3b4e0b81c",
+    "mtime": 1793255603.527642,
+    "ast_hash": "ffd2676531f12722f4d971f5e0d1b721",
     "semantic_hash": ""
   },
   "src/components/ui/resizable.tsx": {
@@ -1050,13 +1045,13 @@
     "semantic_hash": ""
   },
   "src/components/ui/sheet.tsx": {
-    "mtime": 1793211133.6986403,
-    "ast_hash": "1da3655c6a7e1ee02755eb4b4474f52e",
+    "mtime": 1793255603.5277965,
+    "ast_hash": "f9de6114d3249f95a3518e9ba47e8a4b",
     "semantic_hash": ""
   },
   "src/components/ui/sidebar.tsx": {
-    "mtime": 1793248079.0790362,
-    "ast_hash": "5e23cdcb287b88a014e2851cdad2e5ee",
+    "mtime": 1793255603.528014,
+    "ast_hash": "3e292bd7f6e7ab1d626ce2f37c7dbaec",
     "semantic_hash": ""
   },
   "src/components/ui/skeleton.tsx": {
@@ -1085,13 +1080,13 @@
     "semantic_hash": ""
   },
   "src/components/ui/table.tsx": {
-    "mtime": 1793202402.0439644,
-    "ast_hash": "323570a2a4e0e18b7acef8f8609cf311",
+    "mtime": 1793256900.658256,
+    "ast_hash": "00b854ac94435e5d552a680baaf90c28",
     "semantic_hash": ""
   },
   "src/components/ui/tabs.tsx": {
-    "mtime": 1793202402.0440745,
-    "ast_hash": "940d1c557de6fa77780e60f35f9b8cbe",
+    "mtime": 1793255905.6849966,
+    "ast_hash": "c2db0b8318c9cdd7bc202722d52637d3",
     "semantic_hash": ""
   },
   "src/components/ui/textarea.tsx": {
@@ -1110,8 +1105,8 @@
     "semantic_hash": ""
   },
   "src/components/ui/tooltip.tsx": {
-    "mtime": 1793202402.0451286,
-    "ast_hash": "22246acacfd97518547c5295bb52e040",
+    "mtime": 1793255603.5281522,
+    "ast_hash": "21c1b72766fb6560cb723aefc6f36f00",
     "semantic_hash": ""
   },
   "src/components/ui/trace.tsx": {
@@ -1475,8 +1470,8 @@
     "semantic_hash": ""
   },
   "tests/ui-isolation.test.ts": {
-    "mtime": 1793248079.0823424,
-    "ast_hash": "41cfa12e4a0c172653c8dd5f1dc84f3c",
+    "mtime": 1793258606.0271776,
+    "ast_hash": "83a24875fc9d1c6b42c7244c29cf9c3c",
     "semantic_hash": ""
   },
   "showcase.html": {
@@ -1505,8 +1500,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0016-rediseno-con-sidebar-dashboard-y-pagina-/seguimiento.md": {
-    "mtime": 1793211133.6918974,
-    "ast_hash": "efdad037ccb743d8e2cf23b9750f22a8",
+    "mtime": 1793251556.1895742,
+    "ast_hash": "b2013951a1a91c44ce252c7c2558ebb1",
     "semantic_hash": ""
   },
   "hu/HU-0016-rediseno-con-sidebar-dashboard-y-pagina-/arquitectura.md": {
@@ -1520,13 +1515,13 @@
     "semantic_hash": ""
   },
   "src/app/layout/AppSidebar.tsx": {
-    "mtime": 1793248079.077054,
-    "ast_hash": "66cb5e8a4beeaa4352215028b54f43d5",
+    "mtime": 1793257955.754259,
+    "ast_hash": "dd8fc27e018160ad9e7b58c1748f3c12",
     "semantic_hash": ""
   },
   "src/app/layout/PageHeader.tsx": {
-    "mtime": 1793248079.0774393,
-    "ast_hash": "55902e0eed5af31070a31c0ee122adfb",
+    "mtime": 1793255603.5248215,
+    "ast_hash": "61413f1c5d9c813a2aefb9a3d0749771",
     "semantic_hash": ""
   },
   "src/app/routes/instance/InstanceRoute.tsx": {
@@ -1560,8 +1555,8 @@
     "semantic_hash": ""
   },
   "src/app/layout/FeedbackArea.tsx": {
-    "mtime": 1793248079.0772655,
-    "ast_hash": "472e7890951ce01abb045b054cdc67b5",
+    "mtime": 1793255603.5247157,
+    "ast_hash": "91dae23f717eca5db8ce4acb52f0c51e",
     "semantic_hash": ""
   },
   "src/app/layout/PageContent.tsx": {
@@ -1575,38 +1570,38 @@
     "semantic_hash": ""
   },
   "src/app/routes/dashboard/DashboardRoute.tsx": {
-    "mtime": 1793248079.0779195,
-    "ast_hash": "fc0bd58dfd7cec182e9e7404f8a00211",
+    "mtime": 1793255603.5252025,
+    "ast_hash": "312c7b8602491f747cfa1e01dd216994",
     "semantic_hash": ""
   },
   "src/app/routes/dashboard/SummaryCards.tsx": {
-    "mtime": 1793248079.0780141,
-    "ast_hash": "3e468fe639c933aabbc7d806fe2aec0e",
+    "mtime": 1793255603.5253155,
+    "ast_hash": "eefc3e8cd1dcfa77ed49c938e1189bb8",
     "semantic_hash": ""
   },
   "src/app/routes/dashboard/UsageRanking.tsx": {
-    "mtime": 1793248079.0781033,
-    "ast_hash": "ea3261119ab39168e334cd07dff20dc2",
+    "mtime": 1793255603.5254354,
+    "ast_hash": "48fbc320850f6395aca6e09db3b7316a",
     "semantic_hash": ""
   },
   "src/components/NoticeAlert.tsx": {
-    "mtime": 1793248079.0783844,
-    "ast_hash": "c95e39099a5518a623bcd740acde0742",
+    "mtime": 1793257594.4847493,
+    "ast_hash": "c485acbea37ee6823301e2408df2c997",
     "semantic_hash": ""
   },
   "src/features/instances/InstanceDetail.tsx": {
-    "mtime": 1793248079.079586,
-    "ast_hash": "f62887cf972e73b0f78ec65d2d5e5d73",
+    "mtime": 1793255603.5286462,
+    "ast_hash": "d8e6b2b7dbbe7a411e6db6c44fa1ac0f",
     "semantic_hash": ""
   },
   "src/features/instances/InstanceStatusBadge.tsx": {
-    "mtime": 1793248079.0797963,
-    "ast_hash": "08a9dbcc7c00e2c3e68f2881fcd0d2fb",
+    "mtime": 1793255603.529004,
+    "ast_hash": "2900010a05c8091703255438259ca1ce",
     "semantic_hash": ""
   },
   "src/features/instances/UsageBar.tsx": {
-    "mtime": 1793248079.0798855,
-    "ast_hash": "1e5752acade325cfce3705828f8cc44f",
+    "mtime": 1793255603.5291364,
+    "ast_hash": "5db1257427e7c9fbe95102d98fa383af",
     "semantic_hash": ""
   },
   "src/features/instances/usage-tone.ts": {
@@ -1615,13 +1610,13 @@
     "semantic_hash": ""
   },
   "src/features/original-app/OriginalDetail.tsx": {
-    "mtime": 1793248079.0802355,
-    "ast_hash": "d413c5953f23a6e5e3c82b660aecd61b",
+    "mtime": 1793255603.5294034,
+    "ast_hash": "7c0b767015d0cfd705f9b24435b917f1",
     "semantic_hash": ""
   },
   "src/features/sessions/SessionList.tsx": {
-    "mtime": 1793248079.080436,
-    "ast_hash": "46eb0f2ef871441f6e074dce5ec27356",
+    "mtime": 1793256342.740898,
+    "ast_hash": "038a58aa347d0b84eda9a80d93a07616",
     "semantic_hash": ""
   },
   "hu/HU-0016-rediseno-con-sidebar-dashboard-y-pagina-/revision-tecnica.md": {
@@ -1645,13 +1640,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/seguimiento.md": {
-    "mtime": 1793248450.098186,
+    "mtime": 1793249717.5880435,
     "ast_hash": "c1634aa259feebb794451e0ba7a801f3",
     "semantic_hash": ""
   },
   "docs/arquitectura/backend.md": {
-    "mtime": 1793248079.0272994,
-    "ast_hash": "5ec1e906e7714a64f58b198e82969bdb",
+    "mtime": 1793258397.6367822,
+    "ast_hash": "faf628c3355df124062f69f15425655e",
     "semantic_hash": ""
   },
   "docs/decisiones/ADR-0002-modulos-rust-y-configuracion-en-compilacion.md": {
@@ -1675,8 +1670,8 @@
     "semantic_hash": ""
   },
   "src-tauri/src/config.rs": {
-    "mtime": 1793248079.0759888,
-    "ast_hash": "240ede2a667f7532701c99d974d2931e",
+    "mtime": 1793254494.069741,
+    "ast_hash": "cfc167394bd02aa37593f07b7fe414f4",
     "semantic_hash": ""
   },
   "src-tauri/src/original_update.rs": {
@@ -1725,8 +1720,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/seguimiento.md": {
-    "mtime": 1793248079.0738072,
-    "ast_hash": "3ca289a6fc1994826416162e4441c395",
+    "mtime": 1793251556.2305474,
+    "ast_hash": "9ad4067292800375de294b4530a867f2",
     "semantic_hash": ""
   },
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/referencia-sidebar.png": {
@@ -1755,8 +1750,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/seguimiento.md": {
-    "mtime": 1793248079.0747647,
-    "ast_hash": "44eaa51142466bcd7634e0006acd1dfa",
+    "mtime": 1793251556.272595,
+    "ast_hash": "28d15e19fc198c678eb06697aacbcc21",
     "semantic_hash": ""
   },
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/01-dashboard-avisos-A-1440-oscuro.png": {
@@ -2170,8 +2165,988 @@
     "semantic_hash": ""
   },
   "hu/HU-0012-icono-distintivo-en-el-dock-de-macos/metricas.json": {
-    "mtime": 1793248683.6594613,
+    "mtime": 1793249717.5877824,
     "ast_hash": "03738b121bd05a776312433584f2011d",
+    "semantic_hash": ""
+  },
+  "hu/HU-0010-publicar-el-fix-de-actualizacion-como-ve/metricas.json": {
+    "mtime": 1793251550.307908,
+    "ast_hash": "57f14f11f8c643840a0a92f72c4f0668",
+    "semantic_hash": ""
+  },
+  "hu/HU-0013-describir-lo-construido-reglas-arquitect/metricas.json": {
+    "mtime": 1793251556.0116117,
+    "ast_hash": "206d48f201d8e7a1860c9acf53d6f030",
+    "semantic_hash": ""
+  },
+  "hu/HU-0010-publicar-el-fix-de-actualizacion-como-ve/verificacion.md": {
+    "mtime": 1793251543.0288815,
+    "ast_hash": "a2e4102d323ffc180a85a6a8b114ceae",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/arquitectura.md": {
+    "mtime": 1793254291.3287098,
+    "ast_hash": "d5a6b7108cd61601e2f0fc77f4b48e3f",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/briefs/backend.md": {
+    "mtime": 1793254332.6323986,
+    "ast_hash": "3e74448f2dd0cfbc06bc5af2485fdc18",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/briefs/frontend.md": {
+    "mtime": 1793254377.7178557,
+    "ast_hash": "8f9ce1f679dfec5189f2da16dfdbe783",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/maqueta.html": {
+    "mtime": 1793253311.2670567,
+    "ast_hash": "71f6210f1e40e796e2f915b670457a6c",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/vista.md": {
+    "mtime": 1793253463.4489782,
+    "ast_hash": "eac92ef906d569c6eb375cc1087fa1fd",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/hu.md": {
+    "mtime": 1793255603.5225022,
+    "ast_hash": "1cedffa9bebb1b536222a74cabe0becf",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/seguimiento.md": {
+    "mtime": 1793258054.8285828,
+    "ast_hash": "b807155287ba83a9d6388b222382c133",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/arquitectura.md": {
+    "mtime": 1793254256.8046951,
+    "ast_hash": "bb115cf083343708680d2560e6235c86",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/maqueta.html": {
+    "mtime": 1793253316.8394945,
+    "ast_hash": "72614c6e7f3731e161c2f9491c335ba4",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/vista.md": {
+    "mtime": 1793253408.9840915,
+    "ast_hash": "75ef345187da2a5861bbaab8a870f4f1",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/hu.md": {
+    "mtime": 1793254569.0895925,
+    "ast_hash": "1e26dc248ae94b5bad96b8014ad5896a",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/seguimiento.md": {
+    "mtime": 1793258835.0954902,
+    "ast_hash": "879bae15c074d733e3ddef603147024a",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/capturas/00-permisos-mac-lo-necesita-1440-oscuro.png": {
+    "mtime": 1793253340.0233247,
+    "ast_hash": "2b3a059cb9cfc86e9b8a106ba3a0a7e9",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/capturas/01-permisos-mac-info-abierta-1440-oscuro.png": {
+    "mtime": 1793253340.0239613,
+    "ast_hash": "74524c88081edaa08dd3c015a9348dc6",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/capturas/02-permisos-mac-lo-necesita-1440-claro.png": {
+    "mtime": 1793253340.0243912,
+    "ast_hash": "018e539f5bf30adb357d643e0d89918c",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/capturas/03-apariencia-1440-oscuro.png": {
+    "mtime": 1793253340.0247478,
+    "ast_hash": "eabf54d844dfb87e47505568544c4dc4",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/capturas/04-apariencia-1440-claro.png": {
+    "mtime": 1793253340.025124,
+    "ast_hash": "a13cbf77ead241073257bc6fa558f204",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/capturas/05-permisos-mac-sin-uso-1440-oscuro.png": {
+    "mtime": 1793253340.0259328,
+    "ast_hash": "67361fcb9814c0b2d0bd4b370f05dc15",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/capturas/06-permisos-mac-admin-1440-claro.png": {
+    "mtime": 1793253340.0263252,
+    "ast_hash": "debaed89c6fccb523b2e0054a53b9031",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/capturas/07-permisos-windows-1440-oscuro.png": {
+    "mtime": 1793253340.0266535,
+    "ast_hash": "06c0256d14c9a894593b39fd9fe0fcbb",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/capturas/08-permisos-linux-1440-claro.png": {
+    "mtime": 1793253340.0269961,
+    "ast_hash": "851f5f3a408124439312396449b7e772",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/capturas/09-permisos-mac-980-oscuro-plegado-tooltip.png": {
+    "mtime": 1793253340.0273457,
+    "ast_hash": "ef1a3b7ffe6e8445fb80da6e4adf0ac3",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/capturas/10-permisos-mac-980-claro.png": {
+    "mtime": 1793253340.0276475,
+    "ast_hash": "49af17f06e9a7dda67656763c3004693",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/capturas/11-apariencia-980-claro-plegado.png": {
+    "mtime": 1793253340.0279477,
+    "ast_hash": "6cd4e41b6411f5a342c1f3698186c82e",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/capturas/12-apariencia-980-oscuro-windows.png": {
+    "mtime": 1793253340.0282414,
+    "ast_hash": "76180bf3f61a56f12c30d3b7d26019a1",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/capturas/13-variante-B-indice-1440-oscuro.png": {
+    "mtime": 1793253340.0285645,
+    "ast_hash": "a3a33bf89d5788f1cc06f9c231b2d883",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/capturas/14-variante-B-indice-980-oscuro.png": {
+    "mtime": 1793253340.028874,
+    "ast_hash": "8e73d8597a62d67e0b953cb0d1b3b8ef",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/capturas/15-editor-aviso-D4-1440-oscuro.png": {
+    "mtime": 1793253340.0292857,
+    "ast_hash": "2c5c8269351e25c6988e11e8e7296b0a",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/capturas/16-alternativa-D1-dialogo-1440-oscuro.png": {
+    "mtime": 1793253340.0296865,
+    "ast_hash": "2b09bb71ecc89d6a519b0e7f4b7bc174",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/capturas/17-alternativa-D1-dialogo-980-claro.png": {
+    "mtime": 1793253340.0300322,
+    "ast_hash": "dc2cca02edcabb958c7236d4b22da478",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/01-proyectos-1440-oscuro.png": {
+    "mtime": 1793253296.5357213,
+    "ast_hash": "ee2e7b43c2bd3bb219e55b75dbd1a691",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/02-proyectos-1440-claro.png": {
+    "mtime": 1793253297.105464,
+    "ast_hash": "dbfca2a07f9911541e66e2f3f9309595",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/03-proyectos-vacia-1440-oscuro.png": {
+    "mtime": 1793253297.6162002,
+    "ast_hash": "ab59502b41d444491915c173b443288f",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/04-proyectos-vacia-1440-claro.png": {
+    "mtime": 1793253298.1609988,
+    "ast_hash": "db4d752da2b24658a236069f00e0e592",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/05-proyectos-980-oscuro.png": {
+    "mtime": 1793253298.6293337,
+    "ast_hash": "dcc83956fbd15dc714890e09c83a3793",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/06-proyectos-980-claro-plegado.png": {
+    "mtime": 1793253299.1640258,
+    "ast_hash": "2dc5f6ab9d61d56b27feab822fc8f58a",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/07-anclar-valido-1440-oscuro.png": {
+    "mtime": 1793253299.6848452,
+    "ast_hash": "ce9ac3800ec6249fd7325486a4efd05c",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/08-anclar-valido-1440-claro.png": {
+    "mtime": 1793253300.2318926,
+    "ast_hash": "6d62058e24354651d3d2ea007156ed25",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/09-anclar-no-v4-1440-oscuro.png": {
+    "mtime": 1793253300.7697368,
+    "ast_hash": "5b4caab185e476884d345e5f3077023a",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/10-anclar-no-v4-980-claro.png": {
+    "mtime": 1793253301.3037612,
+    "ast_hash": "1b348bebb776e8409d14a20ab209ad6b",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/11-proyecto-1440-oscuro.png": {
+    "mtime": 1793253301.811928,
+    "ast_hash": "fd832bc9a80eaa18f4cbc17bcf8a078d",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/12-proyecto-1440-claro.png": {
+    "mtime": 1793253302.335692,
+    "ast_hash": "0ad9d19742d9725bca559a22cea40ff5",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/13-proyecto-completo-1440-oscuro.png": {
+    "mtime": 1793253302.875568,
+    "ast_hash": "663f05abdbf8758751ba653cfd9f8834",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/14-proyecto-completo-1440-claro.png": {
+    "mtime": 1793253303.4568708,
+    "ast_hash": "2c7822a484c9336c6e446d614554b897",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/15-proyecto-filtrado-1440-oscuro.png": {
+    "mtime": 1793253303.9762664,
+    "ast_hash": "22bddcab821c3b2154cea1b0a7e39cab",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/16-proyecto-varios-repos-1440-oscuro.png": {
+    "mtime": 1793253304.50196,
+    "ast_hash": "8ea1bb880f52e053db7610a4e90e8817",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/17-proyecto-varios-repos-completo-1440-claro.png": {
+    "mtime": 1793253305.1092932,
+    "ast_hash": "084d7565c720ddafee9589973c39b484",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/18-proyecto-varios-repos-sin-git-1440-oscuro.png": {
+    "mtime": 1793253305.6299286,
+    "ast_hash": "212710fc9860db56e0895707e4cf70f4",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/19-proyecto-980-oscuro.png": {
+    "mtime": 1793253306.150747,
+    "ast_hash": "c55d7ee0cdc6212a96792dfd592a0531",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/20-proyecto-980-claro-plegado.png": {
+    "mtime": 1793253306.6729116,
+    "ast_hash": "ee9b53086fa0ace60b5746e486b8522e",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/21-proyecto-roto-1440-oscuro.png": {
+    "mtime": 1793253317.3647223,
+    "ast_hash": "72f644107fc982149fbaf6819aa25697",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/diseno/capturas/22-sidebar-plegado-tooltip-1440-oscuro.png": {
+    "mtime": 1793253307.7433372,
+    "ast_hash": "4b1099ee3643fc4efd76fd077fb205a4",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/briefs/backend.md": {
+    "mtime": 1793254569.0502768,
+    "ast_hash": "1a08ae999b194813f544464b7d4a13a4",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/briefs/frontend.md": {
+    "mtime": 1793254569.0543017,
+    "ast_hash": "1a88954ed7f83e11f95bc1009ebc8fc5",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/medidas-antes.json": {
+    "mtime": 1793255653.5512207,
+    "ast_hash": "8ce33d373d6db73a399097b10cc05b2a",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/medidas-despues.json": {
+    "mtime": 1793255664.7088397,
+    "ast_hash": "daa3565eb8dc66e5b8ae556387a13af6",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/projects.rs": {
+    "mtime": 1793258687.038391,
+    "ast_hash": "5b4944349eee2c46339a7e11e49fc5f3",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/projects/git.rs": {
+    "mtime": 1793255517.1535013,
+    "ast_hash": "ec7801be2dffcc8f9be5278a1a64e6cb",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/projects/method.rs": {
+    "mtime": 1793255517.1580098,
+    "ast_hash": "69d2f34139fd00b4ffa86360a84736e1",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/projects/tech.rs": {
+    "mtime": 1793255517.16079,
+    "ast_hash": "8040a4eb9947e3b5d9b98725685e95ad",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/projects/tests.rs": {
+    "mtime": 1793258699.640129,
+    "ast_hash": "7f550d9a0a473f9b906e9de231e3dd06",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/apariencia-dark-comodo-1440.png": {
+    "mtime": 1793255542.9656048,
+    "ast_hash": "de8f62025e6639dda9193b4a96382518",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/apariencia-light-comodo-1440.png": {
+    "mtime": 1793255542.9681962,
+    "ast_hash": "ae6d070a37f833163afc43ed4a41ca69",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/dashboard-dark-comodo-1440.png": {
+    "mtime": 1793255542.970494,
+    "ast_hash": "cf38b51f1af38225878ecf6480c7ee84",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/dashboard-dark-comodo-980.png": {
+    "mtime": 1793255542.9728446,
+    "ast_hash": "d3638417e97ac41928a4a805d228d04b",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/dashboard-dark-compacto-1440.png": {
+    "mtime": 1793255542.9752917,
+    "ast_hash": "8ab03461cae2076d9d769f94ec445a0f",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/dashboard-dark-grande-1440.png": {
+    "mtime": 1793255542.9777198,
+    "ast_hash": "f86de9ecb9e18bf2a8b967e2b4f2ae5b",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/dashboard-light-comodo-1440.png": {
+    "mtime": 1793255542.9801986,
+    "ast_hash": "dc4d0900fe33aa228a719aa744279af5",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/dashboard-light-comodo-980.png": {
+    "mtime": 1793255542.98258,
+    "ast_hash": "7f30f8964dc3e9a0af06d808c1813fa4",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/dashboard-light-compacto-1440.png": {
+    "mtime": 1793255542.984774,
+    "ast_hash": "c6046d6d9225d660ee83238b0a9a0d4f",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/dashboard-light-grande-1440.png": {
+    "mtime": 1793255542.98709,
+    "ast_hash": "effac03519e1363a7a7e183788a161e6",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/editor-nueva-dark-comodo-1440.png": {
+    "mtime": 1793255542.9935787,
+    "ast_hash": "9109562e696ab68bffdb5500240a903f",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/editor-nueva-dark-comodo-980.png": {
+    "mtime": 1793255542.9956856,
+    "ast_hash": "a02f63246d7ddc48b51ce3882fdf0aae",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/editor-nueva-dark-compacto-1440.png": {
+    "mtime": 1793255542.9976847,
+    "ast_hash": "88174af6be880eff03dccec22866a443",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/editor-nueva-dark-grande-1440.png": {
+    "mtime": 1793255542.999798,
+    "ast_hash": "8ce64c7565436320871d948cad0e854c",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/editor-nueva-light-comodo-1440.png": {
+    "mtime": 1793255543.0018442,
+    "ast_hash": "2862edbf5fb87f68c35bfec9c6a3f1a4",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/editor-nueva-light-comodo-980.png": {
+    "mtime": 1793255543.0039933,
+    "ast_hash": "fd4fdb3f840d5fc7092a5940fd621f37",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/editor-nueva-light-compacto-1440.png": {
+    "mtime": 1793255543.006075,
+    "ast_hash": "70c307998d423b0c74d9c104fa4b7f72",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/editor-nueva-light-grande-1440.png": {
+    "mtime": 1793255543.0083768,
+    "ast_hash": "2ba8b186419f8ce8de6edd60db132ddf",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/instancia-dark-comodo-1440.png": {
+    "mtime": 1793255543.0155163,
+    "ast_hash": "3b5f1a5fc3d898976d8008e76b13d7b2",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/instancia-dark-comodo-980.png": {
+    "mtime": 1793255543.017826,
+    "ast_hash": "ea3dda75e0f117ad77a5ca20b1fd100a",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/instancia-dark-compacto-1440.png": {
+    "mtime": 1793255543.0198867,
+    "ast_hash": "eb3699c2b9b3d83c34b107e522e8e7e6",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/instancia-dark-grande-1440.png": {
+    "mtime": 1793255543.021999,
+    "ast_hash": "367e263ae22ed40c87ca396ee8a16831",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/instancia-light-comodo-1440.png": {
+    "mtime": 1793255543.0246694,
+    "ast_hash": "3607e8d1076eae18d78552feb71818e0",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/instancia-light-comodo-980.png": {
+    "mtime": 1793255543.0271637,
+    "ast_hash": "f48b762faae9f1b62750105eff105e1c",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/instancia-light-compacto-1440.png": {
+    "mtime": 1793255543.029303,
+    "ast_hash": "9aee74c344f00bc58cc5da6605efcb13",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/instancia-light-grande-1440.png": {
+    "mtime": 1793255543.0314534,
+    "ast_hash": "7416527674ca7189ad9ee62f8cd9812d",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/original-dark-comodo-1440.png": {
+    "mtime": 1793255543.03338,
+    "ast_hash": "6912eacc236a6a0067472e1e69d233ed",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/original-light-comodo-1440.png": {
+    "mtime": 1793255543.0354104,
+    "ast_hash": "c10fd5324024010cae5df76c456dadf2",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/sincronizar-dark-comodo-1440.png": {
+    "mtime": 1793255543.0373368,
+    "ast_hash": "1e9da775ffd92cbfc6472e3718151279",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/transferir-dark-comodo-1440.png": {
+    "mtime": 1793255543.0415423,
+    "ast_hash": "9d12b8d39ed2ddc91266f8c81aa8a115",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/transferir-light-comodo-1440.png": {
+    "mtime": 1793255543.0435643,
+    "ast_hash": "e7399bad7972958b38a237d303f50de0",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/medidas-paso2.json": {
+    "mtime": 1793256384.5259507,
+    "ast_hash": "280b2c5c9c5ba90e62942f743b1adc64",
+    "semantic_hash": ""
+  },
+  "src/app/routes/settings/SettingsRoute.tsx": {
+    "mtime": 1793258001.1268082,
+    "ast_hash": "d6938686138cb83af2f20ba80b4d5b27",
+    "semantic_hash": ""
+  },
+  "src/features/appearance/AppearanceSettings.tsx": {
+    "mtime": 1793258001.1259623,
+    "ast_hash": "89217c04d489de0b3ceedd0c97f3bbe3",
+    "semantic_hash": ""
+  },
+  "src/features/permissions/PermissionCard.tsx": {
+    "mtime": 1793258001.126266,
+    "ast_hash": "923f7e4e16e6ea6aeb3ca9b8d7f0a0e7",
+    "semantic_hash": ""
+  },
+  "src/features/permissions/PermissionsSettings.tsx": {
+    "mtime": 1793258001.1264827,
+    "ast_hash": "a983a12ac2dd3ff4552bdfba97005d96",
+    "semantic_hash": ""
+  },
+  "src/features/permissions/index.ts": {
+    "mtime": 1793255950.414471,
+    "ast_hash": "617b084c047717fc0b80fb9698831011",
+    "semantic_hash": ""
+  },
+  "src/features/permissions/permission-cards.ts": {
+    "mtime": 1793257251.3772278,
+    "ast_hash": "f0fb1e700e7ac890686fefef149cb3ea",
+    "semantic_hash": ""
+  },
+  "tests/permissions.test.ts": {
+    "mtime": 1793257260.0566435,
+    "ast_hash": "23344578f34dc69816ad994dc3c4677c",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/config-apariencia-dark-comodo-1440.png": {
+    "mtime": 1793256384.3281941,
+    "ast_hash": "02ba55eff764d26b266bbd3cad202f05",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/config-apariencia-dark-comodo-980.png": {
+    "mtime": 1793256384.4394064,
+    "ast_hash": "a2ac92b7c53b478584fd70291bccdabf",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/config-apariencia-dark-grande-980.png": {
+    "mtime": 1793256384.477867,
+    "ast_hash": "cc8fbe58dfc1fcf45f615a84e56fdfaa",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/config-apariencia-light-comodo-1440.png": {
+    "mtime": 1793256384.334954,
+    "ast_hash": "d8726c0d28eda3e3de217eb7f35085a9",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/config-apariencia-light-grande-980.png": {
+    "mtime": 1793256384.4818656,
+    "ast_hash": "012d2c8db12eb6202ed3505cb2a2e4b6",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/editor-d4-bloqueado-dark-comodo-1440.png": {
+    "mtime": 1793256384.3486238,
+    "ast_hash": "8d0ffbaf535563be29ca347bb4a69704",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/editor-d4-bloqueado-light-comodo-1440.png": {
+    "mtime": 1793256384.369611,
+    "ast_hash": "370f3bc56ed046a16972248916f81ec6",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/editor-d4-dark-comodo-1440.png": {
+    "mtime": 1793256384.3745046,
+    "ast_hash": "ef824d27383f012f22e5961e0870f294",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/editor-d4-dark-comodo-980.png": {
+    "mtime": 1793256384.4485998,
+    "ast_hash": "0f65c0e502abcd877308ac5ba524a4fe",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/editor-d4-light-comodo-1440.png": {
+    "mtime": 1793256384.3811288,
+    "ast_hash": "e6b43893e2f28f15c65ba92f81d893bd",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/editor-d4-light-comodo-980.png": {
+    "mtime": 1793256384.452592,
+    "ast_hash": "e22b54972189190f9fa1df06f17ca1b7",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/permisos-info-dark-comodo-1440.png": {
+    "mtime": 1793256384.3882852,
+    "ast_hash": "77ee07e3752b85aeca3995cc7e9258a7",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/permisos-info-light-comodo-1440.png": {
+    "mtime": 1793256384.3945763,
+    "ast_hash": "38cd025aa5faf32f054d7eb268cf2da8",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/permisos-linux-dark-comodo-1440.png": {
+    "mtime": 1793256384.4007144,
+    "ast_hash": "2315772367a3af4cba979bc3ebdfbffe",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/permisos-linux-light-comodo-1440.png": {
+    "mtime": 1793256384.4075828,
+    "ast_hash": "106ee300e8ee320e40172b0730a03362",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/permisos-necesita-dark-comodo-1440.png": {
+    "mtime": 1793256384.4141452,
+    "ast_hash": "1719f76045a2868b70deee455ba83be5",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/permisos-necesita-dark-comodo-980.png": {
+    "mtime": 1793256384.4632626,
+    "ast_hash": "b87f51b7df81ec55d8fb4bcaf12b4d87",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/permisos-necesita-dark-compacto-1440.png": {
+    "mtime": 1793256384.4855328,
+    "ast_hash": "764003246841725cdbfbb316746be669",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/permisos-necesita-dark-grande-980.png": {
+    "mtime": 1793256384.4930744,
+    "ast_hash": "a8351a55f48fc001d6a652770d9565e9",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/permisos-necesita-light-comodo-1440.png": {
+    "mtime": 1793256384.4207213,
+    "ast_hash": "f67dfc39a2dca75aac057cefc9644981",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/permisos-necesita-light-comodo-980.png": {
+    "mtime": 1793256384.4668977,
+    "ast_hash": "1fbf8fdbd15f80b510873f91eb8f130b",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/permisos-necesita-light-compacto-1440.png": {
+    "mtime": 1793256384.4888148,
+    "ast_hash": "11eacf6d12aa39021c8b59a09c130d50",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/permisos-necesita-light-grande-980.png": {
+    "mtime": 1793256384.4969378,
+    "ast_hash": "c662118ad2b7e2637872fae8c794c1c3",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/permisos-sin-uso-dark-comodo-1440.png": {
+    "mtime": 1793256384.4254885,
+    "ast_hash": "8ca6016917e14003779c76389de8f604",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/permisos-windows-dark-comodo-1440.png": {
+    "mtime": 1793256384.4311836,
+    "ast_hash": "51c0bf7f4dd4b9613feea23f7004391b",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso2/permisos-windows-light-comodo-1440.png": {
+    "mtime": 1793256384.4352825,
+    "ast_hash": "5d693b2bc8ef6439d5a54035373942f0",
+    "semantic_hash": ""
+  },
+  "src/features/projects/ProjectsProvider.tsx": {
+    "mtime": 1793257180.205898,
+    "ast_hash": "34c3271597636933876ace08fcdcf916",
+    "semantic_hash": ""
+  },
+  "src/features/projects/projects-context.ts": {
+    "mtime": 1793257180.2056112,
+    "ast_hash": "5f505f4fd7a5bab376c4ae9902448e66",
+    "semantic_hash": ""
+  },
+  "src/features/projects/projects-format.ts": {
+    "mtime": 1793256888.8466136,
+    "ast_hash": "da682cd9b787b9660767baeb5413dce4",
+    "semantic_hash": ""
+  },
+  "src/features/projects/projects-selectors.ts": {
+    "mtime": 1793258544.1081707,
+    "ast_hash": "56b9e584496369601ce74eeaf726dca2",
+    "semantic_hash": ""
+  },
+  "src/features/projects/projects-store.ts": {
+    "mtime": 1793258565.0434422,
+    "ast_hash": "acb9dc8f3b4587c3c2fe67e710e6800e",
+    "semantic_hash": ""
+  },
+  "src/features/projects/usePinProject.ts": {
+    "mtime": 1793256812.8827267,
+    "ast_hash": "1ca259b962f73996f09d9cbca6391203",
+    "semantic_hash": ""
+  },
+  "src/features/projects/useProjects.ts": {
+    "mtime": 1793256812.880529,
+    "ast_hash": "5c6764b868959c7c16a7a9fec7633401",
+    "semantic_hash": ""
+  },
+  "tests/projects.test.ts": {
+    "mtime": 1793258587.0482054,
+    "ast_hash": "6089316f2fccbbc29671806f4da3e9ae",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/revision-tecnica.md": {
+    "mtime": 1793256866.8780735,
+    "ast_hash": "6d24a1011901f8d6df2c92b115f595cd",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/medidas.json": {
+    "mtime": 1793257811.821105,
+    "ast_hash": "5be69857436ba490937df37ece5fa495",
+    "semantic_hash": ""
+  },
+  "src/app/layout/ProjectsSidebarGroup.tsx": {
+    "mtime": 1793257204.8975544,
+    "ast_hash": "5f32e93466f21b357de75bbce8ca8d61",
+    "semantic_hash": ""
+  },
+  "src/app/layout/sidebar-parts.tsx": {
+    "mtime": 1793257195.3081467,
+    "ast_hash": "47c2ad40aced7fea1f164877423a60a4",
+    "semantic_hash": ""
+  },
+  "src/app/providers/useStartPinProject.ts": {
+    "mtime": 1793257180.210347,
+    "ast_hash": "b8e0847f3e666ededcf6bede91cbf241",
+    "semantic_hash": ""
+  },
+  "src/app/routes/project/ProjectRoute.tsx": {
+    "mtime": 1793257232.040854,
+    "ast_hash": "981b6d9c22a00af904b65e63b9b97e44",
+    "semantic_hash": ""
+  },
+  "src/app/routes/projects/ProjectsRoute.tsx": {
+    "mtime": 1793257674.6157155,
+    "ast_hash": "7ba452fcba8fba69790d6f302ab49fa5",
+    "semantic_hash": ""
+  },
+  "src/features/projects/PinProjectDialog.tsx": {
+    "mtime": 1793258550.4734178,
+    "ast_hash": "d87e00f9fa9dc052c102e8fdded7033a",
+    "semantic_hash": ""
+  },
+  "src/features/projects/ProjectBrokenPage.tsx": {
+    "mtime": 1793258550.4733214,
+    "ast_hash": "5ebc11aa4e8ba300d5f51a89a2cdade1",
+    "semantic_hash": ""
+  },
+  "src/features/projects/ProjectCard.tsx": {
+    "mtime": 1793258550.4730978,
+    "ast_hash": "ce6d5ab31acdc040a4b87251f34c7580",
+    "semantic_hash": ""
+  },
+  "src/features/projects/ProjectConsumption.tsx": {
+    "mtime": 1793258550.4725206,
+    "ast_hash": "d4293eee74b0ce4ea0b6a74be7a6d033",
+    "semantic_hash": ""
+  },
+  "src/features/projects/ProjectFigures.tsx": {
+    "mtime": 1793257060.379558,
+    "ast_hash": "2bac209db88b5cff28be00e47744c23e",
+    "semantic_hash": ""
+  },
+  "src/features/projects/ProjectHero.tsx": {
+    "mtime": 1793258550.4723577,
+    "ast_hash": "2ecb599239a548a2afb71aa9034d9b16",
+    "semantic_hash": ""
+  },
+  "src/features/projects/ProjectHistories.tsx": {
+    "mtime": 1793258550.4737623,
+    "ast_hash": "c166af4638314591e458ac498f44ec0c",
+    "semantic_hash": ""
+  },
+  "src/features/projects/ProjectInitial.tsx": {
+    "mtime": 1793258550.4732208,
+    "ast_hash": "005b3f67d82dbbac8011516438297478",
+    "semantic_hash": ""
+  },
+  "src/features/projects/ProjectPage.tsx": {
+    "mtime": 1793258595.110293,
+    "ast_hash": "d3f7d3dbe7df3b9262e5031ff07616c0",
+    "semantic_hash": ""
+  },
+  "src/features/projects/ProjectRepos.tsx": {
+    "mtime": 1793258550.4735801,
+    "ast_hash": "e21fca11b77f8614a70fac20c31903a2",
+    "semantic_hash": ""
+  },
+  "src/features/projects/ProjectTechnologies.tsx": {
+    "mtime": 1793258550.4729798,
+    "ast_hash": "b7e955cc52e1cf9bb09399ea0a67b1ac",
+    "semantic_hash": ""
+  },
+  "src/features/projects/ProjectsView.tsx": {
+    "mtime": 1793258550.472835,
+    "ast_hash": "5cd92b1d23952882b4d79af33a2f65d0",
+    "semantic_hash": ""
+  },
+  "src/features/projects/StateBar.tsx": {
+    "mtime": 1793258550.4722204,
+    "ast_hash": "93a14e8eadb476a6cabceaffc6fc5e40",
+    "semantic_hash": ""
+  },
+  "src/features/projects/index.ts": {
+    "mtime": 1793258595.1104665,
+    "ast_hash": "69edf1209992726521856cb070caa034",
+    "semantic_hash": ""
+  },
+  "src/features/projects/projects-styles.ts": {
+    "mtime": 1793256995.285477,
+    "ast_hash": "70071aaa97833508e2926dec6d1dbfae",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/anclar-no-v4-claro-1440.png": {
+    "mtime": 1793257786.1578841,
+    "ast_hash": "822e56542cf5048aeacd33db260193ba",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/anclar-no-v4-oscuro-1440.png": {
+    "mtime": 1793257757.8017466,
+    "ast_hash": "495f7ccb44aa63a5e70a85a58b527b00",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/anclar-valido-claro-1440.png": {
+    "mtime": 1793257784.6583693,
+    "ast_hash": "e954b522aed3fe8ac6c7315065e21ba6",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/anclar-valido-oscuro-1440.png": {
+    "mtime": 1793257756.3155894,
+    "ast_hash": "a01f76e55ba643b253edc92ad55662c4",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/lista-claro-1440.png": {
+    "mtime": 1793257779.4009018,
+    "ast_hash": "8944186707d81ea15d8c08942a22705e",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/lista-claro-980-plegado.png": {
+    "mtime": 1793257790.6447327,
+    "ast_hash": "f3bb2835645eb5429aea92f4ead49a46",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/lista-oscuro-1440.png": {
+    "mtime": 1793257749.9630036,
+    "ast_hash": "1c37c10d2ef3580bd9b6f58b017335f7",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/lista-oscuro-980.png": {
+    "mtime": 1793257762.2474258,
+    "ast_hash": "3078299bb4c786aee67c0ea12a471091",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/lista-vacia-claro-1440.png": {
+    "mtime": 1793257805.2103662,
+    "ast_hash": "7b852b7d71a0c5c4bd0368e33cd82592",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/lista-vacia-oscuro-1440.png": {
+    "mtime": 1793257776.7316535,
+    "ast_hash": "032965e69225d7d93e7dae8f3a6e0fa5",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/pagina-claro-1440.png": {
+    "mtime": 1793257780.52809,
+    "ast_hash": "b4854ca403d13383ae2ad6c640ec1f1f",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/pagina-claro-980-plegado-completa.png": {
+    "mtime": 1793257791.8271773,
+    "ast_hash": "1626e2571026c4ca4bc4a231dc6d7feb",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/pagina-claro-980-plegado.png": {
+    "mtime": 1793257791.414079,
+    "ast_hash": "faaed9efea416e2d48f3559aa203fc01",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/pagina-filtrada-oscuro-1440.png": {
+    "mtime": 1793257753.3857474,
+    "ast_hash": "ad673fc26ac44fb6acfb74c45d9bd8e4",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/pagina-oscuro-1440.png": {
+    "mtime": 1793257751.0866017,
+    "ast_hash": "d84d77286edb4b0165b4367815fae74f",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/pagina-oscuro-980-completa.png": {
+    "mtime": 1793257763.3957422,
+    "ast_hash": "a77ce3a1474697c495120db44fb8e1c8",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/pagina-oscuro-980.png": {
+    "mtime": 1793257762.9993129,
+    "ast_hash": "4308860de580aeed1c46cdb57e928aa7",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/pagina-rota-claro-1440.png": {
+    "mtime": 1793257782.4527652,
+    "ast_hash": "0770054497bb1c6198c1e4a4a05949f6",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/pagina-rota-claro-980.png": {
+    "mtime": 1793257792.604848,
+    "ast_hash": "44898a9f3816d0a428e67f4f7fd2db16",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/pagina-rota-oscuro-1440.png": {
+    "mtime": 1793257754.1372554,
+    "ast_hash": "0a71694ddec5213f56e29d140368b6af",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/pagina-rota-oscuro-980.png": {
+    "mtime": 1793257764.147083,
+    "ast_hash": "fddb697ef57aee7d7d43c05d3f6e416b",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/pagina-varios-repos-claro-1440.png": {
+    "mtime": 1793257781.6596994,
+    "ast_hash": "6ec2637022179039b01df680d312604b",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/pagina-varios-repos-oscuro-1440.png": {
+    "mtime": 1793257752.1883526,
+    "ast_hash": "d5e85a349c958ebb397e4545ff288bdd",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/permisos-proyectos-claro-1440.png": {
+    "mtime": 1793257788.0114264,
+    "ast_hash": "b290d9d3be448dc7566429046f5c9780",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/permisos-proyectos-oscuro-1440.png": {
+    "mtime": 1793257759.6143746,
+    "ast_hash": "cf50b23674792abe7306343f5455dd2a",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/evidencias/sidebar-plegado-tooltip-oscuro-1440.png": {
+    "mtime": 1793257809.2439456,
+    "ast_hash": "d4a0644c9e919749e547b4a53f87cb28",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/revision/marca-medidas.txt": {
+    "mtime": 1793258030.423531,
+    "ast_hash": "b012cb5c0f004eac91386c0f5ca86a60",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/revision/config-apariencia-dark-comodo-1440.png": {
+    "mtime": 1793258030.421297,
+    "ast_hash": "d5d2ee71ce9368f9d907c72107723eaf",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/revision/marca-comfortable-1440-dark.png": {
+    "mtime": 1793258030.4176073,
+    "ast_hash": "d8bbca0d6d9d799e62bf960e6740ada1",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/revision/marca-comfortable-980-dark.png": {
+    "mtime": 1793258030.4180775,
+    "ast_hash": "2440219a38e87dc710f1a866a0d2b77c",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/revision/marca-compact-1440-dark.png": {
+    "mtime": 1793258030.4184813,
+    "ast_hash": "589de28532ddc800c95594d34df91f4a",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/revision/marca-compact-980-dark.png": {
+    "mtime": 1793258030.4189394,
+    "ast_hash": "26a6f72e6afee3fb1ae28a4f03d64d49",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/revision/marca-large-1440-dark.png": {
+    "mtime": 1793258030.4191723,
+    "ast_hash": "030463edca5bdf943765edabc8fb074e",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/revision/marca-large-980-dark.png": {
+    "mtime": 1793258030.4193823,
+    "ast_hash": "5586a9f05cfe6100c481c72f78a86263",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/revision/permisos-necesita-light-comodo-1440.png": {
+    "mtime": 1793258030.4215503,
+    "ast_hash": "ad8c7004a776c3774f4040c867c3697c",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/revision-tecnica.md": {
+    "mtime": 1793258818.926021,
+    "ast_hash": "7b9bdcd4515469b37c552207051d71e6",
+    "semantic_hash": ""
+  },
+  "src/features/projects/projects-detail.ts": {
+    "mtime": 1793258544.1084328,
+    "ast_hash": "6d3ee40a789a68a8e458be4c751014db",
     "semantic_hash": ""
   }
 }
