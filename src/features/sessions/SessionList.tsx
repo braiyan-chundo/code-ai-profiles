@@ -29,7 +29,7 @@ export function SessionList({
 }) {
   if (sessions.length === 0) {
     return (
-      <Empty className="rounded-xl border p-6">
+      <Empty className="rounded-sm p-6 ring-1 ring-border ring-inset">
         <EmptyHeader>
           <EmptyMedia variant="icon"><ClockIcon /></EmptyMedia>
           <EmptyDescription>{emptyLabel}</EmptyDescription>
@@ -39,7 +39,7 @@ export function SessionList({
   }
 
   return (
-    <ItemGroup className="gap-2.5">
+    <ItemGroup className="gap-3">
       {sessions.map((session) => (
         <SessionItem key={session.id} session={session} role="listitem">
           {session.isArchived && <SessionBadge>Archivada</SessionBadge>}
@@ -85,15 +85,15 @@ export function SessionItem({
   ...props
 }: Omit<ComponentProps<typeof Item>, "children"> & { session: CodeSession; children?: ReactNode }) {
   return (
-    <Item variant="outline" size="sm" title={session.title} className={cn("flex-nowrap bg-(--surface-soft)", className)} {...props}>
-      <ItemMedia variant="icon" className="size-8 rounded-lg border border-border bg-muted text-muted-foreground">
+    <Item variant="outline" size="sm" title={session.title} className={cn("flex-nowrap rounded-sm bg-(--surface-soft)", className)} {...props}>
+      <ItemMedia variant="icon" className="size-8 rounded-sm bg-muted text-muted-foreground ring-1 ring-border ring-inset">
         <TerminalSquareIcon />
       </ItemMedia>
-      <ItemContent className="min-w-0 gap-1.5">
-        <ItemTitle className="block max-w-full truncate text-(length:--fs-body) font-semibold">
+      <ItemContent className="min-w-0 gap-2">
+        <ItemTitle className="block max-w-full truncate text-(length:--fs-body)/(--lh-body) font-semibold">
           {session.title}
         </ItemTitle>
-        <ItemDescription className="line-clamp-none flex flex-wrap items-center gap-x-1.5 font-mono text-(length:--fs-small)">
+        <ItemDescription className="line-clamp-none flex flex-wrap items-center gap-x-2 font-mono text-(length:--fs-small)/(--lh-small)">
           <span>{formatModelName(session.model)}</span>
           <Separator />
           <span>{session.completedTurns} {session.completedTurns === 1 ? "turno" : "turnos"}</span>
@@ -102,13 +102,13 @@ export function SessionItem({
         </ItemDescription>
         <SessionContextMeter session={session} />
       </ItemContent>
-      {children && <ItemActions className="shrink-0 gap-1.5 self-center">{children}</ItemActions>}
+      {children && <ItemActions className="shrink-0 gap-2 self-center">{children}</ItemActions>}
     </Item>
   );
 }
 
 function Separator() {
-  return <span aria-hidden="true" className="size-[3px] rounded-full bg-(--quiet)" />;
+  return <span aria-hidden="true" className="size-1 rounded-full bg-(--quiet)" />;
 }
 
 function SessionBadge({ tone, children }: { tone?: "copy" | "move"; children: string }) {
@@ -116,7 +116,7 @@ function SessionBadge({ tone, children }: { tone?: "copy" | "move"; children: st
     <Badge
       variant="outline"
       data-mode={tone}
-      className="h-auto font-mono text-(length:--fs-micro) font-semibold tracking-[0.06em] text-muted-foreground uppercase data-[mode=copy]:border-primary/25 data-[mode=copy]:text-primary-text data-[mode=move]:border-success/30 data-[mode=move]:text-success"
+      className="h-auto font-mono text-(length:--fs-micro)/(--lh-micro) font-semibold tracking-[0.06em] text-muted-foreground uppercase data-[mode=copy]:border-primary/25 data-[mode=copy]:text-primary-text data-[mode=move]:border-success/30 data-[mode=move]:text-success"
     >
       {children}
     </Badge>

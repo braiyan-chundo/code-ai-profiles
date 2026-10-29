@@ -43,13 +43,13 @@ function ChoiceCard({ id, value, title, description, children }: {
   children?: ReactNode;
 }) {
   return (
-    <FieldLabel htmlFor={id} className="min-w-0 *:data-[slot=field]:p-2.5">
-      <Field orientation="horizontal" className="flex-wrap gap-2.5">
+    <FieldLabel htmlFor={id} className="min-w-0 *:data-[slot=field]:p-3">
+      <Field orientation="horizontal" className="flex-wrap gap-3">
         {children}
         <RadioGroupItem value={value} id={id} />
-        <FieldContent className="min-w-0 gap-0.5">
+        <FieldContent className="min-w-0 gap-1">
           <FieldTitle className="text-xs">{title}</FieldTitle>
-          {description && <FieldDescription className="text-(length:--fs-small) leading-snug">{description}</FieldDescription>}
+          {description && <FieldDescription className="text-(length:--fs-small)/(--lh-prose)">{description}</FieldDescription>}
         </FieldContent>
       </Field>
     </FieldLabel>
@@ -66,13 +66,13 @@ function ThemeSwatch({ theme, className }: { theme: ResolvedTheme; className?: s
       aria-hidden="true"
       className={cn(
         `theme-${theme}`,
-        "grid h-[51px] w-full grid-cols-[14px_1fr] grid-rows-[9px_1fr] gap-1 rounded-[10px] border border-(--line-strong) bg-background p-[7px]",
+        "grid h-12 w-full grid-cols-[16px_1fr] grid-rows-[8px_1fr] gap-1 rounded-sm bg-background p-2 ring-1 ring-(--line-strong) ring-inset",
         className,
       )}
     >
-      <i className="row-span-2 rounded-[3px] bg-(--line-strong)" />
-      <i className="rounded-[3px] bg-primary" />
-      <i className="rounded-[3px] bg-(--line)" />
+      <i className="row-span-2 rounded-xs bg-(--line-strong)" />
+      <i className="rounded-xs bg-primary" />
+      <i className="rounded-xs bg-(--line)" />
     </span>
   );
 }
@@ -107,7 +107,7 @@ export function AppearanceDialog({
 
         <FieldSet className="gap-3">
           <FieldLegend variant="label" className="mb-0 flex w-full items-baseline justify-between gap-4">
-            Tema <span className="text-(length:--fs-small) font-normal text-muted-foreground">Se aplica inmediatamente</span>
+            Tema <span className="text-(length:--fs-small)/(--lh-small) font-normal text-muted-foreground">Se aplica inmediatamente</span>
           </FieldLegend>
           <RadioGroup
             aria-label="Tema de la aplicación"
@@ -125,7 +125,7 @@ export function AppearanceDialog({
 
         <FieldSet className="gap-3">
           <FieldLegend variant="label" className="mb-0 flex w-full items-baseline justify-between gap-4">
-            Tamaño del texto <span className="text-(length:--fs-small) font-normal text-muted-foreground">Se aplica a toda la interfaz</span>
+            Tamaño del texto <span className="text-(length:--fs-small)/(--lh-small) font-normal text-muted-foreground">Se aplica a toda la interfaz</span>
           </FieldLegend>
           <RadioGroup
             aria-label="Tamaño del texto"
@@ -135,7 +135,7 @@ export function AppearanceDialog({
           >
             {SIZES.map((size) => (
               <ChoiceCard key={size.value} id={`appearance-size-${size.value}`} value={size.value} title={size.label}>
-                <span aria-hidden="true" className={cn("flex h-6 w-full items-center font-mono leading-none text-muted-foreground", size.sample)}>Aa</span>
+                <span aria-hidden="true" className={cn("flex h-6 w-full items-center font-mono text-muted-foreground", size.sample)}>Aa</span>
               </ChoiceCard>
             ))}
           </RadioGroup>

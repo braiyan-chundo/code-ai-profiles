@@ -11,11 +11,11 @@ export function Statusbar() {
   const buildLabel = state.system.appVersion || (loading ? "cargando…" : "no disponible");
   const healthy = Boolean(state.system.sourcePath);
   return (
-    <footer className="row-start-4 flex h-9 shrink-0 items-center overflow-hidden whitespace-nowrap justify-between gap-4 border-t border-border bg-(--surface-soft)/60 px-8 text-(length:--fs-micro) text-muted-foreground max-[1070px]:h-8 max-[1070px]:px-6">
-      <div className="flex min-w-0 items-center gap-[18px] max-[1070px]:gap-3">
+    <footer className="row-start-4 flex h-9 shrink-0 items-center overflow-hidden whitespace-nowrap justify-between gap-4 bg-(--surface-soft)/60 px-8 text-(length:--fs-micro)/(--lh-body) text-muted-foreground shadow-[inset_0_1px_0_var(--border)] max-[1070px]:h-8 max-[1070px]:px-6 max-[1070px]:leading-(--lh-micro)">
+      <div className="flex min-w-0 items-center gap-3">
         <span
           className={cn(
-            "inline-flex items-center gap-1.5 font-bold tracking-[0.16em] max-[1070px]:tracking-[0.08em]",
+            "inline-flex items-center gap-2 font-bold tracking-[0.16em] max-[1070px]:tracking-[0.08em]",
             healthy ? "text-primary-text" : "text-destructive",
           )}
         >
@@ -28,19 +28,19 @@ export function Statusbar() {
           )}
         </span>
         <Divider />
-        <span className="inline-flex items-center gap-1.5">
-          <HardDriveIcon className="size-3.5" aria-hidden="true" /> {formatBytes(state.system.freeBytes)} libres
+        <span className="inline-flex items-center gap-2">
+          <HardDriveIcon className="size-3" aria-hidden="true" /> {formatBytes(state.system.freeBytes)} libres
         </span>
         <Divider className="max-[1070px]:hidden" />
-        <span className="inline-flex items-center gap-1.5 max-[1070px]:hidden">
+        <span className="inline-flex items-center gap-2 max-[1070px]:hidden">
           {formatBytes(state.system.managedBytes)} administrados
         </span>
       </div>
-      <div className="flex shrink-0 items-center gap-3.5 font-mono text-(length:--fs-micro) leading-none font-medium tracking-[0.14em] max-[1070px]:gap-2.5 max-[1070px]:tracking-[0.06em]">
+      <div className="flex shrink-0 items-center gap-3 font-mono font-medium tracking-[0.14em] max-[1070px]:gap-2 max-[1070px]:tracking-[0.06em]">
         <span>AUTO · 60S</span>
-        <Dot className="size-[5px] text-primary-text/60" />
+        <Dot className="size-1 text-primary-text/60" />
         <span aria-label={`Versión de Code AI Profiles ${buildLabel}`}>BUILD {buildLabel}</span>
-        <Dot className="size-[5px] text-primary-text/60" />
+        <Dot className="size-1 text-primary-text/60" />
         <span>{runtimePlatform.toUpperCase()}</span>
       </div>
     </footer>
@@ -52,5 +52,5 @@ function Dot({ className }: { className?: string }) {
 }
 
 function Divider({ className }: { className?: string }) {
-  return <span aria-hidden="true" className={cn("h-3.5 w-px shrink-0 bg-border", className)} />;
+  return <span aria-hidden="true" className={cn("h-3 w-px shrink-0 bg-border", className)} />;
 }

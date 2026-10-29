@@ -48,7 +48,7 @@ export function AppShell() {
           style={SIDEBAR_STYLE}
           className={cn(
             "relative h-full min-h-0 overflow-hidden [transform:translateZ(0)] bg-(image:--ui-window) text-foreground [--sidebar:var(--surface-raised)]",
-            framed && "rounded-[20px] border border-(--ui-window-border) shadow-(--ui-window-shadow)",
+            framed && "rounded-2xl shadow-(--ui-window-shadow) outline-1 -outline-offset-1 outline-(color:--ui-window-border)",
           )}
         >
           <Titlebar />

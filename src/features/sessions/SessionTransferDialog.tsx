@@ -50,21 +50,21 @@ export function SessionTransferDialog({
         </DialogHeader>
 
         <div className="grid gap-4">
-          <div className="flex items-center gap-3 rounded-xl border border-primary/15 bg-primary/5 px-4 py-3.5">
-            <span className="grid size-[38px] shrink-0 place-items-center rounded-lg bg-primary/10 text-primary-text">
-              <TerminalSquareIcon className="size-[19px]" />
+          <div className="flex items-center gap-3 rounded-sm ring-1 ring-inset ring-primary/15 bg-primary/5 p-4">
+            <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary-text">
+              <TerminalSquareIcon className="size-5" />
             </span>
             <div className="grid min-w-0 gap-1">
-              <small className="font-mono text-(length:--fs-micro) font-semibold tracking-[0.11em] text-muted-foreground uppercase">Sesión actual</small>
-              <strong className="truncate text-(length:--fs-body) font-semibold">{session.title}</strong>
-              <span className="text-(length:--fs-small) text-muted-foreground">
+              <small className="font-mono text-(length:--fs-micro)/(--lh-micro) font-semibold tracking-[0.11em] text-muted-foreground uppercase">Sesión actual</small>
+              <strong className="truncate text-(length:--fs-body)/(--lh-body) font-semibold">{session.title}</strong>
+              <span className="text-(length:--fs-small)/(--lh-small) text-muted-foreground">
                 En {source.name}
                 {registeredOrigin && registeredOrigin.id !== source.id ? ` · origen: ${registeredOrigin.name}` : ""}
               </span>
             </div>
           </div>
 
-          <FieldSet className="gap-2.5">
+          <FieldSet className="gap-3">
             <FieldLegend variant="label" className={LEGEND}>Qué deseas hacer</FieldLegend>
             <RadioGroup
               aria-label="Modo de transferencia"
@@ -74,14 +74,14 @@ export function SessionTransferDialog({
               className="grid-cols-2 gap-2"
             >
               <ChoiceCard id="transfer-mode-move" value="move" title="Mover" description="Queda visible solo en el destino">
-                <Badge variant="secondary" className="font-mono text-(length:--fs-micro) tracking-[0.06em] text-primary-text">RECOMENDADO</Badge>
+                <Badge variant="secondary" className="font-mono text-(length:--fs-micro)/(--lh-micro) tracking-[0.06em] text-primary-text">RECOMENDADO</Badge>
               </ChoiceCard>
               <ChoiceCard id="transfer-mode-copy" value="copy" title="Copiar" description="Permanece visible en ambos perfiles" />
             </RadioGroup>
           </FieldSet>
 
           {candidates.length ? (
-            <FieldSet className="gap-2.5">
+            <FieldSet className="gap-3">
               <FieldLegend variant="label" className={LEGEND}>Perfil de destino</FieldLegend>
               <RadioGroup
                 aria-label="Perfil de destino"
@@ -109,15 +109,15 @@ export function SessionTransferDialog({
               </RadioGroup>
             </FieldSet>
           ) : (
-            <p className="rounded-xl border border-dashed p-4 text-center text-xs text-muted-foreground">
+            <p className="rounded-sm border border-dashed p-4 text-center text-xs text-muted-foreground">
               Crea otro perfil para poder transferir esta sesión.
             </p>
           )}
 
           {!ready && candidates.length > 0 && (
-            <Alert className="border-warning/30 text-warning">
+            <Alert className="ring-warning/30 text-warning">
               <CircleStopIcon />
-              <AlertDescription className="text-(length:--fs-small) leading-relaxed text-warning">
+              <AlertDescription className="text-(length:--fs-small)/(--lh-prose) text-warning">
                 Detén {sourceStopped ? target?.name : targetStopped ? source.name : "ambos perfiles"} antes de transferir. La app no los cerrará automáticamente.
               </AlertDescription>
             </Alert>
@@ -133,7 +133,7 @@ export function SessionTransferDialog({
               />
               <FieldContent>
                 <FieldTitle className="text-xs">Incluir copias locales de artefactos si están disponibles</FieldTitle>
-                <FieldDescription className="text-(length:--fs-small) leading-snug">
+                <FieldDescription className="text-(length:--fs-small)/(--lh-prose)">
                   Los archivos se copian como bytes opacos. Si el esquema no es verificable, quedan en una exportación administrada para importarlos o publicarlos de nuevo.
                 </FieldDescription>
               </FieldContent>
@@ -142,7 +142,7 @@ export function SessionTransferDialog({
 
           <Alert className="text-muted-foreground">
             <TriangleAlertIcon />
-            <AlertDescription className="grid gap-2 text-(length:--fs-small) leading-relaxed [&_p:not(:last-child)]:mb-0">
+            <AlertDescription className="grid gap-2 text-(length:--fs-small)/(--lh-prose) [&_p:not(:last-child)]:mb-0">
               <p>
                 {mode === "move"
                   ? "La sesión se retira del origen después de confirmar la copia en el destino. Se crea un respaldo y podrás devolverla a su origen desde el botón de desvincular."
@@ -177,7 +177,7 @@ export function SessionTransferDialog({
   );
 }
 
-const LEGEND = "mb-0 pl-0.5 font-mono data-[variant=label]:text-(length:--fs-micro) font-semibold tracking-[0.11em] text-muted-foreground uppercase";
+const LEGEND = "mb-0 pl-1 font-mono data-[variant=label]:text-(length:--fs-micro)/(--lh-micro) font-semibold tracking-[0.11em] text-muted-foreground uppercase";
 
 /** Una opción de la transferencia: el radio, su título y su descripción; `children` va a la derecha. */
 function ChoiceCard({ id, value, title, description, children }: {
@@ -193,7 +193,7 @@ function ChoiceCard({ id, value, title, description, children }: {
         <RadioGroupItem value={value} id={id} />
         <FieldContent className="min-w-0 gap-1">
           <FieldTitle className="max-w-full truncate text-xs">{title}</FieldTitle>
-          <FieldDescription className="text-(length:--fs-small) leading-snug">{description}</FieldDescription>
+          <FieldDescription className="text-(length:--fs-small)/(--lh-prose)">{description}</FieldDescription>
         </FieldContent>
         {children}
       </Field>
@@ -206,7 +206,7 @@ function ProfileStatus({ status }: { status: SessionProfile["status"] }) {
   return (
     <span
       data-status={status}
-      className="inline-flex shrink-0 items-center gap-1.5 self-center font-mono text-(length:--fs-micro) font-semibold text-muted-foreground uppercase data-[status=missing]:text-destructive data-[status=running]:text-primary-text"
+      className="inline-flex shrink-0 items-center gap-2 self-center font-mono text-(length:--fs-micro)/(--lh-micro) font-semibold text-muted-foreground uppercase data-[status=missing]:text-destructive data-[status=running]:text-primary-text"
     >
       <i aria-hidden="true" className="size-1.5 rounded-full bg-current" />
       {status === "stopped" ? "Detenido" : status === "running" ? "Ejecutándose" : "No disponible"}

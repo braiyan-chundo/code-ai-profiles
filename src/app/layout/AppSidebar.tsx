@@ -35,7 +35,7 @@ import { useDialogs } from "../providers/dialogs-context";
 
 const NO_SOURCE_TITLE = "Instala una aplicación compatible o configura una ruta válida";
 /** DESIGN.md: las cabeceras del sidebar, en mayúsculas y con algo de espaciado. */
-const GROUP_LABEL = "h-auto px-2 pt-3 pb-1.5 text-(length:--fs-micro) font-bold tracking-[0.1em] text-muted-foreground uppercase group-data-[collapsible=icon]:hidden";
+const GROUP_LABEL = "h-auto px-2 pt-3 pb-1 text-(length:--fs-micro)/(--lh-micro) font-bold tracking-[0.1em] text-muted-foreground uppercase group-data-[collapsible=icon]:hidden";
 
 /**
  * La navegación de la app (HU-0016, AC-01): Dashboard, la aplicación original y una entrada por instancia, con
@@ -88,20 +88,20 @@ export function AppSidebar() {
       role="navigation"
       aria-label="Navegación principal"
     >
-      <SidebarHeader className="gap-2.5 px-2 pt-3.5 pb-0">
-        <div className="flex items-center gap-1.5 px-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+      <SidebarHeader className="gap-0 p-0 pt-3">
+        <div className="flex items-center gap-2 px-4 pb-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
           <BrandMark size={20} className="shrink-0 text-(--primary-soft) in-[.theme-light]:text-primary-text" />
-          <span className="truncate text-(length:--fs-title) font-bold tracking-[-0.04em] text-foreground group-data-[collapsible=icon]:hidden">
+          <span className="truncate text-(length:--fs-title)/(--lh-title) font-bold tracking-[-0.04em] text-foreground group-data-[collapsible=icon]:hidden">
             Code AI Profiles
           </span>
-          <span className="shrink-0 rounded-[5px] border border-(--line-strong) px-1 pt-[3px] pb-0.5 font-mono text-(length:--fs-micro) leading-none font-semibold tracking-[0.06em] text-muted-foreground group-data-[collapsible=icon]:hidden">
+          <span className="inline-flex h-(--ctl-badge) shrink-0 items-center rounded-xs px-1 ring-1 ring-(--line-strong) ring-inset font-mono text-(length:--fs-micro)/(--lh-micro) font-semibold tracking-[0.06em] text-muted-foreground group-data-[collapsible=icon]:hidden">
             BETA
           </span>
         </div>
-        <div className="relative group-data-[collapsible=icon]:hidden">
+        <div className="relative mx-2 my-1 group-data-[collapsible=icon]:hidden">
           <SearchIcon
             aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+            className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 text-muted-foreground"
           />
           <SidebarInput
             ref={searchRef}
@@ -110,7 +110,7 @@ export function AppSidebar() {
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Buscar perfiles…"
             aria-label="Buscar perfiles o sesiones"
-            className="pr-12 pl-8 [&::-webkit-search-cancel-button]:hidden"
+            className="rounded-sm border-0 pr-12 pl-8 ring-1 ring-(--line-strong) ring-inset focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-search-cancel-button]:hidden"
           />
           {query ? (
             <Button
@@ -121,12 +121,12 @@ export function AppSidebar() {
                 searchRef.current?.focus();
               }}
               aria-label="Limpiar búsqueda"
-              className="absolute top-1/2 right-1.5 -translate-y-1/2"
+              className="absolute top-1/2 right-1 -translate-y-1/2"
             >
               <XIcon />
             </Button>
           ) : (
-            <Kbd className="absolute top-1/2 right-2 -translate-y-1/2 text-(length:--fs-micro)">{shortcutModifierLabel(navigator.platform)} F</Kbd>
+            <Kbd className="absolute top-1/2 right-2 -translate-y-1/2 text-(length:--fs-micro)/(--lh-micro)">{shortcutModifierLabel(navigator.platform)} F</Kbd>
           )}
         </div>
       </SidebarHeader>
@@ -134,7 +134,7 @@ export function AppSidebar() {
         <SidebarGroup className="px-2 py-0">
           <SidebarGroupLabel className={GROUP_LABEL}>General</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="gap-0.5">
+            <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={Boolean(onDashboard)} tooltip="Dashboard">
                   <Link to="/" aria-current={onDashboard ? "page" : undefined}>
@@ -145,7 +145,7 @@ export function AppSidebar() {
               </SidebarMenuItem>
               {showOriginal && (
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={Boolean(onOriginal)} tooltip={originalLabel} className={originalSessions > 0 ? "pr-10" : undefined}>
+                  <SidebarMenuButton asChild isActive={Boolean(onOriginal)} tooltip={originalLabel} className={originalSessions > 0 ? "pr-8" : undefined}>
                     <Link to="/original" aria-current={onOriginal ? "page" : undefined}>
                       <InstanceAvatar
                         iconSrc={null}
@@ -163,11 +163,11 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarSeparator className="mx-auto my-2.5 hidden w-5! bg-(--line-strong) group-data-[collapsible=icon]:block" />
+        <SidebarSeparator className="mx-auto my-3 hidden w-5! bg-(--line-strong) group-data-[collapsible=icon]:block" />
         <SidebarGroup className="px-2 py-0">
           <SidebarGroupLabel className={GROUP_LABEL}>Instancias</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu aria-label="Instancias clonadas" className="gap-0.5">
+            <SidebarMenu aria-label="Instancias clonadas">
               {loading && state.instances.length === 0 ? (
                 [0, 1, 2].map((item) => (
                   <SidebarMenuItem key={item}>
@@ -182,7 +182,7 @@ export function AppSidebar() {
                   const sessions = instance.codeSessions.length;
                   return (
                     <SidebarMenuItem key={instance.id}>
-                      <SidebarMenuButton asChild isActive={active} tooltip={label} className={sessions > 0 ? "pr-10" : undefined}>
+                      <SidebarMenuButton asChild isActive={active} tooltip={label} className={sessions > 0 ? "pr-8" : undefined}>
                         <Link
                           to={`/instancias/${encodeURIComponent(instance.id)}`}
                           aria-current={active ? "page" : undefined}
@@ -203,14 +203,14 @@ export function AppSidebar() {
                 })
               )}
               {!loading && state.instances.length === 0 && (
-                <SidebarMenuItem className="px-2 py-1.5 text-xs text-muted-foreground group-data-[collapsible=icon]:hidden">
+                <SidebarMenuItem className="flex h-(--ctl-sm) items-center px-2 text-(length:--fs-small)/(--lh-small) text-muted-foreground group-data-[collapsible=icon]:hidden">
                   Sin instancias todavía
                 </SidebarMenuItem>
               )}
               {noMatches && (
-                <SidebarMenuItem className="grid gap-1 px-2 py-1.5 text-xs text-muted-foreground group-data-[collapsible=icon]:hidden">
+                <SidebarMenuItem className="grid gap-1 px-2 py-2 text-(length:--fs-small)/(--lh-small) text-muted-foreground group-data-[collapsible=icon]:hidden">
                   <span role="status">Sin coincidencias</span>
-                  <Button variant="link" size="xs" onClick={() => setQuery("")} className="h-auto justify-start p-0 text-xs">
+                  <Button variant="link" size="xs" onClick={() => setQuery("")} className="h-auto justify-start p-0 text-(length:--fs-small)/(--lh-small)">
                     Limpiar búsqueda
                   </Button>
                 </SidebarMenuItem>
@@ -232,7 +232,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border group-data-[collapsible=icon]:border-t-0">
+      <SidebarFooter className="shadow-[inset_0_1px_0_var(--sidebar-border)] group-data-[collapsible=icon]:shadow-none">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={scanManually} disabled={loading || busy !== null} tooltip="Escanear sistema">
@@ -264,7 +264,7 @@ function SessionCount({ count, active }: { count: number; active: boolean }) {
   return (
     <SidebarMenuBadge
       className={cn(
-        "top-1/2! -translate-y-1/2 rounded-full bg-(--surface-soft) px-1.5 font-mono text-(length:--fs-micro) leading-none font-semibold text-muted-foreground",
+        "top-1/2! -translate-y-1/2 rounded-full bg-(--surface-soft) px-2 font-mono text-(length:--fs-micro)/(--lh-small) font-semibold text-muted-foreground",
         active && "bg-(--line-strong) text-foreground",
       )}
     >

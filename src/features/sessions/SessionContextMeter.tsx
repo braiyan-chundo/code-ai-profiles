@@ -43,7 +43,7 @@ export function SessionContextMeter({ session }: { session: CodeSession }) {
   return (
     <div
       data-level={level}
-      className="grid gap-[5px] font-mono text-(length:--fs-micro) leading-[1.1] font-semibold"
+      className="grid gap-1 font-mono text-(length:--fs-micro)/(--lh-micro) font-semibold"
       title={tokens == null
         ? "La aplicación aún no registra uso de contexto para esta sesión"
         : hasKnownLimit
@@ -69,7 +69,7 @@ export function SessionContextMeter({ session }: { session: CodeSession }) {
       )}
       <small
         className={cn(
-          "text-(length:--fs-micro) font-medium",
+          "text-(length:--fs-micro)/(--lh-micro) font-medium",
           level === "elevated" || level === "critical" ? LEVEL_TEXT[level] : "text-muted-foreground",
         )}
       >

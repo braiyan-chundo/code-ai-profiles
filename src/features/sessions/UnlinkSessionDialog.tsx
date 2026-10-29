@@ -44,7 +44,7 @@ export function UnlinkSessionDialog({
             <UnlinkIcon />
           </AlertDialogMedia>
           <AlertDialogTitle className="break-words">{copy.title}</AlertDialogTitle>
-          <AlertDialogDescription className="text-xs leading-relaxed">{copy.body}</AlertDialogDescription>
+          <AlertDialogDescription className="text-(length:--fs-small)/(--lh-prose)">{copy.body}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel size="lg" disabled={busy}>Cancelar</AlertDialogCancel>

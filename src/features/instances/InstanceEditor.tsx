@@ -108,7 +108,7 @@ export function InstanceEditor({
           </DialogDescription>
         </DialogHeader>
 
-        <form className="grid gap-5" onSubmit={(event) => void submit(event)}>
+        <form className="grid gap-6" onSubmit={(event) => void submit(event)}>
           <Field>
             <FieldLabel htmlFor="instance-name" className="text-xs">Nombre del perfil</FieldLabel>
             <Input
@@ -119,26 +119,26 @@ export function InstanceEditor({
               maxLength={64}
               required
               placeholder="Ej. Trabajo, Personal, Cliente A"
-              className="h-11 rounded-lg px-3.5"
+              className="h-(--ctl-lg) rounded-sm"
             />
           </Field>
 
           <section
             aria-labelledby="instance-icon-heading"
-            className="grid grid-cols-[74px_minmax(0,1fr)] items-center gap-3.5 rounded-xl border bg-(--surface-soft) p-3.5"
+            className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-3 rounded-sm ring-1 ring-border ring-inset bg-(--surface-soft) p-4"
           >
-            <span className="grid size-[74px] place-items-center overflow-hidden rounded-[22px] border border-(--line-strong) bg-secondary text-primary-text">
+            <span className="grid size-18 place-items-center overflow-hidden rounded-lg ring-1 ring-(--line-strong) ring-inset bg-secondary text-primary-text">
               {iconPreviewUrl || (!removeIcon && currentIconUrl)
                 ? <img src={iconPreviewUrl ?? currentIconUrl!} alt="Vista previa del icono de la instancia" className="size-full object-cover" />
                 : <BrandMark size={30} />}
             </span>
-            <div className="grid min-w-0 gap-1.5">
+            <div className="grid min-w-0 gap-2">
               <strong id="instance-icon-heading" className="text-xs font-semibold">Icono de la instancia</strong>
-              <span className="text-(length:--fs-small) leading-snug text-muted-foreground">
+              <span className="text-(length:--fs-small)/(--lh-small) text-muted-foreground">
                 Se guarda fuera de la aplicación compatible para sobrevivir a futuras sincronizaciones.
               </span>
               <div className="mt-1 flex flex-wrap gap-2">
-                <Button asChild variant="outline" size="sm" aria-disabled={locked} className="cursor-pointer text-xs has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50 aria-disabled:pointer-events-none aria-disabled:opacity-50">
+                <Button asChild variant="outline" size="sm" aria-disabled={locked} className="cursor-pointer text-xs has-[:focus-visible]:border-ring has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring aria-disabled:pointer-events-none aria-disabled:opacity-50">
                   <label>
                     <input
                       type="file"
@@ -172,13 +172,13 @@ export function InstanceEditor({
                   </Button>
                 )}
               </div>
-              {iconError && <FieldError className="text-(length:--fs-small)">{iconError}</FieldError>}
+              {iconError && <FieldError className="text-(length:--fs-small)/(--lh-small)">{iconError}</FieldError>}
             </div>
           </section>
 
-          <Alert className="border-primary/15 bg-primary/5 text-primary-text">
+          <Alert className="ring-primary/15 bg-primary/5 text-primary-text">
             <InfoIcon />
-            <AlertDescription className="text-(length:--fs-small) leading-relaxed">
+            <AlertDescription className="text-(length:--fs-small)/(--lh-prose)">
               {platform === "macos"
                 ? "Al guardar, el icono se pone en la copia de esta instancia y se verá en el Dock la próxima vez que la abras. La firma de la aplicación no cambia."
                 : platform === "windows"
@@ -187,46 +187,46 @@ export function InstanceEditor({
             </AlertDescription>
           </Alert>
           {instance?.customIcon && !removeIcon && (retry.appManagement ? (
-            <Alert className="border-warning/30 text-warning">
+            <Alert className="ring-warning/30 text-warning">
               <TriangleAlertIcon />
               <AlertTitle className="text-xs">Permiso de Gestión de apps</AlertTitle>
-              <AlertDescription className="text-(length:--fs-small) leading-relaxed text-warning">
+              <AlertDescription className="text-(length:--fs-small)/(--lh-prose) text-warning">
                 {instance.customIcon.systemMessage}
               </AlertDescription>
-              <div className="col-start-2 mt-2 grid justify-items-start gap-1.5">
+              <div className="col-start-2 mt-2 grid justify-items-start gap-2">
                 <RetryIconButton enabled={retry.enabled} loading={iconBusy} onRetry={retryIcon} />
-                {retry.hint && <span className="text-(length:--fs-small)">{retry.hint}</span>}
+                {retry.hint && <span className="text-(length:--fs-small)/(--lh-small)">{retry.hint}</span>}
               </div>
             </Alert>
           ) : (
-            <div className="-mt-2 grid gap-1.5">
+            <div className="-mt-2 grid gap-2">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                 <p
                   data-applied={instance.customIcon.systemApplied}
-                  className="min-w-0 flex-1 basis-60 px-0.5 font-mono text-(length:--fs-small) leading-snug text-muted-foreground data-[applied=true]:text-success"
+                  className="min-w-0 flex-1 basis-60 px-1 font-mono text-(length:--fs-small)/(--lh-small) text-muted-foreground data-[applied=true]:text-success"
                 >
                   {platform === "macos" && <strong>{iconStatusLead(instance.customIcon.systemApplied)}</strong>}
                   {instance.customIcon.systemMessage}
                 </p>
                 {retry.visible && <RetryIconButton enabled={retry.enabled} loading={iconBusy} onRetry={retryIcon} />}
               </div>
-              {retry.hint && <p className="px-0.5 text-(length:--fs-small) text-muted-foreground">{retry.hint}</p>}
+              {retry.hint && <p className="px-1 text-(length:--fs-small)/(--lh-prose) text-muted-foreground">{retry.hint}</p>}
             </div>
           ))}
 
           {retryError && !iconBusy && (
             <Alert variant="destructive">
               <TriangleAlertIcon aria-hidden="true" />
-              <AlertDescription className="text-(length:--fs-small) leading-relaxed text-destructive">{retryError}</AlertDescription>
+              <AlertDescription className="text-(length:--fs-small)/(--lh-prose) text-destructive">{retryError}</AlertDescription>
             </Alert>
           )}
 
           {isNew && (
             <>
-              <Alert className="border-primary/15 bg-primary/5 text-primary-text">
+              <Alert className="ring-primary/15 bg-primary/5 text-primary-text">
                 <HardDriveIcon />
                 <AlertTitle className="text-xs text-foreground">Copia aislada + perfil independiente</AlertTitle>
-                <AlertDescription className="text-(length:--fs-small) leading-relaxed">
+                <AlertDescription className="text-(length:--fs-small)/(--lh-prose)">
                   La primera creación puede tardar. macOS intenta usar una copia APFS eficiente, Windows crea una copia administrada y Linux reutiliza el binario instalado con un perfil aislado.
                 </AlertDescription>
               </Alert>
@@ -234,7 +234,7 @@ export function InstanceEditor({
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="-my-1 w-fit px-1.5 text-xs text-muted-foreground"
+                className="-my-1 w-fit px-2 text-xs text-muted-foreground"
                 aria-expanded={advanced}
                 aria-controls="instance-source-field"
                 onClick={() => setAdvanced(!advanced)}
@@ -250,7 +250,7 @@ export function InstanceEditor({
                     onChange={(event) => setCustomSource(event.target.value)}
                     required
                     placeholder="/Applications/Compatible App.app"
-                    className="h-11 rounded-lg px-3.5 font-mono text-xs md:text-xs"
+                    className="h-(--ctl-lg) rounded-sm font-mono text-xs md:text-xs"
                   />
                 </Field>
               )}
