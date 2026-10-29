@@ -20,7 +20,12 @@ export function Statusbar() {
           )}
         >
           <Dot />
-          {healthy ? `${originalAppName.toLocaleUpperCase()} DETECTADA` : "APLICACIÓN COMPATIBLE NO DETECTADA"}
+          {healthy ? (
+            `${originalAppName.toLocaleUpperCase()} DETECTADA`
+          ) : (
+            // Por debajo de 1071 px, con el texto en grande, la frase entera no cabe junto a lo demás: se lee «NO DETECTADA».
+            <span><span className="max-[1070px]:sr-only">APLICACIÓN COMPATIBLE </span>NO DETECTADA</span>
+          )}
         </span>
         <Divider />
         <span className="inline-flex items-center gap-1.5">

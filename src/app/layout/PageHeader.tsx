@@ -27,7 +27,7 @@ export function PageHeader({ eyebrow, title, children }: { eyebrow: string; titl
         <span data-tauri-drag-region className="text-(length:--fs-body) font-medium whitespace-nowrap text-muted-foreground">
           {eyebrow}
         </span>
-        <ChevronRightIcon aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" />
+        <ChevronRightIcon aria-hidden="true" className="pointer-events-none size-3.5 shrink-0 text-muted-foreground" />
         <h1 data-tauri-drag-region className="m-0 truncate text-(length:--fs-title) leading-tight font-semibold tracking-[-0.025em] text-foreground">
           {title}
         </h1>

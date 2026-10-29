@@ -54,17 +54,14 @@ tests/*.test.ts       node --test sobre los módulos puros
   colores o medidas; `style` solo para valores calculados o variables CSS (`--sidebar-width`).
 - **Tokens**: `bg-background`, `bg-card`, `text-foreground`, `text-muted-foreground`, `border-border`,
   `bg-primary` (el relleno naranja) y `text-primary-text` (el naranja de texto), `text-destructive`,
-  `text-success`, `text-warning`, o los de la app con la forma corta (`bg-(--surface-soft)`, `text-(--quiet)`). Nada
+  `text-success`, `text-warning`, o los de la app con la forma corta (`bg-(--surface-soft)`, `bg-(--quiet)` para puntos). Nada
   de hex ni `rgba()` sueltos. Un token nuevo va en `tokens.css` (de la app) o como `--ui-*` en `ui-theme.css`,
   **con su valor claro** (skill `code-ai-profiles-ui`, `tema.md`).
 - **Ningún `.tsx` importa CSS**, salvo las entradas (`main.tsx` y `showcase/main.tsx`). `index.css` importa Tailwind,
   `tw-animate-css`, `shadcn/tailwind.css`, `tokens.css` (capa `base`) y `ui-theme.css`, y declara los `@source`. Un
   `.css` nuevo en `src/` rompe `test:ui` (prueba 10).
-- **Aspecto común en el componente**: si un ajuste vale para todos los usos (el radio y el scroll de `DialogContent`),
-  se edita el componente del catálogo y se anota en su ficha. Si es de una pantalla, va en su `className`.
-- **Temas**: `AppearanceProvider` pone `theme-dark` o `theme-light` y `data-text-size` en `<html>` antes de pintar,
-  así que los portales de Radix (diálogos, menús, tooltips) los heredan. `system` se resuelve con `matchMedia`. El
-  oscuro es la base; los tokens cambian solos. `dark:` existe, pero rara vez hace falta.
+- **Aspecto común y temas**: un ajuste que vale para todos los usos va en el componente del catálogo y en su ficha;
+  el tema (`theme-*`) y `data-text-size` van en `<html>`. Detalle en `estilos.md`.
 - **Plataformas y barra**: la raíz (`data-slot="desktop-shell"`) lleva `platform-macos|windows|linux` y fija
   `--titlebar-height: 52px` en las tres. Una sola fila: `Titlebar` sobre el sidebar y `PageHeader` a su derecha.
   Medidas y reglas por plataforma en `estilos.md`. `body` es transparente y el marco lleva `transform`.
