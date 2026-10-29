@@ -21,6 +21,9 @@ export function useInstanceActions() {
 
   const launch = (instance: ManagedInstance) => void runAction(`launch:${instance.id}`, () => bridge.launch(instance.id));
   const stop = (instance: ManagedInstance) => void runAction(`stop:${instance.id}`, () => bridge.stop(instance.id));
+  /** Reaplica el icono al Dock con la instancia detenida (HU-0020, A-5); el panel se actualiza con el estado devuelto. */
+  const reapplyIcon = (instance: ManagedInstance) =>
+    runAction(`icon:${instance.id}`, () => bridge.reapplyInstanceIcon(instance.id));
   const openFolder = (instance: ManagedInstance) => void bridge.openFolder(instance.id).catch((reason) => setError(friendlyError(reason)));
 
   const save = async (
@@ -64,5 +67,5 @@ export function useInstanceActions() {
     close();
   };
 
-  return { launch, stop, openFolder, save, remove };
+  return { launch, stop, reapplyIcon, openFolder, save, remove };
 }

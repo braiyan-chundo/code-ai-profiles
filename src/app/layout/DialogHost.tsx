@@ -39,6 +39,10 @@ export function DialogHost() {
   const instanceActions = useInstanceActions();
   const sessionActions = useSessionActions();
   const updateActions = useUpdateActions();
+  // `editor` es una instantánea: el editor lee la instancia fresca para ver el resultado de «Reintentar» (HU-0020).
+  const editorInstance = editor && editor !== "new"
+    ? state.instances.find((item) => item.id === editor.id) ?? editor
+    : null;
   const originalAppName = selectOriginalAppName(state.system);
   const latestSource = state.system.versionTopology.latestSource;
   const latestVersion = state.system.versionTopology.latestInstalledVersion;
@@ -55,11 +59,13 @@ export function DialogHost() {
 
       {editor && (
         <InstanceEditor
-          instance={editor === "new" ? null : editor}
+          instance={editorInstance}
           sourcePath={state.system.sourcePath}
           platform={runtimePlatform}
           busy={busy === "create" || busy === "update"}
+          iconBusy={editorInstance !== null && busy === `icon:${editorInstance.id}`}
           onClose={() => setEditor(null)}
+          onRetryIcon={() => editorInstance ? instanceActions.reapplyIcon(editorInstance) : Promise.resolve()}
           onSave={(form, iconChange) => instanceActions.save(editor, form, iconChange, () => setEditor(null))}
         />
       )}

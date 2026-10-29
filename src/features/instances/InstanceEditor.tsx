@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import type { CreateInstanceRequest, DashboardState, ManagedInstance } from "../../types";
-import { ChevronDownIcon, HardDriveIcon, ImageUpIcon, InfoIcon, PlusIcon } from "lucide-react";
+import { ChevronDownIcon, HardDriveIcon, ImageUpIcon, InfoIcon, PlusIcon, RotateCwIcon } from "lucide-react";
 import { BrandMark } from "../../components/BrandMark";
 import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert";
 import { Button } from "../../components/ui/button";
@@ -9,6 +9,7 @@ import { Field, FieldError, FieldLabel } from "../../components/ui/field";
 import { Input } from "../../components/ui/input";
 import { Spinner } from "../../components/ui/spinner";
 import { cn } from "../../lib/utils";
+import { iconRetryState } from "./icon-status";
 import { iconDimensionsError, iconFileError } from "./icon-validation";
 import { managedIconSource } from "./instance-icon";
 import type { InstanceIconChange } from "./instance-types";
@@ -18,14 +19,19 @@ export function InstanceEditor({
   sourcePath,
   platform,
   busy,
+  iconBusy,
   onClose,
+  onRetryIcon,
   onSave,
 }: {
   instance: ManagedInstance | null;
   sourcePath: string | null;
   platform: DashboardState["system"]["platform"];
   busy: boolean;
+  /** «Reintentar» el icono del Dock en curso. */
+  iconBusy: boolean;
   onClose: () => void;
+  onRetryIcon: () => Promise<void>;
   onSave: (request: CreateInstanceRequest, iconChange: InstanceIconChange) => Promise<void>;
 }) {
   const [name, setName] = useState(instance?.name ?? "");
@@ -37,6 +43,14 @@ export function InstanceEditor({
   const [iconError, setIconError] = useState<string | null>(null);
   const isNew = !instance;
   const currentIconUrl = instance ? managedIconSource(instance) : null;
+  const locked = busy || iconBusy;
+  const retry = iconRetryState({
+    platform,
+    customIcon: instance?.customIcon,
+    status: instance?.status ?? "stopped",
+    removeIcon,
+    busy: locked,
+  });
 
   const selectIcon = async (file: File | null) => {
     setIconError(null);
@@ -77,8 +91,8 @@ export function InstanceEditor({
   };
 
   return (
-    <Dialog open onOpenChange={(open) => { if (!open && !busy) onClose(); }}>
-      <DialogContent aria-busy={busy} closeDisabled={busy}>
+    <Dialog open onOpenChange={(open) => { if (!open && !locked) onClose(); }}>
+      <DialogContent aria-busy={locked} closeDisabled={locked}>
         <DialogHeader>
           <DialogTitle>{isNew ? "Nueva instancia" : "Editar instancia"}</DialogTitle>
           <DialogDescription>
@@ -116,7 +130,7 @@ export function InstanceEditor({
                 Se guarda fuera de la aplicación compatible para sobrevivir a futuras sincronizaciones.
               </span>
               <div className="mt-1 flex flex-wrap gap-2">
-                <Button asChild variant="outline" size="sm" aria-disabled={busy} className="cursor-pointer text-xs has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50 aria-disabled:pointer-events-none aria-disabled:opacity-50">
+                <Button asChild variant="outline" size="sm" aria-disabled={locked} className="cursor-pointer text-xs has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50 aria-disabled:pointer-events-none aria-disabled:opacity-50">
                   <label>
                     <input
                       type="file"
@@ -127,7 +141,7 @@ export function InstanceEditor({
                         event.currentTarget.value = "";
                         void selectIcon(file);
                       }}
-                      disabled={busy}
+                      disabled={locked}
                     />
                     <ImageUpIcon />
                     {iconPreviewUrl || instance?.customIcon ? "Reemplazar imagen" : "Seleccionar imagen"}
@@ -138,7 +152,7 @@ export function InstanceEditor({
                     type="button"
                     variant="destructive"
                     size="sm"
-                    disabled={busy}
+                    disabled={locked}
                     onClick={() => {
                       setIconBytes(null);
                       setIconPreviewUrl(null);
@@ -165,15 +179,25 @@ export function InstanceEditor({
             </AlertDescription>
           </Alert>
           {instance?.customIcon && !removeIcon && (
-            <p
-              data-applied={instance.customIcon.systemApplied}
-              className="-mt-2 px-0.5 font-mono text-(length:--fs-small) leading-snug text-muted-foreground data-[applied=true]:text-success"
-            >
-              {platform === "macos" && (
-                <strong>{instance.customIcon.systemApplied ? "Dock aplicado. " : "No se aplicó al Dock. "}</strong>
-              )}
-              {instance.customIcon.systemMessage}
-            </p>
+            <div className="-mt-2 grid gap-1.5">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                <p
+                  data-applied={instance.customIcon.systemApplied}
+                  className="min-w-0 flex-1 basis-60 px-0.5 font-mono text-(length:--fs-small) leading-snug text-muted-foreground data-[applied=true]:text-success"
+                >
+                  {platform === "macos" && (
+                    <strong>{instance.customIcon.systemApplied ? "Dock aplicado. " : "No se aplicó al Dock. "}</strong>
+                  )}
+                  {instance.customIcon.systemMessage}
+                </p>
+                {retry.visible && (
+                  <Button type="button" variant="outline" size="sm" disabled={!retry.enabled} onClick={() => void onRetryIcon()}>
+                    {iconBusy ? <Spinner aria-hidden="true" /> : <RotateCwIcon />} Reintentar
+                  </Button>
+                )}
+              </div>
+              {retry.hint && <p className="px-0.5 text-(length:--fs-small) text-muted-foreground">{retry.hint}</p>}
+            </div>
           )}
 
           {isNew && (
@@ -213,8 +237,8 @@ export function InstanceEditor({
           )}
 
           <DialogFooter>
-            <Button type="button" variant="outline" size="lg" onClick={onClose} disabled={busy}>Cancelar</Button>
-            <Button type="submit" size="lg" className="min-w-36" disabled={busy || !name.trim()}>
+            <Button type="button" variant="outline" size="lg" onClick={onClose} disabled={locked}>Cancelar</Button>
+            <Button type="submit" size="lg" className="min-w-36" disabled={locked || !name.trim()}>
               {busy
                 ? <><Spinner aria-hidden="true" /> {isNew ? "Creando copia…" : "Guardando…"}</>
                 : isNew ? <><PlusIcon /> Crear instancia</> : "Guardar cambios"}
