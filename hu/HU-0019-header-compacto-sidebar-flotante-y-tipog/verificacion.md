@@ -53,4 +53,8 @@ Dónde: la app de escritorio (`pnpm tauri dev`) o el instalador de esta rama, co
 
 ## Veredicto
 
-Pendiente de la persona.
+2026-10-28 · Braiyan Rodriguez (mantenedor), tras probarla en el escritorio de macOS («Todo responde»):
+
+> «Aprobado, cierra»
+
+**Aprobada.**

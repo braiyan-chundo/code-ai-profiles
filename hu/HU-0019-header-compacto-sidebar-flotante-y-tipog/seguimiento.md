@@ -17,3 +17,5 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-10-28 21:55 | orquestador | R-2 comprobada por el mantenedor en el escritorio de macOS (pnpm tauri dev): «Todo responde» — semáforos, botón de plegar, acciones y arrastre |
 | 2026-10-28 21:58 | orquestador | frontend corrige R-3..R-8 en 5ba9af8 (test:ui 15/15, build ok, skill de frontend en 12 045 B). Verificación preparada; la suite se corre en cuanto termine la arquitectura de HU-0020 (árbol limpio) |
 | 2026-10-28 21:58 | hu.mjs | fase implementacion → verificacion |
+| 2026-10-28 21:59 | orquestador | veredicto: «Aprobado, cierra» — Braiyan Rodriguez, 2026-10-28 |
+| 2026-10-28 21:59 | hu.mjs | estado en-proceso → terminada |

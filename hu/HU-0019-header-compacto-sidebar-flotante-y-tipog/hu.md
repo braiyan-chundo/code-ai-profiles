@@ -1,8 +1,8 @@
 ---
 id: HU-0019
 titulo: "Header compacto, sidebar flotante y tipografía legible"
-estado: en-proceso
-fase: verificacion
+estado: terminada
+fase: cierre
 area: interfaz
 entrega: 1
 prioridad: media
@@ -113,23 +113,31 @@ Ninguna: cambia el aspecto, no lo que la app hace.
 
 ## Definición de Terminado
 
-- [ ] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
-- [ ] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
-- [ ] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
-- [ ] Revisión técnica pasada, si la historia es riesgosa
-- [ ] La persona probó y aprobó; su veredicto está en `verificacion.md`
-- [ ] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
-- [ ] Commits en cada repo tocado con `HU: HU-0019`. **Sin push, sin publicar, sin desplegar**
-- [ ] Lo que solo comprueba una persona, declarado como pendiente humano
+- [x] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
+- [x] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
+- [x] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
+- [x] Revisión técnica pasada, si la historia es riesgosa
+- [x] La persona probó y aprobó; su veredicto está en `verificacion.md`
+- [x] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
+- [x] Commits en cada repo tocado con `HU: HU-0019`. **Sin push, sin publicar, sin desplegar**
+- [x] Lo que solo comprueba una persona, declarado como pendiente humano
 
 ## Cierre
 
-Fecha, quién cerró y sobre qué veredicto.
+2026-10-28, cerrada por el orquestador sobre el veredicto «Aprobado, cierra» de Braiyan Rodriguez.
 
-SHA por repositorio, con una línea de qué hace cada uno:
+SHA por repositorio, con una línea de qué hace cada uno (code-ai-profiles, rama `hu-0019-ajustes-visuales`):
+- `4a612d3`: semáforos de macOS en (20, 19).
+- `00ca976`…`6788ed1`: escala tipográfica, barra única de 52 px, sidebar flotante, Apariencia, documentación.
+- `5ba9af8`: correcciones R-3..R-8 de la revisión técnica.
+- `39f4f05`, `a2f0533`, `42b8661`, `3cdcb4d`, `bebded6`, `6634a43`, `e36b1bc` y el de cierre: historia, maqueta, arquitectura, revisión, verificación y CHANGELOG.
 
-★ aceptadas tal como estaban:
+★ aceptadas tal como estaban: D-1 (variante A), D-2 (sidebar flotante) y D-3 (escala global), con los detalles de A.
 
 Pendientes humanos (nadie los vio; no se dan por hechos):
+- Windows y Linux reales: controles, arrastre y la esquina del panel frente al arco del marco de Windows.
+- El dashboard vacío y el tema «Sistema».
 
 Deuda declarada:
+- La rama sale de `hu-0017-actualizar-original-macos`, que aún no está fusionada: el PR de esta historia va después del de la HU-0017.
+- Iconos y avatares no crecen con «Grande».
