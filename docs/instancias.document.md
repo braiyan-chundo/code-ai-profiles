@@ -31,7 +31,7 @@ No se cambian archivos sellados del bundle (`app.asar`, ejecutables, `Info.plist
 
 **Ciclo de vida.** El icono se aplica con la instancia detenida, se reaplica al lanzar si Claude se actualizó sola dentro de la copia (solo si la versión es igual o mayor que la registrada) y tras sincronizar, y se quita con «Quitar». Tras cada cambio se avisa a LaunchServices (`LSRegisterURL` y `noteFileSystemChanged`) para que el Dock no use un icono en caché.
 
-**Permiso «Gestión de apps».** macOS protege las copias que el actualizador de Claude ha modificado: para cambiarles el icono, Code AI Profiles necesita el permiso «Gestión de apps» (Ajustes del Sistema › Privacidad y seguridad). No se pide por adelantado: si macOS rechaza el cambio, el editor lo explica y ofrece «Reintentar». Como Code AI Profiles no se firma con un certificado de desarrollador, macOS puede volver a pedirlo tras instalar una versión nueva.
+**Permiso «Gestión de apps».** macOS protege las copias que el actualizador de Claude ha modificado: para cambiarles el icono, Code AI Profiles necesita el permiso «Gestión de apps» (Ajustes del Sistema › Privacidad y seguridad). No se pide por adelantado: si macOS rechaza el cambio, el editor lo explica y ofrece «Reintentar». Desde [HU-0022](configuracion.document.md), el permiso también se explica en Configuración › Permisos, con su estado y un acceso directo al panel. Como Code AI Profiles no se firma con un certificado de desarrollador, macOS puede volver a pedirlo tras instalar una versión nueva.
 
 La transacción se limita al icono y a la metadata administrada: no toca perfiles, sesiones, credenciales, autenticación ni transcripts, ni la instalación original.
 

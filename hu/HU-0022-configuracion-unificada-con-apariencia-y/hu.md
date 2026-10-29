@@ -1,8 +1,8 @@
 ---
 id: HU-0022
 titulo: "Configuración unificada con apariencia y permisos"
-estado: en-proceso
-fase: verificacion
+estado: terminada
+fase: cierre
 area: interfaz
 entrega: 1
 prioridad: alta
@@ -142,11 +142,39 @@ La app abre y funciona sin ningún permiso concedido; entrar en Configuración n
 
 ## Definición de Terminado
 
-- [ ] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
-- [ ] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
-- [ ] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
-- [ ] Revisión técnica pasada, si la historia es riesgosa
-- [ ] La persona probó y aprobó; su veredicto está en `verificacion.md`
-- [ ] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
-- [ ] Commits en cada repo tocado con `HU: HU-0022`. **Sin push, sin publicar, sin desplegar**
-- [ ] Lo que solo comprueba una persona, declarado como pendiente humano
+- [x] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
+- [x] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
+- [x] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
+- [x] Revisión técnica pasada, si la historia es riesgosa
+- [x] La persona probó y aprobó; su veredicto está en `verificacion.md`
+- [x] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
+- [x] Commits en cada repo tocado con `HU: HU-0022`. **Sin push, sin publicar, sin desplegar**
+- [x] Lo que solo comprueba una persona, declarado como pendiente humano
+
+## Cierre
+
+2026-10-29, cerrada por el orquestador sobre el veredicto del mantenedor («probadas las 0022 y la 0023 y estan
+perfectas»), tras probar el `.dmg` de `c28ebc6`.
+
+SHA por repositorio, con una línea de qué hace cada uno (code-ai-profiles, rama `hu-0022-configuracion-unificada`, que
+lleva también la HU-0023):
+- `1c7b8c3`, `82258bd`, `7a9ab41`: backend (contrato, URLs de los paneles en `.env.example` y `config.rs`, comandos).
+- `689bde3`, `97c05ed`, `4db13ff`, `a64c5ba`, `f5e4931`: sistema armónico en toda la app, `DESIGN.md` y pruebas 12, 15 y 16.
+- `541f5e6`, `2b8003b`, `2b4c821`, `70a246b`, `0f3c877`: Configuración con Apariencia y Permisos, `test:permissions`.
+- `da99619`, `3ca310f`, `e2cfb37`: correcciones de la revisión (R-1, R-2, R-5).
+- `6421f84`, `7f9e5c7`, `b2ad12c`, `fe6f7f2`, `06219a6`, `bdd0a6e`, `95378c7`, `2430244` y el de cierre: historia, maquetas,
+  arquitectura, revisión, verificación y documentación (`docs/configuracion.document.md`, README, CHANGELOG).
+
+★ aceptadas tal como estaban: D-1 a D-4, el estado real de la cuenta de administrador y el atajo ⌘, / Ctrl+,.
+
+Reglas de negocio: ninguna cambia.
+
+Pendientes humanos (nadie los vio; no se dan por hechos):
+- Windows y Linux reales (solo CI y mocks).
+
+Deuda declarada:
+- R-3: `541f5e6` no compila por sí solo; se recomienda squash al integrar.
+- R-4: en el botón pequeño de Compacto y el título de la barra en Grande el texto cae a 2 px de la retícula
+  (alternativa: un token `--lh-ctl-sm`).
+- R-6: las medidas del paso 1 son solo de Cómodo; Compacto y Grande se vieron en capturas y en la prueba del
+  mantenedor.

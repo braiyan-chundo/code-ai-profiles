@@ -62,4 +62,6 @@ los tres tamaños; Windows y Linux reales (solo CI).
 
 ## Veredicto
 
-Pendiente.
+**Aprobada.** 2026-10-29 · Braiyan Rodriguez (mantenedor), tras probar el `.dmg` de esta rama (`c28ebc6`):
+
+> «probadas las 0022 y la 0023 y estan perfectas»

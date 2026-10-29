@@ -21,3 +21,4 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-10-29 02:14 | orquestador | correcciones de la revisión (frontend): da99619 R-1 marca entera en Grande (134/134 px) y R-5 (plural, aria-live, h1→h2→h3); 3ca310f R-2 skills; e2cfb37 evidencias. test:ui 18, permissions 14, projects 22, build ok |
 | 2026-10-29 02:27 | hu.mjs | fase implementacion → verificacion |
 | 2026-10-29 02:29 | orquestador | verificación preparada: suite en verde sobre c28ebc6, DMG de la rama (sha256 bb142164…7515). Falta la prueba y el veredicto del mantenedor |
+| 2026-10-29 07:12 | hu.mjs | estado en-proceso → terminada · veredicto del mantenedor: «probadas las 0022 y la 0023 y estan perfectas» |
