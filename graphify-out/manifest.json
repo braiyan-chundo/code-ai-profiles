@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793219553.8630402,
-    "ast_hash": "bf8a18a22058292e098d9a5c697844c2",
+    "mtime": 1793237654.2749155,
+    "ast_hash": "4473443163c14b248560e39021138302",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -1717,6 +1717,21 @@
   "hu/HU-0018-descargar-e-instalar-la-original-en-wind/seguimiento.md": {
     "mtime": 1793219553.8621116,
     "ast_hash": "275a9d81feddf2c30165625c5c4fb8e9",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/hu.md": {
+    "mtime": 1793237648.0290933,
+    "ast_hash": "7b32c5e94f0718a2091c746ac225e99c",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/seguimiento.md": {
+    "mtime": 1793237654.273952,
+    "ast_hash": "1bce4b60015f00c7f32241e9d0c57bc0",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/referencia-sidebar.png": {
+    "mtime": 1793237624.4907107,
+    "ast_hash": "31f64b3559ec04c17eb704648bb14fa3",
     "semantic_hash": ""
   }
 }
