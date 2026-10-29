@@ -338,6 +338,13 @@ function projectsLeaks(local: string, source: string): string[] {
   return leaks;
 }
 
+// 18. HU-0023 (R-3 de la revisión): `tauri-plugin-dialog` cambia `window.confirm` (devuelve una Promise, siempre verdadera)
+// y deja `alert` sin efecto. Ni `alert(`, ni `confirm(`, ni `prompt(` en src/, con `window.` o sin él: una confirmación
+// es un `AlertDialog` con su bandera en `DialogsProvider`.
+const NATIVE_DIALOG_CALL = /(?<![\w$.])(?:(?:window|globalThis|self)\s*\.\s*)?(?:alert|confirm|prompt)\s*\(/;
+/** El texto sin comentarios de línea ni de bloque, para que una explicación no dé falsos positivos. */
+const withoutComments = (source: string) => source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/.*$/gm, "$1");
+
 const FOCUS_OWNERS = [
   "features/instances/useLiveUsage.ts",
   "features/scan/useBackgroundRefresh.ts",
@@ -624,6 +631,22 @@ test("17 · Proyectos es solo resumen: sin instancias, sesiones, escaneo ni actu
   assert.equal(projectsLeaks("app/layout/X.tsx", 'import { a } from "../../features/projects";').length, 0);
   assert.equal(projectsLeaks("features/permissions/X.tsx", 'import { a } from "../projects";').length, 0);
   assert.equal(projectsLeaks("features/instances/X.tsx", 'import { a } from "../projects";').length, 1, "una feature de instancias no usa Proyectos");
+});
+
+test("18 · ni alert, ni confirm, ni prompt en src/: el plugin del diálogo los cambia", () => {
+  for (const { local, source } of code) {
+    const found = withoutComments(source).match(new RegExp(NATIVE_DIALOG_CALL.source, "g")) ?? [];
+    assert.deepEqual(found, [], `src/${local} llama a ${found.join(", ")}: usa un AlertDialog`);
+  }
+  // Canario: cada forma se marca, y los usos legítimos no.
+  for (const sample of ["alert('x')", "window.alert('x')", "if (confirm(`¿Borrar?`)) borrar();", "window . confirm ( 'x' )", "const n = prompt('n');", "await window.prompt('n')", "globalThis.confirm('x')", "x = (confirm('y'))", "return confirm(\"a\");"]) {
+    assert.ok(NATIVE_DIALOG_CALL.test(sample), `no marcó ${sample}`);
+  }
+  for (const sample of ["onConfirm()", "handleConfirm(x)", "instanceActions.confirm(x)", "dialog.alert(x)", "<AlertDialog open>", "confirmDelete()", "const confirmed = true", "AlertDialogAction", "promptTitle(x)", "reconfirm(x)"]) {
+    assert.ok(!NATIVE_DIALOG_CALL.test(sample), `marcó un uso legítimo: ${sample}`);
+  }
+  assert.ok(!NATIVE_DIALOG_CALL.test(withoutComments("// confirm('x') ya no\n/* alert('y') */ const a = 1;")), "un comentario no cuenta");
+  assert.ok(NATIVE_DIALOG_CALL.test(withoutComments("const url = 'http://x'; confirm('y');")), "una URL con // no oculta la llamada");
 });
 
 test("10 · los .css de src/ son solo index.css, tokens.css, ui-theme.css y showcase.css", () => {
