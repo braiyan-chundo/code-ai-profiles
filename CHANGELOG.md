@@ -6,14 +6,20 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-28
+
 ### Added
 
+- En macOS, «Descargar e instalar» actualiza la aplicación original con un clic cuando el feed oficial anuncia una versión posterior: descarga solo desde el host permitido, verifica tamaño, `sha256`, firma de Anthropic y Gatekeeper, la sustituye de forma atómica con vuelta atrás si algo falla y sincroniza después las instancias detenidas; las abiertas quedan como «Sincronización pendiente». Windows y Linux siguen con el canal oficial.
+- Sidebar permanente con el dashboard, la aplicación original y cada instancia clonada; dashboard con el resumen global y los avisos, y una página propia para cada instancia y para la original.
 - En macOS, el icono personalizado de cada instancia se ve también en el Dock, con la forma de los iconos de macOS y sin tocar la firma de Anthropic. Para las copias que Claude actualizó por su cuenta, macOS pide el permiso «Gestión de apps»; el editor lo explica y ofrece «Reintentar».
 - Catálogo de 63 componentes shadcn/ui con el tema de la app y un showcase local en `/showcase.html` (`pnpm dev`), fuera del build y de los instaladores. Skill `code-ai-profiles-ui` con una ficha por componente y la prueba `test:ui`, que vigila que nada del catálogo entre en la app.
 
 ### Changed
 
 - Cabecera compacta de una sola barra (el contenido empieza a 60 px del borde, antes 193 px en macOS), sidebar flotante plegable a iconos y escala tipográfica global: el tamaño de Apariencia (Compacto, Cómodo, Grande) escala toda la interfaz y ningún texto baja de 11 px.
+- La interfaz se construye con el catálogo shadcn/ui y Tailwind 4, con los tokens de `DESIGN.md`.
+- Las URL del feed, de descarga y de las guías se fijan en la compilación desde `.env.example` (`config.rs` y `build.rs`), no en el código.
 - La interfaz se organiza por funcionalidades (`src/app`, `src/features`, `src/components`, `src/lib`, `src/styles`), con React Router 7 por hash y estado compartido con Context y `useReducer`. No cambia nada visible.
 - Requisitos mínimos: macOS 13.3 o posterior (antes 12.0) y WebKitGTK 2.40 o posterior en Linux, porque la interfaz necesita un motor web de nivel Safari 16.4.
 - El proyecto usa pnpm en lugar de npm: `pnpm-lock.yaml`, versión fijada en `packageManager` y CI con `pnpm install --frozen-lockfile`.
