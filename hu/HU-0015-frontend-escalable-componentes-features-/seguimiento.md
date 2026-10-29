@@ -20,3 +20,4 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-10-28 07:28 | orquestador | cambio pedido en la verificación: pnpm en lugar de npm (cb4c019), hecho por el orquestador; pnpm build, relacionadas y pnpm tauri dev en verde |
 | 2026-10-28 07:28 | hu.mjs | estado en-proceso → terminada |
 | 2026-10-28 07:53 | orquestador | CI del PR #10 en rojo: pnpm 12 rechaza react-router 7.18.5 (publicado hace menos de 24 h, minimumReleaseAge). Se fija 7.18.4 (2026-09-15, mismas dependencias); instalación limpia, build, relacionadas y #/no-existe → #/ en verde — orquestador |
+| 2026-10-29 00:25 | orquestador | pendientes humanos descartados por el mantenedor, que prioriza otras historias: «necesito que ya no revisemos esas tareas… marcalas quizas como deprecadas o ignoradas» (2026-10-29). No se dan por comprobados; no se vuelven a listar |

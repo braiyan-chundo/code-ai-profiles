@@ -1,0 +1,49 @@
+{
+  "hu": "HU-0010",
+  "generado": "2026-10-29T05:25:50.307Z",
+  "perfil": "S",
+  "fases": [
+    {
+      "fase": "requisitos",
+      "desde": "2026-10-27T22:21:00.000Z",
+      "hasta": "2026-10-27T22:21:00.000Z",
+      "minutos": 0
+    },
+    {
+      "fase": "verificacion",
+      "desde": "2026-10-27T22:21:00.000Z",
+      "hasta": "2026-10-29T05:25:00.000Z",
+      "minutos": 1864
+    },
+    {
+      "fase": "cierre",
+      "desde": "2026-10-29T05:25:00.000Z",
+      "hasta": "2026-10-29T05:25:00.000Z",
+      "minutos": 0
+    }
+  ],
+  "minutosTotales": 1864,
+  "agentes": [],
+  "orquestador": {
+    "aproximado": true,
+    "porFase": [
+      {
+        "fase": "verificacion",
+        "tokens": {
+          "entrada": 1568,
+          "salida": 481471,
+          "cacheEscritura": 1720987,
+          "cacheLectura": 171555142,
+          "total": 173759168
+        }
+      }
+    ]
+  },
+  "totales": {
+    "tokensAgentes": 0,
+    "tokensOrquestador": 173759168,
+    "tokens": 173759168,
+    "despachos": 0
+  },
+  "notas": []
+}

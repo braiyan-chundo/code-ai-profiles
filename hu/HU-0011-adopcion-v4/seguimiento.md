@@ -19,3 +19,4 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-10-27 20:35 | orquestador | Veredicto de Braiyan Rodriguez: «cerra todo con lo recomendado». |
 | 2026-10-27 20:35 | hu.mjs | estado en-proceso → terminada |
 | 2026-10-27 20:36 | orquestador | Cierre: commit 70a2261 en adopcion-v4 (code-ai-profiles); suite en verde sobre ese SHA; graph:check al día. Sin push. |
+| 2026-10-29 00:25 | orquestador | pendientes humanos descartados por el mantenedor, que prioriza otras historias: «necesito que ya no revisemos esas tareas… marcalas quizas como deprecadas o ignoradas» (2026-10-29). No se dan por comprobados; no se vuelven a listar |
