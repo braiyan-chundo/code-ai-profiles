@@ -57,7 +57,7 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 ## Diferencias con el registro
 
-Ninguna: es el código del registro `radix-vega` (2026-10-28) tal como se descargó.
+Ajuste 1 (HU-0019, A-3): `h-5` y `min-w-5` → `h-(--ctl-badge)` y `min-w-(--ctl-badge)` (20 px por `--esc`).
 
 ## Qué no hacer
 

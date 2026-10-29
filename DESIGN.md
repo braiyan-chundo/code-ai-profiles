@@ -94,7 +94,7 @@ rounded:
   xl: 1.5rem
   full: 9999px
 spacing:
-  sidebar-width: 260px
+  sidebar-width: 256px
   gutter: 24px
   margin-page: 40px
   unit-xs: 4px
@@ -126,9 +126,9 @@ This design system uses **Inter** for its clean, Swiss-inspired readability and 
 
 ## Layout & Spacing
 The layout follows a **Fixed-Fluid hybrid** model common in desktop apps.
-- **Sidebar:** Fixed width (260px) with a semi-transparent acrylic background.
+- **Sidebar:** Fixed width (256px, a floating 240px panel with 8px margins) with a semi-transparent acrylic background.
 - **Main Content:** Fluid width with a maximum container of 1200px to maintain readability.
-- **Margins:** Large 40px outer margins provide "breathing room" that signifies a premium application.
+- **Margins:** Generous outer margins (32px) provide "breathing room" that signifies a premium application.
 - **Grid:** A 12-column grid is used for dashboard views, while single-column layouts are preferred for focused session management.
 
 ## Elevation & Depth
@@ -168,15 +168,34 @@ hay CSS propio. Esta guía describe la identidad; los valores reales que la app 
   tooltips los heredan.
 - **Tipografía**: Inter para la interfaz y JetBrains Mono para datos técnicos (versiones, rutas, modelos, contexto,
   etiquetas en mayúsculas con tracking). Ambas locales (`@fontsource`). Geist no se usa.
+- **Escala tipográfica** (HU-0019): siete tamaños, `--fs-micro` a `--fs-dialog`, y un factor `--esc` para el alto de
+  los controles, en `tokens.css`. El ajuste de Apariencia (compacto, cómodo, grande) los cambia en `<html
+  data-text-size>`, así que escala toda la interfaz, también diálogos y menús. Ningún texto baja de 11 px.
+
+  | Token | Compacto | Normal | Grande | Uso |
+  | --- | --- | --- | --- | --- |
+  | `--fs-micro` | 11 | 11 | 12 | mayúsculas, chips, kbd, barra de estado, contexto de sesión |
+  | `--fs-small` | 11 | 12 | 14 | metadatos, rutas, versiones, pistas, descripciones |
+  | `--fs-body` | 13 | 14 | 16 | sidebar, botones, avisos, título de sesión |
+  | `--fs-heading` | 14 | 15 | 17 | títulos de tarjeta |
+  | `--fs-title` | 15 | 17 | 19 | título de la página, marca del panel |
+  | `--fs-figure` | 20 | 22 | 26 | cifras y porcentajes |
+  | `--fs-dialog` | 20 | 22 | 25 | título de diálogo |
+  | `--esc` | 0,93 | 1 | 1,143 | alto de botón (36), entrada (32), chip (20) |
+
+  El texto gris de lectura es `--muted` (`text-muted-foreground`); `--quiet` queda para puntos, rayas y separadores,
+  porque su contraste (3,4:1 en oscuro, 2,9:1 en claro) no basta para texto.
 - **Radios**: 9 px (chips), 12 px (controles), 14 px (botones y tarjetas de opción), 16 px (tarjetas), 20 px (la
   ventana en Windows) y 26 px (diálogos): `rounded-sm` a `rounded-3xl` en `ui-theme.css`.
-- **Disposición**: sidebar de 260 px plegable a iconos, contenido de hasta 1200 px con márgenes de 38 px (25 px por
-  debajo de 1070 px), ventana mínima de 980×680.
+- **Disposición** (HU-0019): una sola barra de 52 px (la zona de la ventana sobre el sidebar y, a su derecha, las
+  migas «Sección › Página» con las acciones), de modo que el contenido empieza a 60 px del borde. El sidebar es un
+  panel flotante de 240 px con 8 px de margen (columna de 256 px; plegado, 50 px de panel y 64 de columna), con la marca
+  arriba y el número de sesiones de cada perfil. Contenido de hasta 1200 px con márgenes de 32 px (24 px por debajo
+  de 1071 px), barra de estado de 36 px (32) y ventana mínima de 980×680.
 - **Profundidad**: el marco de la ventana es un degradado con borde interior; los diálogos flotan sobre un velo con
   desenfoque de 18 px. La acción primaria es el único relleno sólido de color.
 - **Iconos**: lucide (trazo fino, extremos redondeados) y la marca propia (`BrandMark`), que también es el icono por
   defecto de una instancia.
-- **Densidad de sesiones**: compacta, cómoda o grande, con las variables `--session-*`.
 
 El detalle del puente con shadcn está en la skill `code-ai-profiles-ui` (`tema.md`) y el de construcción, en
 `code-ai-profiles-frontend-react-vite`.

@@ -58,6 +58,11 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 Ajuste 3: `text-primary` (sin `-foreground`) pasa a `text-primary-text`, el naranja legible en claro (#9c5947).
 
+Ajuste 4 (HU-0019, A-3): las alturas siguen el tamaño del texto. `h-9`/`size-9` → `h-(--ctl)`/`size-(--ctl)`, `h-8`/`size-8`
+(`sm`, `icon-sm`) → `--ctl-sm`, `h-10`/`size-10` (`lg`, `icon-lg`) → `--ctl-lg` y `h-6`/`size-6` (`xs`, `icon-xs`) →
+`--ctl-xs`. Cada `--ctl*` es su alto en px por `--esc` (0,93, 1 o 1,143): en «Normal» no cambia nada. El texto usa `text-sm`, que
+ya vale `--fs-body`. Los iconos (16 px) no crecen.
+
 ## Qué no hacer
 
 - No pintar un `div` con la clase del botón.

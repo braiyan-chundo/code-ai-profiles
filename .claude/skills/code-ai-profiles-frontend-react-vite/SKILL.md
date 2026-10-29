@@ -62,17 +62,15 @@ tests/*.test.ts       node --test sobre los módulos puros
   `.css` nuevo en `src/` rompe `test:ui` (prueba 10).
 - **Aspecto común en el componente**: si un ajuste vale para todos los usos (el radio y el scroll de `DialogContent`),
   se edita el componente del catálogo y se anota en su ficha. Si es de una pantalla, va en su `className`.
-- **Temas**: `AppearanceProvider` pone `theme-dark` o `theme-light` y `data-session-text` en `<html>` antes de pintar,
+- **Temas**: `AppearanceProvider` pone `theme-dark` o `theme-light` y `data-text-size` en `<html>` antes de pintar,
   así que los portales de Radix (diálogos, menús, tooltips) los heredan. `system` se resuelve con `matchMedia`. El
   oscuro es la base; los tokens cambian solos. `dark:` existe, pero rara vez hace falta.
-- **Plataformas**: la raíz (`data-slot="desktop-shell"`) lleva `platform-macos|windows|linux` y fija
-  `--titlebar-height` (94 px en macOS por los semáforos superpuestos, con 106 px de reserva a la izquierda; 64 px en
-  el resto). En Windows la ventana es transparente sin decoraciones, con esquinas de 20 px y controles propios; en
-  Linux decora el gestor de ventanas. `body` es transparente y el marco (`SidebarProvider`) lleva `transform` para
-  que el `position: fixed` del sidebar quede dentro de la ventana.
-- **Densidad**: los tamaños de sesión salen de `--session-*` (`text-(length:--session-title-size)`), que cambian con
-  `data-session-text`. **Ventana reducida**: mínima 980×680 (los diálogos hacen scroll), cortes `max-[1260px]:` y
-  `max-[1070px]:`, y `prefers-reduced-motion` en la capa base. Fuentes locales: la CSP solo permite `font-src 'self' data:`.
+- **Plataformas y barra**: la raíz (`data-slot="desktop-shell"`) lleva `platform-macos|windows|linux` y fija
+  `--titlebar-height: 52px` en las tres. Una sola fila: `Titlebar` sobre el sidebar y `PageHeader` a su derecha.
+  Medidas y reglas por plataforma en `estilos.md`. `body` es transparente y el marco lleva `transform`.
+- **Escala**: el tamaño es siempre `text-(length:--fs-<x>)`, nunca `text-[Npx]` ni `text-micro`, y el gris de texto
+  es `text-muted-foreground`, no `--quiet` (pruebas 12 a 14). **Ventana reducida**: mínima 980×680, cortes
+  `max-[1070px]:` y `prefers-reduced-motion`. Fuentes locales: `font-src 'self' data:`. Detalle en `estilos.md`.
 
 ## Iconos y componentes
 

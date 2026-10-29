@@ -56,6 +56,9 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 Ajuste 3: `text-primary` (sin `-foreground`) pasa a `text-primary-text`, el naranja legible en claro (#9c5947).
 
+Ajuste 4 (HU-0019, A-3): `h-5` → `h-(--ctl-badge)` (20 px por `--esc`). El texto usa `text-xs` (`--fs-small`) o, en la app,
+`text-(length:--fs-micro)`. Un chip con una altura fija propia (`h-4`) recortaría el texto: no se le pone.
+
 ## Qué no hacer
 
 - No usarlo como botón sin `asChild` y un elemento interactivo.
