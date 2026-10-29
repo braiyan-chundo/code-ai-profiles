@@ -1626,6 +1626,8 @@ fn validate_provider_identity(candidate: &Path, original: &Path) -> Result<(), S
     result
 }
 
+/// Stored as `managed_fingerprint` for compatibility; no longer a gate (HU-0020, ★ D-E). macOS only.
+#[cfg(target_os = "macos")]
 fn fingerprint_label(path: &Path) -> Result<String, String> {
     let fingerprint = application_fingerprint(path)
         .ok_or_else(|| "No se pudo calcular el fingerprint de la aplicación.".to_string())?;
