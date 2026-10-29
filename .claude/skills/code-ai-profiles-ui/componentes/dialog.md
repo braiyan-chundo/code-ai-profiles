@@ -8,7 +8,7 @@ Ventana modal para una tarea corta.
 
 **Sí**
 - Una tarea corta que bloquea el resto: renombrar, editar un campo.
-- En la app (HU-0016): `AppearanceDialog`, `InstanceEditor`, `SessionTransferDialog`, `ApplicationUpdateDialog` y `OriginalApplicationUpdateDialog`, montados por `DialogHost`.
+- En la app (HU-0016): `InstanceEditor`, `SessionTransferDialog`, `ApplicationUpdateDialog` y `OriginalApplicationUpdateDialog`, montados por `DialogHost`.
 
 **No**
 - Para confirmar una acción: `AlertDialog`.

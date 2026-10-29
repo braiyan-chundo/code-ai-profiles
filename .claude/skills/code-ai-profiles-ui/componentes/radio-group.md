@@ -8,7 +8,7 @@ Elige una opción entre varias.
 
 **Sí**
 - Elegir una opción entre pocas, todas visibles.
-- En la app (HU-0016): tema y tamaño del texto en `AppearanceDialog`; modo y destino en `SessionTransferDialog`, como tarjetas de opción (`FieldLabel` > `Field` > `RadioGroupItem`).
+- En la app (HU-0016): tema y tamaño del texto en `AppearanceSettings` (Configuración › Apariencia); modo y destino en `SessionTransferDialog`, como tarjetas de opción (`FieldLabel` > `Field` > `RadioGroupItem`).
 
 **No**
 - Más de cinco opciones: `Select`. Opciones cortas y compactas: `ToggleGroup`.

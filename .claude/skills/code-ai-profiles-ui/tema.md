@@ -24,7 +24,7 @@ importan las dos entradas, `src/styles/index.css` (la app) y `src/showcase/showc
 - `tokens.css` se importa con `layer(base)` en las dos entradas: dentro de la capa `base`, gana al preflight y pierde
   ante las utilidades. No hay CSS sin capa: la app se pinta con utilidades y el catálogo.
 - Oscuro, la base, en `:root, .theme-dark`; claro en `.theme-light`, **después**. Así una muestra con `theme-dark` o
-  `theme-light` dentro del otro tema toma sus propios tokens (las miniaturas de tema de `AppearanceDialog`).
+  `theme-light` dentro del otro tema toma sus propios tokens (las miniaturas de tema de `AppearanceSettings`).
 - **Escala (HU-0019, HU-0022)**: siete `--fs-*` (`micro`, `small`, `body`, `heading`, `title`, `figure`, `dialog`), ocho
   `--lh-*` (los mismos más `prose`) y cinco alturas (`--ctl` 36, `--ctl-sm` 32, `--ctl-lg` 40, `--ctl-xs` 24 y
   `--ctl-badge` 24), todos en px enteros, van en `:root` y cambian con `:root[data-text-size=compact|large]`. **No hay
