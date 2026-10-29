@@ -44,4 +44,11 @@ PASS; R-1..R-4 y R-7 corregidas.
 
 ## Veredicto
 
-Pendiente de la persona. Primera respuesta, 2026-10-28: «el icono quedo perfecto en el dock».
+2026-10-28 · Braiyan Rodriguez (mantenedor), tras probar el `.dmg` de `e1a5c53` con el permiso «Gestión de apps»:
+
+> «el icono quedo perfecto en el dock»
+
+> «yo creo que mejor cerremos esto hasta aqui luego que todo este comiteado vamos a mergear todo a develop»
+
+**Aprobada.** AC-02 (Llavero sin contraseña) y AC-04 («Quitar») no se probaron en el Mac: quedan como
+pendientes humanos.

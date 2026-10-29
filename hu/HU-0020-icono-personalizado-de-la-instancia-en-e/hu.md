@@ -1,8 +1,8 @@
 ---
 id: HU-0020
 titulo: "Icono personalizado de la instancia en el Dock de macOS"
-estado: en-proceso
-fase: verificacion
+estado: terminada
+fase: cierre
 area: instancias
 entrega: 1
 prioridad: media
@@ -106,23 +106,35 @@ Al quitar el icono personalizado, la instancia vuelve al icono de Claude en el D
 
 ## Definición de Terminado
 
-- [ ] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
-- [ ] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
-- [ ] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
-- [ ] Revisión técnica pasada, si la historia es riesgosa
-- [ ] La persona probó y aprobó; su veredicto está en `verificacion.md`
-- [ ] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
-- [ ] Commits en cada repo tocado con `HU: HU-0020`. **Sin push, sin publicar, sin desplegar**
-- [ ] Lo que solo comprueba una persona, declarado como pendiente humano
+- [x] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
+- [x] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
+- [x] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
+- [x] Revisión técnica pasada, si la historia es riesgosa
+- [x] La persona probó y aprobó; su veredicto está en `verificacion.md`
+- [x] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
+- [x] Commits en cada repo tocado con `HU: HU-0020`. **Sin push, sin publicar, sin desplegar**
+- [x] Lo que solo comprueba una persona, declarado como pendiente humano
 
 ## Cierre
 
-Fecha, quién cerró y sobre qué veredicto.
+2026-10-28, cerrada por el orquestador sobre el veredicto del mantenedor («el icono quedo perfecto en el dock» y
+«cerremos esto hasta aqui»).
 
-SHA por repositorio, con una línea de qué hace cada uno:
+SHA por repositorio, con una línea de qué hace cada uno (code-ai-profiles, rama `hu-0019-ajustes-visuales`):
+- `391fa89`…`76fad7f`: backend (contrato, `macos_icon.rs`, CDHash, staging, ciclo de vida, comprobación al lanzar).
+- `ef01d4f`, `02310ba`: frontend («Reintentar», «Gestión de apps», badge).
+- `c2b4729`, `592da64`, `e37bc5d`, `ebc9037`: correcciones de la revisión, aviso a LaunchServices, plantilla del icono y textos.
+- `fc39180`, `4666cb9`, `cdaeeac`, `3d99327`, `e1a5c53`, `deb013b` y el de cierre: arquitectura, revisión, verificación, docs y reglas.
 
-★ aceptadas tal como estaban:
+★ aceptadas tal como estaban: D-1 a D-3, con el reaplicado al lanzar en lugar de al detener.
 
 Pendientes humanos (nadie los vio; no se dan por hechos):
+- AC-02: el Llavero no pide la contraseña y la sesión se conserva con el icono puesto.
+- AC-04: «Quitar» devuelve el icono de Claude en el Dock.
+- Windows y Linux (sin cambios; solo CI).
 
 Deuda declarada:
+- Code AI Profiles sin firmar: macOS puede volver a pedir «Gestión de apps» tras cada instalación.
+- Una copia manipulada que ya está en la última versión no se puede resincronizar (la sincronización salta las copias al día).
+- R-5 y R-6 de la revisión: `codesign` en cada refresco de versiones para copias con icono en marcha; sin la original, una copia con icono no se abre (documentado).
+- La imagen guardada es de 512 px y se amplía a 824 px en el Dock.

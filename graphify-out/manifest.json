@@ -115,8 +115,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1793211133.6848307,
-    "ast_hash": "c235b78a99afc311a50ad6a85b74b622",
+    "mtime": 1793247723.7947972,
+    "ast_hash": "ad32d100c7fbd6a9cf35ddf7936a41fe",
     "semantic_hash": ""
   },
   "code.html": {
@@ -145,8 +145,8 @@
     "semantic_hash": ""
   },
   "docs/instancias.document.md": {
-    "mtime": 1791894359.7539053,
-    "ast_hash": "043b3930fde4f65265157d75d699af59",
+    "mtime": 1793247717.1388183,
+    "ast_hash": "6af9612fe3e666038ba1639146de904b",
     "semantic_hash": ""
   },
   "scripts/release-version.mjs": {
@@ -160,8 +160,8 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1793242797.9304025,
-    "ast_hash": "4838c9c1a9255c3abc64c03f9f2bede5",
+    "mtime": 1793247745.93944,
+    "ast_hash": "4164abc457a3ed37c30e53f210e9c01a",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
@@ -295,8 +295,8 @@
     "semantic_hash": ""
   },
   "docs/producto/reglas/README.md": {
-    "mtime": 1793139609.3713522,
-    "ast_hash": "1aa385464c0e931e029f95e753939a4a",
+    "mtime": 1793247730.6375642,
+    "ast_hash": "b6d1f97efa0f673a91d458c1779aae4e",
     "semantic_hash": ""
   },
   "hu/HU-0010-publicar-el-fix-de-actualizacion-como-ve/arquitectura.md": {
@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793246928.3259363,
-    "ast_hash": "7f3d22cf556ef5888b2fcf8c6b7ef80e",
+    "mtime": 1793247746.4795337,
+    "ast_hash": "89a90162c4a0375cc6dc5401db1c80bc",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -1750,13 +1750,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/hu.md": {
-    "mtime": 1793242879.9482436,
-    "ast_hash": "84c4142c3e4d118d4a2d64f701141f49",
+    "mtime": 1793247746.023983,
+    "ast_hash": "df9fbef9835a4b0620d2c8affd6d2fde",
     "semantic_hash": ""
   },
   "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/seguimiento.md": {
-    "mtime": 1793246928.3251786,
-    "ast_hash": "0a13cc206af8875e9d66fb5c144fc087",
+    "mtime": 1793247746.0336735,
+    "ast_hash": "44eaa51142466bcd7634e0006acd1dfa",
     "semantic_hash": ""
   },
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/01-dashboard-avisos-A-1440-oscuro.png": {
@@ -2152,6 +2152,21 @@
   "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/revision-tecnica.md": {
     "mtime": 1793245393.2452672,
     "ast_hash": "96676962bf58383338f0a2af48b53f80",
+    "semantic_hash": ""
+  },
+  "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/metricas.json": {
+    "mtime": 1793247746.4623845,
+    "ast_hash": "55a64e2743326c46dd061566fb510144",
+    "semantic_hash": ""
+  },
+  "docs/producto/reglas/instancias.md": {
+    "mtime": 1793247730.6003122,
+    "ast_hash": "49234e23b850cf7b2e10a89b9ac590eb",
+    "semantic_hash": ""
+  },
+  "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/verificacion.md": {
+    "mtime": 1793247745.93875,
+    "ast_hash": "b12e1a2dafa19ba634139136484a5f6c",
     "semantic_hash": ""
   }
 }

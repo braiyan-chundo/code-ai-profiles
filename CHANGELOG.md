@@ -8,6 +8,7 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ### Added
 
+- En macOS, el icono personalizado de cada instancia se ve también en el Dock, con la forma de los iconos de macOS y sin tocar la firma de Anthropic. Para las copias que Claude actualizó por su cuenta, macOS pide el permiso «Gestión de apps»; el editor lo explica y ofrece «Reintentar».
 - Catálogo de 63 componentes shadcn/ui con el tema de la app y un showcase local en `/showcase.html` (`pnpm dev`), fuera del build y de los instaladores. Skill `code-ai-profiles-ui` con una ficha por componente y la prueba `test:ui`, que vigila que nada del catálogo entre en la app.
 
 ### Changed

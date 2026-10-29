@@ -18,3 +18,5 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-10-28 23:08 | orquestador | frontend: ebc9037 (R-1 prefijo «Aplicado al Dock.», R-7 error del reintento propio; mock con los textos de Rust). Suite e instalador nuevo para repetir la prueba con el permiso «Gestión de apps» |
 | 2026-10-28 23:19 | orquestador | prueba a ojo con el .dmg de e1a5c53 y el permiso «Gestión de apps»: «el icono quedo perfecto en el dock» — Braiyan Rodriguez, 2026-10-28. Verificación preparada |
 | 2026-10-28 23:19 | hu.mjs | fase implementacion → verificacion |
+| 2026-10-28 23:22 | orquestador | veredicto: «el icono quedo perfecto en el dock» y «cerremos esto hasta aqui» — Braiyan Rodriguez, 2026-10-28; AC-02 y AC-04 quedan como pendientes humanos. Delta: RN-01 en docs/producto/reglas/instancias.md; docs/instancias.document.md, README y CHANGELOG |
+| 2026-10-28 23:22 | hu.mjs | estado en-proceso → terminada |
