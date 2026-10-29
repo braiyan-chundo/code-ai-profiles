@@ -1,7 +1,7 @@
 import type { ProjectCounts, ProjectHistoryState } from "../../types";
 import { cn } from "../../lib/utils";
 import { STATE_FILL, STATE_DOT } from "./projects-styles";
-import { STATE_LEGEND, stateFractions, stateSummary } from "./projects-selectors";
+import { STATE_LEGEND, stateFractions, stateSummary } from "./projects-detail";
 
 /** El punto de un estado de historia: 8 px, redondo; hueco para «en espera» y «sin estado». */
 export function StateDot({ state, className }: { state: ProjectHistoryState; className?: string }) {

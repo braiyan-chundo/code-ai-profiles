@@ -6,7 +6,7 @@ import { cn } from "../../lib/utils";
 import type { ProjectInfo } from "../../types";
 import { formatTokens } from "./projects-format";
 import { BADGE_MONO, EYEBROW } from "./projects-styles";
-import { consumptionByHistory, consumptionByRole } from "./projects-selectors";
+import { consumptionByHistory, consumptionByRole } from "./projects-detail";
 
 const ROW = "grid items-center gap-3 text-(length:--fs-small)/(--lh-small)";
 const VALUE = "text-right font-mono font-semibold";

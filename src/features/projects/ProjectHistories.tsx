@@ -8,13 +8,7 @@ import type { ProjectHistory, ProjectInfo } from "../../types";
 import { StateDot } from "./StateBar";
 import { formatDay, formatMinutes, formatPhase, formatTokens } from "./projects-format";
 import { EYEBROW } from "./projects-styles";
-import {
-  historyFilters,
-  historyRows,
-  STATE_LABEL,
-  STATE_TAB,
-  type HistoryFilter,
-} from "./projects-selectors";
+import { historyFilters, historyRows, STATE_LABEL, STATE_TAB, type HistoryFilter } from "./projects-detail";
 
 const NUMBER = "text-right font-mono text-(length:--fs-small)/(--lh-small)";
 const HEAD = cn(EYEBROW, "h-auto px-3 pb-2 align-bottom");

@@ -9,7 +9,8 @@ import { cn } from "../../lib/utils";
 import type { ProjectCandidate } from "../../types";
 import { ProjectInitial } from "./ProjectInitial";
 import { BADGE_MONO, PATH_TEXT } from "./projects-styles";
-import { candidateChecks, candidateProblemTitle, STATUS_LABEL } from "./projects-selectors";
+import { STATUS_LABEL } from "./projects-selectors";
+import { candidateChecks, candidateProblemTitle } from "./projects-detail";
 
 /** Parte un texto en trozos normales y en `código` (entre acentos graves). */
 function WithCode({ text }: { text: string }) {

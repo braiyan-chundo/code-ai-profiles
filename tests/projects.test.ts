@@ -22,20 +22,23 @@ import {
   cardTechnologies,
   consumptionByHistory,
   consumptionByRole,
-  findProject,
   historyFilters,
   historyRows,
-  inProgressCount,
-  isBroken,
-  projectInitial,
-  projectName,
+  limitWarnings,
   repoTechnologies,
-  selectProtectedProjects,
-  sortProjects,
   stateFractions,
   stateSummary,
   technologyGroups,
   technologySources,
+} from "../src/features/projects/projects-detail.ts";
+import {
+  findProject,
+  inProgressCount,
+  isBroken,
+  projectInitial,
+  projectName,
+  selectProtectedProjects,
+  sortProjects,
 } from "../src/features/projects/projects-selectors.ts";
 import { initialProjectsStore, projectsReducer, type ProjectsAction, type ProjectsStore } from "../src/features/projects/projects-store.ts";
 import type {
@@ -47,6 +50,7 @@ import type {
   ProjectStatus,
   ProjectSummary,
   ProjectTechnology,
+  ProjectWarning,
   TokenBreakdown,
 } from "../src/types.ts";
 
@@ -391,12 +395,69 @@ test("reducer: releer un proyecto lo marca, lo reemplaza en su sitio y, si falla
   assert.equal(run([{ type: "project/requested", id: "a" }], failed).actionError, null, "una acción nueva limpia el aviso");
 });
 
-test("reducer: desanclar quita el proyecto; la lista completa deja de marcar lecturas", () => {
+test("reducer: desanclar quita el proyecto y su lectura en vuelo", () => {
   const ready = run([{ type: "list/loaded", state: { projects: [a, b], readAt: "x" } }, { type: "project/requested", id: "b" }]);
   const unpinned = run([{ type: "project/unpinned", id: "b" }], ready);
   assert.deepEqual(unpinned.projects.map((item) => item.id), ["a"]);
   assert.deepEqual(unpinned.refreshing, {});
-  assert.deepEqual(run([{ type: "project/requested", id: "a" }, { type: "list/loaded", state: { projects: [a], readAt: "y" } }], ready).refreshing, {});
+});
+
+test("R-9: una lista que salió antes de desanclar no devuelve el proyecto", () => {
+  const ready = run([{ type: "list/loaded", state: { projects: [a, b], readAt: "x" } }]);
+  const racing = run([{ type: "list/requested" }, { type: "project/unpinned", id: "b" }], ready);
+  assert.deepEqual(racing.projects.map((item) => item.id), ["a"]);
+  const landed = run([{ type: "list/loaded", state: { projects: [a, b], readAt: "y" } }], racing);
+  assert.deepEqual(landed.projects.map((item) => item.id), ["a"], "la lista vieja aún traía b");
+  assert.deepEqual(landed.unpinnedDuringList, {});
+  const later = run([{ type: "list/requested" }, { type: "list/loaded", state: { projects: [b], readAt: "z" } }], landed);
+  assert.deepEqual(later.projects.map((item) => item.id), ["b"], "una lista pedida después sí manda");
+  const idle = run([{ type: "project/unpinned", id: "b" }], ready);
+  assert.deepEqual(idle.unpinnedDuringList, {}, "sin lista en vuelo no se anota nada");
+  assert.deepEqual(run([{ type: "list/requested" }, { type: "project/unpinned", id: "b" }, { type: "list/failed", error: "x" }], ready).unpinnedDuringList, {});
+});
+
+test("R-9: una lista que salió antes de anclar no hace desaparecer lo anclado", () => {
+  const ready = run([{ type: "list/loaded", state: { projects: [a], readAt: "x" } }]);
+  const racing = run([{ type: "list/requested" }, { type: "pin/succeeded", project: b }], ready);
+  const landed = run([{ type: "list/loaded", state: { projects: [a], readAt: "y" } }], racing);
+  assert.deepEqual(landed.projects.map((item) => item.id).sort(), ["a", "b"]);
+  const fresher = run([{ type: "list/loaded", state: { projects: [a, { ...b, readAt: "2030-01-01T00:00:00Z" }], readAt: "y" } }], racing);
+  assert.equal(fresher.projects.filter((item) => item.id === "b").length, 1, "si la lista ya lo trae, no se duplica");
+  assert.equal(fresher.projects.find((item) => item.id === "b")?.readAt, "2030-01-01T00:00:00Z");
+  const again = run([{ type: "project/unpinned", id: "b" }, { type: "pin/succeeded", project: b }], racing);
+  assert.deepEqual(again.unpinnedDuringList, {}, "volver a anclar quita la marca de desanclado");
+});
+
+test("R-9: una lectura tardía no devuelve un proyecto desanclado ni pisa una más nueva", () => {
+  const ready = run([{ type: "list/loaded", state: { projects: [a, b], readAt: "x" } }, { type: "project/requested", id: "a" }, { type: "project/requested", id: "b" }]);
+  const unpinned = run([{ type: "project/unpinned", id: "a" }, { type: "project/loaded", project: { ...a, readAt: "2030-01-01T00:00:00Z" } }], ready);
+  assert.deepEqual(unpinned.projects.map((item) => item.id), ["b"], "a no vuelve");
+  assert.deepEqual(unpinned.refreshing, { b: true }, "la lectura tardía libera su marca, no la de otro");
+  const newer = project("n", "v4", { readAt: "2026-10-29T09:00:00Z" });
+  const base = run([{ type: "list/loaded", state: { projects: [newer], readAt: "x" } }]);
+  const old = run([{ type: "project/loaded", project: { ...newer, readAt: "2026-10-29T08:00:00Z", lastName: "viejo" } }], base);
+  assert.equal(old.projects[0].lastName, "n", "una lectura anterior no pisa la actual");
+  const fresh = run([{ type: "project/loaded", project: { ...newer, readAt: "2026-10-29T10:00:00Z", lastName: "nuevo" } }], base);
+  assert.equal(fresh.projects[0].lastName, "nuevo");
+});
+
+test("R-9: la lista completa no suelta las lecturas de proyectos que siguen en vuelo", () => {
+  const ready = run([{ type: "list/loaded", state: { projects: [a, b], readAt: "x" } }, { type: "project/requested", id: "a" }]);
+  const landed = run([{ type: "list/requested" }, { type: "list/loaded", state: { projects: [a, b], readAt: "y" } }], ready);
+  assert.deepEqual(landed.refreshing, { a: true });
+  assert.deepEqual(run([{ type: "project/loaded", project: a }], landed).refreshing, {});
+});
+
+test("R-10: se enseñan como mucho N avisos y se cuenta el resto", () => {
+  const warning = (n: number): ProjectWarning => ({ scope: "history", target: `HU-${n}`, message: "Aviso" });
+  const many = Array.from({ length: 2000 }, (_, n) => warning(n));
+  const limited = limitWarnings(many);
+  assert.equal(limited.shown.length, 20);
+  assert.equal(limited.hidden, 1980);
+  assert.deepEqual(limitWarnings(many.slice(0, 3)), { shown: many.slice(0, 3), hidden: 0 });
+  assert.deepEqual(limitWarnings(many, 5).shown.map((w) => w.target), ["HU-0", "HU-1", "HU-2", "HU-3", "HU-4"]);
+  assert.deepEqual(limitWarnings([]), { shown: [], hidden: 0 });
+  assert.equal(many.length, 2000, "no cambia el arreglo recibido");
 });
 
 test("reducer: anclar (selector, en curso, éxito idempotente y fallo con su motivo)", () => {

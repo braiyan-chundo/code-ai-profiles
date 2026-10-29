@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { useNavigate } from "react-router";
 import { originalAppName as selectOriginalAppName, useDashboard, useRuntimePlatform } from "../../features/dashboard";
 import { DeleteInstanceDialog, InstanceEditor, useInstanceActions } from "../../features/instances";
@@ -133,37 +134,39 @@ export function DialogHost() {
       )}
 
       {pinCandidate && (
-        <PinProjectDialog
-          candidate={pinCandidate}
-          pinning={pinProject.pinning}
-          picking={pinProject.picking}
-          error={pinProject.pinError}
-          onClose={() => {
-            pinProject.clearPinError();
-            setPinCandidate(null);
-          }}
-          onPickAnother={async () => {
-            pinProject.clearPinError();
-            const result = await pinProject.pickFolder();
-            if (result.status === "picked") setPinCandidate(result.candidate);
-            else if (result.status === "failed") {
+        <Suspense fallback={null}>
+          <PinProjectDialog
+            candidate={pinCandidate}
+            pinning={pinProject.pinning}
+            picking={pinProject.picking}
+            error={pinProject.pinError}
+            onClose={() => {
+              pinProject.clearPinError();
               setPinCandidate(null);
-              navigate("/proyectos");
-            }
-          }}
-          onPin={async () => {
-            const project = await pinProject.pinFolder(pinCandidate.path);
-            if (project) {
+            }}
+            onPickAnother={async () => {
+              pinProject.clearPinError();
+              const result = await pinProject.pickFolder();
+              if (result.status === "picked") setPinCandidate(result.candidate);
+              else if (result.status === "failed") {
+                setPinCandidate(null);
+                navigate("/proyectos");
+              }
+            }}
+            onPin={async () => {
+              const project = await pinProject.pinFolder(pinCandidate.path);
+              if (project) {
+                setPinCandidate(null);
+                navigate("/proyectos");
+              }
+            }}
+            onView={(id) => {
+              pinProject.clearPinError();
               setPinCandidate(null);
-              navigate("/proyectos");
-            }
-          }}
-          onView={(id) => {
-            pinProject.clearPinError();
-            setPinCandidate(null);
-            navigate(`/proyectos/${encodeURIComponent(id)}`);
-          }}
-        />
+              navigate(`/proyectos/${encodeURIComponent(id)}`);
+            }}
+          />
+        </Suspense>
       )}
     </>
   );

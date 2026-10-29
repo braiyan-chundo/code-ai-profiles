@@ -5,7 +5,7 @@ import { cn } from "../../lib/utils";
 import type { ProjectGit, ProjectInfo, ProjectRepo, ProjectRepoStatus } from "../../types";
 import { formatRelative, formatRepoCount } from "./projects-format";
 import { BADGE_MONO } from "./projects-styles";
-import { repoTechnologies } from "./projects-selectors";
+import { repoTechnologies } from "./projects-detail";
 
 const REPO_PROBLEM: Record<Exclude<ProjectRepoStatus, "ok">, string> = {
   missing: "No se encontró la carpeta del repo",

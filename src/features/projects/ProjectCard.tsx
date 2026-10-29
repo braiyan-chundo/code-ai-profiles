@@ -14,7 +14,8 @@ import {
   formatRepoCount,
 } from "./projects-format";
 import { BADGE_MONO, PATH_TEXT } from "./projects-styles";
-import { cardTechnologies, isReadable, projectName, STATUS_LABEL } from "./projects-selectors";
+import { isReadable, projectName, STATUS_LABEL } from "./projects-selectors";
+import { cardTechnologies } from "./projects-detail";
 
 /**
  * Una tarjeta de la lista (HU-0023): la inicial, el nombre y la ruta, el perfil y la fase, el reparto de historias por

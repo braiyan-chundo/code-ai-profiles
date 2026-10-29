@@ -19,6 +19,13 @@ export interface ProjectsStore {
   refreshing: Record<string, true>;
   /** Una lectura de la lista en curso («Actualizar» o la de entrar en Proyectos). */
   listRefreshing: boolean;
+  /**
+   * Los ids desanclados mientras la lista estaba en vuelo: esa lista salió antes y aún los trae, y no deben volver (R-9).
+   * Solo se anotan con `listRefreshing`; se vacían al pedir otra lista y al terminar.
+   */
+  unpinnedDuringList: Record<string, true>;
+  /** Los anclados mientras la lista estaba en vuelo: salió antes y no los trae, y no deben desaparecer (R-9). */
+  pinnedDuringList: Record<string, true>;
   /** El selector nativo de carpetas está abierto. */
   picking: boolean;
   /** `pinProject` en curso. */
@@ -51,6 +58,8 @@ export const initialProjectsStore: ProjectsStore = {
   error: null,
   refreshing: {},
   listRefreshing: false,
+  unpinnedDuringList: {},
+  pinnedDuringList: {},
   picking: false,
   pinning: false,
   pinError: null,
@@ -69,28 +78,57 @@ function without(refreshing: Record<string, true>, id: string): Record<string, t
   return rest;
 }
 
+/** El proyecto con el mismo id, reemplazado solo si la lectura nueva no es anterior a la que ya hay. */
+function replaceIfNewer(projects: readonly ProjectSummary[], project: ProjectSummary): ProjectSummary[] {
+  return projects.map((item) => {
+    if (item.id !== project.id) return item;
+    const [old, fresh] = [Date.parse(item.readAt), Date.parse(project.readAt)];
+    return !Number.isNaN(old) && !Number.isNaN(fresh) && fresh < old ? item : project;
+  });
+}
+
 export function projectsReducer(store: ProjectsStore, action: ProjectsAction): ProjectsStore {
   switch (action.type) {
     case "list/requested":
       // La primera lectura enseña el esqueleto; las siguientes dejan lo que ya hay mientras se relee.
-      return { ...store, status: store.status === "ready" ? "ready" : "loading", listRefreshing: true, error: null };
-    case "list/loaded":
+      return {
+        ...store,
+        status: store.status === "ready" ? "ready" : "loading",
+        listRefreshing: true,
+        unpinnedDuringList: {},
+        pinnedDuringList: {},
+        error: null,
+      };
+    case "list/loaded": {
+      // La lista salió antes de lo que pasó mientras volaba (R-9): sin lo desanclado y con lo anclado después.
+      const fromList = action.state.projects.filter((project) => !store.unpinnedDuringList[project.id]);
+      const kept = store.projects.filter((project) => store.pinnedDuringList[project.id] && !fromList.some((item) => item.id === project.id));
       return {
         ...store,
         status: "ready",
-        projects: action.state.projects,
+        projects: [...fromList, ...kept],
         readAt: action.state.readAt,
         listRefreshing: false,
-        refreshing: {},
+        unpinnedDuringList: {},
+        pinnedDuringList: {},
         error: null,
       };
+    }
     case "list/failed":
       // Con una lista ya cargada, el fallo no la borra: el error se enseña encima.
-      return { ...store, status: store.status === "ready" ? "ready" : "error", listRefreshing: false, error: action.error };
+      return {
+        ...store,
+        status: store.status === "ready" ? "ready" : "error",
+        listRefreshing: false,
+        unpinnedDuringList: {},
+        pinnedDuringList: {},
+        error: action.error,
+      };
     case "project/requested":
       return { ...store, refreshing: { ...store.refreshing, [action.id]: true }, actionError: null };
     case "project/loaded":
-      return { ...store, projects: upsert(store.projects, action.project), refreshing: without(store.refreshing, action.project.id) };
+      // Una lectura tardía de un proyecto ya desanclado no lo devuelve (R-9): solo reemplaza al que sigue en la lista.
+      return { ...store, projects: replaceIfNewer(store.projects, action.project), refreshing: without(store.refreshing, action.project.id) };
     case "project/failed":
       return { ...store, refreshing: without(store.refreshing, action.id), actionError: action.error };
     case "project/unpinned":
@@ -98,13 +136,22 @@ export function projectsReducer(store: ProjectsStore, action: ProjectsAction): P
         ...store,
         projects: store.projects.filter((project) => project.id !== action.id),
         refreshing: without(store.refreshing, action.id),
+        unpinnedDuringList: store.listRefreshing ? { ...store.unpinnedDuringList, [action.id]: true } : store.unpinnedDuringList,
+        pinnedDuringList: without(store.pinnedDuringList, action.id),
       };
     case "pick/changed":
       return { ...store, picking: action.picking };
     case "pin/started":
       return { ...store, pinning: true, pinError: null };
     case "pin/succeeded":
-      return { ...store, pinning: false, pinError: null, projects: upsert(store.projects, action.project) };
+      return {
+        ...store,
+        pinning: false,
+        pinError: null,
+        projects: upsert(store.projects, action.project),
+        pinnedDuringList: store.listRefreshing ? { ...store.pinnedDuringList, [action.project.id]: true } : store.pinnedDuringList,
+        unpinnedDuringList: without(store.unpinnedDuringList, action.project.id),
+      };
     case "pin/failed":
       return { ...store, pinning: false, pinError: action.error };
     case "pin-error/cleared":

@@ -2,6 +2,7 @@ import { TriangleAlertIcon, XIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 import { NoticeAlert } from "../../components/NoticeAlert";
 import { Button } from "../../components/ui/button";
+import { limitWarnings } from "./projects-detail";
 import type { ReadableProject } from "./projects-selectors";
 import { ProjectConsumption } from "./ProjectConsumption";
 import { ProjectFigures } from "./ProjectFigures";
@@ -14,13 +15,15 @@ import { useProjects } from "./useProjects";
 /**
  * El cuerpo de `#/proyectos/<id>` de un proyecto v4 (AC-03 y AC-04): cabecera, cifras, Tecnologías (5/12) y Repos
  * (7/12) con la misma altura, la tabla de historias y el consumo. Las secciones van separadas 32 px; dentro de cada
- * una, 16 a 24. Los avisos por campo que devolvió Rust se listan debajo de la cabecera, tal cual.
+ * una, 16 a 24. Los avisos por campo que devolvió Rust se listan debajo de la cabecera, tal cual y con un tope de 20 («y N más»).
  */
 export function ProjectPage({ project, onUnpinned }: { project: ReadableProject; onUnpinned: () => void }) {
   const { refreshing, refreshOne, openFolder, unpin, actionError, clearActionError } = useProjects();
   const [unpinning, setUnpinning] = useState(false);
   // Un reloj por lectura: «hace 2 h» se recalcula al releer, sin temporizador.
   const now = useMemo(() => new Date(), [project.readAt]);
+
+  const { shown: shownWarnings, hidden: hiddenWarnings } = useMemo(() => limitWarnings(project.warnings), [project.warnings]);
 
   const handleUnpin = async () => {
     setUnpinning(true);
@@ -59,12 +62,13 @@ export function ProjectPage({ project, onUnpinned }: { project: ReadableProject;
           className="text-warning"
         >
           <ul className="m-0 grid list-none gap-1 p-0">
-            {project.warnings.map((warning, index) => (
+            {shownWarnings.map((warning, index) => (
               <li key={`${warning.scope}:${warning.target ?? ""}:${index}`}>
                 {warning.target && <span className="mr-2 font-mono">{warning.target}</span>}
                 {warning.message}
               </li>
             ))}
+            {hiddenWarnings > 0 && <li className="font-medium">y {hiddenWarnings} más</li>}
           </ul>
         </NoticeAlert>
       )}

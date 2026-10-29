@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/ca
 import { cn } from "../../lib/utils";
 import type { ProjectInfo } from "../../types";
 import { EYEBROW } from "./projects-styles";
-import { technologyGroups, technologySources } from "./projects-selectors";
+import { technologyGroups, technologySources } from "./projects-detail";
 
 /** Tecnologías del proyecto agrupadas (D-2), con la frase que dice de qué archivos salen. */
 export function ProjectTechnologies({ info, className }: { info: ProjectInfo; className?: string }) {
