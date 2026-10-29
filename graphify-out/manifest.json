@@ -115,8 +115,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1793249717.5840127,
-    "ast_hash": "ebb9b4ff539a63cfa986a15bd34edec6",
+    "mtime": 1793275919.127254,
+    "ast_hash": "918d6d0fa7616902cb3f1b8e49d8418d",
     "semantic_hash": ""
   },
   "code.html": {
@@ -145,8 +145,8 @@
     "semantic_hash": ""
   },
   "docs/instancias.document.md": {
-    "mtime": 1793248079.0277371,
-    "ast_hash": "6af9612fe3e666038ba1639146de904b",
+    "mtime": 1793275893.6678963,
+    "ast_hash": "9b30897ac5d6b6b8d06c8be08c0ebca1",
     "semantic_hash": ""
   },
   "scripts/release-version.mjs": {
@@ -160,8 +160,8 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1793249717.5838673,
-    "ast_hash": "f409df3084c59cf7c60bcd5ce00d9e54",
+    "mtime": 1793275919.1277544,
+    "ast_hash": "d974b85439ecda4a8fce401e3ee9fe5a",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
@@ -295,8 +295,8 @@
     "semantic_hash": ""
   },
   "docs/producto/reglas/README.md": {
-    "mtime": 1793248079.0278442,
-    "ast_hash": "b6d1f97efa0f673a91d458c1779aae4e",
+    "mtime": 1793275856.3999145,
+    "ast_hash": "2104b918544484d91498f7d23bcc7cb8",
     "semantic_hash": ""
   },
   "hu/HU-0010-publicar-el-fix-de-actualizacion-como-ve/arquitectura.md": {
@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793258835.0965695,
-    "ast_hash": "2763a410a344d48302f4dfc40d8c65eb",
+    "mtime": 1793275958.1501129,
+    "ast_hash": "9f6346a204435c32ac8739996e7b3aa0",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -1645,8 +1645,8 @@
     "semantic_hash": ""
   },
   "docs/arquitectura/backend.md": {
-    "mtime": 1793258397.6367822,
-    "ast_hash": "faf628c3355df124062f69f15425655e",
+    "mtime": 1793275856.4000874,
+    "ast_hash": "c93325547decaf772d2fe2b947085de0",
     "semantic_hash": ""
   },
   "docs/decisiones/ADR-0002-modulos-rust-y-configuracion-en-compilacion.md": {
@@ -2210,13 +2210,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0022-configuracion-unificada-con-apariencia-y/hu.md": {
-    "mtime": 1793255603.5225022,
-    "ast_hash": "1cedffa9bebb1b536222a74cabe0becf",
+    "mtime": 1793275952.869249,
+    "ast_hash": "62c7019cf8c3b40b6274636d9ff4fbb4",
     "semantic_hash": ""
   },
   "hu/HU-0022-configuracion-unificada-con-apariencia-y/seguimiento.md": {
-    "mtime": 1793258054.8285828,
-    "ast_hash": "b807155287ba83a9d6388b222382c133",
+    "mtime": 1793275952.8780987,
+    "ast_hash": "a98a1918770122e9bbcef92c5965bdb2",
     "semantic_hash": ""
   },
   "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/arquitectura.md": {
@@ -2235,13 +2235,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/hu.md": {
-    "mtime": 1793254569.0895925,
-    "ast_hash": "1e26dc248ae94b5bad96b8014ad5896a",
+    "mtime": 1793275957.6685534,
+    "ast_hash": "ccbc1da0b8d0ba3a14574f2452b7909d",
     "semantic_hash": ""
   },
   "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/seguimiento.md": {
-    "mtime": 1793258835.0954902,
-    "ast_hash": "879bae15c074d733e3ddef603147024a",
+    "mtime": 1793275957.6776764,
+    "ast_hash": "987ecfa318730b1b37c0c9fb40458bd5",
     "semantic_hash": ""
   },
   "hu/HU-0022-configuracion-unificada-con-apariencia-y/diseno/capturas/00-permisos-mac-lo-necesita-1440-oscuro.png": {
@@ -3147,6 +3147,41 @@
   "src/features/projects/projects-detail.ts": {
     "mtime": 1793258544.1084328,
     "ast_hash": "6d3ee40a789a68a8e458be4c751014db",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/metricas.json": {
+    "mtime": 1793275953.4172163,
+    "ast_hash": "3202b1ab66fcf1b49451d2fd8b79ca5f",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/metricas.json": {
+    "mtime": 1793275958.132148,
+    "ast_hash": "6f7d7e1395b0dbd91cd911829c848ee1",
+    "semantic_hash": ""
+  },
+  "docs/configuracion.document.md": {
+    "mtime": 1793275893.6493592,
+    "ast_hash": "2694314d8cfbadb0bf8b72afaa0b8dba",
+    "semantic_hash": ""
+  },
+  "docs/producto/reglas/proyectos.md": {
+    "mtime": 1793275856.3831003,
+    "ast_hash": "2226197379372f66e2c0bf23c31e54fa",
+    "semantic_hash": ""
+  },
+  "docs/proyectos.document.md": {
+    "mtime": 1793275919.1270313,
+    "ast_hash": "4d4bf89bfae2a318eb90496cc1cfeb8e",
+    "semantic_hash": ""
+  },
+  "hu/HU-0022-configuracion-unificada-con-apariencia-y/verificacion.md": {
+    "mtime": 1793275856.3721845,
+    "ast_hash": "e1d412d986336e749b3b0d4008ec68f5",
+    "semantic_hash": ""
+  },
+  "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/verificacion.md": {
+    "mtime": 1793275856.3724544,
+    "ast_hash": "24e0192890e0b858b0db091b8eaed9a2",
     "semantic_hash": ""
   }
 }
