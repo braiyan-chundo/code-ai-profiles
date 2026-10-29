@@ -18,6 +18,7 @@
     "test:dashboard": "node --test tests/dashboard-state.test.ts",
     "test:messages": "node --test tests/result-messages.test.ts",
     "test:permissions": "node --test tests/permissions.test.ts",
+    "test:projects": "node --test tests/projects.test.ts",
     "test:ui": "node --test tests/ui-isolation.test.ts",
     "graph:build": "node scripts/graphify.mjs build",
     "graph:update": "node scripts/graphify.mjs update",
