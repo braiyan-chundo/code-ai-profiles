@@ -64,7 +64,7 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 ## Diferencias con el registro
 
-Ninguna: es el código del registro `radix-vega` (2026-10-28) tal como se descargó.
+Ajuste HU-0022 (A-1.4 y auditoría UX): el círculo sin elegir usa `border-muted-foreground` (6,35:1 en oscuro y 5,17:1 en claro; con `--input` daba 1,56:1 y 1,37:1) y el foco, `ring-2 ring-ring`.
 
 ## Qué no hacer
 

@@ -65,8 +65,9 @@ tests/*.test.ts       node --test sobre los módulos puros
 - **Plataformas y barra**: la raíz (`data-slot="desktop-shell"`) lleva `platform-macos|windows|linux` y fija
   `--titlebar-height: 52px` en las tres. Una sola fila: `Titlebar` sobre el sidebar y `PageHeader` a su derecha.
   Medidas y reglas por plataforma en `estilos.md`. `body` es transparente y el marco lleva `transform`.
-- **Escala**: el tamaño es siempre `text-(length:--fs-<x>)`, nunca `text-[Npx]` ni `text-micro`, y el gris de texto
-  es `text-muted-foreground`, no `--quiet` (pruebas 12 a 14). **Ventana reducida**: mínima 980×680, cortes
+- **Escala**: el texto es siempre `text-(length:--fs-<x>)/(--lh-<y>)`, nunca `text-[Npx]`, `text-micro` ni `leading-*` con
+  nombre; el gris de texto es `text-muted-foreground`, no `--quiet`; espaciado de 4 px (`0 1 2 3 4 6 8 12`), radios
+  4/8/12/16/20/24 y foco `ring-2 ring-ring` (pruebas 12 a 16). **Ventana reducida**: mínima 980×680, cortes
   `max-[1070px]:` y `prefers-reduced-motion`. Fuentes locales: `font-src 'self' data:`. Detalle en `estilos.md`.
 
 ## Iconos y componentes

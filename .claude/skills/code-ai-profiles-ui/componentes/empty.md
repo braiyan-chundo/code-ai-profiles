@@ -72,6 +72,8 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 Ajuste 3: `text-primary` (sin `-foreground`) pasa a `text-primary-text`, el naranja legible en claro (#9c5947).
 
+Ajuste HU-0022 (A-1.2): `EmptyDescription` pasa de `text-sm/relaxed` a `text-sm`; el interlineado lo da el puente (`--lh-body`).
+
 ## Qué no hacer
 
 - No usarlo para errores: es `Alert`.

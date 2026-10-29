@@ -72,6 +72,8 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 Ajuste 3: `text-primary` (sin `-foreground`) pasa a `text-primary-text`, el naranja legible en claro (#9c5947).
 
+Ajuste HU-0022 (A-1.1 a A-1.6): `FieldGroup` usa `gap-6` (antes `gap-7`); se quitan los `mt-px`, `leading-snug` y `leading-normal` (el interlineado lo da `text-sm`) y el `-mt-1.5` pasa a `-mt-2`. `FieldLabel` con un `Field` dentro (tarjeta de opción) toma `rounded-sm` (8, anidado) y un anillo en lugar de borde: `ring-1 ring-inset ring-border`, `has-data-checked:ring-primary/30` y, con foco, `ring-2 ring-ring`.
+
 ## Qué no hacer
 
 - No poner el mensaje de error solo en color: lleva texto.
