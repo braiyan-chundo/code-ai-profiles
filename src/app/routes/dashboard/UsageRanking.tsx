@@ -37,14 +37,14 @@ export function UsageRanking() {
                     />
                   </ItemMedia>
                   <ItemContent className="min-w-0 basis-0 gap-1">
-                    <ItemTitle className="flex w-full items-center gap-2">
-                      <span className="truncate">{instance.name}</span>
+                    <ItemTitle className="flex w-full flex-wrap items-center gap-x-2 gap-y-1">
+                      <span className="max-w-full truncate">{instance.name}</span>
                       <InstanceStatusBadge status={instance.status} stopping={stopping} className="shrink-0" />
                     </ItemTitle>
                     <ItemDescription className="truncate font-mono text-(length:--fs-small)">{formatCaptureTime(instance.usage?.capturedAt)}</ItemDescription>
                   </ItemContent>
-                  <UsageBar label="Sesión" value={instance.usage?.sessionPercent ?? null} className="w-[34%] shrink-0 max-[1070px]:w-[38%]" />
-                  <UsageBar label="Semanal" value={instance.usage?.weeklyPercent ?? null} className="w-[34%] shrink-0 max-[1070px]:w-[38%]" />
+                  <UsageBar label="Sesión" value={instance.usage?.sessionPercent ?? null} className="w-[34%] shrink-0 max-[1070px]:w-[30%]" />
+                  <UsageBar label="Semanal" value={instance.usage?.weeklyPercent ?? null} className="w-[34%] shrink-0 max-[1070px]:w-[30%]" />
                 </Link>
               </Item>
             );

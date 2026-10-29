@@ -89,12 +89,12 @@ export function AppSidebar() {
       aria-label="Navegación principal"
     >
       <SidebarHeader className="gap-2.5 px-2 pt-3.5 pb-0">
-        <div className="flex items-center gap-2 px-1.5 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+        <div className="flex items-center gap-1.5 px-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
           <BrandMark size={20} className="shrink-0 text-(--primary-soft) in-[.theme-light]:text-primary-text" />
           <span className="truncate text-(length:--fs-title) font-bold tracking-[-0.04em] text-foreground group-data-[collapsible=icon]:hidden">
             Code AI Profiles
           </span>
-          <span className="rounded-[5px] border border-(--line-strong) px-1.5 py-0.5 font-mono text-(length:--fs-micro) leading-none font-semibold tracking-[0.12em] text-muted-foreground group-data-[collapsible=icon]:hidden">
+          <span className="shrink-0 rounded-[5px] border border-(--line-strong) px-1 pt-[3px] pb-0.5 font-mono text-(length:--fs-micro) leading-none font-semibold tracking-[0.06em] text-muted-foreground group-data-[collapsible=icon]:hidden">
             BETA
           </span>
         </div>

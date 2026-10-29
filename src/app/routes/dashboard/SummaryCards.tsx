@@ -57,7 +57,7 @@ function Stat({
           {live && <span aria-hidden="true" className="size-1.5 rounded-full bg-(--primary) shadow-[0_0_6px_var(--primary)]" />}
           {label}
         </span>
-        <strong className={cn("truncate font-mono text-(length:--fs-figure) leading-none font-semibold tracking-[-0.05em] text-foreground", warning && "text-primary-text")}>
+        <strong className={cn("truncate font-mono text-(length:--fs-figure) leading-[1.15] font-semibold tracking-[-0.05em] text-foreground", warning && "text-primary-text")}>
           {value}
         </strong>
         <span className="truncate text-(length:--fs-small) leading-none text-muted-foreground">{hint}</span>
