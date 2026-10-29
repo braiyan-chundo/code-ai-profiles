@@ -77,17 +77,36 @@ raíz). Se validan con `verify_managed_bundle` (`src-tauri/src/macos_icon.rs`):
 - Un barrido sin seguir symlinks: ningún FinderInfo ni ResourceFork fuera de la raíz y de `Icon\r`.
 - La raíz contiene solo `Contents` e `Icon\r`, y este es un archivo regular, de 0 bytes y sin bits de ejecución.
 
-El CDHash se registra solo justo después de un `--strict` en verde sobre la copia limpia, y nunca desde una copia con
-icono. `managed_fingerprint` ya no es puerta: depende de la ruta y de un hash que no es estable entre versiones de
-Rust.
+`managed_fingerprint` ya no es puerta: depende de la ruta y de un hash que no es estable entre versiones de Rust.
 
-- Al copiar (crear o sincronizar), el icono heredado se quita en la copia nueva. En la sincronización, la copia de
-  *staging* pasa `--strict -R=<DR>` antes del swap.
-- Una copia con icono se verifica antes de lanzarse; si no pasa, no se lanza. Las copias sin icono se lanzan como
-  antes.
-- `setIcon` solo acepta rutas dentro de `ManagedPaths.instances`.
-- Un `EPERM` al escribir en el bundle se clasifica como «Gestión de apps» (`CustomIcon.systemIssue`). El permiso no
-  se pide de antemano.
+El CDHash se registra solo en `register_clean_provenance`, que exige forma limpia, `--strict -R =<DR de la
+original>` y el mismo bundle id y Team ID que la original. Una copia con icono conserva la provenance que tenía y
+nunca registra. La provenance de la donante tampoco se hereda al sincronizar: se registra de nuevo sobre el bundle
+nuevo, también en la sincronización encadenada de la HU-0017.
+
+La raíz de confianza es la original instalada (`--strict`, con caché por fingerprint). El DR implícito
+(`cdhash H"…"`) se admite por paridad y para los fixtures ad hoc de las pruebas.
+
+- **Al copiar** (crear o sincronizar), el icono heredado se quita en la copia nueva (`strip_inherited_icon`, sin
+  NSWorkspace). En la sincronización, la copia de *staging* pasa `--strict -R =<DR>`, bundle id y Team ID antes
+  del swap. La original se localiza antes de copiar; sin ella, macOS no sincroniza.
+- **Al lanzar** una copia con `customIcon` (`launch_preflight`, con la instancia detenida y dentro de
+  `with_registry_operation`):
+  - con icono: la comprobación equivalente, o no se lanza;
+  - limpia: se registra y se reaplica el icono;
+  - sin la original, una copia con icono no se lanza.
+  Las copias sin `customIcon` se lanzan como antes, sin comprobación.
+- **En la topología**, las copias limpias sin provenance siguen con la identidad en caché. Las donantes y toda
+  escritura usan la comprobación sin caché.
+- **`setIcon`** solo acepta rutas dentro de `ManagedPaths.instances`, va en serie con un mutex del proceso y repite
+  hasta tres veces, con 150 ms entre intentos, cuando devuelve `false`. Después de un `setIcon` correcto siempre se
+  ejecuta la comprobación equivalente.
+- **«Gestión de apps»:** un `EPERM` al escribir en el bundle (sonda sobre `Icon\r` con `O_NOFOLLOW` tras un
+  `setIcon` rechazado, o al quitarlo a mano) se clasifica así (`CustomIcon.systemIssue`). El permiso nunca se
+  consulta ni se pide de antemano. Mientras siga ese estado, ni el lanzamiento ni la sincronización reintentan: solo
+  el comando `reapply_instance_icon`.
+- **Copias heredadas re-firmadas ad hoc** (`provider_signature_preserved=false`): no admiten icono. Ver la revisión
+  técnica de la HU-0020 (R-3) sobre su sincronización.
 
 ## Progreso hacia la interfaz
 

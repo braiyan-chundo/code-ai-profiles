@@ -251,4 +251,5 @@ No aplica (observabilidad off).
 
 ## Revisión técnica
 
-Pendiente de la implementación.
+2026-10-28 · `fc39180..cdaeeac` · **PASS**, con la condición de la suite. Las observaciones R-1 a R-9 están en
+`revision-tecnica.md`.
