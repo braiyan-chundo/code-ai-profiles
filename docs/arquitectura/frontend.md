@@ -293,8 +293,12 @@ Lo que rige desde la HU-0016, con los pasos y la convivencia en `hu/HU-0016-…/
   `test:messages` y `test:ui`. `test:ui` revisa las fronteras de la UI y quién registra `focus`, `blur` y
   `visibilitychange` (R-1), leyendo los archivos con `node:fs`. Desde HU-0019 vigila también:
   - la escala: el mínimo de 11 px, que grande sea mayor que normal y que existan los `--fs-*` que se usan;
-  - que no haya tamaños sueltos ni `--session-*`;
-  - que no haya texto en `--quiet`.
+  - que no haya tamaños sueltos (`text-[<n>px|rem|em]` en `app/`, `features/` y `components/`, salvo las tres muestras
+    de Apariencia; en `components/ui/`, solo se vigilan los `px`, porque `calendar` y `questionnaire` miden en `rem` y
+    la app no los usa; el showcase queda fuera), ni restos de `--session-*` o `data-session-text`;
+  - que no haya texto en `--quiet` (`text-(--quiet)`).
+  - Lo que no ve: utilidades con nombre propio (`text-micro`), `text-[length:…]`, `[font-size:…]` y tokens `--fs-*`
+    redefinidos fuera de `tokens.css` (HU-0019, revisión técnica R-3).
 - El showcase y el aspecto de los componentes se revisan a mano en `http://127.0.0.1:1420/showcase.html`, en oscuro
   y en claro.
 - Los hooks, los componentes, los temas (también en menús, diálogos y tooltips), las plataformas y la ventana mínima
