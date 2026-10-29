@@ -134,6 +134,40 @@ fn has_xattr(path: &Path, name: &[u8]) -> io::Result<bool> {
     }
 }
 
+fn remove_xattr(path: &Path, name: &[u8]) -> io::Result<()> {
+    let path = path_cstring(path)?;
+    let name = CString::new(name).map_err(|_| io::Error::from(io::ErrorKind::InvalidInput))?;
+    // SAFETY: both strings are NUL-terminated.
+    let result = unsafe { libc::removexattr(path.as_ptr(), name.as_ptr(), libc::XATTR_NOFOLLOW) };
+    if result == 0 {
+        return Ok(());
+    }
+    let error = io::Error::last_os_error();
+    if error.raw_os_error() == Some(libc::ENOATTR) || error.kind() == io::ErrorKind::NotFound {
+        Ok(())
+    } else {
+        Err(error)
+    }
+}
+
+/// A-4.3: removes the Finder icon a fresh copy inherited from its source (`cp -c` and `ditto` keep `Icon\r` and
+/// FinderInfo). Deletes `<root>/Icon\r` only when it is a regular file and removes the root FinderInfo. Runs on
+/// a copy that is not visible yet, so no NSWorkspace. Anything else is left for `--strict` to reject.
+pub(crate) fn strip_inherited_icon(bundle: &Path) -> io::Result<()> {
+    let icon = bundle.join(ROOT_ICON_FILE);
+    match fs::symlink_metadata(&icon) {
+        Ok(metadata) if metadata.is_file() => match fs::remove_file(&icon) {
+            Ok(()) => {}
+            Err(error) if error.kind() == io::ErrorKind::NotFound => {}
+            Err(error) => return Err(error),
+        },
+        Ok(_) => {}
+        Err(error) if error.kind() == io::ErrorKind::NotFound => {}
+        Err(error) => return Err(error),
+    }
+    remove_xattr(bundle, FINDER_INFO_XATTR)
+}
+
 /// Clean: neither `Icon\r` nor FinderInfo at the root. Iconized: one or both.
 pub(crate) fn bundle_shape(bundle: &Path) -> io::Result<BundleShape> {
     let has_icon_file = match fs::symlink_metadata(bundle.join(ROOT_ICON_FILE)) {
@@ -839,6 +873,40 @@ pub(crate) mod tests {
         assert_eq!(
             register_clean_provenance(&older, &fixture.original, Some("1.0.0")),
             Err(BundleCheckFailure::Downgrade)
+        );
+    }
+
+    #[test]
+    fn a_copy_of_an_iconized_donor_is_clean_after_the_strip() {
+        let fixture = IconFixture::new("strip", Some(EXPLICIT_REQUIREMENT));
+        put_icon(&fixture, &fixture.managed);
+        let copy = fixture
+            .paths
+            .instances
+            .join(Uuid::new_v4().to_string())
+            .join("application/Fixture.app");
+        clone_directory(&fixture.managed, &copy).unwrap();
+        assert_eq!(bundle_shape(&copy).unwrap(), BundleShape::Iconized);
+        assert!(!strict_passes(&copy), "the copy inherits the donor's icon");
+        strip_inherited_icon(&copy).unwrap();
+        assert_eq!(bundle_shape(&copy).unwrap(), BundleShape::Clean);
+        assert!(strict_passes(&copy));
+        assert_eq!(
+            check_clean_against_original(&copy, &fixture.original),
+            Ok(())
+        );
+        strip_inherited_icon(&copy).unwrap();
+
+        let odd = fixture.another_copy();
+        std::os::unix::fs::symlink("Contents/Info.plist", odd.join(ROOT_ICON_FILE)).unwrap();
+        strip_inherited_icon(&odd).unwrap();
+        assert!(
+            fs::symlink_metadata(odd.join(ROOT_ICON_FILE)).is_ok(),
+            "only a regular Icon\\r is removed"
+        );
+        assert_eq!(
+            check_clean_against_original(&odd, &fixture.original),
+            Err(BundleCheckFailure::RootShape)
         );
     }
 

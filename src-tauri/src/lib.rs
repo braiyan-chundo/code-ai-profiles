@@ -2178,6 +2178,14 @@ fn copy_provider_application(source: &Path, instance_root: &Path) -> Result<Path
     }
 }
 
+/// A fresh copy never keeps the Finder icon of its source (HU-0020, A-4.3). Only macOS has one.
+fn strip_inherited_icon_after_copy(app_path: PathBuf) -> Result<PathBuf, String> {
+    #[cfg(target_os = "macos")]
+    macos_icon::strip_inherited_icon(&app_path)
+        .map_err(|error| format!("No se pudo quitar el icono heredado de la copia: {error}"))?;
+    Ok(app_path)
+}
+
 fn instance_bundle_name(name: &str) -> String {
     let safe_name = name
         .chars()
@@ -4117,8 +4125,13 @@ fn update_instance_application_from_source_sync(
     let staging_root = instance_root.join(format!(".application-update-{operation_id}"));
     let destination_application = instance_root.join("application");
     let backup_application = instance_root.join(format!(".application-backup-{operation_id}"));
+    #[cfg(target_os = "macos")]
+    let original = detect_provider_source().ok_or_else(|| {
+        "La aplicación original no está disponible para verificar la copia.".to_string()
+    })?;
     let staged_app = match copy_provider_application(&source, &staging_root)
         .and_then(|path| personalize_application_path(&path, &current.name))
+        .and_then(strip_inherited_icon_after_copy)
     {
         Ok(path) => path,
         Err(error) => {
@@ -4138,6 +4151,15 @@ fn update_instance_application_from_source_sync(
         let _ = fs::remove_dir_all(&staging_root);
         return Err(
             "La fuente cambió durante la copia; no se aplicó la actualización.".to_string(),
+        );
+    }
+    // HU-0020: the clean staging copy keeps `--strict` and the original's requirement before the swap.
+    #[cfg(target_os = "macos")]
+    if macos_icon::check_clean_against_original(&staged_app, &original).is_err() {
+        let _ = fs::remove_dir_all(&staging_root);
+        return Err(
+            "La copia preparada no superó la verificación de firma; no se aplicó la actualización."
+                .to_string(),
         );
     }
     let staged_application = staging_root.join("application");
@@ -4166,9 +4188,6 @@ fn update_instance_application_from_source_sync(
     let updated_app_path = destination_application.join(relative_app_path);
     #[cfg(target_os = "macos")]
     let updated_branding = {
-        let original = detect_provider_source().ok_or_else(|| {
-            "La aplicación original no está disponible para verificar el branding.".to_string()
-        })?;
         match apply_macos_branding_after_update(
             &updated_app_path,
             current.custom_icon.as_ref(),
@@ -4483,6 +4502,7 @@ fn create_instance_sync(app: &AppHandle, request: CreateInstanceRequest) -> Resu
 
     let app_path = match copy_provider_application(&source, &instance_root)
         .and_then(|path| personalize_application_path(&path, &name))
+        .and_then(strip_inherited_icon_after_copy)
     {
         Ok(path) => path,
         Err(error) => {
