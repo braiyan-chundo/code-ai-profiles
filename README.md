@@ -68,13 +68,13 @@ cargo test --manifest-path src-tauri/Cargo.toml
 
 ## Versionado
 
-El repositorio usa Semantic Versioning y actualmente está en `0.2.2`. Para preparar una versión compatible, una funcionalidad o un cambio incompatible, ejecuta:
+El repositorio usa Semantic Versioning y actualmente está en `0.3.0`. Para preparar una versión compatible, una funcionalidad o un cambio incompatible, ejecuta:
 
 ```bash
 pnpm release:version patch
 pnpm release:version minor
 pnpm release:version major
-pnpm release:version 0.2.2
+pnpm release:version 0.3.0
 pnpm release:check
 ```
 
@@ -125,7 +125,7 @@ src-tauri/target/release/bundle/macos/Code AI Profiles.app
 src-tauri/target/release/bundle/dmg/*.dmg
 ```
 
-Como referencia histórica, la entrega local de Apple Silicon `0.2.1` fue verificada. La generación de `0.2.2` se realiza únicamente después de que el merge protegido llegue a `main`; la ruta esperada del DMG y la `.app`, su hash y su verificación se reportan junto con ese artefacto. Un paquete local puede estar firmado ad-hoc y no estar notarizado, por lo que macOS puede requerir clic derecho → **Abrir**. Un artefacto local no implica una publicación o GitHub Release.
+Como referencia histórica, la entrega local de Apple Silicon `0.2.1` fue verificada. La generación de `0.3.0` se realiza únicamente después de que el merge protegido llegue a `main`; la ruta esperada del DMG y la `.app`, su hash y su verificación se reportan junto con ese artefacto. Un paquete local puede estar firmado ad-hoc y no estar notarizado, por lo que macOS puede requerir clic derecho → **Abrir**. Un artefacto local no implica una publicación o GitHub Release.
 
 ### Windows x64
 

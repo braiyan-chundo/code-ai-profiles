@@ -1,7 +1,7 @@
 ---
 id: HU-0012
 titulo: "Icono distintivo en el Dock de macOS"
-estado: en-espera
+estado: descartada
 fase: requisitos
 area: instancias
 entrega: 1
