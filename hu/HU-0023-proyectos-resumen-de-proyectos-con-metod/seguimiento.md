@@ -13,3 +13,4 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-10-29 01:01 | orquestador | maqueta aprobada: «Aprobadas» — Braiyan Rodriguez, 2026-10-29. Depende de HU-0022 (sistema armónico, Configuración › Permisos con «Archivos y carpetas») |
 | 2026-10-29 01:01 | hu.mjs | fase requisitos → arquitectura |
 | 2026-10-29 01:12 | orquestador | arquitectura (architect): 9a599f5. Decisiones del mantenedor sobre sus tres preguntas: «si, con lo recomendado» (2026-10-29) — dependencia tauri-plugin-dialog 2 autorizada (solo desde Rust, sin npm ni capabilities), src-tauri/Info.plist con los textos de uso de Escritorio, Documentos y Descargas, y lectura de los proyectos al abrir la app |
+| 2026-10-29 01:16 | hu.mjs | fase arquitectura → implementacion |

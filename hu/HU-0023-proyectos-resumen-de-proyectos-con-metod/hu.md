@@ -2,7 +2,7 @@
 id: HU-0023
 titulo: "Proyectos: resumen de proyectos con metodología v4"
 estado: en-proceso
-fase: arquitectura
+fase: implementacion
 area: proyectos
 entrega: 1
 prioridad: alta
