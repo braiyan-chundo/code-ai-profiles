@@ -2,7 +2,7 @@
 id: HU-0022
 titulo: "Configuración unificada con apariencia y permisos"
 estado: en-proceso
-fase: implementacion
+fase: verificacion
 area: interfaz
 entrega: 1
 prioridad: alta
