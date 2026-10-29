@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import type { CreateInstanceRequest, DashboardState, ManagedInstance } from "../../types";
-import { ChevronDownIcon, HardDriveIcon, ImageUpIcon, InfoIcon, PlusIcon, RotateCwIcon, TriangleAlertIcon } from "lucide-react";
+import { ChevronDownIcon, ChevronRightIcon, HardDriveIcon, ImageUpIcon, InfoIcon, PlusIcon, RotateCwIcon, TriangleAlertIcon } from "lucide-react";
 import { BrandMark } from "../../components/BrandMark";
 import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert";
 import { Button } from "../../components/ui/button";
@@ -21,6 +21,7 @@ export function InstanceEditor({
   busy,
   iconBusy,
   onClose,
+  onOpenPermissions,
   onRetryIcon,
   onSave,
 }: {
@@ -31,6 +32,8 @@ export function InstanceEditor({
   /** «Reintentar» el icono del Dock en curso. */
   iconBusy: boolean;
   onClose: () => void;
+  /** D-4 (HU-0022): cierra el editor y va a Configuración › Permisos. Solo se llama sin cambios sin guardar. */
+  onOpenPermissions: () => void;
   /** Devuelve el error de este reintento, o `null`. */
   onRetryIcon: () => Promise<string | null>;
   onSave: (request: CreateInstanceRequest, iconChange: InstanceIconChange) => Promise<void>;
@@ -44,9 +47,15 @@ export function InstanceEditor({
   const [iconError, setIconError] = useState<string | null>(null);
   // El error de ESTE reintento: el aviso global queda tras el fondo del diálogo y puede ser de otra acción.
   const [retryError, setRetryError] = useState<string | null>(null);
+  // El enlace a Configuración › Permisos no navega con ediciones sin guardar: dice por qué (D-4).
+  const [permissionsBlocked, setPermissionsBlocked] = useState(false);
   const isNew = !instance;
   const currentIconUrl = instance ? managedIconSource(instance) : null;
   const locked = busy || iconBusy;
+  const dirty = instance
+    ? name !== instance.name || iconBytes !== null || removeIcon
+    : name.trim() !== "" || iconBytes !== null || customSource !== (sourcePath ?? "");
+  const permissionsLinkBlocked = dirty || locked;
   const retry = iconRetryState({
     platform,
     customIcon: instance?.customIcon,
@@ -194,8 +203,26 @@ export function InstanceEditor({
                 {instance.customIcon.systemMessage}
               </AlertDescription>
               <div className="col-start-2 mt-2 grid justify-items-start gap-2">
-                <RetryIconButton enabled={retry.enabled} loading={iconBusy} onRetry={retryIcon} />
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                  <RetryIconButton enabled={retry.enabled} loading={iconBusy} onRetry={retryIcon} />
+                  <Button
+                    type="button"
+                    variant="link"
+                    size="xs"
+                    aria-disabled={permissionsLinkBlocked}
+                    className="px-0 text-(length:--fs-small)/(--lh-small) font-medium underline aria-disabled:opacity-50"
+                    onClick={() => {
+                      if (permissionsLinkBlocked) setPermissionsBlocked(true);
+                      else onOpenPermissions();
+                    }}
+                  >
+                    Ver en Configuración › Permisos <ChevronRightIcon aria-hidden="true" className="size-4" />
+                  </Button>
+                </div>
                 {retry.hint && <span className="text-(length:--fs-small)/(--lh-small)">{retry.hint}</span>}
+                {permissionsBlocked && permissionsLinkBlocked && (
+                  <span role="status" className="text-(length:--fs-small)/(--lh-small)">Guarda o cancela los cambios para ir a Configuración</span>
+                )}
               </div>
             </Alert>
           ) : (

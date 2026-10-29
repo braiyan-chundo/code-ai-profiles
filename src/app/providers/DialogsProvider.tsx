@@ -14,11 +14,8 @@ export function DialogsProvider({ children }: { children: ReactNode }) {
   const [unlinkTarget, setUnlinkTarget] = useState<SessionUnlinkSelection | null>(null);
   const [updateTargets, setUpdateTargets] = useState<ManagedInstance[] | null>(null);
   const [originalUpdateOpen, setOriginalUpdateOpen] = useState(false);
-  const [appearanceOpen, setAppearanceOpen] = useState(false);
 
   const value = useMemo<DialogsContextValue>(() => ({
-    appearanceOpen,
-    setAppearanceOpen,
     editor,
     setEditor,
     deleteTarget,
@@ -31,7 +28,7 @@ export function DialogsProvider({ children }: { children: ReactNode }) {
     setUpdateTargets,
     originalUpdateOpen,
     setOriginalUpdateOpen,
-  }), [appearanceOpen, deleteTarget, editor, originalUpdateOpen, transfer, unlinkTarget, updateTargets]);
+  }), [deleteTarget, editor, originalUpdateOpen, transfer, unlinkTarget, updateTargets]);
 
   return <DialogsContext.Provider value={value}>{children}</DialogsContext.Provider>;
 }

@@ -173,7 +173,7 @@ const bridgeProblems = (css: string) => {
 const usedFontTokens = (source: string) => [...source.matchAll(/--fs-([a-z0-9-]+)/g)].map((m) => m[1]);
 const usedLineTokens = (source: string) => [...source.matchAll(/--lh-([a-z0-9-]+)/g)].map((m) => m[1]);
 
-// 13. Sin tamaños sueltos: `text-[<n>px|rem|em]`. Las tres muestras de AppearanceDialog enseñan cada opción con un
+// 13. Sin tamaños sueltos: `text-[<n>px|rem|em]`. Las tres muestras de AppearanceSettings enseñan cada opción con un
 // tamaño fijo (lista cerrada).
 // Cubre `text-[9px]`, `text-[length:9px]`, `text-(length:9px)` y `[font-size:9px]`.
 const looseSizeRegex = (units: string) => new RegExp(`\\btext-\\[\\s*(?:length:)?\\s*\\d*\\.?\\d+\\s*(?:${units})\\s*\\]|\\btext-\\(\\s*length:\\s*\\d*\\.?\\d+\\s*(?:${units})\\s*\\)|\\[font-size:\\s*\\d*\\.?\\d+\\s*(?:${units})\\s*\\]`, "g");
@@ -182,7 +182,7 @@ const LOOSE_TEXT_SIZE = looseSizeRegex("px|rem|em");
 const LOOSE_TEXT_PX = looseSizeRegex("px");
 // Una utilidad con nombre propio (`text-micro`): `cn` la toma por un color y la borra (A-3). El tamaño es `text-(length:--fs-x)`.
 const OWN_NAME_UTILITY = /\btext-(?:micro|small|body|heading|title|figure|dialog)\b/;
-const SAMPLE_FILE = "features/appearance/AppearanceDialog.tsx";
+const SAMPLE_FILE = "features/appearance/AppearanceSettings.tsx";
 const SAMPLE_SIZES = ["text-[11px]", "text-[15px]", "text-[19px]"];
 const looseSizes = (source: string, catalog = false) => source.match(catalog ? LOOSE_TEXT_PX : LOOSE_TEXT_SIZE) ?? [];
 // ...y nada de la escala anterior de sesiones.

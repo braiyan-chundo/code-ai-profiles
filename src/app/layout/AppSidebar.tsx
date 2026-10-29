@@ -1,6 +1,6 @@
-import { LayoutDashboardIcon, PlusIcon, RefreshCwIcon, SearchIcon, Settings2Icon, XIcon } from "lucide-react";
+import { LayoutDashboardIcon, PlusIcon, RefreshCwIcon, SearchIcon, SettingsIcon, XIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useMatch } from "react-router";
+import { Link, useMatch, useNavigate } from "react-router";
 import { BrandMark } from "../../components/BrandMark";
 import { Button } from "../../components/ui/button";
 import { Kbd } from "../../components/ui/kbd";
@@ -39,7 +39,7 @@ const GROUP_LABEL = "h-auto px-2 pt-3 pb-1 text-(length:--fs-micro)/(--lh-micro)
 
 /**
  * La navegación de la app (HU-0016, AC-01): Dashboard, la aplicación original y una entrada por instancia, con
- * «Nueva instancia», «Escanear sistema» y «Apariencia». Plegado a iconos, cada entrada lleva su tooltip.
+ * «Nueva instancia», «Escanear sistema» y «Configuración». Plegado a iconos, cada entrada lleva su tooltip.
  * Es un panel flotante (HU-0019, A-2): `variant="floating"`, con la marca en su cabecera y, junto a cada perfil, el
  * número de sesiones. Se pinta debajo de la barra: el contenedor `fixed` del catálogo empieza en `--titlebar-height`.
  *
@@ -49,9 +49,11 @@ const GROUP_LABEL = "h-auto px-2 pt-3 pb-1 text-(length:--fs-micro)/(--lh-micro)
 export function AppSidebar() {
   const { dashboard: state, loading, busy, iconPreviews } = useDashboard();
   const { requestManual: scanManually } = useScan();
-  const { setAppearanceOpen, setEditor } = useDialogs();
+  const { setEditor, editor, deleteTarget, transfer, unlinkTarget, updateTargets, originalUpdateOpen } = useDialogs();
+  const navigate = useNavigate();
   const onDashboard = useMatch({ path: "/", end: true });
   const onOriginal = useMatch("/original");
+  const onSettings = Boolean(useMatch("/configuracion/*"));
   const instanceMatch = useMatch("/instancias/:instanceId");
   const activeInstanceId = instanceMatch?.params.instanceId;
   const { state: sidebarState, setOpen } = useSidebar();
@@ -66,6 +68,9 @@ export function AppSidebar() {
   const originalLabel = `${originalName} · ${sourceFound ? instanceStatusLabel(state.system.originalStatus) : "No detectada"}`;
   const canCreate = sourceFound && busy === null;
   const originalSessions = sourceFound ? state.system.originalCodeSessions.length : 0;
+  // ⌘ , no navega detrás de un modal (HU-0022, A-2).
+  const dialogOpen = Boolean(editor || deleteTarget || transfer || unlinkTarget || updateTargets || originalUpdateOpen);
+  const settingsShortcut = `${shortcutModifierLabel(navigator.platform)} ,`;
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
@@ -74,11 +79,16 @@ export function AppSidebar() {
         if (sidebarState === "collapsed") setOpen(true);
         // Plegado, el campo no se ve hasta el siguiente pintado: se enfoca después de desplegar.
         requestAnimationFrame(() => searchRef.current?.focus());
+      } else if ((event.metaKey || event.ctrlKey) && event.key === ",") {
+        // ⌘ , (macOS) o Ctrl + , (Windows y Linux): abre Configuración, salvo con un diálogo abierto o si ya está abierta.
+        if (dialogOpen) return;
+        event.preventDefault();
+        if (!onSettings) navigate("/configuracion");
       }
     };
     window.addEventListener("keydown", handleShortcut);
     return () => window.removeEventListener("keydown", handleShortcut);
-  }, [sidebarState, setOpen]);
+  }, [sidebarState, setOpen, dialogOpen, onSettings, navigate]);
 
   return (
     <Sidebar
@@ -242,12 +252,14 @@ export function AppSidebar() {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton
-              onClick={() => setAppearanceOpen(true)}
-              tooltip="Apariencia"
-              aria-label="Configurar apariencia"
+              asChild
+              isActive={onSettings}
+              tooltip={{ children: <>Configuración <Kbd>{settingsShortcut}</Kbd></> }}
             >
-              <Settings2Icon />
-              <span>Apariencia</span>
+              <Link to="/configuracion" aria-current={onSettings ? "page" : undefined} aria-keyshortcuts={shortcutModifierLabel(navigator.platform) === "⌘" ? "Meta+," : "Control+,"}>
+                <SettingsIcon />
+                <span>Configuración</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

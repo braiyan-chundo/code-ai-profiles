@@ -76,7 +76,7 @@ export function SessionList({
 
 /**
  * Una sesión: título, modelo, turnos, actividad y contexto, con la escala `--fs-*`. `children` son sus
- * acciones a la derecha. La usan `SessionList` y la vista previa de `AppearanceDialog`.
+ * acciones a la derecha. La usan `SessionList` y la vista previa de `AppearanceSettings`.
  */
 export function SessionItem({
   session,

@@ -4,10 +4,8 @@ import type { ManagedInstance } from "../../types";
 
 type Setter<T> = Dispatch<SetStateAction<T>>;
 
-/** Las siete banderas de los diálogos. Son independientes: pueden convivir dos abiertos, como antes. */
+/** Las seis banderas de los diálogos. Son independientes: pueden convivir dos abiertos, como antes. */
 export interface DialogsContextValue {
-  appearanceOpen: boolean;
-  setAppearanceOpen: Setter<boolean>;
   editor: ManagedInstance | "new" | null;
   setEditor: Setter<ManagedInstance | "new" | null>;
   deleteTarget: ManagedInstance | null;

@@ -1,4 +1,4 @@
-import { AppearanceDialog, useAppearance } from "../../features/appearance";
+import { useNavigate } from "react-router";
 import { originalAppName as selectOriginalAppName, useDashboard, useRuntimePlatform } from "../../features/dashboard";
 import { DeleteInstanceDialog, InstanceEditor, useInstanceActions } from "../../features/instances";
 import {
@@ -11,16 +11,13 @@ import { ApplicationUpdateDialog, OriginalApplicationUpdateDialog, useUpdateActi
 import { useDialogs } from "../providers/dialogs-context";
 
 /**
- * Los siete diálogos, montados con su bandera de `useDialogs()` y en este orden: apariencia, editor, borrar, transferir,
+ * Los seis diálogos, montados con su bandera de `useDialogs()` y en este orden: editor, borrar, transferir,
  * desvincular, sincronizar y original. Son `Dialog` y `AlertDialog` del catálogo (HU-0016, A-12): su portal cuelga de
  * `body` y toma el tema de `<html>` (A-3). Cada uno recibe su `busy`, que guarda Escape, la X y el clic fuera.
  */
 export function DialogHost() {
   const { dashboard: state, busy } = useDashboard();
-  const { preferences: appearance, setPreferences: setAppearance } = useAppearance();
   const {
-    appearanceOpen,
-    setAppearanceOpen,
     editor,
     setEditor,
     deleteTarget,
@@ -35,6 +32,7 @@ export function DialogHost() {
     setOriginalUpdateOpen,
   } = useDialogs();
   const runtimePlatform = useRuntimePlatform();
+  const navigate = useNavigate();
   const transferProfiles = useTransferProfiles();
   const instanceActions = useInstanceActions();
   const sessionActions = useSessionActions();
@@ -49,14 +47,6 @@ export function DialogHost() {
 
   return (
     <>
-      {appearanceOpen && (
-        <AppearanceDialog
-          preferences={appearance}
-          onChange={setAppearance}
-          onClose={() => setAppearanceOpen(false)}
-        />
-      )}
-
       {editor && (
         <InstanceEditor
           instance={editorInstance}
@@ -65,6 +55,11 @@ export function DialogHost() {
           busy={busy === "create" || busy === "update"}
           iconBusy={editorInstance !== null && busy === `icon:${editorInstance.id}`}
           onClose={() => setEditor(null)}
+          // D-4: el editor solo llama a esto sin cambios sin guardar ni operaciones en curso.
+          onOpenPermissions={() => {
+            setEditor(null);
+            navigate("/configuracion/permisos");
+          }}
           onRetryIcon={() => editorInstance ? instanceActions.reapplyIcon(editorInstance) : Promise.resolve(null)}
           onSave={(form, iconChange) => instanceActions.save(editor, form, iconChange, () => setEditor(null))}
         />
