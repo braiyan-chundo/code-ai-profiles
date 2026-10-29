@@ -9,7 +9,33 @@ Fecha: 2026-10-29 · Revisa: architect · HEAD revisado: `da30038` (rama `hu-002
 - **Fuera de la revisión:** `da99619`, `3ca310f` y `e2cfb37` son correcciones de la HU-0022. Tocan `AppSidebar`,
   Configuración y Permisos, pero no cambian nada de Proyectos.
 
-## Veredicto: **FAIL**, por una corrección pequeña de backend (R-1)
+## Veredicto final: **PASS** (re-revisión del 2026-10-29, HEAD `dad8f3d`)
+
+He vuelto a revisar las correcciones `4e98912`, `9fe8928` (backend), `4f4be11` y `83c1514` (frontend) contra cada R-n.
+R-1 (la que bloqueaba), R-2 y R-3 están corregidas, y además se cerraron R-4, R-5, R-7 (en parte), R-9, R-10 y R-11.
+Lo que queda es deuda: R-6, R-7 (los mocks), R-8 y R-12.
+
+**Condición antes de la prueba humana.** La suite completa, una vez y sobre el SHA final. No corrí pruebas. Las cifras
+que dan quienes implementaron son `cargo test` 155/0/2 y, en `test:ui`, los casos 17 y 18.
+
+| # | Estado | Cómo quedó |
+| --- | --- | --- |
+| R-1 | **Corregida** | `lexical_repo_path` decide sin tocar el disco. Una `ruta` absoluta, con raíz, UNC o con `:` en Windows (también `C:x`) da `Outside`, o `Forbidden` si cae en la exclusión. `..` se resuelve de forma léxica desde la raíz. Solo lo que queda dentro pasa a `ReadContext::resolve`. Pruebas: `projects_repo_paths_are_decided_lexically` (Unix y Windows por parámetro) y `projects_outside_repo_is_not_touched_on_disk` (carpeta en modo `000`) |
+| R-2 | **Corregida** | `list_dir` y `read` preguntan a `env.cloud` (inyectable) antes de `read_dir` o de abrir el archivo, y dan `Skip::Cloud`. Prueba: `projects_cloud_only_folders_are_not_listed` |
+| R-3 | **Corregida** | La prueba 18 de `test:ui` prohíbe `alert(`, `confirm(` y `prompt(`, con `window.`, `globalThis.` o `self.` o sin nada, y sin contar los comentarios. Tiene canarios positivos y negativos (`onConfirm`, `AlertDialog`, `dialog.alert`) |
+| R-4 | **Corregida** | `resolve` ya no usa `canonicalize`. Recorre componente a componente con `symlink_metadata`. El destino de cada symlink sale de `read_link` y se comprueba de forma léxica (exclusión y prefijo) **antes** de tocarlo. Los relativos se resuelven desde la carpeta del enlace, y como `current` no tiene symlinks, `..` es léxico. Tope de 40 saltos. En Windows, `is_symlink` cubre también las uniones (*junctions*). Prueba: `projects_symlink_targets_outside_are_not_followed` (cadena interna, salida absoluta y relativa, y bucle) |
+| R-5 | **Corregida** | `Info.plist` lleva `NSRemovableVolumesUsageDescription` y `NSNetworkVolumesUsageDescription`. Prueba: `projects_info_plist_explains_every_protected_location`. iCloud Drive no tiene clave propia |
+| R-6 | Deuda (decisión informada) | Sin cambios: el orquestador lo lleva a `verificacion.md` y a `docs/proyectos.document.md`, y el mantenedor decide si se mantiene la lectura al arrancar |
+| R-7 | Corregida en parte · deuda | `PinProjectDialog` se carga con `lazy` y `Suspense` (nadie lo importa de forma estática) y el JS principal baja de 632 a 628 kB. Los mocks de `bridge.ts` con `import()` quedan como deuda, para un `/fix` aparte |
+| R-8 | Deuda | Sin cambios (`category` en el contrato) |
+| R-9 | **Corregida** | `unpinnedDuringList` y `pinnedDuringList` corrigen la lista que llega tarde. `project/loaded` ya no añade proyectos (`replaceIfNewer`, por `readAt`) y `list/loaded` ya no vacía `refreshing`. Lleva 4 pruebas en `test:projects`. Efecto aceptado: si se abre un enlace directo antes de que llegue la lista, la página espera a esa lista |
+| R-10 | **Corregida** | Rust deja como máximo 20 avisos (19 y uno final «Y N avisos más…»), con la prueba `projects_warnings_are_capped`. La UI también corta con `limitWarnings` y añade «y N más» |
+| R-11 | **Corregida** | `tauri-plugin-dialog = "~2.7"` |
+| R-12 | Deuda (abierta desde la maqueta) | Sin cambios |
+
+Lo que sigue es la revisión original (HEAD `da30038`).
+
+## Veredicto inicial: **FAIL**, por una corrección pequeña de backend (R-1)
 
 El diseño se cumple casi entero: solo lectura, sin ejecutar nada, lista de exclusión, registro atómico y privacidad
 del reflog. Las cifras cuadran con este repo. El fallo está en un punto concreto: `resolve_repo` toca en disco la
