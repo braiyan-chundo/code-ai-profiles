@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793237654.2749155,
-    "ast_hash": "4473443163c14b248560e39021138302",
+    "mtime": 1793239462.4111197,
+    "ast_hash": "dd9bbd4c91d597c87f19148924704afa",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -1725,13 +1725,148 @@
     "semantic_hash": ""
   },
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/seguimiento.md": {
-    "mtime": 1793237654.273952,
-    "ast_hash": "1bce4b60015f00c7f32241e9d0c57bc0",
+    "mtime": 1793239426.1889021,
+    "ast_hash": "86fe72dbdbfe95ef9c10e305681d7e0f",
     "semantic_hash": ""
   },
   "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/referencia-sidebar.png": {
     "mtime": 1793237624.4907107,
     "ast_hash": "31f64b3559ec04c17eb704648bb14fa3",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/maqueta.html": {
+    "mtime": 1793238606.7523344,
+    "ast_hash": "aa688e2c449da2b41d9214a5263c61c2",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/vista.md": {
+    "mtime": 1793238688.374395,
+    "ast_hash": "8c6f4a47c01a6827d49b568e2a3e0c18",
+    "semantic_hash": ""
+  },
+  "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/analisis.md": {
+    "mtime": 1793239431.8466032,
+    "ast_hash": "454c254101df4479950f86c9bd70b9fb",
+    "semantic_hash": ""
+  },
+  "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/hu.md": {
+    "mtime": 1793239453.6847813,
+    "ast_hash": "a31ee2da6f7c8fc3373e26217e54c59e",
+    "semantic_hash": ""
+  },
+  "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/seguimiento.md": {
+    "mtime": 1793239462.4102757,
+    "ast_hash": "b90e715ae29a7af0c3aa49644f94af1b",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/01-dashboard-avisos-A-1440-oscuro.png": {
+    "mtime": 1793238563.0887034,
+    "ast_hash": "e41db79f5f74f2ca203e90e3da3b8eff",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/02-dashboard-avisos-B-1440-oscuro.png": {
+    "mtime": 1793238564.0188963,
+    "ast_hash": "306cc729dfb7e4f1013888d3bc993aff",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/03-dashboard-avisos-C-1440-oscuro.png": {
+    "mtime": 1793238564.9436352,
+    "ast_hash": "57b1cb8941c315d1c80d9c971f120c67",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/04-dashboard-con-datos-A-1440-claro.png": {
+    "mtime": 1793238565.905993,
+    "ast_hash": "56bdf3c252a002f1e0f129b6cdba1dc4",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/05-dashboard-vacio-A-1440-oscuro.png": {
+    "mtime": 1793238566.8322694,
+    "ast_hash": "cdfe245e47e3b56dbda5a8931aec8f27",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/06-dashboard-avisos-A-980-oscuro.png": {
+    "mtime": 1793238567.732315,
+    "ast_hash": "04446d8e5dbee2cf415cb84cad264c4a",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/07-dashboard-avisos-A-980-claro-plegado.png": {
+    "mtime": 1793238568.659293,
+    "ast_hash": "be395c39201a43acf576459cff6d827e",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/08-instancia-A-1440-oscuro.png": {
+    "mtime": 1793238569.5756984,
+    "ast_hash": "106b922cd753ab62e241664c1c25b3e0",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/09-instancia-A-1440-oscuro-tooltip.png": {
+    "mtime": 1793238570.5157254,
+    "ast_hash": "f57ea4b755fe2c622f4202d27e2ac907",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/10-instancia-A-1440-claro.png": {
+    "mtime": 1793238571.4818237,
+    "ast_hash": "700598638161d255db870040888dfd49",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/11-original-A-1440-oscuro.png": {
+    "mtime": 1793238572.4190738,
+    "ast_hash": "2c26b7fae6129ef73e1d620a98249bff",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/12-original-A-980-claro.png": {
+    "mtime": 1793238573.3477955,
+    "ast_hash": "3619ffffe55e4cb0e40477910853fde6",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/13-dashboard-avisos-A-1440-oscuro-windows.png": {
+    "mtime": 1793238574.293281,
+    "ast_hash": "2ef30017c7d8d3b40d1d9eb843bd59d9",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/14-instancia-A-1440-oscuro-compacto.png": {
+    "mtime": 1793238575.234317,
+    "ast_hash": "84da8ff5fa03f14de2fccaa981ae38f3",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/15-instancia-A-1440-oscuro-grande.png": {
+    "mtime": 1793238576.1647696,
+    "ast_hash": "82e5311d635d33607db24675fc6322a1",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/16-dashboard-con-datos-A-980-oscuro-grande.png": {
+    "mtime": 1793238609.621962,
+    "ast_hash": "1a0d65f479f6420d832ea72e87f140f6",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/17-escala-tipografica.png": {
+    "mtime": 1793238578.0033026,
+    "ast_hash": "b0ef242cb1d04d62ee077425d1706974",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/18-comparar-variantes-1440.png": {
+    "mtime": 1793238578.9359074,
+    "ast_hash": "d68b3da34206528eb00c0163004aeec5",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/hoy-dashboard-1440-oscuro.png": {
+    "mtime": 1793238560.3147855,
+    "ast_hash": "61a70abfc4e402abf3eeebbf78009d61",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/hoy-dashboard-980-oscuro.png": {
+    "mtime": 1793238560.2495968,
+    "ast_hash": "c29f6efcf82a87e5b9f5ea42170f0443",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/hoy-instancia-1440-oscuro.png": {
+    "mtime": 1793238560.3173711,
+    "ast_hash": "0e36b05beba2f673472699887506668d",
+    "semantic_hash": ""
+  },
+  "hu/HU-0019-header-compacto-sidebar-flotante-y-tipog/diseno/capturas/hoy-original-1440-oscuro.png": {
+    "mtime": 1793238560.3201485,
+    "ast_hash": "55b58b1572a827f3822df914e3d31109",
     "semantic_hash": ""
   }
 }

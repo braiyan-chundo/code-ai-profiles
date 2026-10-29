@@ -2,7 +2,7 @@
 
 > Generado por `node .metodo/scripts/hu.mjs index`. **No se edita a mano.**
 
-10 historias · ◻ en-espera: 3 · ◐ en-proceso: 3 · ◼ terminada: 4 · ✕ descartada: 0
+11 historias · ◻ en-espera: 3 · ◐ en-proceso: 4 · ◼ terminada: 4 · ✕ descartada: 0
 
 | | Historia | Área | Fase | Repos | Reglas |
 | --- | --- | --- | --- | --- | --- |
@@ -16,3 +16,4 @@
 | ◐ | [HU-0017](HU-0017-descargar-e-instalar-la-original-en-maco/hu.md) Descargar e instalar la original en macOS | actualizaciones | verificacion | code-ai-profiles | — |
 | ◻ | [HU-0018](HU-0018-descargar-e-instalar-la-original-en-wind/hu.md) Descargar e instalar la original en Windows y Linux | actualizaciones | requisitos | code-ai-profiles | — |
 | ◐ | [HU-0019](HU-0019-header-compacto-sidebar-flotante-y-tipog/hu.md) Header compacto, sidebar flotante y tipografía legible | interfaz | requisitos | code-ai-profiles | — |
+| ◐ | [HU-0020](HU-0020-icono-personalizado-de-la-instancia-en-e/hu.md) Icono personalizado de la instancia en el Dock de macOS | instancias | requisitos | code-ai-profiles | — |
