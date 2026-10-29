@@ -48,6 +48,9 @@ jobs:
       - name: Test permissions catalog
         run: pnpm test:permissions
 
+      - name: Test projects summary
+        run: pnpm test:projects
+
       - name: Test UI boundaries
         run: pnpm test:ui
 
