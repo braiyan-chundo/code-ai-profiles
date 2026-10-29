@@ -2,7 +2,7 @@
 
 > Generado por `node .metodo/scripts/hu.mjs index`. **No se edita a mano.**
 
-14 historias · ◻ en-espera: 1 · ◐ en-proceso: 4 · ◼ terminada: 7 · ✕ descartada: 2
+14 historias · ◻ en-espera: 1 · ◐ en-proceso: 2 · ◼ terminada: 9 · ✕ descartada: 2
 
 | | Historia | Área | Fase | Repos | Reglas |
 | --- | --- | --- | --- | --- | --- |
@@ -18,5 +18,5 @@
 | ◼ | [HU-0019](HU-0019-header-compacto-sidebar-flotante-y-tipog/hu.md) Header compacto, sidebar flotante y tipografía legible | interfaz | cierre | code-ai-profiles | — |
 | ◼ | [HU-0020](HU-0020-icono-personalizado-de-la-instancia-en-e/hu.md) Icono personalizado de la instancia en el Dock de macOS | instancias | cierre | code-ai-profiles | — |
 | ◐ | [HU-0021](HU-0021-spike-relevo-del-retorno-de-inicio-de-se/hu.md) Spike: relevo del retorno de inicio de sesión a la instancia correcta | instancias | requisitos | code-ai-profiles | — |
-| ◐ | [HU-0022](HU-0022-configuracion-unificada-con-apariencia-y/hu.md) Configuración unificada con apariencia y permisos | interfaz | verificacion | code-ai-profiles | — |
-| ◐ | [HU-0023](HU-0023-proyectos-resumen-de-proyectos-con-metod/hu.md) Proyectos: resumen de proyectos con metodología v4 | proyectos | verificacion | code-ai-profiles | — |
+| ◼ | [HU-0022](HU-0022-configuracion-unificada-con-apariencia-y/hu.md) Configuración unificada con apariencia y permisos | interfaz | cierre | code-ai-profiles | — |
+| ◼ | [HU-0023](HU-0023-proyectos-resumen-de-proyectos-con-metod/hu.md) Proyectos: resumen de proyectos con metodología v4 | proyectos | cierre | code-ai-profiles | — |

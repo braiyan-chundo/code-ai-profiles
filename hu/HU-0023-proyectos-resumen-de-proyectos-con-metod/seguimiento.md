@@ -22,3 +22,4 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-10-29 02:27 | orquestador | re-revisión (architect): 9c57491, PASS. Corregidas R-1..R-5, R-9..R-11; deuda R-6 (TCC al arrancar, vuelve tras cada actualización por firma ad hoc: a verificacion.md), R-7 parcial (mocks), R-8, R-12 |
 | 2026-10-29 02:27 | hu.mjs | fase implementacion → verificacion |
 | 2026-10-29 02:29 | orquestador | verificación preparada: suite en verde sobre c28ebc6, DMG de la rama (sha256 bb142164…7515). Falta la prueba y el veredicto del mantenedor |
+| 2026-10-29 07:12 | hu.mjs | estado en-proceso → terminada · veredicto del mantenedor: «probadas las 0022 y la 0023 y estan perfectas»; R-6 se mantiene la lectura al abrir |

@@ -161,8 +161,9 @@ fallos reales: el registro dañado, un id desconocido, el selector o el gestor d
   - `read` exige además un archivo regular, salta los de la nube y lee con tope (`Whole`, `Head` o `Tail`).
   - Las rutas del método se unen con `join_relative`, que rechaza `..`, las rutas absolutas y los componentes con `:`.
 - **Una ruta que ya es léxicamente de fuera no se toca en disco**: ni `canonicalize`, ni `stat`. Así se evita la red
-  encubierta (SMB/UNC en Windows, volúmenes montados) y el aviso de TCC de una carpeta que la persona no eligió. Hoy
-  `resolve_repo` no lo cumple: es la R-1 de la revisión de la HU-0023.
+  encubierta (SMB/UNC en Windows, volúmenes montados) y el aviso de TCC de una carpeta que la persona no eligió.
+  `lexical_repo_path` decide la `ruta` de cada repo sin tocar el disco (R-1 de la revisión de la HU-0023), y
+  `ReadContext::resolve` recorre los componentes con `symlink_metadata` sin seguir un enlace que salga de la carpeta.
 - **Lista de exclusión**: `<home>/.claude`, `app_data_dir` y `detect_original_profile()`. Se compara de forma léxica
   antes de tocar nada y otra vez sobre la ruta canónica. Ni la raíz ni un repo ni un archivo pueden caer dentro. Si se
   ancla una carpeta que contiene una de ellas (p. ej. `home`), se leen solo las rutas del método.
@@ -200,8 +201,8 @@ fallos reales: el registro dañado, un id desconocido, el selector o el gestor d
   - `protectedLocation` se calcula por prefijo, sin listar.
   - Un `EPERM` en la raíz o en la config da `permissionDenied`. **Nunca se consulta ni se pide el permiso de
     antemano.**
-  - La lista se lee al arrancar (pregunta 3). Con la firma ad hoc, los avisos vuelven tras cada actualización (R-6
-    de la revisión).
+  - La lista se lee al arrancar (pregunta 3, confirmada por el mantenedor al cerrar). Con la firma ad hoc, los avisos
+    vuelven tras cada actualización (R-6 de la revisión, deuda declarada).
 - En Windows, `canonicalize` añade `\\?\`: `comparable` lo quita para comparar y `stored_path` para guardar. En Linux,
   las rutas distinguen mayúsculas.
 - `open_project_folder` usa `open_in_file_manager`, extraído de `open_instance_folder`: `/usr/bin/open`,

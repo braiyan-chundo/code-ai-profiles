@@ -1,8 +1,8 @@
 ---
 id: HU-0023
 titulo: "Proyectos: resumen de proyectos con metodología v4"
-estado: en-proceso
-fase: verificacion
+estado: terminada
+fase: cierre
 area: proyectos
 entrega: 1
 prioridad: alta
@@ -156,11 +156,40 @@ Anclar, ver y refrescar un proyecto no cambia ningún archivo de su carpeta ni e
 
 ## Definición de Terminado
 
-- [ ] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
-- [ ] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
-- [ ] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
-- [ ] Revisión técnica pasada, si la historia es riesgosa
-- [ ] La persona probó y aprobó; su veredicto está en `verificacion.md`
-- [ ] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
-- [ ] Commits en cada repo tocado con `HU: HU-0023`. **Sin push, sin publicar, sin desplegar**
-- [ ] Lo que solo comprueba una persona, declarado como pendiente humano
+- [x] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
+- [x] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
+- [x] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
+- [x] Revisión técnica pasada, si la historia es riesgosa
+- [x] La persona probó y aprobó; su veredicto está en `verificacion.md`
+- [x] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
+- [x] Commits en cada repo tocado con `HU: HU-0023`. **Sin push, sin publicar, sin desplegar**
+- [x] Lo que solo comprueba una persona, declarado como pendiente humano
+
+## Cierre
+
+2026-10-29, cerrada por el orquestador sobre el veredicto del mantenedor («probadas las 0022 y la 0023 y estan
+perfectas»), tras probar el `.dmg` de `c28ebc6`.
+
+SHA por repositorio, con una línea de qué hace cada uno (code-ai-profiles, rama `hu-0022-configuracion-unificada`):
+- `ab26ad5`, `1785d4d`, `a9d609c`: backend (contrato con mocks, `tauri-plugin-dialog` e `Info.plist`, `projects.rs` y seis comandos).
+- `ecf5102`, `10883f5`, `fcd3423`, `5d5e667`, `ac9d421`: frontend (estado y cálculos, pantallas, sidebar, permisos, caso 17).
+- `4f4be11`, `83c1514`, `4e98912`, `9fe8928`: correcciones de la revisión (R-1 a R-5, R-7 en parte, R-9 a R-11).
+- `da30038`, `c28ebc6`: `test:projects` en el método y en CI; grafo.
+- `6421f84`, `053684c`, `b2ad12c`, `fe6f7f2`, `9a599f5`, `30481fa`, `51bd364`, `aeb88b3`, `dad8f3d`, `9c57491`, `2430244`
+  y el de cierre: historia, maquetas, arquitectura, revisiones, verificación, reglas y documentación
+  (`docs/proyectos.document.md`, README, CHANGELOG).
+
+★ aceptadas tal como estaban: D-1, D-2 y D-5; D-3 y D-4 con las decisiones del mantenedor (horas en «Tiempo en fases»
+y lectura también al abrir la app).
+
+Reglas de negocio: RN-02, RN-03 y RN-04 nuevas en `docs/producto/reglas/proyectos.md`.
+
+Pendientes humanos (nadie los vio; no se dan por hechos):
+- Windows y Linux reales (solo CI).
+
+Deuda declarada:
+- R-6: con la lectura al abrir y la firma ad hoc, los avisos de TCC pueden salir al arrancar y vuelven tras cada
+  actualización. Alternativa: leer solo al entrar en Proyectos.
+- R-7: los mocks de `bridge.ts` (~12 kB) viajan en el JS principal; `/fix` aparte con `import()`.
+- R-8: la agrupación de tecnologías se repite en el frontend; se resuelve con un `category` en el contrato.
+- R-12: el contraste de «en curso» en el tema claro ronda 3:1.

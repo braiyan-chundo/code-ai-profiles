@@ -67,4 +67,9 @@ Windows y Linux (solo CI).
 
 ## Veredicto
 
-Pendiente.
+**Aprobada.** 2026-10-29 · Braiyan Rodriguez (mantenedor), tras probar el `.dmg` de esta rama (`c28ebc6`):
+
+> «probadas las 0022 y la 0023 y estan perfectas»
+
+R-6: el mantenedor probó la app con la lectura al abrir (su decisión D-4) y no pidió cambiarla. Se mantiene; leer
+solo al entrar en Proyectos queda como alternativa declarada en la deuda.

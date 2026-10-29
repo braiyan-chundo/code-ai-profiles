@@ -6,6 +6,17 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ## [Unreleased]
 
+### Added
+
+- Página **Configuración** (⌘, / Ctrl+,) con Apariencia y Permisos. En macOS, una tarjeta por permiso opcional («Gestión de apps», «Archivos y carpetas» y «Cuenta de administrador») con su explicación, su estado cuando se puede saber sin avisos del sistema y un acceso directo al panel de Ajustes. Las direcciones de los paneles salen de `.env.example`.
+- **Proyectos**: ancla carpetas con la metodología agéntica v4 y muestra su resumen (fase, perfil, tecnologías, repos con rama y último commit, historias por estado, «Desde», «Tiempo en fases» y tokens de `metricas.json`), con una sección en el sidebar. Solo lectura: no ejecuta nada del proyecto, no escribe en él, no usa la red ni lee fuera de la carpeta. Añade `tauri-plugin-dialog` 2.7 (selector de carpetas, solo desde Rust) y los textos de los avisos de macOS en `Info.plist`.
+
+### Changed
+
+- Sistema armónico en toda la interfaz: escala de espaciado de 4 px, alturas fijas de controles por tamaño de texto, interlineados múltiplos de 4, radios 4/8/12/16/20/24 y anillo de foco de 2 px.
+- El botón principal lleva texto oscuro (contraste 6:1, antes 3:1) y el verde de éxito del tema claro es algo más oscuro (4,77:1).
+- «Configuración» sustituye al diálogo «Apariencia» en el pie del sidebar. El aviso de «Gestión de apps» del editor enlaza a Configuración › Permisos.
+
 ## [0.3.0] - 2026-10-28
 
 ### Added
