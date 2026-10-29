@@ -14,3 +14,6 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-10-28 21:22 | hu.mjs | fase arquitectura → implementacion |
 | 2026-10-28 21:48 | orquestador | frontend (sonnet): 00ca976…6788ed1 (8 commits, pasos 1-7). Medidas como la maqueta (cabecera 52, primer contenido y=60, sidebar 240/50 px); mínimo de 11 px en 216 combinaciones; test:ui 15/15; peso +0,8 % CSS y +0,7 % JS; 35 evidencias. No visto: macOS real, Windows/Linux reales, vacío del dashboard, tema sistema |
 | 2026-10-28 21:53 | orquestador | revisión técnica: PASS (architect). Correcciones menores a frontend: R-3 huecos de las pruebas 12-14, R-4 capturas del showcase, R-5 barra de estado a 980 en Grande, R-6 chevron de migas sin arrastre, R-7 ejemplo text-(--quiet) en la skill, R-8 peso de la skill. R-2: comprobación en el escritorio de macOS con el mantenedor (pnpm tauri dev abierto) |
+| 2026-10-28 21:55 | orquestador | R-2 comprobada por el mantenedor en el escritorio de macOS (pnpm tauri dev): «Todo responde» — semáforos, botón de plegar, acciones y arrastre |
+| 2026-10-28 21:58 | orquestador | frontend corrige R-3..R-8 en 5ba9af8 (test:ui 15/15, build ok, skill de frontend en 12 045 B). Verificación preparada; la suite se corre en cuanto termine la arquitectura de HU-0020 (árbol limpio) |
+| 2026-10-28 21:58 | hu.mjs | fase implementacion → verificacion |

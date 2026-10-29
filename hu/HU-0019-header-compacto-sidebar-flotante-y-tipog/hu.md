@@ -2,7 +2,7 @@
 id: HU-0019
 titulo: "Header compacto, sidebar flotante y tipografía legible"
 estado: en-proceso
-fase: implementacion
+fase: verificacion
 area: interfaz
 entrega: 1
 prioridad: media
