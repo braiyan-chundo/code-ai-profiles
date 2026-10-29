@@ -343,6 +343,66 @@ pub(crate) fn check_managed_bundle(
     }
 }
 
+/// A clean copy against the original: `codesign --verify --deep --strict -R =<DR>` plus the same bundle id and
+/// Team ID. Used before every registration and on the staging copy of a sync, before the swap.
+pub(crate) fn check_clean_against_original(
+    bundle: &Path,
+    original: &Path,
+) -> Result<(), BundleCheckFailure> {
+    if bundle_shape(bundle).map_err(|_| BundleCheckFailure::Unreadable)? != BundleShape::Clean {
+        return Err(BundleCheckFailure::RootShape);
+    }
+    validate_provider_identity(original, original)
+        .map_err(|_| BundleCheckFailure::OriginalIdentity)?;
+    let requirement =
+        designated_requirement(original).ok_or(BundleCheckFailure::OriginalIdentity)?;
+    if !codesign_satisfies(bundle, &requirement, "--strict")? {
+        return Err(BundleCheckFailure::DesignatedRequirement);
+    }
+    let bundle_identifier = macos_bundle_value(bundle, "CFBundleIdentifier");
+    if bundle_identifier.is_none()
+        || bundle_identifier != macos_bundle_value(original, "CFBundleIdentifier")
+    {
+        return Err(BundleCheckFailure::BundleIdentity);
+    }
+    if macos_team_identifier(bundle) != macos_team_identifier(original) {
+        return Err(BundleCheckFailure::TeamIdentity);
+    }
+    Ok(())
+}
+
+/// Registers the CDHash of a clean copy, only right after it passes `check_clean_against_original` and never
+/// from an iconized copy. `minimum_version` rejects a downgrade below what was registered (D-3).
+/// `managed_fingerprint` is still written for compatibility but is no longer a gate (★ D-E).
+pub(crate) fn register_clean_provenance(
+    bundle: &Path,
+    original: &Path,
+    minimum_version: Option<&str>,
+) -> Result<ProviderProvenance, BundleCheckFailure> {
+    check_clean_against_original(bundle, original)?;
+    let provider_version = source_version(bundle)
+        .filter(|version| valid_release_version(version))
+        .ok_or(BundleCheckFailure::ProviderIdentity)?;
+    if minimum_version.is_some_and(|minimum| version_is_newer(minimum, Some(&provider_version))) {
+        return Err(BundleCheckFailure::Downgrade);
+    }
+    let managed_code_hash = macos_code_hash(bundle).ok_or(BundleCheckFailure::CodeHash)?;
+    let bundle_identifier = macos_bundle_value(bundle, "CFBundleIdentifier")
+        .ok_or(BundleCheckFailure::BundleIdentity)?;
+    Ok(ProviderProvenance {
+        bundle_identifier,
+        provider_team_identifier: macos_team_identifier(bundle),
+        provider_version,
+        provider_source_fingerprint: fingerprint_label(original)
+            .map_err(|_| BundleCheckFailure::Unreadable)?,
+        managed_fingerprint: fingerprint_label(bundle)
+            .map_err(|_| BundleCheckFailure::Unreadable)?,
+        managed_code_hash: Some(managed_code_hash),
+        provider_signature_preserved: true,
+        original_icon_file: macos_bundle_value(bundle, "CFBundleIconFile"),
+    })
+}
+
 /// A-2 for the person: any failure becomes `bundle_changed_message(name)`.
 pub(crate) fn verify_managed_bundle(
     candidate: &Path,
@@ -473,19 +533,19 @@ pub(crate) mod tests {
         assert_eq!(result, 0, "setxattr: {}", io::Error::last_os_error());
     }
 
-    /// Provenance as the product registers it, taken from a clean copy that passes `--strict`.
-    pub(crate) fn provenance_for(bundle: &Path) -> ProviderProvenance {
+    /// Provenance as the product registers it, from a clean copy that passes `--strict -R`.
+    pub(crate) fn provenance_for(fixture: &IconFixture, bundle: &Path) -> ProviderProvenance {
         assert!(strict_passes(bundle));
-        ProviderProvenance {
-            bundle_identifier: macos_bundle_value(bundle, "CFBundleIdentifier").unwrap(),
-            provider_team_identifier: macos_team_identifier(bundle),
-            provider_version: source_version(bundle).unwrap(),
-            provider_source_fingerprint: "fixture".to_string(),
-            managed_fingerprint: "fixture".to_string(),
-            managed_code_hash: macos_code_hash(bundle),
-            provider_signature_preserved: true,
-            original_icon_file: None,
-        }
+        register_clean_provenance(bundle, &fixture.original, None).unwrap()
+    }
+
+    pub(crate) fn set_version(bundle: &Path, version: &str) {
+        let status = Command::new("/usr/bin/plutil")
+            .args(["-replace", "CFBundleShortVersionString", "-string", version])
+            .arg(bundle.join("Contents/Info.plist"))
+            .status()
+            .unwrap();
+        assert!(status.success());
     }
 
     fn put_icon(fixture: &IconFixture, bundle: &Path) {
@@ -521,7 +581,7 @@ pub(crate) mod tests {
     fn iconized_copy_passes_the_equivalent_check_with_both_requirement_variants() {
         for requirement in [None, Some(EXPLICIT_REQUIREMENT)] {
             let fixture = IconFixture::new("iconized-pass", requirement);
-            let provenance = provenance_for(&fixture.managed);
+            let provenance = provenance_for(&fixture, &fixture.managed);
             let plist_before = fs::read(fixture.managed.join("Contents/Info.plist")).unwrap();
             put_icon(&fixture, &fixture.managed);
             assert!(!strict_passes(&fixture.managed), "the icon is in place");
@@ -549,7 +609,7 @@ pub(crate) mod tests {
     #[test]
     fn clean_copies_follow_strict_and_report_the_registered_code_hash() {
         let fixture = IconFixture::new("clean", Some(EXPLICIT_REQUIREMENT));
-        let provenance = provenance_for(&fixture.managed);
+        let provenance = provenance_for(&fixture, &fixture.managed);
         assert_eq!(
             check(&fixture, &fixture.managed, Some(&provenance)),
             Ok(ManagedBundleState::Clean {
@@ -572,7 +632,7 @@ pub(crate) mod tests {
     #[test]
     fn iconized_copy_without_registered_provenance_is_rejected() {
         let fixture = IconFixture::new("no-provenance", None);
-        let mut adhoc = provenance_for(&fixture.managed);
+        let mut adhoc = provenance_for(&fixture, &fixture.managed);
         put_icon(&fixture, &fixture.managed);
         assert_eq!(
             check(&fixture, &fixture.managed, None),
@@ -677,7 +737,7 @@ pub(crate) mod tests {
         ];
         for requirement in [None, Some(EXPLICIT_REQUIREMENT)] {
             let fixture = IconFixture::new("matrix", requirement);
-            let provenance = provenance_for(&fixture.managed);
+            let provenance = provenance_for(&fixture, &fixture.managed);
             for (label, tamper, expected) in cases {
                 let copy = fixture.another_copy();
                 put_icon(&fixture, &copy);
@@ -709,7 +769,7 @@ pub(crate) mod tests {
             (Some(EXPLICIT_REQUIREMENT), BundleCheckFailure::CodeHash),
         ] {
             let fixture = IconFixture::new("resigned", requirement);
-            let provenance = provenance_for(&fixture.managed);
+            let provenance = provenance_for(&fixture, &fixture.managed);
             fs::write(fixture.managed.join("Contents/Resources/payload"), b"x").unwrap();
             fixture.resign(&fixture.managed);
             assert!(strict_passes(&fixture.managed));
@@ -722,9 +782,70 @@ pub(crate) mod tests {
     }
 
     #[test]
+    fn registration_needs_a_clean_copy_and_records_its_code_hash() {
+        let fixture = IconFixture::new("register", Some(EXPLICIT_REQUIREMENT));
+        let provenance =
+            register_clean_provenance(&fixture.managed, &fixture.original, None).unwrap();
+        assert_eq!(
+            provenance.managed_code_hash,
+            macos_code_hash(&fixture.managed)
+        );
+        assert_eq!(provenance.provider_version, "1.0.0");
+        assert_eq!(provenance.bundle_identifier, "com.codeaiprofiles.fixture");
+        assert!(provenance.provider_signature_preserved);
+        put_icon(&fixture, &fixture.managed);
+        assert_eq!(
+            register_clean_provenance(&fixture.managed, &fixture.original, None),
+            Err(BundleCheckFailure::RootShape),
+            "never registered from an iconized copy"
+        );
+        let tampered = fixture.another_copy();
+        fs::write(tampered.join("Contents/Resources/extra"), b"x").unwrap();
+        assert_eq!(
+            register_clean_provenance(&tampered, &fixture.original, None),
+            Err(BundleCheckFailure::DesignatedRequirement)
+        );
+    }
+
+    #[test]
+    fn self_updated_copy_is_accepted_with_a_newer_version_and_rejected_with_an_older_one() {
+        let fixture = IconFixture::new("d3", Some(EXPLICIT_REQUIREMENT));
+        let registered = provenance_for(&fixture, &fixture.managed);
+
+        set_version(&fixture.managed, "1.0.1");
+        fixture.resign(&fixture.managed);
+        assert_eq!(
+            check(&fixture, &fixture.managed, Some(&registered)),
+            Ok(ManagedBundleState::Clean {
+                code_hash_matches: false
+            })
+        );
+        let renewed = register_clean_provenance(
+            &fixture.managed,
+            &fixture.original,
+            Some(&registered.provider_version),
+        )
+        .unwrap();
+        assert_eq!(renewed.provider_version, "1.0.1");
+        assert_ne!(renewed.managed_code_hash, registered.managed_code_hash);
+
+        let older = fixture.another_copy();
+        set_version(&older, "0.9");
+        fixture.resign(&older);
+        assert_eq!(
+            check(&fixture, &older, Some(&registered)),
+            Err(BundleCheckFailure::Downgrade)
+        );
+        assert_eq!(
+            register_clean_provenance(&older, &fixture.original, Some("1.0.0")),
+            Err(BundleCheckFailure::Downgrade)
+        );
+    }
+
+    #[test]
     fn original_with_another_requirement_rejects_the_iconized_copy() {
         let fixture = IconFixture::new("other-dr", Some(EXPLICIT_REQUIREMENT));
-        let provenance = provenance_for(&fixture.managed);
+        let provenance = provenance_for(&fixture, &fixture.managed);
         put_icon(&fixture, &fixture.managed);
         let status = Command::new("/usr/bin/codesign")
             .args(["--force", "--deep", "--sign", "-", "-r"])
