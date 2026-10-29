@@ -5124,6 +5124,87 @@ fn open_instance_folder(app: AppHandle, id: String) -> Result<(), String> {
     Ok(())
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "camelCase")]
+enum SystemSettingsPanel {
+    AppManagement,
+    FilesAndFolders,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct AccountFacts {
+    /// macOS: the user belongs to the `admin` group. None off macOS or when `id` fails.
+    admin: Option<bool>,
+}
+
+/// Enlace fijado al compilar (`config.rs`). El frontend solo envía el panel, nunca una URL.
+#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+fn system_settings_url(panel: SystemSettingsPanel) -> &'static str {
+    match panel {
+        SystemSettingsPanel::AppManagement => config::macos_app_management_settings_url(),
+        SystemSettingsPanel::FilesAndFolders => config::macos_files_and_folders_settings_url(),
+    }
+}
+
+/// `true` si `id -Gn` lista exactamente el grupo `admin`.
+#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+fn groups_include_admin(groups: &str) -> bool {
+    groups.split_whitespace().any(|group| group == "admin")
+}
+
+#[cfg(target_os = "macos")]
+fn open_system_settings_sync(panel: SystemSettingsPanel) -> Result<(), String> {
+    let status = Command::new("/usr/bin/open")
+        .arg(system_settings_url(panel))
+        .status()
+        .map_err(|error| format!("No se pudo abrir Ajustes del Sistema: {error}"))?;
+    if status.success() {
+        Ok(())
+    } else {
+        Err(format!(
+            "No se pudo abrir Ajustes del Sistema: el sistema respondió {status}."
+        ))
+    }
+}
+
+#[cfg(not(target_os = "macos"))]
+fn open_system_settings_sync(_panel: SystemSettingsPanel) -> Result<(), String> {
+    Err("Esta plataforma no tiene ese panel de ajustes.".to_string())
+}
+
+#[cfg(target_os = "macos")]
+fn account_facts_sync() -> AccountFacts {
+    let admin = Command::new("/usr/bin/id")
+        .arg("-Gn")
+        .output()
+        .ok()
+        .filter(|output| output.status.success())
+        .map(|output| groups_include_admin(&String::from_utf8_lossy(&output.stdout)));
+    AccountFacts { admin }
+}
+
+#[cfg(not(target_os = "macos"))]
+fn account_facts_sync() -> AccountFacts {
+    AccountFacts { admin: None }
+}
+
+#[tauri::command]
+async fn open_system_settings(panel: SystemSettingsPanel) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || open_system_settings_sync(panel))
+        .await
+        .map_err(|error| {
+            format!("La apertura de Ajustes del Sistema terminó inesperadamente: {error}")
+        })?
+}
+
+#[tauri::command]
+async fn get_account_facts() -> Result<AccountFacts, String> {
+    Ok(tauri::async_runtime::spawn_blocking(account_facts_sync)
+        .await
+        .unwrap_or(AccountFacts { admin: None }))
+}
+
 #[tauri::command]
 fn update_original_application(app: AppHandle) -> Result<OriginalApplicationUpdateResult, String> {
     if original_update::original_update_in_flight() {
@@ -5322,6 +5403,8 @@ pub fn run() {
             clear_instance_icon,
             reapply_instance_icon,
             open_instance_folder,
+            open_system_settings,
+            get_account_facts,
             update_original_application,
             install_original_update,
             cancel_original_update,
@@ -6709,5 +6792,58 @@ int main(int argc, const char **argv) {
         );
 
         fs::remove_dir_all(root).unwrap();
+    }
+    #[test]
+    fn system_settings_url_matches_each_panel() {
+        assert_eq!(
+            system_settings_url(SystemSettingsPanel::AppManagement),
+            config::macos_app_management_settings_url()
+        );
+        assert_eq!(
+            system_settings_url(SystemSettingsPanel::FilesAndFolders),
+            config::macos_files_and_folders_settings_url()
+        );
+        assert!(
+            system_settings_url(SystemSettingsPanel::AppManagement).ends_with("Privacy_AppBundles")
+        );
+        assert!(system_settings_url(SystemSettingsPanel::FilesAndFolders)
+            .ends_with("Privacy_FilesAndFolders"));
+    }
+
+    #[test]
+    fn system_settings_panel_accepts_only_known_values() {
+        assert_eq!(
+            serde_json::from_str::<SystemSettingsPanel>("\"appManagement\"").unwrap(),
+            SystemSettingsPanel::AppManagement
+        );
+        assert_eq!(
+            serde_json::from_str::<SystemSettingsPanel>("\"filesAndFolders\"").unwrap(),
+            SystemSettingsPanel::FilesAndFolders
+        );
+        assert!(serde_json::from_str::<SystemSettingsPanel>("\"fullDisk\"").is_err());
+        assert!(
+            serde_json::from_str::<SystemSettingsPanel>("\"x-apple.systempreferences:a\"").is_err()
+        );
+    }
+
+    #[test]
+    fn account_facts_serializes_admin_as_nullable() {
+        assert_eq!(
+            serde_json::to_string(&AccountFacts { admin: None }).unwrap(),
+            "{\"admin\":null}"
+        );
+        assert_eq!(
+            serde_json::to_string(&AccountFacts { admin: Some(true) }).unwrap(),
+            "{\"admin\":true}"
+        );
+    }
+
+    #[test]
+    fn groups_include_admin_matches_the_exact_group() {
+        assert!(groups_include_admin("staff admin everyone"));
+        assert!(groups_include_admin("admin\n"));
+        assert!(!groups_include_admin("staff everyone"));
+        assert!(!groups_include_admin("administrators"));
+        assert!(!groups_include_admin(""));
     }
 }
