@@ -7,3 +7,4 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | --- | --- | --- |
 | 2026-10-28 21:08 | hu.mjs | creada: «Spike: relevo del retorno de inicio de sesión a la instancia correcta» · fase requisitos |
 | 2026-10-28 21:09 | orquestador | petición del mantenedor (ver hu.md); spike aceptado: «para lo del login me gusta tu spike miremos esa alternativa» — Braiyan Rodriguez, 2026-10-28 |
+| 2026-10-28 21:24 | orquestador | spike (architect): en macOS el relevo funciona con apps de prueba (entrega a la copia exacta 12/12 con withApplicationAt; receptor tomado sin confirmación; devolución correcta), con carrera confirmada si una copia se re-registra al arrancar; URL solo en memoria, pero macOS la registra en el log si una apertura falla. Recomienda historia solo macOS con un primer paso bloqueante: prueba con Claude real (requiere autorización). Incidente: diálogo de Finder por abrir el esquema de prueba sin receptor; corregido |
