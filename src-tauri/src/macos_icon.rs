@@ -563,6 +563,7 @@ fn workspace_set_icon(bundle: &Path, icon_path: Option<&Path>) -> Result<bool, W
     let selector_set_icon = c_string("setIcon:forFile:options:")?;
     let selector_release = c_string("release")?;
     let selector_drain = c_string("drain")?;
+    let selector_note_changed = c_string("noteFileSystemChanged:")?;
 
     // SAFETY: plain Objective-C messaging with the documented signatures of each selector, inside an
     // autorelease pool that is always drained. The image is released after use.
@@ -577,6 +578,8 @@ fn workspace_set_icon(bundle: &Path, icon_path: Option<&Path>) -> Result<bool, W
         let send_set_icon: unsafe extern "C" fn(ObjcId, ObjcSel, ObjcId, ObjcId, usize) -> bool =
             std::mem::transmute(raw_message_send);
         let send_void: unsafe extern "C" fn(ObjcId, ObjcSel) =
+            std::mem::transmute(raw_message_send);
+        let send_void_id: unsafe extern "C" fn(ObjcId, ObjcSel, ObjcId) =
             std::mem::transmute(raw_message_send);
 
         let pool = send_id(
@@ -630,6 +633,14 @@ fn workspace_set_icon(bundle: &Path, icon_path: Option<&Path>) -> Result<bool, W
         if !image.is_null() {
             send_void(image, sel_registerName(selector_release.as_ptr()));
         }
+        if applied {
+            // Finder and the Dock refresh what they show for this path (failure 1 of the manual test).
+            send_void_id(
+                workspace,
+                sel_registerName(selector_note_changed.as_ptr()),
+                path,
+            );
+        }
         send_void(pool, sel_registerName(selector_drain.as_ptr()));
         Ok(applied)
     }
@@ -639,6 +650,51 @@ fn workspace_set_icon(bundle: &Path, icon_path: Option<&Path>) -> Result<bool, W
 thread_local! {
     /// `setIcon` calls made by this thread (tests only).
     static WORKSPACE_ICON_CALLS: std::cell::Cell<usize> = const { std::cell::Cell::new(0) };
+    /// LaunchServices re-registrations made by this thread (tests only).
+    static ICON_ANNOUNCEMENTS: std::cell::Cell<usize> = const { std::cell::Cell::new(0) };
+}
+
+/// Failure 1 of the manual test (an existing instance kept its old icon in the Dock): `setIcon` changes the
+/// files, but the LaunchServices record of a bundle it already knows is only refreshed when the app is launched
+/// again, and the Dock draws a stopped app (a pinned tile) from that record. `LSRegisterURL(url, true)` is
+/// `lsregister -f` for this one bundle: the record is current right after the change. Best effort.
+fn announce_icon_change(bundle: &Path) -> Result<(), i32> {
+    use std::ffi::c_void;
+
+    #[link(name = "CoreFoundation", kind = "framework")]
+    extern "C" {
+        fn CFURLCreateFromFileSystemRepresentation(
+            allocator: *const c_void,
+            buffer: *const u8,
+            length: isize,
+            is_directory: u8,
+        ) -> *const c_void;
+        fn CFRelease(value: *const c_void);
+    }
+    #[link(name = "CoreServices", kind = "framework")]
+    extern "C" {
+        fn LSRegisterURL(url: *const c_void, update: u8) -> i32;
+    }
+
+    #[cfg(test)]
+    ICON_ANNOUNCEMENTS.with(|calls| calls.set(calls.get() + 1));
+    let bytes = bundle.as_os_str().as_bytes();
+    let length = isize::try_from(bytes.len()).map_err(|_| -1)?;
+    // SAFETY: `bytes` is valid for `length` bytes; the URL is released after use.
+    unsafe {
+        let url =
+            CFURLCreateFromFileSystemRepresentation(std::ptr::null(), bytes.as_ptr(), length, 1);
+        if url.is_null() {
+            return Err(-1);
+        }
+        let status = LSRegisterURL(url, 1);
+        CFRelease(url);
+        if status == 0 {
+            Ok(())
+        } else {
+            Err(status)
+        }
+    }
 }
 
 /// Puts (`Some`) or removes (`None`) the Finder icon of a managed copy through NSWorkspace. A refusal is
@@ -667,6 +723,7 @@ pub(crate) fn set_workspace_icon(
         WORKSPACE_ICON_CALLS.with(|calls| calls.set(calls.get() + 1));
         if workspace_set_icon(bundle, icon_path)? {
             invalidate_application_cache();
+            let _ = announce_icon_change(bundle);
             return Ok(());
         }
         issue = classify_rejection(bundle);
@@ -689,7 +746,10 @@ pub(crate) fn clear_workspace_icon(
         Err(refused) => return Err(refused),
     }
     strip_inherited_icon(bundle)
-        .map_err(|error| WorkspaceIconError::Rejected(classify_write_error(&error)))
+        .map_err(|error| WorkspaceIconError::Rejected(classify_write_error(&error)))?;
+    // Also when NSWorkspace refused and the direct removal did the work.
+    let _ = announce_icon_change(bundle);
+    Ok(())
 }
 
 /// What applying the icon left: the registered provenance and the three `CustomIcon` fields.
@@ -2366,6 +2426,90 @@ pub(crate) mod tests {
             )))
         );
         assert_eq!(WORKSPACE_ICON_CALLS.with(|calls| calls.get()), 1);
+    }
+
+    #[test]
+    fn every_icon_change_refreshes_the_launch_services_record_of_the_copy() {
+        let fixture = IconFixture::new("announce", Some(EXPLICIT_REQUIREMENT));
+        assert_eq!(announce_icon_change(&fixture.managed), Ok(()));
+        ICON_ANNOUNCEMENTS.with(|calls| calls.set(0));
+        set_workspace_icon(
+            &fixture.paths.instances,
+            &fixture.managed,
+            Some(&fixture.icon),
+        )
+        .unwrap();
+        assert_eq!(ICON_ANNOUNCEMENTS.with(|calls| calls.get()), 1, "put");
+        set_workspace_icon(
+            &fixture.paths.instances,
+            &fixture.managed,
+            Some(&fixture.icon),
+        )
+        .unwrap();
+        assert_eq!(ICON_ANNOUNCEMENTS.with(|calls| calls.get()), 2, "replace");
+        clear_workspace_icon(&fixture.paths.instances, &fixture.managed).unwrap();
+        assert!(ICON_ANNOUNCEMENTS.with(|calls| calls.get()) >= 3, "remove");
+        ICON_ANNOUNCEMENTS.with(|calls| calls.set(0));
+        let _ = set_workspace_icon(
+            &fixture.paths.instances,
+            &fixture.original,
+            Some(&fixture.icon),
+        );
+        assert_eq!(
+            ICON_ANNOUNCEMENTS.with(|calls| calls.get()),
+            0,
+            "nothing outside the managed instances"
+        );
+    }
+
+    /// Diagnostic for failure 1, opt-in because it reads the whole LaunchServices database (`lsregister -dump`)
+    /// and keeps only this fixture's record: after `setIcon`, the record must already carry the new bundle
+    /// modification date without launching the app.
+    #[test]
+    #[ignore = "reads the LaunchServices database; run with --ignored to diagnose the Dock refresh"]
+    fn launch_services_record_follows_the_icon_change_without_a_launch() {
+        const LSREGISTER: &str = "/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister";
+        fn record_mod_date(bundle: &Path) -> Option<u64> {
+            let output = Command::new(LSREGISTER).arg("-dump").output().ok()?;
+            let dump = String::from_utf8_lossy(&output.stdout);
+            let prefix = "path:";
+            let canonical = fs::canonicalize(bundle).ok()?;
+            let mut inside = false;
+            for line in dump.lines() {
+                if line.starts_with(prefix) {
+                    let path = line[prefix.len()..].trim();
+                    inside = path.starts_with(&*canonical.to_string_lossy())
+                        || path.starts_with(&*bundle.to_string_lossy());
+                } else if inside && line.starts_with("mod date:") {
+                    let posix = line.split("POSIX ").nth(1)?;
+                    return posix
+                        .split(|c: char| !c.is_ascii_digit())
+                        .next()?
+                        .parse()
+                        .ok();
+                } else if line.starts_with("-----") {
+                    inside = false;
+                }
+            }
+            None
+        }
+        let fixture = IconFixture::new("ls-record", Some(EXPLICIT_REQUIREMENT));
+        assert_eq!(announce_icon_change(&fixture.managed), Ok(()));
+        thread::sleep(Duration::from_millis(1_100));
+        set_workspace_icon(
+            &fixture.paths.instances,
+            &fixture.managed,
+            Some(&fixture.icon),
+        )
+        .unwrap();
+        let modified = fs::metadata(&fixture.managed)
+            .unwrap()
+            .modified()
+            .unwrap()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_secs();
+        assert_eq!(record_mod_date(&fixture.managed), Some(modified));
     }
 
     #[test]
