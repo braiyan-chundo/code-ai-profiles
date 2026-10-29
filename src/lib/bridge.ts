@@ -426,6 +426,21 @@ export const bridge = {
         revision: (item.customIcon?.revision ?? 0) + 1,
         systemApplied: false,
         systemMessage: "Modo de demostración: icono visible dentro de Code AI Profiles.",
+        systemIssue: null,
+      },
+    } : item);
+    return mockState();
+  },
+
+  async reapplyInstanceIcon(id: string): Promise<DashboardState> {
+    if (isTauri()) return call("reapply_instance_icon", { id });
+    mockInstances = mockInstances.map((item) => item.id === id && item.customIcon ? {
+      ...item,
+      customIcon: {
+        ...item.customIcon,
+        systemApplied: true,
+        systemMessage: "Modo de demostración: icono reaplicado a la copia.",
+        systemIssue: null,
       },
     } : item);
     return mockState();

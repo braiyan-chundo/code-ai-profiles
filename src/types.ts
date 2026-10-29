@@ -88,11 +88,17 @@ export interface ManagedProcessIdentity {
   profileArgument: string;
 }
 
+export type CustomIconSystemIssue = "appManagement";
+
 export interface CustomIcon {
   path: string;
   revision: number;
+  /** true = el icono está puesto en la copia y la comprobación equivalente pasó (solo macOS). */
   systemApplied: boolean;
+  /** Texto para la persona. */
   systemMessage: string;
+  /** Solo macOS; null salvo bloqueo de «Gestión de apps». */
+  systemIssue?: CustomIconSystemIssue | null;
 }
 
 export interface SessionProfile {

@@ -31,6 +31,8 @@ const ICON_MAX_DIMENSION: u32 = 4096;
 const ARTIFACT_EXPORT_MAX_FILES: usize = 256;
 const ARTIFACT_EXPORT_MAX_BYTES: u64 = 256 * 1024 * 1024;
 const MANAGED_BYTES_CACHE_TTL: Duration = Duration::from_secs(30);
+#[cfg(not(target_os = "macos"))]
+const DOCK_ICON_MACOS_ONLY: &str = "El icono del Dock solo se aplica en macOS.";
 #[cfg(target_os = "macos")]
 const MACOS_WORKSPACE_ICON_STRICT_INCOMPATIBLE: &str = "workspace-icon-strict-incompatible";
 
@@ -120,6 +122,16 @@ struct CustomIcon {
     revision: u64,
     system_applied: bool,
     system_message: String,
+    /// macOS only: why the copy could not receive the Finder icon. `None` unless App Management blocked it.
+    #[serde(default)]
+    system_issue: Option<CustomIconSystemIssue>,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+enum CustomIconSystemIssue {
+    AppManagement,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq)]
@@ -5294,6 +5306,7 @@ fn set_instance_icon_sync(app: &AppHandle, request: SetInstanceIconRequest) -> R
                 revision,
                 system_applied,
                 system_message,
+                system_issue: None,
             });
             save_registry(&paths, &registry)
         })();
@@ -5327,6 +5340,7 @@ fn set_instance_icon_sync(app: &AppHandle, request: SetInstanceIconRequest) -> R
             revision,
             system_applied,
             system_message,
+            system_issue: None,
         });
         if let Err(error) = save_registry(&paths, &registry) {
             if let Some(bytes) = previous_icon.as_deref() {
@@ -5461,6 +5475,29 @@ fn clear_instance_icon_sync(app: &AppHandle, id: String) -> Result<(), String> {
         invalidate_managed_bytes_cache();
         Ok(())
     }
+}
+
+#[tauri::command]
+async fn reapply_instance_icon(app: AppHandle, id: String) -> Result<DashboardState, String> {
+    let worker_app = app.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        with_registry_operation(|| reapply_instance_icon_sync(&worker_app, id))
+    })
+    .await
+    .map_err(|error| format!("El reintento del icono terminó inesperadamente: {error}"))??;
+    dashboard_from_scope_async(app, RefreshScope::LIGHT, "La actualización del panel").await
+}
+
+#[cfg(target_os = "macos")]
+fn reapply_instance_icon_sync(app: &AppHandle, id: String) -> Result<(), String> {
+    let _ = (app, id);
+    Err("El reintento del icono todavía no está disponible.".to_string())
+}
+
+#[cfg(not(target_os = "macos"))]
+fn reapply_instance_icon_sync(app: &AppHandle, id: String) -> Result<(), String> {
+    let _ = (app, id);
+    Err(DOCK_ICON_MACOS_ONLY.to_string())
 }
 
 #[tauri::command]
@@ -5687,6 +5724,7 @@ pub fn run() {
             stop_instance,
             set_instance_icon,
             clear_instance_icon,
+            reapply_instance_icon,
             open_instance_folder,
             update_original_application,
             install_original_update,
@@ -6101,6 +6139,7 @@ int main(int argc, const char **argv) {
             revision: 1,
             system_applied: false,
             system_message: "UI only".to_string(),
+            system_issue: None,
         };
 
         let outcome = apply_macos_branding_after_update(
@@ -6145,6 +6184,7 @@ int main(int argc, const char **argv) {
             revision: 1,
             system_applied: false,
             system_message: "UI only".to_string(),
+            system_issue: None,
         };
 
         restore_macos_workspace_icon_after_failure(&managed, Some(&previous), &original).unwrap();
@@ -6325,9 +6365,33 @@ int main(int argc, const char **argv) {
             revision: 1,
             system_applied: false,
             system_message: "UI only".to_string(),
+            system_issue: None,
         });
         assert_eq!(instance.app_path, original_app_path);
         assert!(!instance.custom_icon.unwrap().system_applied);
+    }
+
+    #[test]
+    fn custom_icon_without_system_issue_reads_as_none_and_serializes_camel_case() {
+        let icon: CustomIcon = serde_json::from_value(serde_json::json!({
+            "path": "/managed/branding/icon.png",
+            "revision": 3,
+            "systemApplied": false,
+            "systemMessage": "UI only"
+        }))
+        .unwrap();
+        assert_eq!(icon.system_issue, None);
+        let blocked = CustomIcon {
+            system_issue: Some(CustomIconSystemIssue::AppManagement),
+            ..icon
+        };
+        let value = serde_json::to_value(&blocked).unwrap();
+        assert_eq!(value["systemIssue"], "appManagement");
+        let back: CustomIcon = serde_json::from_value(value).unwrap();
+        assert_eq!(
+            back.system_issue,
+            Some(CustomIconSystemIssue::AppManagement)
+        );
     }
 
     #[test]
