@@ -1,6 +1,7 @@
 import { Channel, invoke } from "@tauri-apps/api/core";
 import packageMetadata from "../../package.json";
 import type {
+  AccountFacts,
   CodeSession,
   ManagedInstance,
   CopyCodeSessionRequest,
@@ -16,6 +17,7 @@ import type {
   SourceUpdateInfo,
   SynchronizeManagedApplicationsRequest,
   SynchronizeManagedApplicationsResult,
+  SystemSettingsPanel,
   UnlinkCodeSessionRequest,
   UpdateInstanceRequest,
   UsageSnapshot,
@@ -501,5 +503,14 @@ export const bridge = {
 
   async openFolder(id: string): Promise<void> {
     if (isTauri()) await call("open_instance_folder", { id });
+  },
+
+  async openSystemSettings(panel: SystemSettingsPanel): Promise<void> {
+    if (isTauri()) await call("open_system_settings", { panel });
+  },
+
+  async accountFacts(): Promise<AccountFacts> {
+    if (isTauri()) return call("get_account_facts");
+    return { admin: true };
   },
 };

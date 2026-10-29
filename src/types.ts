@@ -225,3 +225,11 @@ export interface OriginalInstallResult {
   pendingInstanceIds: string[];
   dashboard: DashboardState;
 }
+
+/** Panel de Ajustes del Sistema que Code AI Profiles sabe abrir (solo macOS). */
+export type SystemSettingsPanel = "appManagement" | "filesAndFolders";
+
+export interface AccountFacts {
+  /** Solo macOS: la cuenta pertenece al grupo admin. null fuera de macOS o si no se pudo saber. */
+  admin: boolean | null;
+}
