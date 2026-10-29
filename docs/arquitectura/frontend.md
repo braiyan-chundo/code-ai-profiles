@@ -48,10 +48,12 @@ components.json         (HU-0014) configuración de la CLI de shadcn
 | `instances` | Detalle de la instancia (`InstanceDetail`), `InstanceAvatar`, medidores, editor, borrado, uso en vivo, icono personalizado |
 | `sessions` | `SessionList` (compartida por instancia y original), formato y contexto de sesiones, transferencia, desvinculación, perfiles de transferencia |
 | `original-app` | El detalle de la aplicación original (`OriginalDetail`) |
-| `appearance` | Preferencias (tema, tamaño de texto y sidebar plegado), su proveedor (que aplica el tema en `<html>`) y su diálogo |
+| `appearance` | Preferencias (tema, tamaño de texto y sidebar plegado), su proveedor (que aplica el tema en `<html>`) y `AppearanceSettings`, la sección Apariencia de Configuración (HU-0022; el diálogo ya no existe) |
+| `permissions` | (HU-0022) El catálogo puro `permission-cards.ts` (tarjetas, textos, estado y `attention` por plataforma), `PermissionsSettings`, `PermissionCard` y `usePermissionsAttention`. El estado sale del registro de instancias y de `accountFacts()`; nunca de los perfiles |
 
-Las pantallas (HU-0016) son `app/routes/dashboard/` (`#/`), `app/routes/original/` (`#/original`) y
-`app/routes/instance/` (`#/instancias/:instanceId`). La búsqueda vive en el sidebar.
+Las pantallas (HU-0016) son `app/routes/dashboard/` (`#/`), `app/routes/original/` (`#/original`),
+`app/routes/instance/` (`#/instancias/:instanceId`) y, desde la HU-0022, `app/routes/settings/`
+(`#/configuracion/:section?`, con `apariencia` o `permisos`). La búsqueda vive en el sidebar.
 
 ## Reglas de dependencias
 
@@ -150,7 +152,8 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
   refresco en segundo plano: el primero marca `suppressNextGeneralFocus` y el segundo lo consume. Ningún otro
   archivo de `src/` registra `focus`, `blur` ni `visibilitychange` (lo vigila `test:ui`). Fuera de `DashboardRuntime`
   solo hay listeners de otro tipo:
-  - `keydown` de Ctrl/⌘ F en `app/layout/AppSidebar.tsx`;
+  - `keydown` de Ctrl/⌘ F y, desde la HU-0022, de Ctrl/⌘ , (abre Configuración salvo con un diálogo de `DialogHost`
+    abierto) en `app/layout/AppSidebar.tsx`. Es el único `keydown` de la app: un atajo nuevo va en ese mismo handler;
   - `change` de `prefers-color-scheme` en `AppearanceProvider`;
   - `change` del `matchMedia` de `hooks/use-mobile.ts`, que usa el sidebar.
 
@@ -179,7 +182,9 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
   `tauri://localhost` y en `http://tauri.localhost`.
 - `/` es una ruta de layout (`AppShell`). La titlebar, el sidebar, `FeedbackArea`, el statusbar y `DialogHost`
   persisten, y `<Outlet />` pinta la pantalla dentro de `SidebarInset`, en su zona con scroll.
-- Rutas (HU-0016): la índice es el dashboard (no diferida), y `original` e `instancias/:instanceId` van con `lazy`.
+- Rutas (HU-0016): la índice es el dashboard (no diferida), y `original`, `instancias/:instanceId` y
+  `configuracion/:section?` (HU-0022) van con `lazy`. Sin sección, o con una desconocida, Configuración redirige a
+  `/configuracion/apariencia`. Sus pestañas (`Tabs`) están controladas por la ruta y navegan con `replace`.
   `*` redirige a `/` con `<Navigate replace />`. La raíz lleva `hydrateFallbackElement` para arrancar en una ruta
   diferida.
 - Una página de algo que no existe vuelve a `/` con `<Navigate replace />`, pero **solo cuando `loading` es falso**.
@@ -203,10 +208,11 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 2. Añade la ruta diferida en `app/router.tsx`, como hija de `/`:
 
    ```tsx
-   { path: "ajustes", lazy: async () => ({ Component: (await import("./routes/settings/SettingsRoute")).SettingsRoute }) }
+   { path: "configuracion/:section?", lazy: () => import("./routes/settings/SettingsRoute").then(({ SettingsRoute }) => ({ Component: SettingsRoute })) }
    ```
 
-3. Navega con `<Link to="/ajustes">` o `useNavigate()`. Los datos salen de los hooks de las features; si la
+3. Navega con `<Link to="/configuracion">` o `useNavigate()`. Si la entrada del sidebar debe quedar activa en sus
+   subrutas, usa `useMatch("/<ruta>/*")` y `aria-current="page"`. Los datos salen de los hooks de las features; si la
    pantalla necesita datos nuevos de Rust, se piden a backend como función de `bridge.ts`.
 4. Sin CSS propio: utilidades y componentes del catálogo (§ Estilos).
 
@@ -257,23 +263,40 @@ Lo que rige desde la HU-0016, con los pasos y la convivencia en `hu/HU-0016-…/
   `overflow-hidden` para que quede dentro de la ventana y lo recorten sus esquinas. `AppSidebar` lo baja con
   `top-(--titlebar-height)! h-auto!`. Los diálogos se pintan en `body`, fuera del marco: su velo cubre la ventana
   entera, también las esquinas transparentes de Windows, como antes.
-- **Escala tipográfica** (HU-0019). El ajuste de Apariencia escala toda la interfaz, no solo las sesiones:
-  - **Tokens.** `tokens.css` declara `--fs-micro`, `--fs-small`, `--fs-body`, `--fs-heading`, `--fs-title`,
-    `--fs-figure` y `--fs-dialog`. También el factor `--esc` y las alturas `--ctl` (36), `--ctl-sm` (32), `--ctl-lg`
-    (40), `--ctl-xs` (24) y `--ctl-badge` (20), todas multiplicadas por `--esc`. Normal en `:root`; compacto y grande
-    en `:root[data-text-size=…]`. Los valores, en `hu/HU-0019-…/arquitectura.md` § A-3.
-  - **Mínimo de 11 px.** Ningún token baja de 11, y lo vigila `test:ui`.
-  - **El catálogo.** `ui-theme.css` engancha la escala de Tailwind: `text-xs` → `--fs-small`, `text-sm` →
-    `--fs-body`, y de `text-base` a `text-2xl`, multiplicados por `--esc`. Por eso el catálogo crece sin editar cada
-    componente. `button`, `input`, `badge`, `kbd` y el `SidebarMenuButton` toman su alto de `--ctl*`. Plegado, el
-    botón del sidebar sigue en `size-8`. Iconos y avatares no escalan.
-  - **En la app**, el tamaño se escribe **siempre** `text-(length:--fs-<x>)`. Una utilidad con nombre propio
-    (`text-micro`) no sirve: `cn` (drop-in de tailwind-merge) la toma por un color y la borra al combinarla con
-    `text-muted-foreground`. Tampoco se usa `text-[<n>px]`; la excepción son las tres muestras de Apariencia. El
-    interlineado va aparte (`leading-*`). `--session-*` ya no existe.
+- **Escala tipográfica** (HU-0019; sin factor desde la HU-0022). El ajuste de Apariencia escala toda la interfaz:
+  - **Tokens.** `tokens.css` declara, en `:root` (normal) y en `:root[data-text-size="compact"|"large"]`, siete
+    `--fs-*`, ocho interlineados `--lh-*` (`micro`, `small`, `prose`, `body`, `heading`, `title`, `figure`,
+    `dialog`) y cinco alturas `--ctl`, `--ctl-sm`, `--ctl-lg`, `--ctl-xs` y `--ctl-badge`, todos en px enteros. Los
+    `--lh-*` y los `--ctl*` son múltiplos de 4. `--esc` ya no existe: daba alturas fuera de la retícula (33,5 y
+    41,1). Los valores están en `DESIGN.md` y en `hu/HU-0022-…/arquitectura.md` § A-1.2.
+  - **Mínimo de 11 px.** Ningún `--fs-*` baja de 11; en Grande cada uno es mayor que en normal, y `--lh-*` y `--ctl*`
+    nunca menguan al crecer el tamaño. Lo vigila la prueba 12 de `test:ui` (AC-04 de la HU-0019).
+  - **El catálogo.** `ui-theme.css` engancha la escala de Tailwind con su interlineado: `text-xs` → `--fs-small` /
+    `--lh-small`, `text-sm` → body, `text-base` → heading, `text-lg` → title, `text-xl` → figure y `text-2xl` →
+    dialog (`--text-<n>--line-height`). `button`, `input`, `badge`, `kbd`, `tabs` y el `SidebarMenuButton` toman su
+    alto de `--ctl*`. Iconos y avatares no escalan.
+  - **En la app**, un texto se escribe **siempre** `text-(length:--fs-<x>)/(--lh-<y>)`, con el `/` obligatorio.
+    `leading-(--lh-<y>)` sirve donde el tamaño viene del catálogo. Están prohibidos `leading-none|tight|snug|normal|
+    relaxed|loose|[n]`. Una utilidad con nombre propio (`text-micro`) no sirve: `cn` la toma por un color y la borra.
+    Tampoco se usa `text-[<n>px]`; la excepción son las tres muestras de `AppearanceSettings`. `--session-*` ya no
+    existe.
+- **Sistema armónico** (HU-0022, A-1; la referencia es `DESIGN.md` § «Cómo se aplica»):
+  - **Espaciado** solo con los pasos `0, 1, 2, 3, 4, 6, 8, 12` de Tailwind (de 0 a 48 px). Las únicas medidas de
+    espaciado en px son los huecos de controles nativos: `pl-[84px]` en `Titlebar` y `pr-[160px]`/`pl-[68px]` en
+    `PageHeader`. Las alturas y anchos arbitrarios son múltiplos de 4.
+  - **Radios** `rounded-xs` 4, `sm` 8, `md` 12, `lg`/`xl` 16, `2xl` 20 y `3xl` 24. No se usa `rounded-4xl`. Regla
+    de anidado: un hijo de todo el ancho lleva `max(8, R − p)`. Las entradas de la app van a 8, como en la maqueta.
+  - **Foco**: `focus-visible:ring-2 ring-ring` (o `outline-2 outline-ring`), con `--ring` = `--ui-primary-text` y sin
+    `/50`.
+  - **Primario**: texto `--ui-on-primary: #151615`, literal en los tres selectores (6,0:1). El hover aclara con
+    `color-mix` hacia blanco.
+  - **Bordes que mueven la retícula**: se sustituyen por `ring-1 ring-inset` o `shadow-[inset_…]`.
+  - Lo vigilan las pruebas 15 (la escala, en la app y en los componentes del catálogo que importa) y 16 (contraste de
+    los pares sólidos). Excepción aceptada: interlineado a 2 px de la retícula en el botón `sm` en Compacto y en el
+    título de la barra en Grande (revisión técnica de la HU-0022, R-4).
   - **`--quiet` no colorea texto**: no llega a 4,5:1. El texto secundario es `text-muted-foreground`, y `--quiet`
     queda para puntos y separadores.
-- Diálogos: el aspecto común (radio 26, relleno 28, ancho 580, título `--fs-dialog`, 22 px en normal) está en `components/ui/dialog.tsx` y
+- Diálogos: el aspecto común (radio 24, relleno 24, ancho 576, título `--fs-dialog`/`--lh-dialog`, 22/28 px en normal; HU-0022) está en `components/ui/dialog.tsx` y
   `alert-dialog.tsx`, con `closeDisabled` en `DialogContent` (ver sus fichas). Confirmar es un `Button`, no
   `AlertDialogAction`, para que el diálogo siga abierto mientras la operación marca `busy`. Un `AlertDialog` no se
   cierra con el clic fuera.
@@ -290,9 +313,12 @@ Lo que rige desde la HU-0016, con los pasos y la convivencia en `hu/HU-0016-…/
   sus imports relativos son solo `import type`. Las pruebas importan el archivo del módulo, nunca el
   `index.ts` de la feature.
 - Scripts: `test:scan`, `test:update` (controladores), `test:format`, `test:appearance`, `test:dashboard`,
-  `test:messages` y `test:ui`. `test:ui` revisa las fronteras de la UI y quién registra `focus`, `blur` y
+  `test:messages`, `test:permissions` (HU-0022: el catálogo de permisos por plataforma, sus estados y que no lleve
+  URLs) y `test:ui`. `test:ui` revisa las fronteras de la UI y quién registra `focus`, `blur` y
   `visibilitychange` (R-1), leyendo los archivos con `node:fs`. Desde HU-0019 vigila también:
-  - la escala: el mínimo de 11 px, que grande sea mayor que normal y que existan los `--fs-*` que se usan;
+  - la escala (prueba 12): el mínimo de 11 px, que grande sea mayor que normal, los `--lh-*` y `--ctl*` en la retícula,
+    sin `--esc`, el puente `--text-*` con su interlineado, y que existan los `--fs-*` y `--lh-*` que se usan;
+  - desde la HU-0022, la escala armónica (prueba 15) y el contraste de los pares sólidos en los dos temas (prueba 16);
   - que no haya tamaños sueltos (`text-[<n>px|rem|em]` en `app/`, `features/` y `components/`, salvo las tres muestras
     de Apariencia; en `components/ui/`, solo se vigilan los `px`, porque `calendar` y `questionnaire` miden en `rem` y
     la app no los usa; el showcase queda fuera), ni restos de `--session-*` o `data-session-text`;

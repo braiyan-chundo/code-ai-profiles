@@ -22,6 +22,11 @@ flujo autocontenido.
 - En ejecución no se lee ninguna variable propia (`std::env::var`). Solo se leen las de ubicación del sistema
   operativo (`APPDATA`, `LOCALAPPDATA`, `XDG_CONFIG_HOME`).
 - `config::validate()` corre en `setup`: si un valor no tiene el formato esperado, la app no arranca y dice cuál.
+- Hay dos clases de enlace (HU-0022). Las URLs de red son `https` y se validan con `validate_https_url`. Los enlaces
+  de Ajustes del Sistema (`CAP_MACOS_APP_MANAGEMENT_SETTINGS_URL` y `CAP_MACOS_FILES_AND_FOLDERS_SETTINGS_URL`, de
+  tipo `[PUBLICO]`) se validan con `validate_settings_url`: prefijo exacto `x-apple.systempreferences:` y, después,
+  solo `[A-Za-z0-9._?=&-]`. Se compilan en las tres plataformas, pero solo macOS las usa. Si macOS renombra un
+  ancla, se corrige en `.env.example` sin tocar el código.
 - El `User-Agent` es `Code-AI-Profiles/<CARGO_PKG_VERSION>`.
 
 ## Red
@@ -107,6 +112,22 @@ La raíz de confianza es la original instalada (`--strict`, con caché por finge
   el comando `reapply_instance_icon`.
 - **Copias heredadas re-firmadas ad hoc** (`provider_signature_preserved=false`): no admiten icono. Ver la revisión
   técnica de la HU-0020 (R-3) sobre su sincronización.
+
+## Ajustes del Sistema y cuenta (macOS · HU-0022)
+
+- `open_system_settings(panel)` recibe solo el enum `SystemSettingsPanel` (`appManagement` o `filesAndFolders`),
+  nunca una URL. Abre la URL que `config` validó con `/usr/bin/open <url>`: argumentos en lista, sin shell y dentro
+  de `spawn_blocking`. Si `open` sale mal, devuelve un error. En Windows y Linux devuelve
+  `Err("Esta plataforma no tiene ese panel de ajustes.")`. La interfaz no enseña el mensaje de Rust, sino la ruta
+  del panel de su catálogo.
+- `get_account_facts()` devuelve siempre `Ok(AccountFacts { admin })`. En macOS, `admin` es `Some` según si
+  `/usr/bin/id -Gn` incluye exactamente `admin`, o `None` si `id` falla. Fuera de macOS es siempre `None`. La salida
+  de `id` no se guarda, no se registra y no cruza el IPC.
+- **Ningún comando consulta un permiso de TCC.** «Gestión de apps» sale de `CustomIcon.systemIssue` y «Archivos y
+  carpetas» nunca se comprueba: comprobarlo dispararía el aviso. Abrir Ajustes del Sistema e `id` no disparan avisos.
+- Las pruebas solo cubren las funciones puras (`system_settings_url`, `groups_include_admin`, el enum y la
+  serialización). **Ninguna llama a `open_system_settings_sync` ni a `account_facts_sync`**, porque abrirían Ajustes
+  en la máquina de quien las corre.
 
 ## Progreso hacia la interfaz
 
