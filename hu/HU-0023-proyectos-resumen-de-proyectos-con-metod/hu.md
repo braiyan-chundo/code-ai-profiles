@@ -34,6 +34,13 @@ Elecciones, en la misma conversación:
 - Relación con las instancias: «Solo resumen (Recomendado)». Proyectos es una vista de lectura; no se cruza con
   las instancias de Claude por ahora.
 - Tokens: «Sí, mostrarlos (Recomendado)», leídos solo de `metricas.json`, nunca de las transcripciones.
+- Tras la primera maqueta, «para las decisiones de la vista de proyecto, voy con tus recomendadas» (2026-10-29):
+  1. La cifra de tiempo se llama «Tiempo en fases»: `minutosTotales` es reloj entre fases, esperas incluidas.
+  2. Tokens: el total con la parte de caché («98 % caché») y, como cifra secundaria, entrada + salida.
+  3. Las historias descartadas no suman en los totales de tiempo ni de tokens (sus métricas recogen la espera).
+  4. Se guarda la ruta y el último nombre leído, para reconocer un proyecto con la carpeta rota.
+- Para las maquetas: «la ui debe seguir estándares armónicos de espaciado y relación de aspecto entre
+  componentes», evaluada con una skill de UX.
 
 **Maqueta primero:** el dial de diseño está apagado, pero el mantenedor la pide. `diseno/maqueta.html` se aprueba
 antes de implementar.
@@ -58,7 +65,7 @@ Referencia: la metodología en `METODOLOGIAS/metodologia4` y este mismo reposito
 
 ## Alcance
 
-- **Anclar** una carpeta con el selector nativo y **desanclarla**. La app guarda solo la ruta.
+- **Anclar** una carpeta con el selector nativo y **desanclarla**. La app guarda la ruta y el último nombre leído.
 - Validar que es un proyecto v4 (`.metodo/config.json` con `version: 4`); si no, un aviso claro y no se ancla.
 - **Vista Proyectos** (`#/proyectos`): una tarjeta por proyecto anclado con nombre, fase, perfil, historias en
   curso/terminadas y última actividad.

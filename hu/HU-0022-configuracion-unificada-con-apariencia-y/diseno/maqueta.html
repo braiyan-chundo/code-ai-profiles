@@ -389,10 +389,28 @@ a { color:inherit; text-decoration:none; }
 [data-letra="compacto"] .doc td:nth-child(4), [data-letra="normal"] .doc td:nth-child(5), [data-letra="grande"] .doc td:nth-child(6) { color:var(--ui-primary-text); font-weight:600; background:color-mix(in srgb, var(--primary-bright) 8%, transparent); }
 .doc .mu { color:var(--muted); }
 
-/* ── 5. HU-0022 · Configuración. Nada nuevo en la paleta: --ui-overlay es el velo de los diálogos de ui-theme.css. ── */
+/* ══ 5. HU-0022 · Configuración, sobre el sistema armónico (ver vista.md, «Auditoría UX»).
+   Retícula de 4 px. Espaciado: 4 · 8 · 12 · 16 · 24 · 32 · 48 y nada más.
+   Ritmo: dentro de un componente 4–12, entre componentes 16–24, entre secciones 32–48.
+   Radios: 4 · 8 · 12 · 16 · 20 · 24. Por tamaño: control de 24–32 → 8, de 36–40 → 12, tarjeta → 16, diálogo → 24.
+   Anidado: el hijo que ocupa todo el ancho de un contenedor con padding p toma max(8, R − p).
+   Interlineado múltiplo de 4. En un control de una línea, la caja de línea es alto − 16 (−8 en los de 24 y 20 px),
+   así el texto cae en la retícula: 40 → 24, 36 → 20, 32 → 16, 24 → 16, 20 → 12.
+   Iconos: 12 con --fs-micro, 16 con --fs-small y --fs-body, 20 con --fs-heading y --fs-title.
+   Página: 12 columnas de 68 px con gutter 24 (1080 px), alineadas a la izquierda bajo el título. ══ */
+
 :root, [data-tema="oscuro"] { --ui-overlay:rgba(5,6,5,.58); }
 [data-tema="claro"] { --ui-overlay:rgba(67,50,43,.3); }
-:root { --conf-max:880px; --indice:200px; --foco:0 0 0 3px color-mix(in srgb, var(--primary) 50%, transparent); }
+:root, [data-letra="normal"] {
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s6:24px; --s8:32px; --s12:48px;
+  --r-xs:4px; --r-sm:8px; --r-md:12px; --r-lg:16px; --r-ventana:20px; --r-dialogo:24px;
+  --lh-micro:16px; --lh-small:16px; --lh-prosa:20px; --lh-body:20px; --lh-heading:20px; --lh-title:24px; --lh-figure:28px;
+  --fs-dialog:22px; --lh-dialog:28px;
+  --col:68px; --gutter:24px;
+  --foco:0 0 0 2px var(--ui-primary-text);   /* 3:1 o más en los dos temas (el ring/50 del catálogo da 2,8 y 1,5) */
+}
+[data-letra="compacto"] { --lh-body:20px; --lh-heading:20px; --lh-title:20px; --lh-figure:24px; --fs-dialog:20px; --lh-dialog:24px; }
+[data-letra="grande"] { --lh-micro:16px; --lh-small:20px; --lh-prosa:24px; --lh-body:24px; --lh-heading:24px; --lh-title:24px; --lh-figure:32px; --fs-dialog:25px; --lh-dialog:32px; }
 
 /* Plataforma: lo de macOS y lo de Windows/Linux en la misma plantilla */
 .solo-mac { display:none; } [data-plataforma="macos"] .solo-mac { display:revert; }
@@ -400,144 +418,201 @@ a { color:inherit; text-decoration:none; }
 .solo-mac.flex { display:none; } [data-plataforma="macos"] .solo-mac.flex { display:flex; }
 .solo-mac.grid { display:none; } [data-plataforma="macos"] .solo-mac.grid { display:grid; }
 
-/* La página: ancho de lectura, alineada a la izquierda bajo el título de la barra */
-.conf { max-width:var(--conf-max); display:grid; gap:16px; align-content:start; }
-.conf-cuerpo { display:grid; gap:16px; min-width:0; }
-.intro { font-size:var(--fs-small); color:var(--muted); }
+/* ── La página: retícula de 12 columnas. A ★ ocupa 10 (896 px); B, índice 3 + cuerpo 9. ── */
+.conf { display:grid; grid-template-columns:repeat(12, minmax(0, var(--col))); column-gap:var(--gutter); row-gap:var(--s6); align-content:start; }
+.conf > .pestanas { grid-column:1 / -1; justify-self:start; }
+.conf-cuerpo { grid-column:1 / span 10; display:grid; gap:var(--s4); min-width:0; align-content:start; }
+@media (max-width:1070px) { .conf { grid-template-columns:repeat(12, minmax(0, 1fr)); } .conf-cuerpo { grid-column:1 / -1; } }
+.intro { font-size:var(--fs-small); line-height:var(--lh-prosa); color:var(--muted); }
 .intro b { color:var(--text); font-weight:500; }
 
-/* A ★ · Pestañas (tabs.tsx, variant default): lista en --surface-soft (bg-muted), activa en --surface con sombra */
-.pestanas { display:inline-flex; width:fit-content; height:var(--h-ctl); padding:3px; gap:2px; border-radius:var(--radius-lg); background:var(--surface-soft); box-shadow:inset 0 0 0 1px var(--line); }
-.pestana { display:inline-flex; align-items:center; gap:6px; padding:0 14px; border-radius:var(--radius-md); border:1px solid transparent; font-size:var(--fs-body); font-weight:500; color:var(--muted); white-space:nowrap; cursor:pointer; }
-.pestana.activa { background:var(--surface); color:var(--text); border-color:var(--line-strong); box-shadow:0 1px 2px rgba(0,0,0,.08); }
-[data-tema="claro"] .pestana.activa { background:var(--surface-raised); }
-.pestana .aviso-dot { width:6px; height:6px; border-radius:50%; background:var(--ui-warning); }
+/* A ★ · Pestañas (tabs.tsx). Lista sin relleno, con anillo; la activa en la superficie y con anillo propio. */
+.pestanas { display:inline-flex; height:var(--h-ctl); padding:var(--s1); gap:var(--s1); border-radius:var(--r-md); box-shadow:inset 0 0 0 1px var(--line-strong); }
+.pestana { display:inline-flex; align-items:center; gap:var(--s2); height:calc(var(--h-ctl) - 8px); padding:0 var(--s3); border-radius:var(--r-sm); font-size:var(--fs-body); line-height:var(--lh-body); font-weight:500; color:var(--muted); white-space:nowrap; cursor:pointer; }
+.pestana.activa { background:var(--surface-raised); color:var(--text); box-shadow:inset 0 0 0 1px var(--line-strong), 0 1px 2px rgba(0,0,0,.08); }
+[data-tema="oscuro"] .pestana.activa { background:var(--line); }
+.pestana .aviso-dot { width:8px; height:8px; border-radius:50%; background:var(--ui-warning); }
 
-/* B · Índice lateral dentro de la página (la alternativa a las pestañas) */
+/* B · Índice lateral (la alternativa) */
 .indice { display:none; }
-[data-variante="indice"] .conf { max-width:calc(var(--indice) + 32px + var(--conf-max)); grid-template-columns:var(--indice) minmax(0,1fr); column-gap:32px; }
-[data-variante="indice"] .pestanas { display:none; }
-[data-variante="indice"] .indice { display:flex; flex-direction:column; gap:2px; grid-row:1 / span 2; align-self:start; padding-top:2px; }
-.indice .tit-ind { font-size:var(--fs-micro); font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); padding:4px 10px 8px; }
-.indice a { display:grid; grid-template-columns:auto 1fr; column-gap:10px; align-items:center; padding:8px 10px; border-radius:10px; cursor:pointer; }
+[data-variante="indice"] .conf > .pestanas { display:none; }
+[data-variante="indice"] .indice { display:flex; flex-direction:column; gap:var(--s1); grid-column:1 / span 3; grid-row:1; }
+[data-variante="indice"] .conf-cuerpo { grid-column:4 / span 9; grid-row:1; }
+@media (max-width:1070px) { [data-variante="indice"] .indice { grid-column:1 / span 4; } [data-variante="indice"] .conf-cuerpo { grid-column:5 / -1; } }
+.indice .tit-ind { font-size:var(--fs-micro); line-height:var(--lh-micro); font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); padding:0 var(--s3) var(--s2); }
+.indice a { display:grid; grid-template-columns:auto 1fr; column-gap:var(--s3); align-items:center; padding:var(--s2) var(--s3); border-radius:var(--r-sm); cursor:pointer; }
 .indice a .ic { grid-row:span 2; color:var(--muted); }
-.indice a b { font-size:var(--fs-body); font-weight:500; }
-.indice a small { font-size:var(--fs-small); color:var(--muted); }
+.indice a b { font-size:var(--fs-body); line-height:var(--lh-body); font-weight:500; }
+.indice a small { font-size:var(--fs-small); line-height:var(--lh-small); color:var(--muted); }
 .indice a.activa { background:var(--line); }
 .indice a.activa .ic { color:var(--text); }
 
-/* Tarjeta de ajuste (card.tsx size sm) con su cabecera: título a la izquierda, nota a la derecha */
-.ajuste { background:var(--surface-raised); border-radius:var(--radius-xl); box-shadow:var(--anillo), 0 1px 2px rgba(0,0,0,.05); padding:16px; display:grid; gap:12px; }
-.ajuste-cab { display:flex; align-items:baseline; justify-content:space-between; gap:16px; }
-.ajuste-cab h2 { font-size:var(--fs-heading); font-weight:600; }
-.ajuste-cab span { font-size:var(--fs-small); color:var(--muted); }
+/* Tarjeta de ajuste (card.tsx): padding 16 y radio 16, igual que la de permiso (mismo nivel) */
+.ajuste { background:var(--surface-raised); border-radius:var(--r-lg); box-shadow:var(--anillo), 0 1px 2px rgba(0,0,0,.05); padding:var(--s4); display:grid; gap:var(--s3); }
+.ajuste-cab { display:flex; align-items:flex-start; justify-content:space-between; gap:var(--s4); }
+.ajuste-cab h2 { font-size:var(--fs-heading); line-height:var(--lh-heading); font-weight:600; }
+.ajuste-cab span { font-size:var(--fs-small); line-height:var(--lh-heading); color:var(--muted); }
 
-/* Opción con radio (FieldLabel + Field + RadioGroupItem): borde, y la elegida con el tinte del primario */
-.opciones { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px; }
-.opcion { display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:10px; border-radius:var(--radius-md); border:1px solid var(--line-strong); cursor:pointer; min-width:0; }
-.opcion.elegida { border-color:color-mix(in srgb, var(--primary-bright) 20%, transparent); background:color-mix(in srgb, var(--primary-bright) 10%, transparent); }
-[data-tema="claro"] .opcion.elegida { border-color:color-mix(in srgb, var(--primary-bright) 30%, transparent); background:color-mix(in srgb, var(--primary-bright) 5%, transparent); }
-.opcion .radio { width:16px; height:16px; border-radius:50%; border:1px solid var(--line-strong); flex:none; display:grid; place-items:center; }
-[data-tema="oscuro"] .opcion .radio { background:color-mix(in srgb, var(--line-strong) 30%, transparent); }
-.opcion.elegida .radio { border-color:var(--primary-bright); background:var(--primary-bright); }
-.opcion.elegida .radio::after { content:""; width:6px; height:6px; border-radius:50%; background:#fff; }
-.opcion .txt { display:grid; gap:2px; min-width:0; flex:1; }
-.opcion .txt b { font-size:var(--fs-small); font-weight:500; }
-.opcion .txt small { font-size:var(--fs-small); color:var(--muted); line-height:1.35; }
-.opcion .aa { width:100%; height:24px; display:flex; align-items:center; font-family:var(--font-mono); line-height:1; color:var(--muted); }
+/* Opción con radio. Anidada en la tarjeta (p 16, R 16) → radio 8. Anillo en vez de borde: no mueve la retícula. */
+.opciones { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:var(--s2); }
+.opcion { display:flex; flex-wrap:wrap; align-items:flex-start; gap:var(--s2); padding:var(--s3); border-radius:var(--r-sm); box-shadow:inset 0 0 0 1px var(--line-strong); cursor:pointer; min-width:0; }
+.opcion.elegida, :is([data-tema="oscuro"] .op-oscuro, [data-tema="claro"] .op-claro) { box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--primary-bright) 30%, transparent); background:color-mix(in srgb, var(--primary-bright) 10%, transparent); }
+[data-tema="claro"] :is(.opcion.elegida, .op-claro) { background:color-mix(in srgb, var(--primary-bright) 6%, transparent); }
+.opcion .radio { width:16px; height:16px; border-radius:50%; box-shadow:inset 0 0 0 1px var(--muted);   /* --line-strong da 1,6:1; --muted, 5,2 o más */
+  flex:none; display:grid; place-items:center; }
+:is(.opcion.elegida, [data-tema="oscuro"] .op-oscuro, [data-tema="claro"] .op-claro) .radio { box-shadow:none; background:var(--primary-bright); }
+:is(.opcion.elegida, [data-tema="oscuro"] .op-oscuro, [data-tema="claro"] .op-claro) .radio::after { content:""; width:8px; height:8px; border-radius:50%; background:#fff; }
+.opcion .txt { display:grid; min-width:0; flex:1; }
+.opcion .txt b { font-size:var(--fs-small); line-height:var(--lh-small); font-weight:500; }
+.opcion .txt small { font-size:var(--fs-small); line-height:var(--lh-small); color:var(--muted); }
+.opcion .aa { width:100%; height:24px; display:flex; align-items:center; font-family:var(--font-mono); line-height:24px; color:var(--muted); }
 
-/* Muestra del tema (ThemeSwatch): una ventana en miniatura con los tokens del tema que enseña */
-.muestra { position:relative; width:100%; height:51px; border-radius:10px; }
-.muestra .m { position:absolute; inset:0; display:grid; grid-template-columns:14px 1fr; grid-template-rows:9px 1fr; gap:4px; padding:7px; border-radius:10px; }
-.muestra .m i { border-radius:3px; }
+/* Muestra del tema: 48 px de alto, radio 8, barras de 8 px con radio 4 */
+.muestra { position:relative; width:100%; height:48px; border-radius:var(--r-sm); }
+.muestra .m { position:absolute; inset:0; display:grid; grid-template-columns:12px 1fr; grid-template-rows:8px 1fr; gap:var(--s1); padding:var(--s2); border-radius:var(--r-sm); }
+.muestra .m i { border-radius:var(--r-xs); }
 .muestra .m i:nth-child(1) { grid-row:span 2; } .muestra .m i:nth-child(2) { background:#ff5f35; }
-.muestra .m.cl { background:#f3efeb; border:1px solid rgba(66,48,40,.17); } .muestra .m.cl i:nth-child(1) { background:rgba(66,48,40,.17); } .muestra .m.cl i:nth-child(3) { background:rgba(66,48,40,.11); }
-.muestra .m.os { background:#151615; border:1px solid rgba(255,255,255,.14); } .muestra .m.os i:nth-child(1) { background:rgba(255,255,255,.14); } .muestra .m.os i:nth-child(3) { background:rgba(255,255,255,.09); }
+.muestra .m.cl { background:#f3efeb; box-shadow:inset 0 0 0 1px rgba(66,48,40,.17); } .muestra .m.cl i:nth-child(1) { background:rgba(66,48,40,.17); } .muestra .m.cl i:nth-child(3) { background:rgba(66,48,40,.11); }
+.muestra .m.os { background:#151615; box-shadow:inset 0 0 0 1px rgba(255,255,255,.14); } .muestra .m.os i:nth-child(1) { background:rgba(255,255,255,.14); } .muestra .m.os i:nth-child(3) { background:rgba(255,255,255,.09); }
 .muestra .m.mitad { clip-path:inset(0 0 0 50%); }
 
-/* Permisos: una tarjeta por permiso. Icono · nombre, «Opcional» e info · para qué · estado | acceso directo */
-.permisos { display:grid; gap:10px; }
-.permiso { position:relative; display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:start; column-gap:14px; padding:14px 16px; border-radius:var(--radius-xl); background:var(--surface-raised); box-shadow:var(--anillo), 0 1px 2px rgba(0,0,0,.05); }
-.permiso.necesita { box-shadow:0 0 0 1px color-mix(in srgb, var(--ui-warning) 35%, transparent), 0 1px 2px rgba(0,0,0,.05); }
-.permiso .tile { display:grid; place-items:center; width:calc(36px * var(--esc)); height:calc(36px * var(--esc)); border-radius:var(--radius-md); border:1px solid var(--line-strong); background:var(--surface-soft); color:var(--text); --ic:calc(18px * var(--esc)); }
-.permiso .cuerpo { display:grid; gap:4px; min-width:0; }
-.permiso .nombre { display:flex; align-items:center; flex-wrap:wrap; gap:6px; }
-.permiso .nombre h3 { font-size:var(--fs-heading); font-weight:600; }
-.permiso .para { font-size:var(--fs-small); color:var(--muted); }
+/* ── Permisos: tarjeta de 96 px (16 + 24 + 4 + 16 + 4 + 16 + 16). Tile 40 con icono 20 (1:2). ── */
+.permisos { display:grid; gap:var(--s4); }
+.permiso { position:relative; display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:start; column-gap:var(--s3); padding:var(--s4); border-radius:var(--r-lg); background:var(--surface-raised); box-shadow:var(--anillo), 0 1px 2px rgba(0,0,0,.05); }
+.permiso.necesita { box-shadow:0 0 0 1px color-mix(in srgb, var(--ui-warning) 40%, transparent), 0 1px 2px rgba(0,0,0,.05); }
+.permiso .tile { display:grid; place-items:center; width:var(--h-ctl-lg, 40px); height:var(--h-ctl-lg, 40px); border-radius:var(--r-md); box-shadow:inset 0 0 0 1px var(--line-strong); background:var(--surface-soft); color:var(--text); --ic:20px; }
+.permiso .cuerpo { display:grid; gap:var(--s1); min-width:0; }
+.permiso .nombre { display:flex; align-items:center; flex-wrap:wrap; column-gap:var(--s2); min-height:24px; }
+.permiso .nombre h3 { font-size:var(--fs-heading); line-height:24px; font-weight:600; }
+.permiso .opc { font-size:var(--fs-small); line-height:24px; color:var(--muted); }
+.permiso .para { font-size:var(--fs-small); line-height:var(--lh-small); color:var(--muted); }
 .permiso .accion { align-self:center; }
-.chip-op { font-size:var(--fs-micro); font-weight:500; color:var(--muted); border:1px solid var(--line-strong); border-radius:999px; padding:1px 7px; line-height:1.4; }
 
-/* El botón de info (Button ghost icon-xs) y su popover (popover.tsx): se abre con clic, Intro o Espacio */
-.info-btn { display:inline-grid; place-items:center; width:calc(24px * var(--esc)); height:calc(24px * var(--esc)); border-radius:8px; color:var(--muted); --ic:calc(15px * var(--esc)); cursor:pointer; }
+/* Info: botón de 24 (ctl-xs, objetivo táctil mínimo de WCAG 2.5.8) y popover (popover.tsx) */
+.info-btn { display:inline-grid; place-items:center; width:24px; height:24px; border-radius:var(--r-sm); color:var(--muted); --ic:16px; cursor:pointer; }
 .info-btn.abierto { background:var(--line); color:var(--text); box-shadow:var(--foco); }
-.pop { position:absolute; z-index:6; width:340px; padding:14px; border-radius:var(--radius-lg); background:var(--ui-popover); box-shadow:0 0 0 1px color-mix(in srgb, var(--text) 10%, transparent), 0 12px 32px rgba(0,0,0,.28); display:grid; gap:10px; font-size:var(--fs-small); line-height:1.45; }
+.ancla { position:relative; display:inline-flex; }
+.pop { position:absolute; z-index:6; top:calc(100% + var(--s2)); left:calc(-1 * var(--s2)); width:336px; padding:var(--s4); border-radius:var(--r-md); background:var(--ui-popover); box-shadow:0 0 0 1px color-mix(in srgb, var(--text) 10%, transparent), 0 12px 32px rgba(0,0,0,.28); display:grid; gap:var(--s3); font-size:var(--fs-small); line-height:var(--lh-prosa); }
 [data-tema="claro"] .pop { box-shadow:0 0 0 1px color-mix(in srgb, var(--text) 10%, transparent), 0 12px 32px rgba(75,54,45,.16); }
-.pop::before { content:""; position:absolute; top:-6px; left:var(--flecha,20px); width:10px; height:10px; background:inherit; transform:rotate(45deg); box-shadow:-1px -1px 0 color-mix(in srgb, var(--text) 10%, transparent); }
-.pop h4 { margin:0; font-size:var(--fs-body); font-weight:600; }
-.pop dl { margin:0; display:grid; gap:8px; }
-.pop dt { font-size:var(--fs-micro); font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
-.pop dd { margin:2px 0 0; color:var(--text); }
-.pop .ruta { font-family:var(--font-mono); font-size:var(--fs-micro); color:var(--muted); border-top:1px solid var(--line); padding-top:8px; }
-.pop .op { display:flex; align-items:center; gap:6px; color:var(--ui-success); font-weight:500; --ic:14px; }
+.pop::before { content:""; position:absolute; top:-4px; left:var(--s4); width:8px; height:8px; background:inherit; transform:rotate(45deg); box-shadow:-1px -1px 0 color-mix(in srgb, var(--text) 10%, transparent); }
+.pop h4 { margin:0; font-size:var(--fs-body); line-height:var(--lh-body); font-weight:600; }
+.pop dl { margin:0; display:grid; gap:var(--s2); }
+.pop dt { font-size:var(--fs-micro); line-height:var(--lh-micro); font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.pop dd { margin:var(--s1) 0 0; color:var(--text); }
+.pop .ruta { font-family:var(--font-mono); font-size:var(--fs-micro); line-height:var(--lh-micro); color:var(--muted); padding-top:var(--s2); box-shadow:inset 0 1px 0 var(--line); }
+.pop .op { display:flex; align-items:center; gap:var(--s2); line-height:var(--lh-small); color:var(--ui-success); font-weight:500; --ic:16px; }
 
-/* Estado del permiso: una línea con punto o icono (D-3) */
-.est { display:flex; align-items:center; gap:6px; font-size:var(--fs-small); margin-top:2px; --ic:14px; }
-.est .p { width:7px; height:7px; border-radius:50%; flex:none; }
+/* Estado del permiso (D-3): una línea de 16 con punto de 8 o icono de 16 */
+.est { display:flex; align-items:center; gap:var(--s2); font-size:var(--fs-small); line-height:var(--lh-small); --ic:16px; }
+.est .p { width:8px; height:8px; border-radius:50%; flex:none; }
 .est.necesita { color:var(--ui-warning); } .est.necesita .p { background:var(--ui-warning); }
 .est.necesita .quien-est { color:var(--muted); }
-.est.sin-uso { color:var(--muted); } .est.sin-uso .p { background:var(--quiet); }
-.est.no-se { color:var(--muted); }
-.est.info { color:var(--muted); }
+.est.sin-uso, .est.no-se, .est.info { color:var(--muted); }
+.est.sin-uso .p { background:var(--quiet); }
 
-/* Nota al pie de la sección */
-.nota-pie { display:flex; align-items:center; gap:8px; font-size:var(--fs-small); color:var(--muted); padding:2px 4px; --ic:14px; }
+.nota-pie { display:flex; align-items:center; gap:var(--s2); font-size:var(--fs-small); line-height:var(--lh-small); color:var(--muted); padding:0 var(--s4); --ic:16px; }
 
-/* Windows y Linux: el vacío de la sección */
+/* Windows y Linux: el vacío. Borde discontinuo como contorno: no mueve la retícula. */
+.vacio-c { border:0; outline:1px dashed var(--line-strong); outline-offset:-1px; border-radius:var(--r-lg); padding:var(--s12) var(--s6); gap:var(--s3); }
+.vacio-c .media { width:40px; height:40px; border:0; box-shadow:inset 0 0 0 1px var(--line); border-radius:var(--r-md); --ic:20px; }
 .vacio-c .media.ok { color:var(--ui-success); }
+.vacio-c h2 { line-height:var(--lh-heading); }
+.vacio-c p { line-height:var(--lh-prosa); }
 
-/* Diálogo (dialog.tsx): velo, tarjeta de 580 px (aquí, la grande de 760), radio 24, padding 28 */
+/* ── Diálogo (dialog.tsx): radio 24, padding 24, gap 24. Sus hijos de todo el ancho, radio 8 (24 − 24 → mínimo). ── */
 .velo { position:absolute; inset:0; z-index:8; background:var(--ui-overlay); display:grid; place-items:center; }
-.dialogo { position:relative; width:580px; max-width:calc(100% - 32px); max-height:calc(100% - 32px); overflow:hidden; border-radius:24px; background:var(--ui-popover); box-shadow:0 0 0 1px color-mix(in srgb, var(--text) 10%, transparent), var(--ui-window-shadow); padding:28px; display:grid; gap:20px; align-content:start; }
-.dialogo.grande { width:760px; }
-.dialogo .cerrar { position:absolute; top:16px; right:16px; color:var(--muted); }
-.dialogo h2 { font-size:var(--fs-dialog, 22px); font-weight:600; letter-spacing:-.03em; }
-.dialogo .sub { font-size:var(--fs-small); color:var(--muted); margin-top:4px; }
-.dialogo .pie-d { display:flex; justify-content:flex-end; gap:8px; }
-.campo { display:grid; gap:6px; }
-.campo label { font-size:var(--fs-small); font-weight:500; }
-.campo .entrada { height:44px; border-radius:var(--radius-sm); border:1px solid var(--line-strong); padding:0 14px; display:flex; align-items:center; font-size:var(--fs-body); }
+.dialogo { position:relative; width:576px; max-width:calc(100% - 32px); max-height:calc(100% - 32px); overflow:hidden; border-radius:var(--r-dialogo); background:var(--ui-popover); box-shadow:0 0 0 1px color-mix(in srgb, var(--text) 10%, transparent), var(--ui-window-shadow); padding:var(--s6); display:grid; gap:var(--s6); align-content:start; }
+.dialogo.grande { width:760px; }   /* 8 columnas (712) + 2 × 24 */
+.dialogo:not(.grande) { width:576px; }   /* 6 columnas (528) + 2 × 24 */
+.dialogo .cerrar { position:absolute; top:var(--s4); right:var(--s4); color:var(--muted); }
+.dialogo h2 { font-size:var(--fs-dialog); line-height:var(--lh-dialog); font-weight:600; letter-spacing:-.03em; }
+.dialogo .sub { font-size:var(--fs-small); line-height:var(--lh-small); color:var(--muted); margin-top:var(--s1); }
+.dialogo .pie-d { display:flex; justify-content:flex-end; gap:var(--s2); }
+.dialogo .permisos { gap:var(--s3); }
+.dialogo .permiso { border-radius:var(--r-sm); }
+.dialogo .pestanas { justify-self:start; }
+.campo { display:grid; gap:var(--s2); }
+.campo label { font-size:var(--fs-small); line-height:var(--lh-small); font-weight:500; }
+.campo .entrada { height:40px; border-radius:var(--r-sm); box-shadow:inset 0 0 0 1px var(--line-strong); padding:0 var(--s3); display:flex; align-items:center; font-size:var(--fs-body); line-height:24px; }
 [data-tema="oscuro"] .campo .entrada { background:color-mix(in srgb, var(--line-strong) 30%, transparent); }
-.icono-inst { display:grid; grid-template-columns:74px minmax(0,1fr); align-items:center; gap:14px; padding:14px; border-radius:var(--radius-xl); border:1px solid var(--line); background:var(--surface-soft); }
-.icono-inst .img { width:74px; height:74px; border-radius:22px; border:1px solid var(--line-strong); display:grid; place-items:center; color:var(--ui-primary-text); --ic:30px; background:color-mix(in srgb, var(--primary-bright) 12%, var(--surface)); }
-.icono-inst b { font-size:var(--fs-small); font-weight:600; }
-.icono-inst small { display:block; font-size:var(--fs-small); color:var(--muted); line-height:1.35; margin:4px 0 8px; }
-.alerta { display:grid; grid-template-columns:auto 1fr; column-gap:10px; row-gap:2px; padding:12px 14px; border-radius:var(--radius-md); border:1px solid color-mix(in srgb, var(--ui-warning) 30%, transparent); color:var(--ui-warning); }
-.alerta > .ic { margin-top:1px; }
-.alerta b { font-size:var(--fs-small); font-weight:600; }
-.alerta p { grid-column:2; font-size:var(--fs-small); line-height:1.5; }
-.alerta .acc-al { grid-column:2; display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; margin-top:8px; }
-.enlace { display:inline-flex; align-items:center; gap:4px; font-size:var(--fs-small); font-weight:500; color:var(--ui-primary-text); text-decoration:underline; text-underline-offset:3px; text-decoration-color:color-mix(in srgb, currentColor 40%, transparent); --ic:13px; cursor:pointer; }
-.nuevo { outline:2px dashed color-mix(in srgb, var(--primary) 70%, transparent); outline-offset:3px; border-radius:6px; }
+.icono-inst { display:grid; grid-template-columns:72px minmax(0,1fr); align-items:center; gap:var(--s3); padding:var(--s4); border-radius:var(--r-sm); box-shadow:inset 0 0 0 1px var(--line); background:var(--surface-soft); }
+.icono-inst .img { width:72px; height:72px; border-radius:var(--r-lg); box-shadow:inset 0 0 0 1px var(--line-strong); display:grid; place-items:center; color:var(--ui-primary-text); --ic:32px; background:color-mix(in srgb, var(--primary-bright) 12%, var(--surface)); }
+.icono-inst .txt-i { display:grid; gap:var(--s1); justify-items:start; }
+.icono-inst .txt-i .btn { margin-top:var(--s2); }   /* el diálogo queda en 592 (múltiplo de 8): centrado, cae en la retícula */
+.icono-inst b { font-size:var(--fs-small); line-height:var(--lh-small); font-weight:600; }
+.icono-inst small { display:block; font-size:var(--fs-small); line-height:var(--lh-small); color:var(--muted); }
+.alerta { display:grid; grid-template-columns:16px 1fr; column-gap:var(--s2); row-gap:var(--s1); padding:var(--s3) var(--s4); border-radius:var(--r-sm); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ui-warning) 40%, transparent); color:var(--ui-warning); }
+.alerta b { font-size:var(--fs-small); line-height:var(--lh-small); font-weight:600; }
+.alerta p { grid-column:2; font-size:var(--fs-small); line-height:var(--lh-prosa); }
+.alerta .acc-al { grid-column:2; display:flex; flex-wrap:wrap; align-items:center; gap:var(--s2) var(--s3); margin-top:var(--s2); }
+.enlace { display:inline-flex; align-items:center; gap:var(--s1); font-size:var(--fs-small); line-height:var(--lh-small); font-weight:500; color:var(--ui-primary-text); text-decoration:underline; text-underline-offset:3px; text-decoration-color:color-mix(in srgb, currentColor 40%, transparent); --ic:16px; cursor:pointer; }
+.nuevo { outline:2px dashed color-mix(in srgb, var(--primary) 70%, transparent); outline-offset:4px; border-radius:var(--r-xs); }
 
 /* Marca de alternativa sobre la pantalla del diálogo (D-1 · B) */
-.cinta { position:absolute; z-index:9; top:14px; right:16px; font-size:var(--fs-micro); font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ui-warning); border:1px solid color-mix(in srgb, var(--ui-warning) 40%, transparent); background:var(--ui-popover); border-radius:999px; padding:4px 10px; }
-.dialogo .pestanas { margin-top:-4px; }
-.dialogo .permiso { padding:12px 14px; }
+.cinta { position:absolute; z-index:9; top:var(--s4); right:var(--s4); height:24px; display:inline-flex; align-items:center; font-size:var(--fs-micro); line-height:16px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ui-warning); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ui-warning) 40%, transparent); background:var(--ui-popover); border-radius:999px; padding:0 var(--s3); }
+[data-plataforma="windows"] .cinta { right:160px; }
 
 @media (max-width:1070px) {
-  .opcion { padding:8px; gap:8px; }
-  .pop { width:300px; }
+  .opcion { padding:var(--s2); }
+  .pop { width:304px; }
   .dialogo.grande { width:auto; }
 }
-:root, [data-letra="normal"] { --fs-dialog:22px; }
-/* El tema elegido sigue al eje «Tema» de la maqueta */
-:is([data-tema="oscuro"] .op-oscuro, [data-tema="claro"] .op-claro) { border-color:color-mix(in srgb, var(--primary-bright) 20%, transparent); background:color-mix(in srgb, var(--primary-bright) 10%, transparent); }
-[data-tema="claro"] .op-claro { border-color:color-mix(in srgb, var(--primary-bright) 30%, transparent); background:color-mix(in srgb, var(--primary-bright) 5%, transparent); }
-:is([data-tema="oscuro"] .op-oscuro, [data-tema="claro"] .op-claro) .radio { border-color:var(--primary-bright); background:var(--primary-bright) !important; }
-:is([data-tema="oscuro"] .op-oscuro, [data-tema="claro"] .op-claro) .radio::after { content:""; width:6px; height:6px; border-radius:50%; background:#fff; }
-.ancla { position:relative; display:inline-flex; }
-.ancla .pop { top:calc(100% + 10px); left:-14px; }
-[data-plataforma="windows"] .cinta { right:160px; }
+
+/* ══ 6. Armonía sobre lo heredado de HU-0019 (sidebar, barra, botones, chips, sesión, barra de estado).
+   Mismos selectores que en la sección 4, después: ganan por orden. Lo que cambia en toda la app va en vista.md. ══ */
+body { line-height:var(--lh-body); }
+[data-plataforma="windows"] .win { border:0; outline:1px solid var(--ui-window-border); outline-offset:-1px; border-radius:var(--r-ventana); }
+.trigger { border-radius:var(--r-sm); }
+.migas { gap:var(--s2); }
+.migas .pre, .migas h1 { line-height:20px; }   /* barra de 52: la línea de 20 cae en y 16 */
+.migas .sep { --ic:16px; }
+.btn { gap:var(--s2); line-height:20px; border-radius:var(--r-md); }
+.btn.sm { border-radius:var(--r-sm); padding:0 var(--s3); line-height:16px; }
+.btn.lg { line-height:24px; border-radius:var(--r-md); }
+.btn.fant { border-radius:var(--r-sm); }
+.bd { gap:var(--s1); line-height:16px; }
+:root { --h-badge:24px; }   /* chips, kbd y contadores: 24 (--ctl-xs); el 20 de antes no está en la escala de controles */
+.beta { display:inline-flex; align-items:center; height:24px; line-height:16px; padding:0 var(--s1); border-radius:var(--r-xs); }
+.kbd { display:inline-flex; align-items:center; height:24px; line-height:16px; padding:0 var(--s1); border-radius:var(--r-xs); background:none; box-shadow:inset 0 0 0 1px var(--line-strong); }
+.panel { border-radius:var(--r-lg); }
+.sb-marca { padding:var(--s3) var(--s4) var(--s1); }
+.marca-txt { line-height:24px; }
+.sb-buscar { margin:var(--s1) var(--s2); padding:0 var(--s2); border-radius:var(--r-sm); border:0; box-shadow:inset 0 0 0 1px var(--line-strong); }
+.sb-buscar .ph { line-height:16px; }
+.sb-scroll { gap:var(--s1); padding:var(--s1) var(--s2); }
+.sb-grupo { padding:var(--s3) var(--s2) var(--s1); line-height:16px; }
+.sb-item { gap:var(--s2); border-radius:var(--r-sm); line-height:16px; }
+.cnt { padding:0 var(--s2); line-height:16px; min-width:24px; height:24px; }
+.sb-pie { border-top:0; box-shadow:inset 0 1px 0 var(--line); gap:var(--s1); }
+.tip { left:calc(100% + var(--s3)); padding:var(--s2) var(--s3); border-radius:var(--r-sm); line-height:16px; }
+.av .punto { right:-4px; bottom:-4px; }
+:is([data-sidebar="plegado"],[data-sidebar="tooltip"]) .sb-grupo { height:24px; margin:0 auto; background:linear-gradient(var(--line-strong), var(--line-strong)) center / 20px 1px no-repeat; }
+.estado { border-top:0; box-shadow:inset 0 1px 0 var(--line); line-height:20px; }
+.estado .izq, .estado .der { gap:var(--s3); }
+.estado .div { height:12px; }
+.estado .ok { gap:var(--s2); }
+.estado .ic { --ic:12px; }
+@media (max-width:1000px) { .estado { line-height:16px; } }   /* barra de 32 a 980: 32 − 16 */
+/* Sesión (vista previa y fondo): radio 8 por anidado (tarjeta p 16, R 16), anillo en vez de borde */
+.sesion { gap:var(--s3); border:0; box-shadow:inset 0 0 0 1px var(--line); border-radius:var(--r-sm); }
+.sesion .caja-ic { border:0; box-shadow:inset 0 0 0 1px var(--line); border-radius:var(--r-sm); }
+.sesion .cuerpo { gap:var(--s2); }
+.sesion .tit { line-height:var(--lh-body); }
+.sesion .meta { gap:var(--s2); line-height:var(--lh-small); }
+.sesion .meta i.s { width:4px; height:4px; }
+.ctx { gap:var(--s1); }
+.ctx .top, .ctx small { line-height:var(--lh-micro); }
+/* El fondo de los diálogos (página de la instancia) */
+.heroe { gap:var(--s4) var(--s6); }
+.heroe .datos { gap:var(--s2); }
+.heroe .ruta, .heroe .ver { line-height:var(--lh-small); }
+.medidor { gap:var(--s3); }
+.medidor .num { line-height:var(--lh-figure); }
+.medidor .pie { line-height:var(--lh-micro); }
+.medidor .top .etq { line-height:var(--lh-figure); }
+.etq { gap:var(--s2); line-height:var(--lh-micro); }
+.card-tit { line-height:var(--lh-heading); --ic:20px; }
+.avatar.xl { border-radius:var(--r-lg); }
 
 </style>
 
@@ -661,7 +736,7 @@ a { color:inherit; text-decoration:none; }
           <article class="permiso necesita">
             <span class="tile"><i class="ic i-app-window"></i></span>
             <div class="cuerpo">
-              <div class="nombre"><h3>Gestión de apps</h3><span class="chip-op">Opcional</span><span class="ancla"><span class="info-btn abierto" role="button" tabindex="0" aria-label="Más información sobre Gestión de apps" aria-expanded="true"><i class="ic i-info"></i></span>
+              <div class="nombre"><h3>Gestión de apps</h3><span class="ancla"><span class="info-btn abierto" role="button" tabindex="0" aria-label="Más información sobre Gestión de apps" aria-expanded="true"><i class="ic i-info"></i></span>
               <div class="pop" role="dialog" aria-label="Gestión de apps">
                 <h4>Gestión de apps</h4>
                 <dl>
@@ -670,7 +745,7 @@ a { color:inherit; text-decoration:none; }
                 </dl>
                 <span class="op"><i class="ic i-circle-check"></i>Opcional: la app funciona sin él.</span>
                 <span class="ruta">Ajustes del Sistema › Privacidad y seguridad › Gestión de apps</span>
-              </div></span></div>
+              </div></span><span class="opc">Opcional</span></div>
               <p class="para">Pone el icono de cada instancia en el Dock cuando Claude se actualiza solo.</p>
               <p class="est necesita"><i class="p"></i><span>Lo necesita: 2 instancias <span class="quien-est">· Work Profile y Personal Dev</span></span></p>
             </div>
@@ -679,7 +754,7 @@ a { color:inherit; text-decoration:none; }
           <article class="permiso ">
             <span class="tile"><i class="ic i-folder-lock"></i></span>
             <div class="cuerpo">
-              <div class="nombre"><h3>Archivos y carpetas</h3><span class="chip-op">Opcional</span><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Archivos y carpetas" aria-expanded="false"><i class="ic i-info"></i></span></span></div>
+              <div class="nombre"><h3>Archivos y carpetas</h3><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Archivos y carpetas" aria-expanded="false"><i class="ic i-info"></i></span></span><span class="opc">Opcional</span></div>
               <p class="para">Deja que Proyectos lea carpetas en Escritorio, Documentos o Descargas.</p>
               <p class="est no-se"><i class="ic i-circle-help"></i><span>No se puede comprobar</span></p>
             </div>
@@ -688,7 +763,7 @@ a { color:inherit; text-decoration:none; }
           <article class="permiso ">
             <span class="tile"><i class="ic i-user-cog"></i></span>
             <div class="cuerpo">
-              <div class="nombre"><h3>Cuenta de administrador</h3><span class="chip-op">Opcional</span><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Cuenta de administrador" aria-expanded="false"><i class="ic i-info"></i></span></span></div>
+              <div class="nombre"><h3>Cuenta de administrador</h3><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Cuenta de administrador" aria-expanded="false"><i class="ic i-info"></i></span></span><span class="opc">Opcional</span></div>
               <p class="para">«Descargar e instalar» copia la versión nueva de Claude en Aplicaciones.</p>
               <p class="est info"><i class="ic i-info"></i><span>Solo informativo: no hay nada que activar</span></p>
             </div>
@@ -756,7 +831,7 @@ a { color:inherit; text-decoration:none; }
           <article class="permiso ">
             <span class="tile"><i class="ic i-app-window"></i></span>
             <div class="cuerpo">
-              <div class="nombre"><h3>Gestión de apps</h3><span class="chip-op">Opcional</span><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Gestión de apps" aria-expanded="false"><i class="ic i-info"></i></span></span></div>
+              <div class="nombre"><h3>Gestión de apps</h3><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Gestión de apps" aria-expanded="false"><i class="ic i-info"></i></span></span><span class="opc">Opcional</span></div>
               <p class="para">Pone el icono de cada instancia en el Dock cuando Claude se actualiza solo.</p>
               <p class="est sin-uso"><i class="p"></i>Sin uso todavía</p>
             </div>
@@ -765,7 +840,7 @@ a { color:inherit; text-decoration:none; }
           <article class="permiso ">
             <span class="tile"><i class="ic i-folder-lock"></i></span>
             <div class="cuerpo">
-              <div class="nombre"><h3>Archivos y carpetas</h3><span class="chip-op">Opcional</span><span class="ancla"><span class="info-btn abierto" role="button" tabindex="0" aria-label="Más información sobre Archivos y carpetas" aria-expanded="true"><i class="ic i-info"></i></span>
+              <div class="nombre"><h3>Archivos y carpetas</h3><span class="ancla"><span class="info-btn abierto" role="button" tabindex="0" aria-label="Más información sobre Archivos y carpetas" aria-expanded="true"><i class="ic i-info"></i></span>
               <div class="pop" role="dialog" aria-label="Archivos y carpetas">
                 <h4>Archivos y carpetas</h4>
                 <dl>
@@ -775,7 +850,7 @@ a { color:inherit; text-decoration:none; }
                 </dl>
                 <span class="op"><i class="ic i-circle-check"></i>Opcional: la app funciona sin él.</span>
                 <span class="ruta">Ajustes del Sistema › Privacidad y seguridad › Archivos y carpetas</span>
-              </div></span></div>
+              </div></span><span class="opc">Opcional</span></div>
               <p class="para">Deja que Proyectos lea carpetas en Escritorio, Documentos o Descargas.</p>
               <p class="est no-se"><i class="ic i-circle-help"></i><span>No se puede comprobar</span></p>
             </div>
@@ -784,7 +859,7 @@ a { color:inherit; text-decoration:none; }
           <article class="permiso ">
             <span class="tile"><i class="ic i-user-cog"></i></span>
             <div class="cuerpo">
-              <div class="nombre"><h3>Cuenta de administrador</h3><span class="chip-op">Opcional</span><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Cuenta de administrador" aria-expanded="false"><i class="ic i-info"></i></span></span></div>
+              <div class="nombre"><h3>Cuenta de administrador</h3><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Cuenta de administrador" aria-expanded="false"><i class="ic i-info"></i></span></span><span class="opc">Opcional</span></div>
               <p class="para">«Descargar e instalar» copia la versión nueva de Claude en Aplicaciones.</p>
               <p class="est info"><i class="ic i-info"></i><span>Solo informativo: no hay nada que activar</span></p>
             </div>
@@ -852,7 +927,7 @@ a { color:inherit; text-decoration:none; }
           <article class="permiso necesita">
             <span class="tile"><i class="ic i-app-window"></i></span>
             <div class="cuerpo">
-              <div class="nombre"><h3>Gestión de apps</h3><span class="chip-op">Opcional</span><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Gestión de apps" aria-expanded="false"><i class="ic i-info"></i></span></span></div>
+              <div class="nombre"><h3>Gestión de apps</h3><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Gestión de apps" aria-expanded="false"><i class="ic i-info"></i></span></span><span class="opc">Opcional</span></div>
               <p class="para">Pone el icono de cada instancia en el Dock cuando Claude se actualiza solo.</p>
               <p class="est necesita"><i class="p"></i><span>Lo necesita: 2 instancias <span class="quien-est">· Work Profile y Personal Dev</span></span></p>
             </div>
@@ -861,7 +936,7 @@ a { color:inherit; text-decoration:none; }
           <article class="permiso ">
             <span class="tile"><i class="ic i-folder-lock"></i></span>
             <div class="cuerpo">
-              <div class="nombre"><h3>Archivos y carpetas</h3><span class="chip-op">Opcional</span><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Archivos y carpetas" aria-expanded="false"><i class="ic i-info"></i></span></span></div>
+              <div class="nombre"><h3>Archivos y carpetas</h3><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Archivos y carpetas" aria-expanded="false"><i class="ic i-info"></i></span></span><span class="opc">Opcional</span></div>
               <p class="para">Deja que Proyectos lea carpetas en Escritorio, Documentos o Descargas.</p>
               <p class="est no-se"><i class="ic i-circle-help"></i><span>No se puede comprobar</span></p>
             </div>
@@ -870,7 +945,7 @@ a { color:inherit; text-decoration:none; }
           <article class="permiso ">
             <span class="tile"><i class="ic i-user-cog"></i></span>
             <div class="cuerpo">
-              <div class="nombre"><h3>Cuenta de administrador</h3><span class="chip-op">Opcional</span><span class="ancla"><span class="info-btn abierto" role="button" tabindex="0" aria-label="Más información sobre Cuenta de administrador" aria-expanded="true"><i class="ic i-info"></i></span>
+              <div class="nombre"><h3>Cuenta de administrador</h3><span class="ancla"><span class="info-btn abierto" role="button" tabindex="0" aria-label="Más información sobre Cuenta de administrador" aria-expanded="true"><i class="ic i-info"></i></span>
               <div class="pop" role="dialog" aria-label="Cuenta de administrador">
                 <h4>Cuenta de administrador</h4>
                 <dl>
@@ -879,7 +954,7 @@ a { color:inherit; text-decoration:none; }
                 </dl>
                 <span class="op"><i class="ic i-circle-check"></i>Opcional: lo demás funciona igual.</span>
                 <span class="ruta">No hay nada que activar: depende del tipo de tu cuenta.</span>
-              </div></span></div>
+              </div></span><span class="opc">Opcional</span></div>
               <p class="para">«Descargar e instalar» copia la versión nueva de Claude en Aplicaciones.</p>
               <p class="est info"><i class="ic i-info"></i><span>Solo informativo: no hay nada que activar</span></p>
             </div>
@@ -947,7 +1022,7 @@ a { color:inherit; text-decoration:none; }
           <article class="permiso necesita">
             <span class="tile"><i class="ic i-app-window"></i></span>
             <div class="cuerpo">
-              <div class="nombre"><h3>Gestión de apps</h3><span class="chip-op">Opcional</span><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Gestión de apps" aria-expanded="false"><i class="ic i-info"></i></span></span></div>
+              <div class="nombre"><h3>Gestión de apps</h3><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Gestión de apps" aria-expanded="false"><i class="ic i-info"></i></span></span><span class="opc">Opcional</span></div>
               <p class="para">Pone el icono de cada instancia en el Dock cuando Claude se actualiza solo.</p>
               <p class="est necesita"><i class="p"></i><span>Lo necesita: 2 instancias <span class="quien-est">· Work Profile y Personal Dev</span></span></p>
             </div>
@@ -956,7 +1031,7 @@ a { color:inherit; text-decoration:none; }
           <article class="permiso ">
             <span class="tile"><i class="ic i-folder-lock"></i></span>
             <div class="cuerpo">
-              <div class="nombre"><h3>Archivos y carpetas</h3><span class="chip-op">Opcional</span><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Archivos y carpetas" aria-expanded="false"><i class="ic i-info"></i></span></span></div>
+              <div class="nombre"><h3>Archivos y carpetas</h3><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Archivos y carpetas" aria-expanded="false"><i class="ic i-info"></i></span></span><span class="opc">Opcional</span></div>
               <p class="para">Deja que Proyectos lea carpetas en Escritorio, Documentos o Descargas.</p>
               <p class="est no-se"><i class="ic i-circle-help"></i><span>No se puede comprobar</span></p>
             </div>
@@ -965,7 +1040,7 @@ a { color:inherit; text-decoration:none; }
           <article class="permiso ">
             <span class="tile"><i class="ic i-user-cog"></i></span>
             <div class="cuerpo">
-              <div class="nombre"><h3>Cuenta de administrador</h3><span class="chip-op">Opcional</span><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Cuenta de administrador" aria-expanded="false"><i class="ic i-info"></i></span></span></div>
+              <div class="nombre"><h3>Cuenta de administrador</h3><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Cuenta de administrador" aria-expanded="false"><i class="ic i-info"></i></span></span><span class="opc">Opcional</span></div>
               <p class="para">«Descargar e instalar» copia la versión nueva de Claude en Aplicaciones.</p>
               <p class="est info"><i class="ic i-info"></i><span>Solo informativo: no hay nada que activar</span></p>
             </div>
@@ -1052,7 +1127,7 @@ a { color:inherit; text-decoration:none; }
       <span class="btn fant cerrar"><i class="ic i-x"></i></span>
       <div><h2>Editar instancia</h2><p class="sub">Actualiza el nombre visible de este perfil</p></div>
       <div class="campo"><label>Nombre del perfil</label><span class="entrada">Work Profile</span></div>
-      <section class="icono-inst"><span class="img"><i class="ic i-marca"></i></span><div><b>Icono de la instancia</b><small>Se guarda fuera de la aplicación compatible para sobrevivir a futuras sincronizaciones.</small><span class="btn out sm"><i class="ic i-image-up"></i>Reemplazar imagen</span></div></section>
+      <section class="icono-inst"><span class="img"><i class="ic i-marca"></i></span><div class="txt-i"><b>Icono de la instancia</b><small>Se guarda fuera de la aplicación compatible para sobrevivir a futuras sincronizaciones.</small><span class="btn out sm"><i class="ic i-image-up"></i>Reemplazar imagen</span></div></section>
       <div class="alerta solo-mac grid">
         <i class="ic i-triangle-alert"></i><b>Permiso de Gestión de apps</b>
         <p>macOS no dejó a Code AI Profiles cambiar el icono de la copia. Para verlo en el Dock, activa Code AI Profiles en Ajustes del Sistema › Privacidad y seguridad › Gestión de apps y pulsa «Reintentar». Si sigue igual, cierra y vuelve a abrir Code AI Profiles. El icono sigue visible dentro de la app.</p>
@@ -1133,7 +1208,7 @@ a { color:inherit; text-decoration:none; }
           <article class="permiso necesita">
             <span class="tile"><i class="ic i-app-window"></i></span>
             <div class="cuerpo">
-              <div class="nombre"><h3>Gestión de apps</h3><span class="chip-op">Opcional</span><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Gestión de apps" aria-expanded="false"><i class="ic i-info"></i></span></span></div>
+              <div class="nombre"><h3>Gestión de apps</h3><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Gestión de apps" aria-expanded="false"><i class="ic i-info"></i></span></span><span class="opc">Opcional</span></div>
               <p class="para">Pone el icono de cada instancia en el Dock cuando Claude se actualiza solo.</p>
               <p class="est necesita"><i class="p"></i><span>Lo necesita: 2 instancias <span class="quien-est">· Work Profile y Personal Dev</span></span></p>
             </div>
@@ -1142,7 +1217,7 @@ a { color:inherit; text-decoration:none; }
           <article class="permiso ">
             <span class="tile"><i class="ic i-folder-lock"></i></span>
             <div class="cuerpo">
-              <div class="nombre"><h3>Archivos y carpetas</h3><span class="chip-op">Opcional</span><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Archivos y carpetas" aria-expanded="false"><i class="ic i-info"></i></span></span></div>
+              <div class="nombre"><h3>Archivos y carpetas</h3><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Archivos y carpetas" aria-expanded="false"><i class="ic i-info"></i></span></span><span class="opc">Opcional</span></div>
               <p class="para">Deja que Proyectos lea carpetas en Escritorio, Documentos o Descargas.</p>
               <p class="est no-se"><i class="ic i-circle-help"></i><span>No se puede comprobar</span></p>
             </div>
@@ -1151,7 +1226,7 @@ a { color:inherit; text-decoration:none; }
           <article class="permiso ">
             <span class="tile"><i class="ic i-user-cog"></i></span>
             <div class="cuerpo">
-              <div class="nombre"><h3>Cuenta de administrador</h3><span class="chip-op">Opcional</span><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Cuenta de administrador" aria-expanded="false"><i class="ic i-info"></i></span></span></div>
+              <div class="nombre"><h3>Cuenta de administrador</h3><span class="ancla"><span class="info-btn" role="button" tabindex="0" aria-label="Más información sobre Cuenta de administrador" aria-expanded="false"><i class="ic i-info"></i></span></span><span class="opc">Opcional</span></div>
               <p class="para">«Descargar e instalar» copia la versión nueva de Claude en Aplicaciones.</p>
               <p class="est info"><i class="ic i-info"></i><span>Solo informativo: no hay nada que activar</span></p>
             </div>

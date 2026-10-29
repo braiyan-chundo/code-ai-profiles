@@ -559,6 +559,154 @@ a { color:inherit; text-decoration:none; }
 .aviso.err { border-color:color-mix(in srgb, var(--danger) 40%, transparent); background:color-mix(in srgb, var(--danger) 7%, transparent); }
 .aviso.err > .ic { color:var(--danger); }
 
+/* ══════════ Sistema armónico (el mismo que HU-0022). Retícula de 4 px; espaciado solo 4 · 8 · 12 · 16 · 24 · 32 · 48;
+   interlineado múltiplo de 4; radios 8 · 12 · 16 · 20 · 24 con radio interior = exterior − padding (mínimo 8);
+   controles de 24 · 32 · 36 · 40; iconos 16 con el cuerpo y 20 con los títulos.
+   Excepciones medidas y justificadas: bordes de 1 px, el hueco de 2 px entre segmentos de una barra (dataviz),
+   el hueco de los semáforos de macOS (84 px, fijado por la plataforma) y los dibujos de controles nativos. ══════════ */
+:root {
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px; --s-7:48px;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-xl:16px; --radius-2xl:20px; --radius-dlg:24px; --radius-in:8px;
+  --lh-micro:16px; --lh-small:16px; --lh-body:20px; --lh-heading:20px; --lh-title:24px; --lh-figure:28px; --lh-dialog:28px;
+}
+[data-letra="compacto"] { --lh-title:20px; }
+[data-letra="grande"] { --lh-small:20px; --lh-body:24px; --lh-heading:24px; --lh-figure:32px; --lh-dialog:32px; }
+body { line-height:var(--lh-body); }
+/* Interlineado por papel */
+.etq, .bd, .kbd, .beta, .cnt, .estado, .seg em, .tec.pack, .tabla th, .mono-p, .sec-cifra { line-height:var(--lh-micro); }
+.card-desc, .ruta-m, .pc-msg, .pc-pie, .leyenda, .tec, .fuente, .repo .sub, .repo .tecr, .seg span, .tabla .id, .tabla .mu, .tabla .n, .est,
+.pie-tabla, .bar-f, .nota-c, .dlg .desc, .checks em, .checks code, .dlg .nota-l, .aviso small, .cifra span.pista, .barra-lista, .heroe-p .meta-p,
+.vacio-c p, .tip, .sb-item.vacio, .ctx, .captura { line-height:var(--lh-small); }
+.sb-item, .btn, .tabla, .checks li, .aviso b, .heroe-p .resumen, .migas .pre, .sb-buscar, .repo .nom { line-height:var(--lh-body); }
+.card-tit, .pc-tit h2, .vacio-c h2, .dlg-carpeta b.n, .rep-num, .marca-txt { line-height:var(--lh-heading); }
+.migas h1, .sb-marca .marca-txt { line-height:var(--lh-title); }
+.cifra strong { line-height:var(--lh-figure); }
+.dlg h2 { line-height:var(--lh-dialog); }
+.bar-f .val small { font-size:var(--fs-micro); }
+
+/* Marco heredado de HU-0019, llevado a la escala */
+.trigger { border-radius:var(--radius-sm); }
+.migas { gap:var(--s-2); } .migas .sep { --ic:16px; }
+.btn { gap:var(--s-2); }
+.btn.sm { border-radius:var(--radius-sm); padding:0 var(--s-3); }
+.bd { gap:var(--s-1); }
+.kbd { padding:0 var(--s-1); border-radius:4px; }
+.beta { padding:0 var(--s-1); border-radius:4px; }
+.sb-marca { padding:var(--s-3) var(--s-3) var(--s-1); }
+.sb-buscar { margin:var(--s-2) var(--s-2) var(--s-1); padding:0 var(--s-2) 0 var(--s-3); gap:var(--s-2); border-radius:var(--radius-sm); }
+.sb-scroll { gap:0; padding:var(--s-1) var(--s-2); }
+.sb-grupo { padding:var(--s-3) var(--s-2) var(--s-1); }
+.sb-item { gap:var(--s-2); border-radius:var(--radius-sm); flex:none; }   /* panel 16 − margen 8 = 8 */
+.sb-item .alerta { --ic:16px; }
+[data-sidebar="desplegado"] .sb-scroll { -webkit-mask-image:linear-gradient(#000 calc(100% - 24px), transparent); mask-image:linear-gradient(#000 calc(100% - 24px), transparent); }
+.sb-pie { padding:var(--s-2); gap:0; }
+.cnt { padding:0 var(--s-1); }
+.tip { padding:var(--s-1) var(--s-3); border-radius:var(--radius-sm); left:calc(100% + 16px); }
+.estado, .estado .izq, .estado .der { gap:var(--s-4); }
+.estado .ic { --ic:16px; }
+:is([data-sidebar="plegado"],[data-sidebar="tooltip"]) .sb-grupo { margin:var(--s-3) auto; }
+
+/* Tarjetas: un padding por nivel. Sección = 24; cifra = 16. Radio 16; lo de dentro que toca el borde, 8. */
+.card { padding:var(--s-5); gap:var(--s-4); }
+.card-desc { margin-top:var(--s-1); }
+.card-tit .ic { --ic:20px; }
+.cifra { padding:var(--s-4); gap:var(--s-2); align-content:start; }
+.etq { gap:var(--s-2); }
+.aviso { border-radius:var(--radius-lg); }
+.vacio-c { gap:var(--s-3); }
+.vacio-c .media { width:40px; height:40px; border-radius:var(--radius-md); --ic:20px; }
+
+/* Pila: secciones a 32; dentro de una sección, 16–24 */
+.pila.secciones { gap:var(--s-6); }
+.pila.lista { gap:var(--s-4); }
+
+/* Lista de proyectos: 2 columnas de 6/12 con gutter 24; misma altura por fila; el pie siempre abajo */
+.proyectos { gap:var(--s-5); }
+.pcard { display:grid; grid-template-rows:auto auto auto 1fr; gap:var(--s-4); }
+.pcard.roto { grid-template-rows:auto auto 1fr; }
+.pcard .pc-pie { margin-top:0; align-self:end; padding-top:var(--s-4); }
+.pc-tit { gap:var(--s-1); }
+.pc-pie span, .barra-lista span { gap:var(--s-2); }
+.pc-pie .ic, .barra-lista .ic, .heroe-p .meta-p .ic, .fuente .ic, .repo .sub .ic, .dlg .nota-l .ic { --ic:16px; }
+.chips { gap:var(--s-2); }
+.leyenda span { gap:var(--s-2); }
+.tec { border-radius:var(--radius-sm); }
+
+/* Inicial del proyecto: cuadrados de la escala (16 = icono, 40 = control lg, 64 = avatar de la página de instancia) */
+.mono-p { width:calc(16px * var(--esc)); height:calc(16px * var(--esc)); border-radius:4px; }
+.mono-p.lg { width:calc(40px * var(--esc)); height:calc(40px * var(--esc)); border-radius:var(--radius-md); --ic:20px; }
+.mono-p.xl { width:64px; height:64px; border-radius:var(--radius-lg); --ic:32px; }
+
+/* Barra por estados: 8 de alto, extremos de 4, huecos de 2 (dataviz) */
+.barra-est { height:8px; border-radius:4px; background:transparent; }
+/* «En espera» con trama a 45° y marcador hueco: en oscuro su tono queda a ΔE 8,8 de «en curso» (1,8 para protanopía) */
+.barra-est i.e-espera { background:repeating-linear-gradient(135deg, var(--e-espera) 0 3px, color-mix(in srgb, var(--e-espera) 35%, transparent) 3px 6px); }
+.pt-e.e-espera { background:transparent; box-shadow:inset 0 0 0 2px var(--e-espera); }
+[data-tema="claro"] { --e-curso:var(--primary-bright); }   /* #ff8d6c da 2,2:1 sobre blanco; #ff5f35, 3,0:1 */
+
+/* Página del proyecto */
+.heroe-p { display:grid; grid-template-columns:64px minmax(0,1fr) auto; gap:var(--s-5); align-items:start; }
+.heroe-p .datos { gap:var(--s-3); }
+.heroe-p .meta-p { gap:var(--s-2) var(--s-5); }
+.heroe-p .meta-p span { gap:var(--s-2); }
+@media (max-width:1070px) { .heroe-p { grid-template-columns:64px minmax(0,1fr); } .heroe-p .acciones { grid-column:2; width:auto; padding-left:0; } }
+
+/* Retícula de 12 columnas, gutter 24: cifras 4+2+2+2+2; Tecnologías 5 y Repos 7; consumo 7 y 5 */
+.kpis, .dos, .consumo { grid-template-columns:repeat(12, minmax(0,1fr)); gap:var(--s-5); }
+.kpis > .cifra { grid-column:span 2; } .kpis > .ancha { grid-column:span 4; }
+.dos { align-items:stretch; } .dos > :first-child { grid-column:span 5; } .dos > :last-child { grid-column:span 7; }
+.consumo > .col-h { grid-column:span 7; } .consumo > .col-r { grid-column:span 5; }
+.consumo > div { display:grid; gap:var(--s-3); align-content:start; }
+.consumo h3 { margin:0; }
+@media (max-width:1070px) {
+  .kpis > .ancha { grid-column:span 12; } .kpis > .cifra:not(.ancha) { grid-column:span 3; }
+  .dos > :first-child, .dos > :last-child, .consumo > .col-h, .consumo > .col-r { grid-column:span 12; }
+}
+.sec-cifra { font-size:var(--fs-micro); color:var(--muted); font-family:var(--font-mono); }
+.sec-cifra b { color:var(--text); font-weight:600; }
+.fuente { gap:var(--s-2); }
+.repo { padding:var(--s-3); gap:var(--s-4); border-radius:var(--radius-in); }
+.repo .sub { gap:var(--s-2); }
+.seg { padding:var(--s-1); gap:var(--s-1); border-radius:var(--radius-md); }
+.seg span { height:calc(24px * var(--esc)); padding:0 var(--s-2); border-radius:var(--radius-sm); gap:var(--s-2); }   /* 12 − 4 = 8 */
+.est { gap:var(--s-2); }
+
+/* Tabla alineada a la retícula: la tabla se extiende 12 px a cada lado y cada celda lleva 12 + 12 = el gutter de 24 */
+.tabla { width:calc(100% + 24px); margin:0 -12px; }
+.tabla th { padding:0 var(--s-3) var(--s-2); }
+.tabla td { padding:0 var(--s-3); }
+.tabla col.c-hu { width:calc(100% * 4 / 12); } .tabla col.c-est { width:calc(100% * 2 / 12); } .tabla col.c-fase { width:calc(100% * 2 / 12); }
+.tabla col.c-area { width:calc(100% * 2 / 12); } .tabla col.c-t { width:calc(100% / 12); } .tabla col.c-k { width:calc(100% / 12); }
+@media (max-width:1070px) {
+  .tabla col.c-hu { width:calc(100% * 4 / 12); } .tabla col.c-est { width:calc(100% * 2 / 12); } .tabla col.c-fase { width:calc(100% * 2 / 12); }
+  .tabla col.c-t { width:calc(100% * 2 / 12); } .tabla col.c-k { width:calc(100% * 2 / 12); }
+}
+.tabla tr.no-suma td.n { color:var(--muted); text-decoration:line-through; text-decoration-color:var(--quiet); }
+.pie-tabla { padding:var(--s-2) 0 0; flex-wrap:wrap; }
+.bar-f { grid-template-columns:minmax(0,1fr) minmax(0,1fr) 80px; gap:var(--s-3); }
+.barras.rol .bar-f { grid-template-columns:120px minmax(0,1fr) 112px; }
+.bar-f .pista-b { border-radius:4px; } .bar-f .pista-b i { border-radius:4px; }
+.nota-c { margin-top:0; }
+
+/* Diálogo: radio 24, padding 24; lo que toca el borde interior, 24 − 24 → mínimo 8 */
+.dlg { padding:var(--s-5); gap:var(--s-5); border-radius:var(--radius-dlg); }
+.dlg .x { border-radius:var(--radius-sm); }
+.dlg .desc { margin-top:var(--s-1); }
+.dlg-carpeta { border-radius:var(--radius-in); }
+.dlg .aviso { border-radius:var(--radius-in); }
+.checks { gap:var(--s-3); } .checks li { gap:var(--s-2); }
+.dlg .nota-l { gap:var(--s-2); } .dlg .nota-l .ic { margin-top:0; }
+.bar-f .lbl .id, .tabla .id { margin-right:var(--s-2); }
+.tec-grupos dd { gap:var(--s-2); }
+.pt-e, .seg .pt-e, .est .pt-e { border-radius:50%; }
+.estado .ok { gap:var(--s-2); }
+.cifra .barra-est { margin-top:0; }
+.dlg-carpeta .c { gap:var(--s-1); }
+.card { align-content:start; }
+.sec-cifra { display:grid; }
+.kpis .cifra span.pista { white-space:normal; }
+.barras.rol .bar-f { grid-template-columns:120px minmax(0,1fr) 136px; }
+
 </style>
 
 <!-- ═══════ PROYECTOS · CON DATOS (3 válidos y 1 roto) ═══════ -->
@@ -588,7 +736,7 @@ a { color:inherit; text-decoration:none; }
       <a class="sb-item" data-ir="pantalla=proyecto&estado=varios-repos"><b class="mono-p">V</b><span>Vetcare</span><em class="cnt">3</em></a>
       <a class="sb-item con-tip" data-ir="pantalla=proyecto&estado=con-datos"><b class="mono-p">C</b><span>Code AI Profiles</span><em class="cnt">4</em><span class="tip">Code AI Profiles · 4 en curso</span></a>
       <a class="sb-item"><b class="mono-p">L</b><span>Lumen Tienda</span></a>
-      <a class="sb-item roto" data-ir="pantalla=proyecto&estado=roto"><b class="mono-p roto">P</b><span>panel-finanzas</span><i class="ic i-triangle-alert alerta" title="Carpeta no encontrada"></i></a>
+      <a class="sb-item roto" data-ir="pantalla=proyecto&estado=roto"><b class="mono-p roto">P</b><span>Panel Finanzas</span><i class="ic i-triangle-alert alerta" title="Carpeta no encontrada"></i></a>
       <a class="sb-item nueva" data-ir="pantalla=anclar&estado=valido"><i class="ic i-folder-plus"></i><span>Anclar proyecto</span></a>
     </div>
     <div class="sb-pie">
@@ -597,35 +745,35 @@ a { color:inherit; text-decoration:none; }
     </div>
   </div></nav>
   <div class="main">
-    <section class="contenido scroll"><div class="pila">
+    <section class="contenido scroll"><div class="pila lista">
       <div class="barra-lista"><span>4 proyectos anclados · por última actividad</span><span><i class="ic i-eye"></i>Solo lectura · leídos a las 02:31</span></div>
       <div class="proyectos">
 <a class="card pcard" data-ir="pantalla=proyecto&estado=varios-repos">
   <div class="pc-cab"><b class="mono-p lg">V</b><div class="pc-tit"><h2>Vetcare</h2><span class="ruta-m">~/Proyectos/vetcare</span></div>
     <div class="chips"><span class="bd sec">Perfil M</span><span class="bd sec">Desarrollo</span></div></div>
-  <div class="reparto"><div class="rep-top"><span class="rep-num"><b>23</b>historias</span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>3</b> en curso</span><span><i class="pt-e e-espera"></i><b>2</b> en espera</span><span><i class="pt-e e-term"></i><b>16</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div><span class="barra-est" aria-hidden="true"><i class="e-curso" style="flex:3"></i><i class="e-espera" style="flex:2"></i><i class="e-term" style="flex:16"></i><i class="e-desc" style="flex:2"></i></span></div>
+  <div class="reparto"><div class="rep-top"><span class="rep-num"><b>23</b>historias</span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>3</b> en curso</span><span><i class="pt-e e-espera"></i><b>2</b> en espera</span><span><i class="pt-e e-term"></i><b>16</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div><span class="barra-est" role="img" aria-label="3 en curso, 2 en espera, 16 terminadas, 2 descartadas"><i class="e-curso" style="flex:3" title="3 en curso"></i><i class="e-espera" style="flex:2" title="2 en espera"></i><i class="e-term" style="flex:16" title="16 terminadas"></i><i class="e-desc" style="flex:2" title="2 descartadas"></i></span></div>
   <div class="chips"><span class="tec">NestJS 11</span><span class="tec">Next.js 15</span><span class="tec">PostgreSQL</span><span class="tec">BullMQ 5</span></div>
   <div class="pc-pie"><span><i class="ic i-clock"></i>Última actividad hace 25 min</span><span>3 repos</span></div>
 </a>
 <a class="card pcard" data-ir="pantalla=proyecto&estado=con-datos">
   <div class="pc-cab"><b class="mono-p lg">C</b><div class="pc-tit"><h2>Code AI Profiles</h2><span class="ruta-m">~/Desktop/PROYECTOS/BRAIYAN/CLAUDE_WRAPPER</span></div>
     <div class="chips"><span class="bd sec">Perfil S</span><span class="bd sec">Desarrollo</span></div></div>
-  <div class="reparto"><div class="rep-top"><span class="rep-num"><b>14</b>historias</span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>4</b> en curso</span><span><i class="pt-e e-espera"></i><b>1</b> en espera</span><span><i class="pt-e e-term"></i><b>7</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div><span class="barra-est" aria-hidden="true"><i class="e-curso" style="flex:4"></i><i class="e-espera" style="flex:1"></i><i class="e-term" style="flex:7"></i><i class="e-desc" style="flex:2"></i></span></div>
+  <div class="reparto"><div class="rep-top"><span class="rep-num"><b>14</b>historias</span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>4</b> en curso</span><span><i class="pt-e e-espera"></i><b>1</b> en espera</span><span><i class="pt-e e-term"></i><b>7</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div><span class="barra-est" role="img" aria-label="4 en curso, 1 en espera, 7 terminadas, 2 descartadas"><i class="e-curso" style="flex:4" title="4 en curso"></i><i class="e-espera" style="flex:1" title="1 en espera"></i><i class="e-term" style="flex:7" title="7 terminadas"></i><i class="e-desc" style="flex:2" title="2 descartadas"></i></span></div>
   <div class="chips"><span class="tec">React 19</span><span class="tec">Tauri 2</span><span class="tec">Rust</span><span class="tec">Vite 6</span><span class="tec">Tailwind CSS 4</span></div>
   <div class="pc-pie"><span><i class="ic i-clock"></i>Última actividad hace 2 h</span><span>1 repo</span></div>
 </a>
 <a class="card pcard">
   <div class="pc-cab"><b class="mono-p lg">L</b><div class="pc-tit"><h2>Lumen Tienda</h2><span class="ruta-m">~/Proyectos/lumen-tienda</span></div>
     <div class="chips"><span class="bd sec">Perfil S</span><span class="bd sec">Producción</span></div></div>
-  <div class="reparto"><div class="rep-top"><span class="rep-num"><b>31</b>historias</span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>0</b> en curso</span><span><i class="pt-e e-espera"></i><b>1</b> en espera</span><span><i class="pt-e e-term"></i><b>28</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div><span class="barra-est" aria-hidden="true"><i class="e-espera" style="flex:1"></i><i class="e-term" style="flex:28"></i><i class="e-desc" style="flex:2"></i></span></div>
+  <div class="reparto"><div class="rep-top"><span class="rep-num"><b>31</b>historias</span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>0</b> en curso</span><span><i class="pt-e e-espera"></i><b>1</b> en espera</span><span><i class="pt-e e-term"></i><b>28</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div><span class="barra-est" role="img" aria-label="1 en espera, 28 terminadas, 2 descartadas"><i class="e-espera" style="flex:1" title="1 en espera"></i><i class="e-term" style="flex:28" title="28 terminadas"></i><i class="e-desc" style="flex:2" title="2 descartadas"></i></span></div>
   <div class="chips"><span class="tec">Astro 5</span><span class="tec">Svelte 5</span><span class="tec">TypeScript</span><span class="tec">SQLite</span></div>
   <div class="pc-pie"><span><i class="ic i-clock"></i>Última actividad hace 6 días</span><span>1 repo</span></div>
 </a>
 <div class="card pcard roto">
-  <div class="pc-cab"><b class="mono-p lg roto"><i class="ic i-folder-x"></i></b><div class="pc-tit"><h2>panel-finanzas</h2><span class="ruta-m">~/Proyectos/panel-finanzas</span></div>
+  <div class="pc-cab"><b class="mono-p lg roto"><i class="ic i-folder-x"></i></b><div class="pc-tit"><h2>Panel Finanzas</h2><span class="ruta-m">~/Proyectos/panel-finanzas</span></div>
     <span class="bd err"><i class="dot"></i>Carpeta no encontrada</span></div>
-  <p class="pc-msg">La carpeta ya no está en esa ruta. Si la moviste, desánclala y vuelve a anclarla desde su nuevo sitio. Nada se borra.</p>
-  <div class="pc-pie"><span>Solo se guardó la ruta</span><span class="btn out sm" data-ir="pantalla=proyecto&estado=roto"><i class="ic i-pin-off"></i>Desanclar</span></div>
+  <p class="pc-msg">La carpeta ya no está en esa ruta. Si la moviste, desancla el proyecto y vuelve a anclarlo desde su nuevo sitio. Nada se borra.</p>
+  <div class="pc-pie"><span><i class="ic i-clock"></i>Leído por última vez el 17 oct</span><span class="btn out sm" data-ir="pantalla=proyecto&estado=roto"><i class="ic i-pin-off"></i>Desanclar</span></div>
 </div>
       </div>
     </div></section>
@@ -716,7 +864,7 @@ a { color:inherit; text-decoration:none; }
       <a class="sb-item" data-ir="pantalla=proyecto&estado=varios-repos"><b class="mono-p">V</b><span>Vetcare</span><em class="cnt">3</em></a>
       <a class="sb-item con-tip" data-ir="pantalla=proyecto&estado=con-datos"><b class="mono-p">C</b><span>Code AI Profiles</span><em class="cnt">4</em><span class="tip">Code AI Profiles · 4 en curso</span></a>
       <a class="sb-item"><b class="mono-p">L</b><span>Lumen Tienda</span></a>
-      <a class="sb-item roto" data-ir="pantalla=proyecto&estado=roto"><b class="mono-p roto">P</b><span>panel-finanzas</span><i class="ic i-triangle-alert alerta" title="Carpeta no encontrada"></i></a>
+      <a class="sb-item roto" data-ir="pantalla=proyecto&estado=roto"><b class="mono-p roto">P</b><span>Panel Finanzas</span><i class="ic i-triangle-alert alerta" title="Carpeta no encontrada"></i></a>
       <a class="sb-item nueva" data-ir="pantalla=anclar&estado=valido"><i class="ic i-folder-plus"></i><span>Anclar proyecto</span></a>
     </div>
     <div class="sb-pie">
@@ -725,35 +873,35 @@ a { color:inherit; text-decoration:none; }
     </div>
   </div></nav>
   <div class="main">
-    <section class="contenido"><div class="pila">
+    <section class="contenido"><div class="pila lista">
       <div class="barra-lista"><span>4 proyectos anclados · por última actividad</span><span><i class="ic i-eye"></i>Solo lectura · leídos a las 02:31</span></div>
       <div class="proyectos">
 <a class="card pcard" data-ir="pantalla=proyecto&estado=varios-repos">
   <div class="pc-cab"><b class="mono-p lg">V</b><div class="pc-tit"><h2>Vetcare</h2><span class="ruta-m">~/Proyectos/vetcare</span></div>
     <div class="chips"><span class="bd sec">Perfil M</span><span class="bd sec">Desarrollo</span></div></div>
-  <div class="reparto"><div class="rep-top"><span class="rep-num"><b>23</b>historias</span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>3</b> en curso</span><span><i class="pt-e e-espera"></i><b>2</b> en espera</span><span><i class="pt-e e-term"></i><b>16</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div><span class="barra-est" aria-hidden="true"><i class="e-curso" style="flex:3"></i><i class="e-espera" style="flex:2"></i><i class="e-term" style="flex:16"></i><i class="e-desc" style="flex:2"></i></span></div>
+  <div class="reparto"><div class="rep-top"><span class="rep-num"><b>23</b>historias</span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>3</b> en curso</span><span><i class="pt-e e-espera"></i><b>2</b> en espera</span><span><i class="pt-e e-term"></i><b>16</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div><span class="barra-est" role="img" aria-label="3 en curso, 2 en espera, 16 terminadas, 2 descartadas"><i class="e-curso" style="flex:3" title="3 en curso"></i><i class="e-espera" style="flex:2" title="2 en espera"></i><i class="e-term" style="flex:16" title="16 terminadas"></i><i class="e-desc" style="flex:2" title="2 descartadas"></i></span></div>
   <div class="chips"><span class="tec">NestJS 11</span><span class="tec">Next.js 15</span><span class="tec">PostgreSQL</span><span class="tec">BullMQ 5</span></div>
   <div class="pc-pie"><span><i class="ic i-clock"></i>Última actividad hace 25 min</span><span>3 repos</span></div>
 </a>
 <a class="card pcard" data-ir="pantalla=proyecto&estado=con-datos">
   <div class="pc-cab"><b class="mono-p lg">C</b><div class="pc-tit"><h2>Code AI Profiles</h2><span class="ruta-m">~/Desktop/PROYECTOS/BRAIYAN/CLAUDE_WRAPPER</span></div>
     <div class="chips"><span class="bd sec">Perfil S</span><span class="bd sec">Desarrollo</span></div></div>
-  <div class="reparto"><div class="rep-top"><span class="rep-num"><b>14</b>historias</span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>4</b> en curso</span><span><i class="pt-e e-espera"></i><b>1</b> en espera</span><span><i class="pt-e e-term"></i><b>7</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div><span class="barra-est" aria-hidden="true"><i class="e-curso" style="flex:4"></i><i class="e-espera" style="flex:1"></i><i class="e-term" style="flex:7"></i><i class="e-desc" style="flex:2"></i></span></div>
+  <div class="reparto"><div class="rep-top"><span class="rep-num"><b>14</b>historias</span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>4</b> en curso</span><span><i class="pt-e e-espera"></i><b>1</b> en espera</span><span><i class="pt-e e-term"></i><b>7</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div><span class="barra-est" role="img" aria-label="4 en curso, 1 en espera, 7 terminadas, 2 descartadas"><i class="e-curso" style="flex:4" title="4 en curso"></i><i class="e-espera" style="flex:1" title="1 en espera"></i><i class="e-term" style="flex:7" title="7 terminadas"></i><i class="e-desc" style="flex:2" title="2 descartadas"></i></span></div>
   <div class="chips"><span class="tec">React 19</span><span class="tec">Tauri 2</span><span class="tec">Rust</span><span class="tec">Vite 6</span><span class="tec">Tailwind CSS 4</span></div>
   <div class="pc-pie"><span><i class="ic i-clock"></i>Última actividad hace 2 h</span><span>1 repo</span></div>
 </a>
 <a class="card pcard">
   <div class="pc-cab"><b class="mono-p lg">L</b><div class="pc-tit"><h2>Lumen Tienda</h2><span class="ruta-m">~/Proyectos/lumen-tienda</span></div>
     <div class="chips"><span class="bd sec">Perfil S</span><span class="bd sec">Producción</span></div></div>
-  <div class="reparto"><div class="rep-top"><span class="rep-num"><b>31</b>historias</span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>0</b> en curso</span><span><i class="pt-e e-espera"></i><b>1</b> en espera</span><span><i class="pt-e e-term"></i><b>28</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div><span class="barra-est" aria-hidden="true"><i class="e-espera" style="flex:1"></i><i class="e-term" style="flex:28"></i><i class="e-desc" style="flex:2"></i></span></div>
+  <div class="reparto"><div class="rep-top"><span class="rep-num"><b>31</b>historias</span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>0</b> en curso</span><span><i class="pt-e e-espera"></i><b>1</b> en espera</span><span><i class="pt-e e-term"></i><b>28</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div><span class="barra-est" role="img" aria-label="1 en espera, 28 terminadas, 2 descartadas"><i class="e-espera" style="flex:1" title="1 en espera"></i><i class="e-term" style="flex:28" title="28 terminadas"></i><i class="e-desc" style="flex:2" title="2 descartadas"></i></span></div>
   <div class="chips"><span class="tec">Astro 5</span><span class="tec">Svelte 5</span><span class="tec">TypeScript</span><span class="tec">SQLite</span></div>
   <div class="pc-pie"><span><i class="ic i-clock"></i>Última actividad hace 6 días</span><span>1 repo</span></div>
 </a>
 <div class="card pcard roto">
-  <div class="pc-cab"><b class="mono-p lg roto"><i class="ic i-folder-x"></i></b><div class="pc-tit"><h2>panel-finanzas</h2><span class="ruta-m">~/Proyectos/panel-finanzas</span></div>
+  <div class="pc-cab"><b class="mono-p lg roto"><i class="ic i-folder-x"></i></b><div class="pc-tit"><h2>Panel Finanzas</h2><span class="ruta-m">~/Proyectos/panel-finanzas</span></div>
     <span class="bd err"><i class="dot"></i>Carpeta no encontrada</span></div>
-  <p class="pc-msg">La carpeta ya no está en esa ruta. Si la moviste, desánclala y vuelve a anclarla desde su nuevo sitio. Nada se borra.</p>
-  <div class="pc-pie"><span>Solo se guardó la ruta</span><span class="btn out sm" data-ir="pantalla=proyecto&estado=roto"><i class="ic i-pin-off"></i>Desanclar</span></div>
+  <p class="pc-msg">La carpeta ya no está en esa ruta. Si la moviste, desancla el proyecto y vuelve a anclarlo desde su nuevo sitio. Nada se borra.</p>
+  <div class="pc-pie"><span><i class="ic i-clock"></i>Leído por última vez el 17 oct</span><span class="btn out sm" data-ir="pantalla=proyecto&estado=roto"><i class="ic i-pin-off"></i>Desanclar</span></div>
 </div>
       </div>
     </div></section>
@@ -772,7 +920,7 @@ a { color:inherit; text-decoration:none; }
     <li class="ok"><i class="ic i-circle-check"></i><span>9 historias en <code>hu/</code></span><em>2 en curso</em></li>
     <li class="ok"><i class="ic i-circle-check"></i><span>2 repos</span><em>agenda-api · agenda-app</em></li>
   </ul>
-  <p class="nota-l"><i class="ic i-eye"></i><span>Solo se guarda la ruta. La app lee estos archivos y no cambia ni ejecuta nada en la carpeta.</span></p>
+  <p class="nota-l"><i class="ic i-eye"></i><span>Se guardan la ruta y el nombre. La app lee estos archivos y no cambia ni ejecuta nada en la carpeta.</span></p>
   <div class="dlg-pie"><span class="btn out">Elegir otra carpeta</span><span class="btn pri" data-ir="pantalla=proyectos&estado=con-datos"><i class="ic i-pin"></i>Anclar</span></div>
 </div>
 </div>
@@ -805,7 +953,7 @@ a { color:inherit; text-decoration:none; }
       <a class="sb-item" data-ir="pantalla=proyecto&estado=varios-repos"><b class="mono-p">V</b><span>Vetcare</span><em class="cnt">3</em></a>
       <a class="sb-item con-tip" data-ir="pantalla=proyecto&estado=con-datos"><b class="mono-p">C</b><span>Code AI Profiles</span><em class="cnt">4</em><span class="tip">Code AI Profiles · 4 en curso</span></a>
       <a class="sb-item"><b class="mono-p">L</b><span>Lumen Tienda</span></a>
-      <a class="sb-item roto" data-ir="pantalla=proyecto&estado=roto"><b class="mono-p roto">P</b><span>panel-finanzas</span><i class="ic i-triangle-alert alerta" title="Carpeta no encontrada"></i></a>
+      <a class="sb-item roto" data-ir="pantalla=proyecto&estado=roto"><b class="mono-p roto">P</b><span>Panel Finanzas</span><i class="ic i-triangle-alert alerta" title="Carpeta no encontrada"></i></a>
       <a class="sb-item nueva" data-ir="pantalla=anclar&estado=valido"><i class="ic i-folder-plus"></i><span>Anclar proyecto</span></a>
     </div>
     <div class="sb-pie">
@@ -814,35 +962,35 @@ a { color:inherit; text-decoration:none; }
     </div>
   </div></nav>
   <div class="main">
-    <section class="contenido"><div class="pila">
+    <section class="contenido"><div class="pila lista">
       <div class="barra-lista"><span>4 proyectos anclados · por última actividad</span><span><i class="ic i-eye"></i>Solo lectura · leídos a las 02:31</span></div>
       <div class="proyectos">
 <a class="card pcard" data-ir="pantalla=proyecto&estado=varios-repos">
   <div class="pc-cab"><b class="mono-p lg">V</b><div class="pc-tit"><h2>Vetcare</h2><span class="ruta-m">~/Proyectos/vetcare</span></div>
     <div class="chips"><span class="bd sec">Perfil M</span><span class="bd sec">Desarrollo</span></div></div>
-  <div class="reparto"><div class="rep-top"><span class="rep-num"><b>23</b>historias</span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>3</b> en curso</span><span><i class="pt-e e-espera"></i><b>2</b> en espera</span><span><i class="pt-e e-term"></i><b>16</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div><span class="barra-est" aria-hidden="true"><i class="e-curso" style="flex:3"></i><i class="e-espera" style="flex:2"></i><i class="e-term" style="flex:16"></i><i class="e-desc" style="flex:2"></i></span></div>
+  <div class="reparto"><div class="rep-top"><span class="rep-num"><b>23</b>historias</span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>3</b> en curso</span><span><i class="pt-e e-espera"></i><b>2</b> en espera</span><span><i class="pt-e e-term"></i><b>16</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div><span class="barra-est" role="img" aria-label="3 en curso, 2 en espera, 16 terminadas, 2 descartadas"><i class="e-curso" style="flex:3" title="3 en curso"></i><i class="e-espera" style="flex:2" title="2 en espera"></i><i class="e-term" style="flex:16" title="16 terminadas"></i><i class="e-desc" style="flex:2" title="2 descartadas"></i></span></div>
   <div class="chips"><span class="tec">NestJS 11</span><span class="tec">Next.js 15</span><span class="tec">PostgreSQL</span><span class="tec">BullMQ 5</span></div>
   <div class="pc-pie"><span><i class="ic i-clock"></i>Última actividad hace 25 min</span><span>3 repos</span></div>
 </a>
 <a class="card pcard" data-ir="pantalla=proyecto&estado=con-datos">
   <div class="pc-cab"><b class="mono-p lg">C</b><div class="pc-tit"><h2>Code AI Profiles</h2><span class="ruta-m">~/Desktop/PROYECTOS/BRAIYAN/CLAUDE_WRAPPER</span></div>
     <div class="chips"><span class="bd sec">Perfil S</span><span class="bd sec">Desarrollo</span></div></div>
-  <div class="reparto"><div class="rep-top"><span class="rep-num"><b>14</b>historias</span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>4</b> en curso</span><span><i class="pt-e e-espera"></i><b>1</b> en espera</span><span><i class="pt-e e-term"></i><b>7</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div><span class="barra-est" aria-hidden="true"><i class="e-curso" style="flex:4"></i><i class="e-espera" style="flex:1"></i><i class="e-term" style="flex:7"></i><i class="e-desc" style="flex:2"></i></span></div>
+  <div class="reparto"><div class="rep-top"><span class="rep-num"><b>14</b>historias</span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>4</b> en curso</span><span><i class="pt-e e-espera"></i><b>1</b> en espera</span><span><i class="pt-e e-term"></i><b>7</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div><span class="barra-est" role="img" aria-label="4 en curso, 1 en espera, 7 terminadas, 2 descartadas"><i class="e-curso" style="flex:4" title="4 en curso"></i><i class="e-espera" style="flex:1" title="1 en espera"></i><i class="e-term" style="flex:7" title="7 terminadas"></i><i class="e-desc" style="flex:2" title="2 descartadas"></i></span></div>
   <div class="chips"><span class="tec">React 19</span><span class="tec">Tauri 2</span><span class="tec">Rust</span><span class="tec">Vite 6</span><span class="tec">Tailwind CSS 4</span></div>
   <div class="pc-pie"><span><i class="ic i-clock"></i>Última actividad hace 2 h</span><span>1 repo</span></div>
 </a>
 <a class="card pcard">
   <div class="pc-cab"><b class="mono-p lg">L</b><div class="pc-tit"><h2>Lumen Tienda</h2><span class="ruta-m">~/Proyectos/lumen-tienda</span></div>
     <div class="chips"><span class="bd sec">Perfil S</span><span class="bd sec">Producción</span></div></div>
-  <div class="reparto"><div class="rep-top"><span class="rep-num"><b>31</b>historias</span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>0</b> en curso</span><span><i class="pt-e e-espera"></i><b>1</b> en espera</span><span><i class="pt-e e-term"></i><b>28</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div><span class="barra-est" aria-hidden="true"><i class="e-espera" style="flex:1"></i><i class="e-term" style="flex:28"></i><i class="e-desc" style="flex:2"></i></span></div>
+  <div class="reparto"><div class="rep-top"><span class="rep-num"><b>31</b>historias</span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>0</b> en curso</span><span><i class="pt-e e-espera"></i><b>1</b> en espera</span><span><i class="pt-e e-term"></i><b>28</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div><span class="barra-est" role="img" aria-label="1 en espera, 28 terminadas, 2 descartadas"><i class="e-espera" style="flex:1" title="1 en espera"></i><i class="e-term" style="flex:28" title="28 terminadas"></i><i class="e-desc" style="flex:2" title="2 descartadas"></i></span></div>
   <div class="chips"><span class="tec">Astro 5</span><span class="tec">Svelte 5</span><span class="tec">TypeScript</span><span class="tec">SQLite</span></div>
   <div class="pc-pie"><span><i class="ic i-clock"></i>Última actividad hace 6 días</span><span>1 repo</span></div>
 </a>
 <div class="card pcard roto">
-  <div class="pc-cab"><b class="mono-p lg roto"><i class="ic i-folder-x"></i></b><div class="pc-tit"><h2>panel-finanzas</h2><span class="ruta-m">~/Proyectos/panel-finanzas</span></div>
+  <div class="pc-cab"><b class="mono-p lg roto"><i class="ic i-folder-x"></i></b><div class="pc-tit"><h2>Panel Finanzas</h2><span class="ruta-m">~/Proyectos/panel-finanzas</span></div>
     <span class="bd err"><i class="dot"></i>Carpeta no encontrada</span></div>
-  <p class="pc-msg">La carpeta ya no está en esa ruta. Si la moviste, desánclala y vuelve a anclarla desde su nuevo sitio. Nada se borra.</p>
-  <div class="pc-pie"><span>Solo se guardó la ruta</span><span class="btn out sm" data-ir="pantalla=proyecto&estado=roto"><i class="ic i-pin-off"></i>Desanclar</span></div>
+  <p class="pc-msg">La carpeta ya no está en esa ruta. Si la moviste, desancla el proyecto y vuelve a anclarlo desde su nuevo sitio. Nada se borra.</p>
+  <div class="pc-pie"><span><i class="ic i-clock"></i>Leído por última vez el 17 oct</span><span class="btn out sm" data-ir="pantalla=proyecto&estado=roto"><i class="ic i-pin-off"></i>Desanclar</span></div>
 </div>
       </div>
     </div></section>
@@ -893,7 +1041,7 @@ a { color:inherit; text-decoration:none; }
       <a class="sb-item" data-ir="pantalla=proyecto&estado=varios-repos"><b class="mono-p">V</b><span>Vetcare</span><em class="cnt">3</em></a>
       <a class="sb-item activo con-tip" data-ir="pantalla=proyecto&estado=con-datos"><b class="mono-p">C</b><span>Code AI Profiles</span><em class="cnt">4</em><span class="tip">Code AI Profiles · 4 en curso</span></a>
       <a class="sb-item"><b class="mono-p">L</b><span>Lumen Tienda</span></a>
-      <a class="sb-item roto" data-ir="pantalla=proyecto&estado=roto"><b class="mono-p roto">P</b><span>panel-finanzas</span><i class="ic i-triangle-alert alerta" title="Carpeta no encontrada"></i></a>
+      <a class="sb-item roto" data-ir="pantalla=proyecto&estado=roto"><b class="mono-p roto">P</b><span>Panel Finanzas</span><i class="ic i-triangle-alert alerta" title="Carpeta no encontrada"></i></a>
       <a class="sb-item nueva" data-ir="pantalla=anclar&estado=valido"><i class="ic i-folder-plus"></i><span>Anclar proyecto</span></a>
     </div>
     <div class="sb-pie">
@@ -902,8 +1050,8 @@ a { color:inherit; text-decoration:none; }
     </div>
   </div></nav>
   <div class="main">
-    <section class="contenido scroll"><div class="pila">
-      <section class="card"><div class="heroe-p">
+    <section class="contenido scroll"><div class="pila secciones">
+      <section class="card heroe"><div class="heroe-p">
         <b class="mono-p xl">C</b>
         <div class="datos">
           <div class="chips"><span class="bd sec">Perfil S</span><span class="bd sec">Desarrollo</span><span class="bd pri">Metodología v4</span></div>
@@ -917,11 +1065,11 @@ a { color:inherit; text-decoration:none; }
         </div>
       </div></section>
       <section class="kpis" aria-label="Resumen del proyecto">
-        <div class="cifra ancha"><span class="etq">Historias</span><strong>14</strong><span class="barra-est" aria-hidden="true"><i class="e-curso" style="flex:4"></i><i class="e-espera" style="flex:1"></i><i class="e-term" style="flex:7"></i><i class="e-desc" style="flex:2"></i></span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>4</b> en curso</span><span><i class="pt-e e-espera"></i><b>1</b> en espera</span><span><i class="pt-e e-term"></i><b>7</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div>
+        <div class="cifra ancha"><span class="etq">Historias</span><strong>14</strong><span class="barra-est" role="img" aria-label="4 en curso, 1 en espera, 7 terminadas, 2 descartadas"><i class="e-curso" style="flex:4" title="4 en curso"></i><i class="e-espera" style="flex:1" title="1 en espera"></i><i class="e-term" style="flex:7" title="7 terminadas"></i><i class="e-desc" style="flex:2" title="2 descartadas"></i></span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>4</b> en curso</span><span><i class="pt-e e-espera"></i><b>1</b> en espera</span><span><i class="pt-e e-term"></i><b>7</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div>
         <div class="cifra"><span class="etq">Repos</span><strong>1</strong><span class="pista">otro</span></div>
         <div class="cifra"><span class="etq">Desde</span><strong>3 días</strong><span class="pista">27 oct → hoy</span></div>
-        <div class="cifra"><span class="etq">Tiempo registrado</span><strong>114 h</strong><span class="pista">reloj de 9 cerradas</span></div>
-        <div class="cifra"><span class="etq">Tokens</span><strong>892 M</strong><span class="pista">98 % de caché</span></div>
+        <div class="cifra"><span class="etq">Tiempo en fases</span><strong>56 h</strong><span class="pista">de 7 historias cerradas</span></div>
+        <div class="cifra"><span class="etq">Tokens</span><strong>572 M</strong><span class="pista">98 % caché</span><span class="sec-cifra"><b>2,7 M</b><span>entrada + salida</span></span></div>
       </section>
       <div class="dos">
         <section class="card" aria-label="Tecnologías">
@@ -941,51 +1089,49 @@ a { color:inherit; text-decoration:none; }
         </section>
       </div>
       <section class="card" aria-label="Historias">
-        <div class="card-cab"><div><h2 class="card-tit"><i class="ic i-list-filter"></i>Historias</h2><p class="card-desc">De <span class="mono">hu/</span>. Tiempo y tokens aparecen al cerrar o descartar la historia.</p></div><div class="seg" role="tablist"><span class="on" data-ir="pantalla=proyecto&estado=con-datos">Todas <em>14</em></span><span class="" data-ir="pantalla=proyecto&estado=filtrado"><i class="pt-e e-curso"></i>En curso <em>4</em></span><span class=""><i class="pt-e e-espera"></i>En espera <em>1</em></span><span class=""><i class="pt-e e-term"></i>Terminadas <em>7</em></span><span class=""><i class="pt-e e-desc"></i>Descartadas <em>2</em></span></div></div>
+        <div class="card-cab"><div><h2 class="card-tit"><i class="ic i-list-filter"></i>Historias</h2><p class="card-desc">De <span class="mono">hu/</span>. Tiempo y tokens aparecen al cerrar la historia.</p></div><div class="seg" role="tablist"><span class="on" data-ir="pantalla=proyecto&estado=con-datos">Todas <em>14</em></span><span class="" data-ir="pantalla=proyecto&estado=filtrado"><i class="pt-e e-curso"></i>En curso <em>4</em></span><span class=""><i class="pt-e e-espera"></i>En espera <em>1</em></span><span class=""><i class="pt-e e-term"></i>Terminadas <em>7</em></span><span class=""><i class="pt-e e-desc"></i>Descartadas <em>2</em></span></div></div>
         <table class="tabla">
-          <colgroup><col><col class="c-est"><col class="c-fase"><col class="c-area"><col class="c-fecha"><col class="c-t"><col class="c-k"></colgroup>
-          <thead><tr><th>Historia</th><th>Estado</th><th>Fase</th><th class="area">Área</th><th class="fecha">Creada</th><th class="n">Tiempo</th><th class="n">Tokens</th></tr></thead>
+          <colgroup><col class="c-hu"><col class="c-est"><col class="c-fase"><col class="c-area"><col class="c-t"><col class="c-k"></colgroup>
+          <thead><tr><th>Historia</th><th>Estado</th><th>Fase</th><th class="area">Área</th><th class="n">Tiempo</th><th class="n">Tokens</th></tr></thead>
           <tbody>
-            <tr><td><span class="id">HU-0023</span>Proyectos: resumen de proyectos con metodología v4</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Requisitos</td><td class="area mu">proyectos</td><td class="fecha mu">29 oct</td><td class="n vac">—</td><td class="n vac">—</td></tr>
-            <tr><td><span class="id">HU-0022</span>Configuración unificada con apariencia y permisos</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Requisitos</td><td class="area mu">interfaz</td><td class="fecha mu">29 oct</td><td class="n vac">—</td><td class="n vac">—</td></tr>
-            <tr><td><span class="id">HU-0021</span>Spike: relevo del retorno de inicio de sesión a la instancia correcta</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Requisitos</td><td class="area mu">instancias</td><td class="fecha mu">28 oct</td><td class="n vac">—</td><td class="n vac">—</td></tr>
-            <tr><td><span class="id">HU-0020</span>Icono personalizado de la instancia en el Dock de macOS</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">instancias</td><td class="fecha mu">28 oct</td><td class="n">2,3 h</td><td class="n">91,0 M</td></tr>
-            <tr><td><span class="id">HU-0019</span>Header compacto, sidebar flotante y tipografía legible</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">interfaz</td><td class="fecha mu">28 oct</td><td class="n">1,4 h</td><td class="n">75,1 M</td></tr>
-            <tr><td><span class="id">HU-0018</span>Descargar e instalar la original en Windows y Linux</td><td><span class="est espera"><i class="pt-e e-espera"></i>En espera</span></td><td>Requisitos</td><td class="area mu">actualizaciones</td><td class="fecha mu">28 oct</td><td class="n vac">—</td><td class="n vac">—</td></tr>
-            <tr><td><span class="id">HU-0017</span>Descargar e instalar la original en macOS</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Verificación</td><td class="area mu">actualizaciones</td><td class="fecha mu">28 oct</td><td class="n vac">—</td><td class="n vac">—</td></tr>
-            <tr><td><span class="id">HU-0016</span>Rediseño con sidebar, dashboard y página por instancia</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">interfaz</td><td class="fecha mu">28 oct</td><td class="n">2,2 h</td><td class="n">95,6 M</td></tr>
-            <tr><td><span class="id">HU-0015</span>Frontend escalable: componentes, features y router</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">interfaz</td><td class="fecha mu">28 oct</td><td class="n">6,8 h</td><td class="n">48,0 M</td></tr>
-            <tr><td><span class="id">HU-0014</span>Design system con shadcn y showcase local</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">interfaz</td><td class="fecha mu">28 oct</td><td class="n">9,3 h</td><td class="n">69,6 M</td></tr>
-            <tr><td><span class="id">HU-0013</span>Describir lo construido: reglas, arquitectura y componentes</td><td><span class="est desc"><i class="pt-e e-desc"></i>Descartada</span></td><td>Requisitos</td><td class="area mu">método</td><td class="fecha mu">27 oct</td><td class="n">28,0 h</td><td class="n">161,6 M</td></tr>
-            <tr><td><span class="id">HU-0012</span>Icono distintivo en el Dock de macOS</td><td><span class="est desc"><i class="pt-e e-desc"></i>Descartada</span></td><td>Requisitos</td><td class="area mu">instancias</td><td class="fecha mu">27 oct</td><td class="n">29,9 h</td><td class="n">159,1 M</td></tr>
-            <tr><td><span class="id">HU-0011</span>Adopción v4</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">método</td><td class="fecha mu">27 oct</td><td class="n">3,2 h</td><td class="n">18,5 M</td></tr>
-            <tr><td><span class="id">HU-0010</span>Publicar el fix de actualización como versión 0.2.2</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">versionado</td><td class="fecha mu">27 oct</td><td class="n">31,1 h</td><td class="n">173,8 M</td></tr>
+            <tr><td title="HU-0023 · Proyectos: resumen de proyectos con metodología v4 · creada el 29 oct"><span class="id">HU-0023</span>Proyectos: resumen de proyectos con metodología v4</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Requisitos</td><td class="area mu">proyectos</td><td class="n vac">—</td><td class="n vac">—</td></tr>
+            <tr><td title="HU-0022 · Configuración unificada con apariencia y permisos · creada el 29 oct"><span class="id">HU-0022</span>Configuración unificada con apariencia y permisos</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Requisitos</td><td class="area mu">interfaz</td><td class="n vac">—</td><td class="n vac">—</td></tr>
+            <tr><td title="HU-0021 · Spike: relevo del retorno de inicio de sesión a la instancia correcta · creada el 28 oct"><span class="id">HU-0021</span>Spike: relevo del retorno de inicio de sesión a la instancia correcta</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Requisitos</td><td class="area mu">instancias</td><td class="n vac">—</td><td class="n vac">—</td></tr>
+            <tr><td title="HU-0020 · Icono personalizado de la instancia en el Dock de macOS · creada el 28 oct"><span class="id">HU-0020</span>Icono personalizado de la instancia en el Dock de macOS</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">instancias</td><td class="n">2,3 h</td><td class="n">91,0 M</td></tr>
+            <tr><td title="HU-0019 · Header compacto, sidebar flotante y tipografía legible · creada el 28 oct"><span class="id">HU-0019</span>Header compacto, sidebar flotante y tipografía legible</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">interfaz</td><td class="n">1,4 h</td><td class="n">75,1 M</td></tr>
+            <tr><td title="HU-0018 · Descargar e instalar la original en Windows y Linux · creada el 28 oct"><span class="id">HU-0018</span>Descargar e instalar la original en Windows y Linux</td><td><span class="est espera"><i class="pt-e e-espera"></i>En espera</span></td><td>Requisitos</td><td class="area mu">actualizaciones</td><td class="n vac">—</td><td class="n vac">—</td></tr>
+            <tr><td title="HU-0017 · Descargar e instalar la original en macOS · creada el 28 oct"><span class="id">HU-0017</span>Descargar e instalar la original en macOS</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Verificación</td><td class="area mu">actualizaciones</td><td class="n vac">—</td><td class="n vac">—</td></tr>
+            <tr><td title="HU-0016 · Rediseño con sidebar, dashboard y página por instancia · creada el 28 oct"><span class="id">HU-0016</span>Rediseño con sidebar, dashboard y página por instancia</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">interfaz</td><td class="n">2,2 h</td><td class="n">95,6 M</td></tr>
+            <tr><td title="HU-0015 · Frontend escalable: componentes, features y router · creada el 28 oct"><span class="id">HU-0015</span>Frontend escalable: componentes, features y router</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">interfaz</td><td class="n">6,8 h</td><td class="n">48,0 M</td></tr>
+            <tr><td title="HU-0014 · Design system con shadcn y showcase local · creada el 28 oct"><span class="id">HU-0014</span>Design system con shadcn y showcase local</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">interfaz</td><td class="n">9,3 h</td><td class="n">69,6 M</td></tr>
+            <tr class="no-suma" title="Descartada: no suma en los totales"><td title="HU-0013 · Describir lo construido: reglas, arquitectura y componentes · creada el 27 oct"><span class="id">HU-0013</span>Describir lo construido: reglas, arquitectura y componentes</td><td><span class="est desc"><i class="pt-e e-desc"></i>Descartada</span></td><td>Requisitos</td><td class="area mu">método</td><td class="n">28,0 h</td><td class="n">161,6 M</td></tr>
+            <tr class="no-suma" title="Descartada: no suma en los totales"><td title="HU-0012 · Icono distintivo en el Dock de macOS · creada el 27 oct"><span class="id">HU-0012</span>Icono distintivo en el Dock de macOS</td><td><span class="est desc"><i class="pt-e e-desc"></i>Descartada</span></td><td>Requisitos</td><td class="area mu">instancias</td><td class="n">29,9 h</td><td class="n">159,1 M</td></tr>
+            <tr><td title="HU-0011 · Adopción v4 · creada el 27 oct"><span class="id">HU-0011</span>Adopción v4</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">método</td><td class="n">3,2 h</td><td class="n">18,5 M</td></tr>
+            <tr><td title="HU-0010 · Publicar el fix de actualización como versión 0.2.2 · creada el 27 oct"><span class="id">HU-0010</span>Publicar el fix de actualización como versión 0.2.2</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">versionado</td><td class="n">31,1 h</td><td class="n">173,8 M</td></tr>
           </tbody>
         </table>
-        <div class="pie-tabla"><span>14 historias · de la más reciente a la más antigua</span><span>Cerradas: 114,2 h · 892,2 M</span></div>
+        <div class="pie-tabla"><span>14 historias, de la más reciente a la más antigua</span><span>Suman las 7 terminadas: 56,4 h · 571,5 M. Las descartadas, en gris, no suman.</span></div>
       </section>
       <section class="card" aria-label="Consumo">
-        <div class="card-cab"><div><h2 class="card-tit"><i class="ic i-coins"></i>Consumo</h2><p class="card-desc">Tokens de las 9 historias cerradas o descartadas, sumados de sus <span class="mono">metricas.json</span>.</p></div><span class="bd sec">892,2 M</span></div>
+        <div class="card-cab"><div><h2 class="card-tit"><i class="ic i-coins"></i>Consumo</h2><p class="card-desc">Tokens de las 7 historias terminadas, sumados de sus <span class="mono">metricas.json</span>. Las 2 descartadas no suman.</p></div><span class="bd sec">571,5 M</span></div>
         <div class="consumo">
-          <div><h3 class="etq">Por historia</h3><div class="barras">
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0010</span>Publicar el fix de actualización como versión 0.2.2</span><span class="pista-b"><i style="width:100.0%"></i></span><span class="val">173,8 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-desc"></i><span class="id">HU-0013</span>Describir lo construido: reglas, arquitectura y componentes</span><span class="pista-b"><i style="width:93.0%"></i></span><span class="val">161,6 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-desc"></i><span class="id">HU-0012</span>Icono distintivo en el Dock de macOS</span><span class="pista-b"><i style="width:91.5%"></i></span><span class="val">159,1 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0016</span>Rediseño con sidebar, dashboard y página por instancia</span><span class="pista-b"><i style="width:55.0%"></i></span><span class="val">95,6 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0020</span>Icono personalizado de la instancia en el Dock de macOS</span><span class="pista-b"><i style="width:52.4%"></i></span><span class="val">91,0 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0019</span>Header compacto, sidebar flotante y tipografía legible</span><span class="pista-b"><i style="width:43.2%"></i></span><span class="val">75,1 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0014</span>Design system con shadcn y showcase local</span><span class="pista-b"><i style="width:40.0%"></i></span><span class="val">69,6 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0015</span>Frontend escalable: componentes, features y router</span><span class="pista-b"><i style="width:27.6%"></i></span><span class="val">48,0 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0011</span>Adopción v4</span><span class="pista-b"><i style="width:10.6%"></i></span><span class="val">18,5 M</span></div>
+          <div class="col-h"><h3 class="etq">Por historia</h3><div class="barras">
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0010</span>Publicar el fix de actualización como versión 0.2.2</span><span class="pista-b"><i style="width:100.0%"></i></span><span class="val">173,8 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0016</span>Rediseño con sidebar, dashboard y página por instancia</span><span class="pista-b"><i style="width:55.0%"></i></span><span class="val">95,6 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0020</span>Icono personalizado de la instancia en el Dock de macOS</span><span class="pista-b"><i style="width:52.4%"></i></span><span class="val">91,0 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0019</span>Header compacto, sidebar flotante y tipografía legible</span><span class="pista-b"><i style="width:43.2%"></i></span><span class="val">75,1 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0014</span>Design system con shadcn y showcase local</span><span class="pista-b"><i style="width:40.0%"></i></span><span class="val">69,6 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0015</span>Frontend escalable: componentes, features y router</span><span class="pista-b"><i style="width:27.6%"></i></span><span class="val">48,0 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0011</span>Adopción v4</span><span class="pista-b"><i style="width:10.6%"></i></span><span class="val">18,5 M</span></div>
           </div></div>
-          <div><h3 class="etq">Por rol</h3><div class="barras rol">
-            <div class="bar-f"><span class="lbl mono">orquestador</span><span class="pista-b"><i style="width:100.0%"></i></span><span class="val">≈ 647,6 M <small>73 %</small></span></div>
-            <div class="bar-f"><span class="lbl mono">frontend</span><span class="pista-b"><i style="width:22.2%"></i></span><span class="val">143,5 M <small>16 %</small></span></div>
-            <div class="bar-f"><span class="lbl mono">architect</span><span class="pista-b"><i style="width:10.1%"></i></span><span class="val">65,6 M <small>7 %</small></span></div>
-            <div class="bar-f"><span class="lbl mono">backend</span><span class="pista-b"><i style="width:4.0%"></i></span><span class="val">25,6 M <small>3 %</small></span></div>
-            <div class="bar-f"><span class="lbl mono">general-purpose</span><span class="pista-b"><i style="width:1.5%"></i></span><span class="val">9,9 M <small>1 %</small></span></div>
+          <div class="col-r"><h3 class="etq">Por rol</h3><div class="barras rol">
+            <div class="bar-f"><span class="lbl mono">orquestador</span><span class="pista-b"><i style="width:100.0%"></i></span><span class="val">≈ 327,0 M <small>57 %</small></span></div>
+            <div class="bar-f"><span class="lbl mono">frontend</span><span class="pista-b"><i style="width:43.9%"></i></span><span class="val">143,5 M <small>25 %</small></span></div>
+            <div class="bar-f"><span class="lbl mono">architect</span><span class="pista-b"><i style="width:20.1%"></i></span><span class="val">65,6 M <small>11 %</small></span></div>
+            <div class="bar-f"><span class="lbl mono">backend</span><span class="pista-b"><i style="width:7.8%"></i></span><span class="val">25,6 M <small>4 %</small></span></div>
+            <div class="bar-f"><span class="lbl mono">general-purpose</span><span class="pista-b"><i style="width:3.0%"></i></span><span class="val">9,9 M <small>2 %</small></span></div>
           </div>
-          <p class="nota-c">≈ El del orquestador es aproximado: si se trabajan dos historias a la vez, se reparte mal. El punto de cada historia es su estado: las descartadas también consumen.</p></div>
+          <p class="nota-c">≈ El del orquestador es aproximado: si se trabajan dos historias a la vez, se reparte mal.</p></div>
         </div>
       </section>
     </div></section>
@@ -1025,7 +1171,7 @@ a { color:inherit; text-decoration:none; }
       <a class="sb-item" data-ir="pantalla=proyecto&estado=varios-repos"><b class="mono-p">V</b><span>Vetcare</span><em class="cnt">3</em></a>
       <a class="sb-item activo con-tip" data-ir="pantalla=proyecto&estado=con-datos"><b class="mono-p">C</b><span>Code AI Profiles</span><em class="cnt">4</em><span class="tip">Code AI Profiles · 4 en curso</span></a>
       <a class="sb-item"><b class="mono-p">L</b><span>Lumen Tienda</span></a>
-      <a class="sb-item roto" data-ir="pantalla=proyecto&estado=roto"><b class="mono-p roto">P</b><span>panel-finanzas</span><i class="ic i-triangle-alert alerta" title="Carpeta no encontrada"></i></a>
+      <a class="sb-item roto" data-ir="pantalla=proyecto&estado=roto"><b class="mono-p roto">P</b><span>Panel Finanzas</span><i class="ic i-triangle-alert alerta" title="Carpeta no encontrada"></i></a>
       <a class="sb-item nueva" data-ir="pantalla=anclar&estado=valido"><i class="ic i-folder-plus"></i><span>Anclar proyecto</span></a>
     </div>
     <div class="sb-pie">
@@ -1034,8 +1180,8 @@ a { color:inherit; text-decoration:none; }
     </div>
   </div></nav>
   <div class="main">
-    <section class="contenido scroll"><div class="pila">
-      <section class="card"><div class="heroe-p">
+    <section class="contenido scroll"><div class="pila secciones">
+      <section class="card heroe"><div class="heroe-p">
         <b class="mono-p xl">C</b>
         <div class="datos">
           <div class="chips"><span class="bd sec">Perfil S</span><span class="bd sec">Desarrollo</span><span class="bd pri">Metodología v4</span></div>
@@ -1049,11 +1195,11 @@ a { color:inherit; text-decoration:none; }
         </div>
       </div></section>
       <section class="kpis" aria-label="Resumen del proyecto">
-        <div class="cifra ancha"><span class="etq">Historias</span><strong>14</strong><span class="barra-est" aria-hidden="true"><i class="e-curso" style="flex:4"></i><i class="e-espera" style="flex:1"></i><i class="e-term" style="flex:7"></i><i class="e-desc" style="flex:2"></i></span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>4</b> en curso</span><span><i class="pt-e e-espera"></i><b>1</b> en espera</span><span><i class="pt-e e-term"></i><b>7</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div>
+        <div class="cifra ancha"><span class="etq">Historias</span><strong>14</strong><span class="barra-est" role="img" aria-label="4 en curso, 1 en espera, 7 terminadas, 2 descartadas"><i class="e-curso" style="flex:4" title="4 en curso"></i><i class="e-espera" style="flex:1" title="1 en espera"></i><i class="e-term" style="flex:7" title="7 terminadas"></i><i class="e-desc" style="flex:2" title="2 descartadas"></i></span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>4</b> en curso</span><span><i class="pt-e e-espera"></i><b>1</b> en espera</span><span><i class="pt-e e-term"></i><b>7</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div>
         <div class="cifra"><span class="etq">Repos</span><strong>1</strong><span class="pista">otro</span></div>
         <div class="cifra"><span class="etq">Desde</span><strong>3 días</strong><span class="pista">27 oct → hoy</span></div>
-        <div class="cifra"><span class="etq">Tiempo registrado</span><strong>114 h</strong><span class="pista">reloj de 9 cerradas</span></div>
-        <div class="cifra"><span class="etq">Tokens</span><strong>892 M</strong><span class="pista">98 % de caché</span></div>
+        <div class="cifra"><span class="etq">Tiempo en fases</span><strong>56 h</strong><span class="pista">de 7 historias cerradas</span></div>
+        <div class="cifra"><span class="etq">Tokens</span><strong>572 M</strong><span class="pista">98 % caché</span><span class="sec-cifra"><b>2,7 M</b><span>entrada + salida</span></span></div>
       </section>
       <div class="dos">
         <section class="card" aria-label="Tecnologías">
@@ -1073,41 +1219,39 @@ a { color:inherit; text-decoration:none; }
         </section>
       </div>
       <section class="card" aria-label="Historias">
-        <div class="card-cab"><div><h2 class="card-tit"><i class="ic i-list-filter"></i>Historias</h2><p class="card-desc">De <span class="mono">hu/</span>. Tiempo y tokens aparecen al cerrar o descartar la historia.</p></div><div class="seg" role="tablist"><span class="" data-ir="pantalla=proyecto&estado=con-datos">Todas <em>14</em></span><span class="on" data-ir="pantalla=proyecto&estado=filtrado"><i class="pt-e e-curso"></i>En curso <em>4</em></span><span class=""><i class="pt-e e-espera"></i>En espera <em>1</em></span><span class=""><i class="pt-e e-term"></i>Terminadas <em>7</em></span><span class=""><i class="pt-e e-desc"></i>Descartadas <em>2</em></span></div></div>
+        <div class="card-cab"><div><h2 class="card-tit"><i class="ic i-list-filter"></i>Historias</h2><p class="card-desc">De <span class="mono">hu/</span>. Tiempo y tokens aparecen al cerrar la historia.</p></div><div class="seg" role="tablist"><span class="" data-ir="pantalla=proyecto&estado=con-datos">Todas <em>14</em></span><span class="on" data-ir="pantalla=proyecto&estado=filtrado"><i class="pt-e e-curso"></i>En curso <em>4</em></span><span class=""><i class="pt-e e-espera"></i>En espera <em>1</em></span><span class=""><i class="pt-e e-term"></i>Terminadas <em>7</em></span><span class=""><i class="pt-e e-desc"></i>Descartadas <em>2</em></span></div></div>
         <table class="tabla">
-          <colgroup><col><col class="c-est"><col class="c-fase"><col class="c-area"><col class="c-fecha"><col class="c-t"><col class="c-k"></colgroup>
-          <thead><tr><th>Historia</th><th>Estado</th><th>Fase</th><th class="area">Área</th><th class="fecha">Creada</th><th class="n">Tiempo</th><th class="n">Tokens</th></tr></thead>
+          <colgroup><col class="c-hu"><col class="c-est"><col class="c-fase"><col class="c-area"><col class="c-t"><col class="c-k"></colgroup>
+          <thead><tr><th>Historia</th><th>Estado</th><th>Fase</th><th class="area">Área</th><th class="n">Tiempo</th><th class="n">Tokens</th></tr></thead>
           <tbody>
-            <tr><td><span class="id">HU-0023</span>Proyectos: resumen de proyectos con metodología v4</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Requisitos</td><td class="area mu">proyectos</td><td class="fecha mu">29 oct</td><td class="n vac">—</td><td class="n vac">—</td></tr>
-            <tr><td><span class="id">HU-0022</span>Configuración unificada con apariencia y permisos</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Requisitos</td><td class="area mu">interfaz</td><td class="fecha mu">29 oct</td><td class="n vac">—</td><td class="n vac">—</td></tr>
-            <tr><td><span class="id">HU-0021</span>Spike: relevo del retorno de inicio de sesión a la instancia correcta</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Requisitos</td><td class="area mu">instancias</td><td class="fecha mu">28 oct</td><td class="n vac">—</td><td class="n vac">—</td></tr>
-            <tr><td><span class="id">HU-0017</span>Descargar e instalar la original en macOS</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Verificación</td><td class="area mu">actualizaciones</td><td class="fecha mu">28 oct</td><td class="n vac">—</td><td class="n vac">—</td></tr>
+            <tr><td title="HU-0023 · Proyectos: resumen de proyectos con metodología v4 · creada el 29 oct"><span class="id">HU-0023</span>Proyectos: resumen de proyectos con metodología v4</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Requisitos</td><td class="area mu">proyectos</td><td class="n vac">—</td><td class="n vac">—</td></tr>
+            <tr><td title="HU-0022 · Configuración unificada con apariencia y permisos · creada el 29 oct"><span class="id">HU-0022</span>Configuración unificada con apariencia y permisos</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Requisitos</td><td class="area mu">interfaz</td><td class="n vac">—</td><td class="n vac">—</td></tr>
+            <tr><td title="HU-0021 · Spike: relevo del retorno de inicio de sesión a la instancia correcta · creada el 28 oct"><span class="id">HU-0021</span>Spike: relevo del retorno de inicio de sesión a la instancia correcta</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Requisitos</td><td class="area mu">instancias</td><td class="n vac">—</td><td class="n vac">—</td></tr>
+            <tr><td title="HU-0017 · Descargar e instalar la original en macOS · creada el 28 oct"><span class="id">HU-0017</span>Descargar e instalar la original en macOS</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Verificación</td><td class="area mu">actualizaciones</td><td class="n vac">—</td><td class="n vac">—</td></tr>
           </tbody>
         </table>
         <div class="pie-tabla"><span>4 de 14 historias · en curso</span><span></span></div>
       </section>
       <section class="card" aria-label="Consumo">
-        <div class="card-cab"><div><h2 class="card-tit"><i class="ic i-coins"></i>Consumo</h2><p class="card-desc">Tokens de las 9 historias cerradas o descartadas, sumados de sus <span class="mono">metricas.json</span>.</p></div><span class="bd sec">892,2 M</span></div>
+        <div class="card-cab"><div><h2 class="card-tit"><i class="ic i-coins"></i>Consumo</h2><p class="card-desc">Tokens de las 7 historias terminadas, sumados de sus <span class="mono">metricas.json</span>. Las 2 descartadas no suman.</p></div><span class="bd sec">571,5 M</span></div>
         <div class="consumo">
-          <div><h3 class="etq">Por historia</h3><div class="barras">
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0010</span>Publicar el fix de actualización como versión 0.2.2</span><span class="pista-b"><i style="width:100.0%"></i></span><span class="val">173,8 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-desc"></i><span class="id">HU-0013</span>Describir lo construido: reglas, arquitectura y componentes</span><span class="pista-b"><i style="width:93.0%"></i></span><span class="val">161,6 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-desc"></i><span class="id">HU-0012</span>Icono distintivo en el Dock de macOS</span><span class="pista-b"><i style="width:91.5%"></i></span><span class="val">159,1 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0016</span>Rediseño con sidebar, dashboard y página por instancia</span><span class="pista-b"><i style="width:55.0%"></i></span><span class="val">95,6 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0020</span>Icono personalizado de la instancia en el Dock de macOS</span><span class="pista-b"><i style="width:52.4%"></i></span><span class="val">91,0 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0019</span>Header compacto, sidebar flotante y tipografía legible</span><span class="pista-b"><i style="width:43.2%"></i></span><span class="val">75,1 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0014</span>Design system con shadcn y showcase local</span><span class="pista-b"><i style="width:40.0%"></i></span><span class="val">69,6 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0015</span>Frontend escalable: componentes, features y router</span><span class="pista-b"><i style="width:27.6%"></i></span><span class="val">48,0 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0011</span>Adopción v4</span><span class="pista-b"><i style="width:10.6%"></i></span><span class="val">18,5 M</span></div>
+          <div class="col-h"><h3 class="etq">Por historia</h3><div class="barras">
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0010</span>Publicar el fix de actualización como versión 0.2.2</span><span class="pista-b"><i style="width:100.0%"></i></span><span class="val">173,8 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0016</span>Rediseño con sidebar, dashboard y página por instancia</span><span class="pista-b"><i style="width:55.0%"></i></span><span class="val">95,6 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0020</span>Icono personalizado de la instancia en el Dock de macOS</span><span class="pista-b"><i style="width:52.4%"></i></span><span class="val">91,0 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0019</span>Header compacto, sidebar flotante y tipografía legible</span><span class="pista-b"><i style="width:43.2%"></i></span><span class="val">75,1 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0014</span>Design system con shadcn y showcase local</span><span class="pista-b"><i style="width:40.0%"></i></span><span class="val">69,6 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0015</span>Frontend escalable: componentes, features y router</span><span class="pista-b"><i style="width:27.6%"></i></span><span class="val">48,0 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0011</span>Adopción v4</span><span class="pista-b"><i style="width:10.6%"></i></span><span class="val">18,5 M</span></div>
           </div></div>
-          <div><h3 class="etq">Por rol</h3><div class="barras rol">
-            <div class="bar-f"><span class="lbl mono">orquestador</span><span class="pista-b"><i style="width:100.0%"></i></span><span class="val">≈ 647,6 M <small>73 %</small></span></div>
-            <div class="bar-f"><span class="lbl mono">frontend</span><span class="pista-b"><i style="width:22.2%"></i></span><span class="val">143,5 M <small>16 %</small></span></div>
-            <div class="bar-f"><span class="lbl mono">architect</span><span class="pista-b"><i style="width:10.1%"></i></span><span class="val">65,6 M <small>7 %</small></span></div>
-            <div class="bar-f"><span class="lbl mono">backend</span><span class="pista-b"><i style="width:4.0%"></i></span><span class="val">25,6 M <small>3 %</small></span></div>
-            <div class="bar-f"><span class="lbl mono">general-purpose</span><span class="pista-b"><i style="width:1.5%"></i></span><span class="val">9,9 M <small>1 %</small></span></div>
+          <div class="col-r"><h3 class="etq">Por rol</h3><div class="barras rol">
+            <div class="bar-f"><span class="lbl mono">orquestador</span><span class="pista-b"><i style="width:100.0%"></i></span><span class="val">≈ 327,0 M <small>57 %</small></span></div>
+            <div class="bar-f"><span class="lbl mono">frontend</span><span class="pista-b"><i style="width:43.9%"></i></span><span class="val">143,5 M <small>25 %</small></span></div>
+            <div class="bar-f"><span class="lbl mono">architect</span><span class="pista-b"><i style="width:20.1%"></i></span><span class="val">65,6 M <small>11 %</small></span></div>
+            <div class="bar-f"><span class="lbl mono">backend</span><span class="pista-b"><i style="width:7.8%"></i></span><span class="val">25,6 M <small>4 %</small></span></div>
+            <div class="bar-f"><span class="lbl mono">general-purpose</span><span class="pista-b"><i style="width:3.0%"></i></span><span class="val">9,9 M <small>2 %</small></span></div>
           </div>
-          <p class="nota-c">≈ El del orquestador es aproximado: si se trabajan dos historias a la vez, se reparte mal. El punto de cada historia es su estado: las descartadas también consumen.</p></div>
+          <p class="nota-c">≈ El del orquestador es aproximado: si se trabajan dos historias a la vez, se reparte mal.</p></div>
         </div>
       </section>
     </div></section>
@@ -1147,7 +1291,7 @@ a { color:inherit; text-decoration:none; }
       <a class="sb-item activo" data-ir="pantalla=proyecto&estado=varios-repos"><b class="mono-p">V</b><span>Vetcare</span><em class="cnt">3</em></a>
       <a class="sb-item con-tip" data-ir="pantalla=proyecto&estado=con-datos"><b class="mono-p">C</b><span>Code AI Profiles</span><em class="cnt">4</em><span class="tip">Code AI Profiles · 4 en curso</span></a>
       <a class="sb-item"><b class="mono-p">L</b><span>Lumen Tienda</span></a>
-      <a class="sb-item roto" data-ir="pantalla=proyecto&estado=roto"><b class="mono-p roto">P</b><span>panel-finanzas</span><i class="ic i-triangle-alert alerta" title="Carpeta no encontrada"></i></a>
+      <a class="sb-item roto" data-ir="pantalla=proyecto&estado=roto"><b class="mono-p roto">P</b><span>Panel Finanzas</span><i class="ic i-triangle-alert alerta" title="Carpeta no encontrada"></i></a>
       <a class="sb-item nueva" data-ir="pantalla=anclar&estado=valido"><i class="ic i-folder-plus"></i><span>Anclar proyecto</span></a>
     </div>
     <div class="sb-pie">
@@ -1156,8 +1300,8 @@ a { color:inherit; text-decoration:none; }
     </div>
   </div></nav>
   <div class="main">
-    <section class="contenido scroll"><div class="pila">
-      <section class="card"><div class="heroe-p">
+    <section class="contenido scroll"><div class="pila secciones">
+      <section class="card heroe"><div class="heroe-p">
         <b class="mono-p xl">V</b>
         <div class="datos">
           <div class="chips"><span class="bd sec">Perfil M</span><span class="bd sec">Desarrollo</span><span class="bd pri">Metodología v4</span></div>
@@ -1171,11 +1315,11 @@ a { color:inherit; text-decoration:none; }
         </div>
       </div></section>
       <section class="kpis" aria-label="Resumen del proyecto">
-        <div class="cifra ancha"><span class="etq">Historias</span><strong>23</strong><span class="barra-est" aria-hidden="true"><i class="e-curso" style="flex:3"></i><i class="e-espera" style="flex:2"></i><i class="e-term" style="flex:16"></i><i class="e-desc" style="flex:2"></i></span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>3</b> en curso</span><span><i class="pt-e e-espera"></i><b>2</b> en espera</span><span><i class="pt-e e-term"></i><b>16</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div>
+        <div class="cifra ancha"><span class="etq">Historias</span><strong>23</strong><span class="barra-est" role="img" aria-label="3 en curso, 2 en espera, 16 terminadas, 2 descartadas"><i class="e-curso" style="flex:3" title="3 en curso"></i><i class="e-espera" style="flex:2" title="2 en espera"></i><i class="e-term" style="flex:16" title="16 terminadas"></i><i class="e-desc" style="flex:2" title="2 descartadas"></i></span><span class="leyenda"><span><i class="pt-e e-curso"></i><b>3</b> en curso</span><span><i class="pt-e e-espera"></i><b>2</b> en espera</span><span><i class="pt-e e-term"></i><b>16</b> terminadas</span><span><i class="pt-e e-desc"></i><b>2</b> descartadas</span></span></div>
         <div class="cifra"><span class="etq">Repos</span><strong>3</strong><span class="pista">api · app · worker</span></div>
         <div class="cifra"><span class="etq">Desde</span><strong>42 días</strong><span class="pista">18 sep → hoy</span></div>
-        <div class="cifra"><span class="etq">Tiempo registrado</span><strong>370 h</strong><span class="pista">reloj de 18 cerradas</span></div>
-        <div class="cifra"><span class="etq">Tokens</span><strong>3.474 M</strong><span class="pista">97 % de caché</span></div>
+        <div class="cifra"><span class="etq">Tiempo en fases</span><strong>321 h</strong><span class="pista">de 16 historias cerradas</span></div>
+        <div class="cifra"><span class="etq">Tokens</span><strong>3.280 M</strong><span class="pista">97 % caché</span><span class="sec-cifra"><b>8,9 M</b><span>entrada + salida</span></span></div>
       </section>
       <div class="dos">
         <section class="card" aria-label="Tecnologías">
@@ -1205,68 +1349,66 @@ a { color:inherit; text-decoration:none; }
         </section>
       </div>
       <section class="card" aria-label="Historias">
-        <div class="card-cab"><div><h2 class="card-tit"><i class="ic i-list-filter"></i>Historias</h2><p class="card-desc">De <span class="mono">hu/</span>. Tiempo y tokens aparecen al cerrar o descartar la historia.</p></div><div class="seg" role="tablist"><span class="on" data-ir="pantalla=proyecto&estado=varios-repos">Todas <em>23</em></span><span class=""><i class="pt-e e-curso"></i>En curso <em>3</em></span><span class=""><i class="pt-e e-espera"></i>En espera <em>2</em></span><span class=""><i class="pt-e e-term"></i>Terminadas <em>16</em></span><span class=""><i class="pt-e e-desc"></i>Descartadas <em>2</em></span></div></div>
+        <div class="card-cab"><div><h2 class="card-tit"><i class="ic i-list-filter"></i>Historias</h2><p class="card-desc">De <span class="mono">hu/</span>. Tiempo y tokens aparecen al cerrar la historia.</p></div><div class="seg" role="tablist"><span class="on" data-ir="pantalla=proyecto&estado=varios-repos">Todas <em>23</em></span><span class=""><i class="pt-e e-curso"></i>En curso <em>3</em></span><span class=""><i class="pt-e e-espera"></i>En espera <em>2</em></span><span class=""><i class="pt-e e-term"></i>Terminadas <em>16</em></span><span class=""><i class="pt-e e-desc"></i>Descartadas <em>2</em></span></div></div>
         <table class="tabla">
-          <colgroup><col><col class="c-est"><col class="c-fase"><col class="c-area"><col class="c-fecha"><col class="c-t"><col class="c-k"></colgroup>
-          <thead><tr><th>Historia</th><th>Estado</th><th>Fase</th><th class="area">Área</th><th class="fecha">Creada</th><th class="n">Tiempo</th><th class="n">Tokens</th></tr></thead>
+          <colgroup><col class="c-hu"><col class="c-est"><col class="c-fase"><col class="c-area"><col class="c-t"><col class="c-k"></colgroup>
+          <thead><tr><th>Historia</th><th>Estado</th><th>Fase</th><th class="area">Área</th><th class="n">Tiempo</th><th class="n">Tokens</th></tr></thead>
           <tbody>
-            <tr><td><span class="id">HU-0023</span>Agenda compartida entre sedes</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Implementación</td><td class="area mu">agenda</td><td class="fecha mu">27 oct</td><td class="n vac">—</td><td class="n vac">—</td></tr>
-            <tr><td><span class="id">HU-0022</span>Recordatorio de vacunas por mensaje</td><td><span class="est espera"><i class="pt-e e-espera"></i>En espera</span></td><td>Requisitos</td><td class="area mu">avisos</td><td class="fecha mu">24 oct</td><td class="n vac">—</td><td class="n vac">—</td></tr>
-            <tr><td><span class="id">HU-0021</span>Historia clínica con adjuntos</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Verificación</td><td class="area mu">historia clínica</td><td class="fecha mu">22 oct</td><td class="n vac">—</td><td class="n vac">—</td></tr>
-            <tr><td><span class="id">HU-0020</span>Exportar las facturas del mes</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Arquitectura</td><td class="area mu">facturación</td><td class="fecha mu">21 oct</td><td class="n vac">—</td><td class="n vac">—</td></tr>
-            <tr><td><span class="id">HU-0019</span>Pagos parciales en caja</td><td><span class="est espera"><i class="pt-e e-espera"></i>En espera</span></td><td>Requisitos</td><td class="area mu">facturación</td><td class="fecha mu">20 oct</td><td class="n vac">—</td><td class="n vac">—</td></tr>
-            <tr><td><span class="id">HU-0018</span>Recetas en PDF</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">historia clínica</td><td class="fecha mu">17 oct</td><td class="n">14,2 h</td><td class="n">162,4 M</td></tr>
-            <tr><td><span class="id">HU-0017</span>Cola de envíos con reintentos</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">avisos</td><td class="fecha mu">15 oct</td><td class="n">21,5 h</td><td class="n">240,8 M</td></tr>
-            <tr><td><span class="id">HU-0016</span>Búsqueda de mascotas por dueño</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">agenda</td><td class="fecha mu">13 oct</td><td class="n">10,2 h</td><td class="n">118,3 M</td></tr>
-            <tr><td><span class="id">HU-0015</span>Panel del día para recepción</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">agenda</td><td class="fecha mu">10 oct</td><td class="n">30,3 h</td><td class="n">301,5 M</td></tr>
-            <tr><td><span class="id">HU-0014</span>Integración con laboratorio externo</td><td><span class="est desc"><i class="pt-e e-desc"></i>Descartada</span></td><td>Requisitos</td><td class="area mu">historia clínica</td><td class="fecha mu">8 oct</td><td class="n">40,2 h</td><td class="n">96,2 M</td></tr>
-            <tr><td><span class="id">HU-0013</span>Turnos de guardia</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">agenda</td><td class="fecha mu">7 oct</td><td class="n">16,3 h</td><td class="n">205,7 M</td></tr>
-            <tr><td><span class="id">HU-0012</span>Permisos por rol en el panel</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">acceso</td><td class="fecha mu">5 oct</td><td class="n">27,5 h</td><td class="n">288,9 M</td></tr>
-            <tr><td><span class="id">HU-0011</span>Historial de vacunas</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">historia clínica</td><td class="fecha mu">3 oct</td><td class="n">12,0 h</td><td class="n">154,0 M</td></tr>
-            <tr><td><span class="id">HU-0010</span>Facturas con impuestos por sede</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">facturación</td><td class="fecha mu">1 oct</td><td class="n">35,0 h</td><td class="n">342,6 M</td></tr>
-            <tr><td><span class="id">HU-0009</span>Importar clientes desde una hoja de cálculo</td><td><span class="est desc"><i class="pt-e e-desc"></i>Descartada</span></td><td>Requisitos</td><td class="area mu">clientes</td><td class="fecha mu">29 sep</td><td class="n">9,0 h</td><td class="n">97,4 M</td></tr>
-            <tr><td><span class="id">HU-0008</span>Fichas de mascota con foto</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">clientes</td><td class="fecha mu">27 sep</td><td class="n">18,8 h</td><td class="n">176,1 M</td></tr>
-            <tr><td><span class="id">HU-0007</span>Agenda por veterinario</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">agenda</td><td class="fecha mu">25 sep</td><td class="n">33,0 h</td><td class="n">330,2 M</td></tr>
-            <tr><td><span class="id">HU-0006</span>Avisos por correo</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">avisos</td><td class="fecha mu">24 sep</td><td class="n">14,3 h</td><td class="n">131,8 M</td></tr>
-            <tr><td><span class="id">HU-0005</span>Inicio de sesión del personal</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">acceso</td><td class="fecha mu">23 sep</td><td class="n">23,7 h</td><td class="n">215,5 M</td></tr>
-            <tr><td><span class="id">HU-0004</span>Sedes y horarios</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">agenda</td><td class="fecha mu">22 sep</td><td class="n">10,7 h</td><td class="n">109,9 M</td></tr>
-            <tr><td><span class="id">HU-0003</span>Modelo de datos inicial</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">datos</td><td class="fecha mu">20 sep</td><td class="n">26,3 h</td><td class="n">268,4 M</td></tr>
-            <tr><td><span class="id">HU-0002</span>Esqueleto de los tres repos</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">método</td><td class="fecha mu">19 sep</td><td class="n">20,7 h</td><td class="n">176,3 M</td></tr>
-            <tr><td><span class="id">HU-0001</span>Configurar el método</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">método</td><td class="fecha mu">18 sep</td><td class="n">6,3 h</td><td class="n">57,6 M</td></tr>
+            <tr><td title="HU-0023 · Agenda compartida entre sedes · creada el 27 oct"><span class="id">HU-0023</span>Agenda compartida entre sedes</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Implementación</td><td class="area mu">agenda</td><td class="n vac">—</td><td class="n vac">—</td></tr>
+            <tr><td title="HU-0022 · Recordatorio de vacunas por mensaje · creada el 24 oct"><span class="id">HU-0022</span>Recordatorio de vacunas por mensaje</td><td><span class="est espera"><i class="pt-e e-espera"></i>En espera</span></td><td>Requisitos</td><td class="area mu">avisos</td><td class="n vac">—</td><td class="n vac">—</td></tr>
+            <tr><td title="HU-0021 · Historia clínica con adjuntos · creada el 22 oct"><span class="id">HU-0021</span>Historia clínica con adjuntos</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Verificación</td><td class="area mu">historia clínica</td><td class="n vac">—</td><td class="n vac">—</td></tr>
+            <tr><td title="HU-0020 · Exportar las facturas del mes · creada el 21 oct"><span class="id">HU-0020</span>Exportar las facturas del mes</td><td><span class="est curso"><i class="pt-e e-curso"></i>En curso</span></td><td>Arquitectura</td><td class="area mu">facturación</td><td class="n vac">—</td><td class="n vac">—</td></tr>
+            <tr><td title="HU-0019 · Pagos parciales en caja · creada el 20 oct"><span class="id">HU-0019</span>Pagos parciales en caja</td><td><span class="est espera"><i class="pt-e e-espera"></i>En espera</span></td><td>Requisitos</td><td class="area mu">facturación</td><td class="n vac">—</td><td class="n vac">—</td></tr>
+            <tr><td title="HU-0018 · Recetas en PDF · creada el 17 oct"><span class="id">HU-0018</span>Recetas en PDF</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">historia clínica</td><td class="n">14,2 h</td><td class="n">162,4 M</td></tr>
+            <tr><td title="HU-0017 · Cola de envíos con reintentos · creada el 15 oct"><span class="id">HU-0017</span>Cola de envíos con reintentos</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">avisos</td><td class="n">21,5 h</td><td class="n">240,8 M</td></tr>
+            <tr><td title="HU-0016 · Búsqueda de mascotas por dueño · creada el 13 oct"><span class="id">HU-0016</span>Búsqueda de mascotas por dueño</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">agenda</td><td class="n">10,2 h</td><td class="n">118,3 M</td></tr>
+            <tr><td title="HU-0015 · Panel del día para recepción · creada el 10 oct"><span class="id">HU-0015</span>Panel del día para recepción</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">agenda</td><td class="n">30,3 h</td><td class="n">301,5 M</td></tr>
+            <tr class="no-suma" title="Descartada: no suma en los totales"><td title="HU-0014 · Integración con laboratorio externo · creada el 8 oct"><span class="id">HU-0014</span>Integración con laboratorio externo</td><td><span class="est desc"><i class="pt-e e-desc"></i>Descartada</span></td><td>Requisitos</td><td class="area mu">historia clínica</td><td class="n">40,2 h</td><td class="n">96,2 M</td></tr>
+            <tr><td title="HU-0013 · Turnos de guardia · creada el 7 oct"><span class="id">HU-0013</span>Turnos de guardia</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">agenda</td><td class="n">16,3 h</td><td class="n">205,7 M</td></tr>
+            <tr><td title="HU-0012 · Permisos por rol en el panel · creada el 5 oct"><span class="id">HU-0012</span>Permisos por rol en el panel</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">acceso</td><td class="n">27,5 h</td><td class="n">288,9 M</td></tr>
+            <tr><td title="HU-0011 · Historial de vacunas · creada el 3 oct"><span class="id">HU-0011</span>Historial de vacunas</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">historia clínica</td><td class="n">12,0 h</td><td class="n">154,0 M</td></tr>
+            <tr><td title="HU-0010 · Facturas con impuestos por sede · creada el 1 oct"><span class="id">HU-0010</span>Facturas con impuestos por sede</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">facturación</td><td class="n">35,0 h</td><td class="n">342,6 M</td></tr>
+            <tr class="no-suma" title="Descartada: no suma en los totales"><td title="HU-0009 · Importar clientes desde una hoja de cálculo · creada el 29 sep"><span class="id">HU-0009</span>Importar clientes desde una hoja de cálculo</td><td><span class="est desc"><i class="pt-e e-desc"></i>Descartada</span></td><td>Requisitos</td><td class="area mu">clientes</td><td class="n">9,0 h</td><td class="n">97,4 M</td></tr>
+            <tr><td title="HU-0008 · Fichas de mascota con foto · creada el 27 sep"><span class="id">HU-0008</span>Fichas de mascota con foto</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">clientes</td><td class="n">18,8 h</td><td class="n">176,1 M</td></tr>
+            <tr><td title="HU-0007 · Agenda por veterinario · creada el 25 sep"><span class="id">HU-0007</span>Agenda por veterinario</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">agenda</td><td class="n">33,0 h</td><td class="n">330,2 M</td></tr>
+            <tr><td title="HU-0006 · Avisos por correo · creada el 24 sep"><span class="id">HU-0006</span>Avisos por correo</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">avisos</td><td class="n">14,3 h</td><td class="n">131,8 M</td></tr>
+            <tr><td title="HU-0005 · Inicio de sesión del personal · creada el 23 sep"><span class="id">HU-0005</span>Inicio de sesión del personal</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">acceso</td><td class="n">23,7 h</td><td class="n">215,5 M</td></tr>
+            <tr><td title="HU-0004 · Sedes y horarios · creada el 22 sep"><span class="id">HU-0004</span>Sedes y horarios</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">agenda</td><td class="n">10,7 h</td><td class="n">109,9 M</td></tr>
+            <tr><td title="HU-0003 · Modelo de datos inicial · creada el 20 sep"><span class="id">HU-0003</span>Modelo de datos inicial</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">datos</td><td class="n">26,3 h</td><td class="n">268,4 M</td></tr>
+            <tr><td title="HU-0002 · Esqueleto de los tres repos · creada el 19 sep"><span class="id">HU-0002</span>Esqueleto de los tres repos</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">método</td><td class="n">20,7 h</td><td class="n">176,3 M</td></tr>
+            <tr><td title="HU-0001 · Configurar el método · creada el 18 sep"><span class="id">HU-0001</span>Configurar el método</td><td><span class="est term"><i class="pt-e e-term"></i>Terminada</span></td><td>Cierre</td><td class="area mu">método</td><td class="n">6,3 h</td><td class="n">57,6 M</td></tr>
           </tbody>
         </table>
-        <div class="pie-tabla"><span>23 historias · de la más reciente a la más antigua</span><span>Cerradas: 370,0 h · 3.473,6 M</span></div>
+        <div class="pie-tabla"><span>23 historias, de la más reciente a la más antigua</span><span>Suman las 16 terminadas: 320,9 h · 3.280,0 M. Las descartadas, en gris, no suman.</span></div>
       </section>
       <section class="card" aria-label="Consumo">
-        <div class="card-cab"><div><h2 class="card-tit"><i class="ic i-coins"></i>Consumo</h2><p class="card-desc">Tokens de las 18 historias cerradas o descartadas, sumados de sus <span class="mono">metricas.json</span>.</p></div><span class="bd sec">3.473,6 M</span></div>
+        <div class="card-cab"><div><h2 class="card-tit"><i class="ic i-coins"></i>Consumo</h2><p class="card-desc">Tokens de las 16 historias terminadas, sumados de sus <span class="mono">metricas.json</span>. Las 2 descartadas no suman.</p></div><span class="bd sec">3.280,0 M</span></div>
         <div class="consumo">
-          <div><h3 class="etq">Por historia</h3><div class="barras">
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0010</span>Facturas con impuestos por sede</span><span class="pista-b"><i style="width:100.0%"></i></span><span class="val">342,6 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0007</span>Agenda por veterinario</span><span class="pista-b"><i style="width:96.4%"></i></span><span class="val">330,2 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0015</span>Panel del día para recepción</span><span class="pista-b"><i style="width:88.0%"></i></span><span class="val">301,5 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0012</span>Permisos por rol en el panel</span><span class="pista-b"><i style="width:84.3%"></i></span><span class="val">288,9 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0003</span>Modelo de datos inicial</span><span class="pista-b"><i style="width:78.3%"></i></span><span class="val">268,4 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0017</span>Cola de envíos con reintentos</span><span class="pista-b"><i style="width:70.3%"></i></span><span class="val">240,8 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0005</span>Inicio de sesión del personal</span><span class="pista-b"><i style="width:62.9%"></i></span><span class="val">215,5 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0013</span>Turnos de guardia</span><span class="pista-b"><i style="width:60.0%"></i></span><span class="val">205,7 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0002</span>Esqueleto de los tres repos</span><span class="pista-b"><i style="width:51.5%"></i></span><span class="val">176,3 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0008</span>Fichas de mascota con foto</span><span class="pista-b"><i style="width:51.4%"></i></span><span class="val">176,1 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0018</span>Recetas en PDF</span><span class="pista-b"><i style="width:47.4%"></i></span><span class="val">162,4 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0011</span>Historial de vacunas</span><span class="pista-b"><i style="width:45.0%"></i></span><span class="val">154,0 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0006</span>Avisos por correo</span><span class="pista-b"><i style="width:38.5%"></i></span><span class="val">131,8 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0016</span>Búsqueda de mascotas por dueño</span><span class="pista-b"><i style="width:34.5%"></i></span><span class="val">118,3 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0004</span>Sedes y horarios</span><span class="pista-b"><i style="width:32.1%"></i></span><span class="val">109,9 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-desc"></i><span class="id">HU-0009</span>Importar clientes desde una hoja de cálculo</span><span class="pista-b"><i style="width:28.4%"></i></span><span class="val">97,4 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-desc"></i><span class="id">HU-0014</span>Integración con laboratorio externo</span><span class="pista-b"><i style="width:28.1%"></i></span><span class="val">96,2 M</span></div>
-            <div class="bar-f"><span class="lbl"><i class="pt-e e-term"></i><span class="id">HU-0001</span>Configurar el método</span><span class="pista-b"><i style="width:16.8%"></i></span><span class="val">57,6 M</span></div>
+          <div class="col-h"><h3 class="etq">Por historia</h3><div class="barras">
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0010</span>Facturas con impuestos por sede</span><span class="pista-b"><i style="width:100.0%"></i></span><span class="val">342,6 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0007</span>Agenda por veterinario</span><span class="pista-b"><i style="width:96.4%"></i></span><span class="val">330,2 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0015</span>Panel del día para recepción</span><span class="pista-b"><i style="width:88.0%"></i></span><span class="val">301,5 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0012</span>Permisos por rol en el panel</span><span class="pista-b"><i style="width:84.3%"></i></span><span class="val">288,9 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0003</span>Modelo de datos inicial</span><span class="pista-b"><i style="width:78.3%"></i></span><span class="val">268,4 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0017</span>Cola de envíos con reintentos</span><span class="pista-b"><i style="width:70.3%"></i></span><span class="val">240,8 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0005</span>Inicio de sesión del personal</span><span class="pista-b"><i style="width:62.9%"></i></span><span class="val">215,5 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0013</span>Turnos de guardia</span><span class="pista-b"><i style="width:60.0%"></i></span><span class="val">205,7 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0002</span>Esqueleto de los tres repos</span><span class="pista-b"><i style="width:51.5%"></i></span><span class="val">176,3 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0008</span>Fichas de mascota con foto</span><span class="pista-b"><i style="width:51.4%"></i></span><span class="val">176,1 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0018</span>Recetas en PDF</span><span class="pista-b"><i style="width:47.4%"></i></span><span class="val">162,4 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0011</span>Historial de vacunas</span><span class="pista-b"><i style="width:45.0%"></i></span><span class="val">154,0 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0006</span>Avisos por correo</span><span class="pista-b"><i style="width:38.5%"></i></span><span class="val">131,8 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0016</span>Búsqueda de mascotas por dueño</span><span class="pista-b"><i style="width:34.5%"></i></span><span class="val">118,3 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0004</span>Sedes y horarios</span><span class="pista-b"><i style="width:32.1%"></i></span><span class="val">109,9 M</span></div>
+            <div class="bar-f"><span class="lbl"><span class="id">HU-0001</span>Configurar el método</span><span class="pista-b"><i style="width:16.8%"></i></span><span class="val">57,6 M</span></div>
           </div></div>
-          <div><h3 class="etq">Por rol</h3><div class="barras rol">
-            <div class="bar-f"><span class="lbl mono">orquestador</span><span class="pista-b"><i style="width:100.0%"></i></span><span class="val">≈ 2.014,7 M <small>58 %</small></span></div>
-            <div class="bar-f"><span class="lbl mono">backend</span><span class="pista-b"><i style="width:36.2%"></i></span><span class="val">729,5 M <small>21 %</small></span></div>
-            <div class="bar-f"><span class="lbl mono">frontend</span><span class="pista-b"><i style="width:24.1%"></i></span><span class="val">486,3 M <small>14 %</small></span></div>
-            <div class="bar-f"><span class="lbl mono">architect</span><span class="pista-b"><i style="width:12.1%"></i></span><span class="val">243,2 M <small>7 %</small></span></div>
+          <div class="col-r"><h3 class="etq">Por rol</h3><div class="barras rol">
+            <div class="bar-f"><span class="lbl mono">orquestador</span><span class="pista-b"><i style="width:100.0%"></i></span><span class="val">≈ 1.902,4 M <small>58 %</small></span></div>
+            <div class="bar-f"><span class="lbl mono">backend</span><span class="pista-b"><i style="width:36.2%"></i></span><span class="val">688,8 M <small>21 %</small></span></div>
+            <div class="bar-f"><span class="lbl mono">frontend</span><span class="pista-b"><i style="width:24.1%"></i></span><span class="val">459,2 M <small>14 %</small></span></div>
+            <div class="bar-f"><span class="lbl mono">architect</span><span class="pista-b"><i style="width:12.1%"></i></span><span class="val">229,6 M <small>7 %</small></span></div>
           </div>
-          <p class="nota-c">≈ El del orquestador es aproximado: si se trabajan dos historias a la vez, se reparte mal. El punto de cada historia es su estado: las descartadas también consumen.</p></div>
+          <p class="nota-c">≈ El del orquestador es aproximado: si se trabajan dos historias a la vez, se reparte mal.</p></div>
         </div>
       </section>
     </div></section>
@@ -1286,7 +1428,7 @@ a { color:inherit; text-decoration:none; }
   <div class="ctl-win" aria-label="Controles de ventana"><span><i class="ic i-minus"></i></span><span><i class="ic i-square" style="--ic:14px"></i></span><span><i class="ic i-x" style="--ic:18px"></i></span></div>
   <div class="tb"><span class="trigger" title="Alternar barra lateral"><i class="ic i-panel-left"></i></span></div>
   <header class="cab">
-    <div class="migas"><span class="pre">Proyectos</span><i class="ic i-chevron-right sep"></i><h1>panel-finanzas</h1></div>
+    <div class="migas"><span class="pre">Proyectos</span><i class="ic i-chevron-right sep"></i><h1>Panel Finanzas</h1></div>
     <div class="acciones"></div>
   </header>
   <nav class="sb" aria-label="Navegación principal"><div class="panel">
@@ -1306,7 +1448,7 @@ a { color:inherit; text-decoration:none; }
       <a class="sb-item" data-ir="pantalla=proyecto&estado=varios-repos"><b class="mono-p">V</b><span>Vetcare</span><em class="cnt">3</em></a>
       <a class="sb-item con-tip" data-ir="pantalla=proyecto&estado=con-datos"><b class="mono-p">C</b><span>Code AI Profiles</span><em class="cnt">4</em><span class="tip">Code AI Profiles · 4 en curso</span></a>
       <a class="sb-item"><b class="mono-p">L</b><span>Lumen Tienda</span></a>
-      <a class="sb-item activo roto" data-ir="pantalla=proyecto&estado=roto"><b class="mono-p roto">P</b><span>panel-finanzas</span><i class="ic i-triangle-alert alerta" title="Carpeta no encontrada"></i></a>
+      <a class="sb-item activo roto" data-ir="pantalla=proyecto&estado=roto"><b class="mono-p roto">P</b><span>Panel Finanzas</span><i class="ic i-triangle-alert alerta" title="Carpeta no encontrada"></i></a>
       <a class="sb-item nueva" data-ir="pantalla=anclar&estado=valido"><i class="ic i-folder-plus"></i><span>Anclar proyecto</span></a>
     </div>
     <div class="sb-pie">
@@ -1315,12 +1457,12 @@ a { color:inherit; text-decoration:none; }
     </div>
   </div></nav>
   <div class="main">
-    <section class="contenido"><div class="pila">
-      <section class="card"><div class="heroe-p">
+    <section class="contenido"><div class="pila secciones">
+      <section class="card heroe"><div class="heroe-p">
         <b class="mono-p xl roto"><i class="ic i-folder-x"></i></b>
         <div class="datos">
           <div class="chips"><span class="bd err"><i class="dot"></i>Carpeta no encontrada</span></div>
-          <span class="ruta-m">~/Proyectos/panel-finanzas</span>
+          <span class="ruta-m">~/Proyectos/panel-finanzas · leído por última vez el 17 oct</span>
           <p class="pc-msg">No hay nada en esa ruta. Puede que la carpeta se haya movido, renombrado o borrado, o que esté en un disco que no está conectado.</p>
         </div>
         <div class="acciones">
@@ -1328,7 +1470,7 @@ a { color:inherit; text-decoration:none; }
           <span class="btn out" data-ir="pantalla=proyectos&estado=con-datos"><i class="ic i-pin-off"></i>Desanclar</span>
         </div>
       </div></section>
-      <div class="aviso"><i class="ic i-eye"></i><div class="txt"><b>Desanclar no toca ninguna carpeta</b><small>Solo quita la ruta de la lista. Si la carpeta aparece en otro sitio, vuelve a anclarla con «Anclar proyecto».</small></div></div>
+      <div class="aviso"><i class="ic i-eye"></i><div class="txt"><b>Desanclar no toca ninguna carpeta</b><small>Solo quita el proyecto de la lista. Si la carpeta aparece en otro sitio, vuelve a anclarla con «Anclar proyecto».</small></div></div>
     </div></section>
     <footer class="estado">
       <div class="izq"><span class="ok">CLAUDE DESKTOP DETECTADA</span><span class="div"></span><span><i class="ic i-hard-drive"></i> 421.7 GB libres</span><span class="div ancho"></span><span class="ancho">2.0 GB administrados</span></div>
