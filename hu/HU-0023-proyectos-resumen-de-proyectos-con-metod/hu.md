@@ -2,7 +2,7 @@
 id: HU-0023
 titulo: "Proyectos: resumen de proyectos con metodología v4"
 estado: en-proceso
-fase: requisitos
+fase: arquitectura
 area: proyectos
 entrega: 1
 prioridad: alta
@@ -11,7 +11,7 @@ requiere: { arquitectura: true, diseno: true }
 repos: [code-ai-profiles]
 riesgo: [permisos]
 reglas: []
-depende: []
+depende: [HU-0022]
 ---
 
 # Proyectos: resumen de proyectos con metodología v4

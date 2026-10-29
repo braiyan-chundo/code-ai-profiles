@@ -2,7 +2,7 @@
 id: HU-0022
 titulo: "Configuración unificada con apariencia y permisos"
 estado: en-proceso
-fase: requisitos
+fase: arquitectura
 area: interfaz
 entrega: 1
 prioridad: alta
@@ -34,6 +34,17 @@ comprobación manual del Llavero de la HU-0020).
 **Maqueta primero:** el dial de diseño está apagado, pero el mantenedor la pide. `diseno/maqueta.html` se aprueba
 antes de implementar.
 
+Elecciones, en la misma conversación (2026-10-29):
+
+- Sobre la primera maqueta: «la ui debe seguir estándares armónicos de espaciado y relación de aspecto entre
+  componentes», evaluada con una skill de UX (auditoría en `diseno/vista.md`).
+- Maqueta armónica: «Aprobadas», con las dos recomendaciones del orquestador:
+  1. El sistema armónico entra en esta historia como primer paso y para toda la app: escala de espaciado
+     4/8/12/16/24/32/48, interlineados múltiplo de 4, sidebar, chips y contadores de 24 px, anillo de foco de 2 px,
+     alturas fijas por tamaño de texto en lugar de `--esc` fraccionario, y radios 9→8, 14→16, 26→24 con la regla
+     de anidado. Se actualizan `DESIGN.md`, `tokens.css` y `ui-theme.css`.
+  2. El botón primario lleva texto oscuro (`--ui-on-primary` = `--surface`, 6:1) en lugar de blanco (3:1).
+
 ## Problema
 
 - La apariencia vive en un diálogo («Apariencia», en el pie del sidebar) y no hay un sitio para el resto de ajustes.
@@ -43,6 +54,7 @@ antes de implementar.
 
 ## Alcance
 
+- **Primero, el sistema armónico en toda la app** (ver «Elecciones»), sin cambiar qué hace cada pantalla.
 - Una página **Configuración** (`#/configuracion`) que sustituye al diálogo de Apariencia, con dos secciones:
   - **Apariencia:** lo mismo que hoy (tema y tamaño del texto con su vista previa), con el mismo efecto inmediato.
   - **Permisos:** una tarjeta por permiso que la app puede usar en la plataforma actual, con su nombre, para qué
@@ -82,6 +94,12 @@ antes de implementar.
 
 Existe `diseno/maqueta.html` con la página en sus dos secciones, en oscuro y claro, a 1440×920 y 980×680, con el
 sidebar desplegado y plegado, en macOS y en Windows/Linux, y la persona la aprueba antes de implementar.
+
+### AC-06 · Espaciado armónico en toda la app
+
+En las pantallas de la app, márgenes, paddings, gaps y radios están en la escala (salvo los huecos de los
+controles de ventana), el texto cae en la retícula de 4 px en los tres tamaños, y todos los textos, también el del
+botón primario, pasan AA.
 
 ### AC-02 · Una sola configuración
 
