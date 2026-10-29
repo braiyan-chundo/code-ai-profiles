@@ -32,7 +32,7 @@ export function InstanceRoute() {
     if (!loading) return <Navigate to="/" replace />;
     return (
       <>
-        <PageHeader eyebrow="Instancia" title="Cargando…" />
+        <PageHeader eyebrow="Instancias" title="Cargando…" />
         <PageContent aria-busy="true"><PageSkeleton /></PageContent>
       </>
     );
@@ -40,7 +40,7 @@ export function InstanceRoute() {
 
   return (
     <>
-      <PageHeader eyebrow="Instancia" title={instance.name} />
+      <PageHeader eyebrow="Instancias" title={instance.name} />
       <PageContent aria-live="polite">
         <InstanceDetail
           instance={instance}

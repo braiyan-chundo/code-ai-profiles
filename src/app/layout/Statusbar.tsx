@@ -11,7 +11,7 @@ export function Statusbar() {
   const buildLabel = state.system.appVersion || (loading ? "cargando…" : "no disponible");
   const healthy = Boolean(state.system.sourcePath);
   return (
-    <footer className="row-start-4 flex h-13 shrink-0 items-center justify-between gap-4 border-t border-border bg-(--surface-soft)/60 px-[38px] text-(length:--fs-micro) text-muted-foreground max-[1070px]:h-12 max-[1070px]:px-[25px]">
+    <footer className="row-start-4 flex h-9 shrink-0 items-center justify-between gap-4 border-t border-border bg-(--surface-soft)/60 px-8 text-(length:--fs-micro) text-muted-foreground max-[1070px]:h-8 max-[1070px]:px-6">
       <div className="flex min-w-0 items-center gap-[18px]">
         <span
           className={cn(
@@ -47,5 +47,5 @@ function Dot({ className }: { className?: string }) {
 }
 
 function Divider({ className }: { className?: string }) {
-  return <span aria-hidden="true" className={cn("h-[18px] w-px shrink-0 bg-border", className)} />;
+  return <span aria-hidden="true" className={cn("h-3.5 w-px shrink-0 bg-border", className)} />;
 }

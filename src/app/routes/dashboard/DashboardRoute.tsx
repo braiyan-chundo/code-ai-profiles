@@ -2,6 +2,7 @@ import { PlusIcon, RefreshCwIcon } from "lucide-react";
 import { useMemo } from "react";
 import { EmptyState } from "../../../components/EmptyState";
 import { Button } from "../../../components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../../components/ui/tooltip";
 import { outdatedInstances as selectOutdatedInstances, useDashboard } from "../../../features/dashboard";
 import { useScan } from "../../../features/scan";
 import { SourceUpdateBanner, SynchronizeBanner } from "../../../features/updates";
@@ -32,12 +33,26 @@ export function DashboardRoute() {
   return (
     <>
       <PageHeader eyebrow="Resumen" title="Dashboard">
-        <Button variant="outline" size="lg" onClick={scanManually} disabled={loading || busy !== null} className="px-3.5">
-          <RefreshCwIcon className={busy === "scan" ? "animate-spin" : undefined} /> Escanear sistema
-        </Button>
+        {/* Por debajo de 1071 px queda solo el icono (A-1): el corte es CSS, sin listener de `resize`. */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span>
+              <Button
+                variant="outline"
+                onClick={scanManually}
+                disabled={loading || busy !== null}
+                className="px-3.5 max-[1070px]:w-(--ctl) max-[1070px]:px-0"
+              >
+                <RefreshCwIcon className={busy === "scan" ? "animate-spin" : undefined} />
+                <span className="max-[1070px]:sr-only">Escanear sistema</span>
+              </Button>
+            </span>
+          </TooltipTrigger>
+          <TooltipContent className="min-[1071px]:hidden">Escanear sistema</TooltipContent>
+        </Tooltip>
         {/* El title va en el contenedor: un botón deshabilitado no recibe el puntero (AC-06: la razón sigue visible). */}
         <span title={!sourceFound ? NO_SOURCE_TITLE : undefined}>
-          <Button size="lg" onClick={() => setEditor("new")} disabled={!sourceFound || busy !== null} className="px-3.5">
+          <Button onClick={() => setEditor("new")} disabled={!sourceFound || busy !== null} className="px-3.5">
             <PlusIcon /> Nueva instancia
           </Button>
         </span>

@@ -1,47 +1,42 @@
 import { MinusIcon, SquareIcon, XIcon } from "lucide-react";
 import type { ReactNode } from "react";
-import { BrandMark } from "../../components/BrandMark";
-import { SidebarTrigger } from "../../components/ui/sidebar";
+import { SidebarTrigger, useSidebar } from "../../components/ui/sidebar";
 import { useRuntimePlatform } from "../../features/dashboard";
 import { cn } from "../../lib/utils";
 import { windowAction } from "./window-actions";
 
 /**
- * La barra superior a todo el ancho (HU-0016, A-6 y A-7), encima del sidebar y del contenido. Su alto es
- * `--titlebar-height` (lo fija `AppShell`). macOS: los semáforos nativos van superpuestos en `x:28, y:40`, así que se
- * reservan 106 px a la izquierda. Windows: ventana sin decoraciones, con los controles propios arriba a la derecha.
- * Linux: las decoraciones las pone el gestor de ventanas. Se arrastra desde cualquier zona sin controles.
+ * La zona de la ventana (HU-0019, A-1): arriba a la izquierda, sobre la columna del sidebar, con el botón de plegar.
+ * Mide `--titlebar-height` (lo fija `AppShell`) y la barra de la página (`PageHeader`) ocupa el resto de la fila. Ya no
+ * lleva la marca: vive en el panel. macOS: los semáforos nativos van superpuestos en `x:20, y:19`, así que se dejan
+ * 84 px a la izquierda. Windows y Linux: 16 px. Windows: ventana sin decoraciones, con los controles propios arriba a
+ * la derecha, a 10 px del borde. Linux: las decoraciones las pone el gestor de ventanas. Se arrastra desde cualquier
+ * zona sin controles.
  */
 export function Titlebar() {
   const platform = useRuntimePlatform();
+  const { state } = useSidebar();
   return (
-    <header
-      data-tauri-drag-region
-      className={cn(
-        "relative flex h-(--titlebar-height) shrink-0 items-center gap-3 border-b border-border px-3 select-none",
-        platform === "macos" && "pl-[106px]",
-        platform === "windows" && "pr-[150px]",
-      )}
-    >
-      <SidebarTrigger className="size-8 text-muted-foreground hover:text-foreground" />
-      <div data-tauri-drag-region className="flex min-w-0 items-center gap-2.5">
-        <BrandMark size={24} className="shrink-0 text-(--primary-soft) in-[.theme-light]:text-primary-text" />
-        <span data-tauri-drag-region className="truncate text-xl font-bold tracking-[-0.045em] text-foreground">
-          Code AI Profiles
-        </span>
-        <span className="rounded-[5px] border border-(--line-strong) px-1.5 pt-1 pb-[3px] font-mono text-(length:--fs-micro) leading-none font-semibold tracking-[0.12em] text-muted-foreground">
-          BETA
-        </span>
+    <>
+      <div
+        data-tauri-drag-region
+        className={cn(
+          "absolute top-0 left-0 z-20 flex h-(--titlebar-height) min-w-max items-center transition-[width] duration-200 ease-linear select-none",
+          state === "expanded" ? "w-(--sidebar-width)" : "w-16",
+          platform === "macos" ? "pl-[84px]" : "pl-4",
+        )}
+      >
+        <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
       </div>
 
       {platform === "windows" && (
-        <div className="absolute top-0 right-2.5 z-10 flex" aria-label="Controles de ventana">
+        <div className="absolute top-0 right-2.5 z-20 flex" aria-label="Controles de ventana">
           <WindowButton label="Minimizar" onClick={() => void windowAction("minimize")}><MinusIcon /></WindowButton>
           <WindowButton label="Maximizar" onClick={() => void windowAction("maximize")}><SquareIcon className="size-3.5!" /></WindowButton>
           <WindowButton label="Cerrar" close onClick={() => void windowAction("close")}><XIcon className="size-[18px]!" /></WindowButton>
         </div>
       )}
-    </header>
+    </>
   );
 }
 

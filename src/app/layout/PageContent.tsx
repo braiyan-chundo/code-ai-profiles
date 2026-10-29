@@ -6,7 +6,7 @@ export function PageContent({ className, ...props }: ComponentProps<"section">) 
   return (
     <section
       className={cn(
-        "relative row-start-3 min-h-0 overflow-x-hidden overflow-y-auto px-[38px] pt-2.5 pb-[34px] max-[1070px]:px-[25px]",
+        "relative row-start-3 min-h-0 overflow-x-hidden overflow-y-auto px-8 pt-2 pb-6 max-[1070px]:px-6",
         "[scrollbar-color:var(--line-strong)_transparent] [scrollbar-width:thin]",
         className,
       )}
