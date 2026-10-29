@@ -101,9 +101,9 @@ export function AppSidebar() {
       aria-label="Navegación principal"
     >
       <SidebarHeader className="gap-0 p-0 pt-3">
-        <div className="flex items-center gap-2 px-4 pb-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+        <div className="flex items-center gap-2 pr-3 pb-1 pl-4 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
           <BrandMark size={20} className="shrink-0 text-(--primary-soft) in-[.theme-light]:text-primary-text" />
-          <span className="truncate text-(length:--fs-title)/(--lh-title) font-bold tracking-[-0.04em] text-foreground group-data-[collapsible=icon]:hidden">
+          <span className="truncate text-(length:--fs-title)/(--lh-title) font-bold tracking-[-0.05em] text-foreground group-data-[collapsible=icon]:hidden">
             Code AI Profiles
           </span>
           <span className="inline-flex h-(--ctl-badge) shrink-0 items-center rounded-xs px-1 ring-1 ring-(--line-strong) ring-inset font-mono text-(length:--fs-micro)/(--lh-micro) font-semibold tracking-[0.06em] text-muted-foreground group-data-[collapsible=icon]:hidden">

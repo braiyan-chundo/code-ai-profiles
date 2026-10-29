@@ -73,7 +73,7 @@ export function PermissionsSettings() {
           <EmptyMedia variant="icon" className="rounded-md text-success ring-1 ring-(--line) ring-inset">
             <ShieldCheckIcon aria-hidden="true" className="size-5" />
           </EmptyMedia>
-          <EmptyTitle className="text-(length:--fs-heading)/(--lh-heading) font-semibold">{EMPTY_PLATFORM_TITLE}</EmptyTitle>
+          <EmptyTitle className="text-(length:--fs-heading)/(--lh-heading) font-semibold"><h2>{EMPTY_PLATFORM_TITLE}</h2></EmptyTitle>
           <EmptyDescription className="text-(length:--fs-small)/(--lh-prose)">{EMPTY_PLATFORM_TEXT}</EmptyDescription>
         </EmptyHeader>
       </Empty>

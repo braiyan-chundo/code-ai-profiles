@@ -28,7 +28,7 @@ function StatusLine({ card }: { card: PermissionCardData }) {
   const tone: PermissionTone = card.tone;
   const color = tone === "needs" || tone === "warn" ? "text-warning" : tone === "ok" ? "text-success" : "text-muted-foreground";
   return (
-    <p className={cn("flex min-w-0 items-center gap-2 text-(length:--fs-small)/(--lh-small)", color)} data-tone={tone}>
+    <p aria-live="polite" className={cn("flex min-w-0 items-center gap-2 text-(length:--fs-small)/(--lh-small)", color)} data-tone={tone}>
       {tone === "needs" && <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-warning" />}
       {tone === "idle" && <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-(--quiet)" />}
       {tone === "unknown" && <CircleHelpIcon aria-hidden="true" className="size-4 shrink-0" />}
@@ -53,7 +53,7 @@ function InfoPopover({ card }: { card: PermissionCardData }) {
         </Button>
       </PopoverTrigger>
       <PopoverContent align="start" sideOffset={8} className="w-84 gap-3 text-(length:--fs-small)/(--lh-prose)" aria-label={card.name}>
-        <h4 className="text-(length:--fs-body)/(--lh-body) font-semibold">{card.name}</h4>
+        <h3 className="text-(length:--fs-body)/(--lh-body) font-semibold">{card.name}</h3>
         <dl className="grid gap-2">
           {card.info.rows.map((row) => (
             <div key={row.label}>
@@ -111,7 +111,7 @@ export function PermissionCard({ card }: { card: PermissionCardData }) {
         </span>
         <div className="grid min-w-0 gap-1">
           <div className="flex min-h-(--ctl-xs) flex-wrap items-center gap-x-2">
-            <h3 className="text-(length:--fs-heading)/(--lh-title) font-semibold">{card.name}</h3>
+            <h2 className="text-(length:--fs-heading)/(--lh-title) font-semibold">{card.name}</h2>
             <InfoPopover card={card} />
             <span className="text-(length:--fs-small)/(--lh-title) text-muted-foreground">Opcional</span>
           </div>

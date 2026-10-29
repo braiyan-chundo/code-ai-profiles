@@ -92,7 +92,7 @@ function SettingCard({ id, title, note, children }: { id: string; title: string;
   return (
     <Card size="sm" className="gap-3">
       <CardHeader className="flex items-start justify-between gap-4">
-        <CardTitle id={id} className="text-(length:--fs-heading)/(--lh-heading) font-semibold">{title}</CardTitle>
+        <CardTitle className="text-(length:--fs-heading)/(--lh-heading) font-semibold"><h2 id={id}>{title}</h2></CardTitle>
         <span className="text-right text-(length:--fs-small)/(--lh-heading) text-muted-foreground">{note}</span>
       </CardHeader>
       <CardContent>{children}</CardContent>
@@ -147,7 +147,7 @@ export function AppearanceSettings() {
 
       <Card size="sm" className="gap-3">
         <CardHeader className="flex items-start justify-between gap-4">
-          <CardTitle className="text-(length:--fs-heading)/(--lh-heading) font-semibold">Vista previa</CardTitle>
+          <CardTitle className="text-(length:--fs-heading)/(--lh-heading) font-semibold"><h2>Vista previa</h2></CardTitle>
           <span className="text-right text-(length:--fs-small)/(--lh-heading) text-muted-foreground">Una sesión de ejemplo, no sale de ningún perfil</span>
         </CardHeader>
         <CardContent>

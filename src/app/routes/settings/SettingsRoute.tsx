@@ -42,7 +42,7 @@ export function SettingsRoute() {
               {attention && (
                 <>
                   <span aria-hidden="true" title="Un permiso que alguna instancia necesita" className="size-2 rounded-full bg-warning" />
-                  <span className="sr-only">: una instancia necesita un permiso</span>
+                  <span className="sr-only">: hay permisos que alguna instancia necesita</span>
                 </>
               )}
             </TabsTrigger>
