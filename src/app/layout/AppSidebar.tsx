@@ -32,7 +32,7 @@ import { useDialogs } from "../providers/dialogs-context";
 
 const NO_SOURCE_TITLE = "Instala una aplicación compatible o configura una ruta válida";
 /** DESIGN.md: las cabeceras del sidebar, en mayúsculas y con algo de espaciado. */
-const GROUP_LABEL = "text-[10px] font-bold tracking-[0.1em] text-(--quiet) uppercase";
+const GROUP_LABEL = "text-(length:--fs-micro) font-bold tracking-[0.1em] text-muted-foreground uppercase";
 
 /**
  * La navegación de la app (HU-0016, AC-01): Dashboard, la aplicación original y una entrada por instancia, con
@@ -111,7 +111,7 @@ export function AppSidebar() {
               <XIcon />
             </Button>
           ) : (
-            <Kbd className="absolute top-1/2 right-2 -translate-y-1/2 text-[10px]">{shortcutModifierLabel(navigator.platform)} F</Kbd>
+            <Kbd className="absolute top-1/2 right-2 -translate-y-1/2 text-(length:--fs-micro)">{shortcutModifierLabel(navigator.platform)} F</Kbd>
           )}
         </div>
       </SidebarHeader>

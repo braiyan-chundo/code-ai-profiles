@@ -37,23 +37,23 @@ export function OriginalApplicationUpdateDialog({
               <RefreshCwIcon className="size-5" />
             </span>
             <div className="grid min-w-0 gap-1">
-              <small className="font-mono text-[9px] font-semibold tracking-[0.1em] text-muted-foreground uppercase">Canal oficial</small>
-              <strong className="text-[13px] font-semibold">{platformDetails.channel}</strong>
-              <p className="text-[11px] leading-relaxed text-muted-foreground">{platformDetails.handoff}</p>
+              <small className="font-mono text-(length:--fs-micro) font-semibold tracking-[0.1em] text-muted-foreground uppercase">Canal oficial</small>
+              <strong className="text-(length:--fs-body) font-semibold">{platformDetails.channel}</strong>
+              <p className="text-(length:--fs-small) leading-relaxed text-muted-foreground">{platformDetails.handoff}</p>
             </div>
           </div>
 
           <Alert className="border-success/25 bg-success/5 text-success">
             <HardDriveIcon />
             <AlertTitle className="text-xs">Tus perfiles y sesiones no se tocan</AlertTitle>
-            <AlertDescription className="text-[11px] leading-relaxed">
+            <AlertDescription className="text-(length:--fs-small) leading-relaxed">
               Esta acción no escribe ni sustituye instancias administradas. Solo entrega la original al actualizador, descarga o documentación oficial de la plataforma.
             </AlertDescription>
           </Alert>
 
           <Alert className="text-primary-text">
             <SparklesIcon />
-            <AlertDescription className="text-[11px] leading-relaxed">
+            <AlertDescription className="text-(length:--fs-small) leading-relaxed">
               Cuando vuelvas a esta ventana, se refrescarán únicamente las versiones y su topología. No se iniciará un escaneo manual ni se consultarán sesiones.
             </AlertDescription>
           </Alert>

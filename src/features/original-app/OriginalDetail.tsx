@@ -57,15 +57,15 @@ export function OriginalDetail({
           <div className="grid min-w-0 flex-1 basis-60 gap-2">
             <div className="flex flex-wrap items-center gap-2">
               <InstanceStatusBadge status={status} />
-              <Badge variant="outline" className="border-primary/30 font-mono text-[9px] font-semibold tracking-[0.08em] text-primary-text uppercase">
+              <Badge variant="outline" className="border-primary/30 font-mono text-(length:--fs-micro) font-semibold tracking-[0.08em] text-primary-text uppercase">
                 Principal
               </Badge>
-              <Badge variant="secondary" className="font-mono text-[9px] tracking-[0.06em] uppercase">Instalación original</Badge>
+              <Badge variant="secondary" className="font-mono text-(length:--fs-micro) tracking-[0.06em] uppercase">Instalación original</Badge>
             </div>
-            <span className="truncate font-mono text-[11px] leading-[1.4] font-medium text-muted-foreground" title={appPath}>
+            <span className="truncate font-mono text-(length:--fs-small) leading-[1.4] font-medium text-muted-foreground" title={appPath}>
               {appPath}
             </span>
-            <span className="font-mono text-[10px] leading-none text-(--quiet)">Versión {version ?? "—"}</span>
+            <span className="font-mono text-(length:--fs-small) leading-none text-muted-foreground">Versión {version ?? "—"}</span>
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5">
@@ -101,11 +101,11 @@ export function OriginalDetail({
 
       <Card size="sm" role="region" aria-label="Sesiones de Code de la aplicación original">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+          <CardTitle className="flex items-center gap-2 text-(length:--fs-heading) font-semibold">
             <TerminalSquareIcon className="size-4 text-muted-foreground" aria-hidden="true" /> Sesiones de la aplicación original
           </CardTitle>
           <CardAction>
-            <Badge variant="secondary" className="font-mono text-[9px] tracking-[0.06em] uppercase">
+            <Badge variant="secondary" className="font-mono text-(length:--fs-micro) tracking-[0.06em] uppercase">
               {sessions.length} {sessions.length === 1 ? "sesión" : "sesiones"}
             </Badge>
           </CardAction>
@@ -126,8 +126,8 @@ export function OriginalDetail({
 function Metric({ label, value }: { label: string; value: string }) {
   return (
     <div className="grid min-w-24 gap-1.5 rounded-lg border border-border bg-(--surface-soft) px-3 py-2">
-      <small className="font-mono text-[8px] leading-none font-medium tracking-[0.08em] text-(--quiet) uppercase">{label}</small>
-      <strong className="font-mono text-[13px] leading-none font-semibold text-foreground">{value}</strong>
+      <small className="font-mono text-(length:--fs-micro) leading-none font-medium tracking-[0.08em] text-muted-foreground uppercase">{label}</small>
+      <strong className="font-mono text-(length:--fs-body) leading-none font-semibold text-foreground">{value}</strong>
     </div>
   );
 }

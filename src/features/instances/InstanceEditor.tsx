@@ -112,7 +112,7 @@ export function InstanceEditor({
             </span>
             <div className="grid min-w-0 gap-1.5">
               <strong id="instance-icon-heading" className="text-xs font-semibold">Icono de la instancia</strong>
-              <span className="text-[11px] leading-snug text-muted-foreground">
+              <span className="text-(length:--fs-small) leading-snug text-muted-foreground">
                 Se guarda fuera de la aplicación compatible para sobrevivir a futuras sincronizaciones.
               </span>
               <div className="mt-1 flex flex-wrap gap-2">
@@ -150,13 +150,13 @@ export function InstanceEditor({
                   </Button>
                 )}
               </div>
-              {iconError && <FieldError className="text-[11px]">{iconError}</FieldError>}
+              {iconError && <FieldError className="text-(length:--fs-small)">{iconError}</FieldError>}
             </div>
           </section>
 
           <Alert className="border-primary/15 bg-primary/5 text-primary-text">
             <InfoIcon />
-            <AlertDescription className="text-[11px] leading-relaxed">
+            <AlertDescription className="text-(length:--fs-small) leading-relaxed">
               {platform === "macos"
                 ? "Al guardar, Code AI Profiles intentará aplicar el icono al Dock y verificará la copia administrada. El resultado aparecerá aquí cuando termine."
                 : platform === "windows"
@@ -167,7 +167,7 @@ export function InstanceEditor({
           {instance?.customIcon && !removeIcon && (
             <p
               data-applied={instance.customIcon.systemApplied}
-              className="-mt-2 px-0.5 font-mono text-[10px] leading-snug text-muted-foreground data-[applied=true]:text-success"
+              className="-mt-2 px-0.5 font-mono text-(length:--fs-small) leading-snug text-muted-foreground data-[applied=true]:text-success"
             >
               {platform === "macos" && (
                 <strong>{instance.customIcon.systemApplied ? "Dock aplicado. " : "No se aplicó al Dock. "}</strong>
@@ -181,7 +181,7 @@ export function InstanceEditor({
               <Alert className="border-primary/15 bg-primary/5 text-primary-text">
                 <HardDriveIcon />
                 <AlertTitle className="text-xs text-foreground">Copia aislada + perfil independiente</AlertTitle>
-                <AlertDescription className="text-[11px] leading-relaxed">
+                <AlertDescription className="text-(length:--fs-small) leading-relaxed">
                   La primera creación puede tardar. macOS intenta usar una copia APFS eficiente, Windows crea una copia administrada y Linux reutiliza el binario instalado con un perfil aislado.
                 </AlertDescription>
               </Alert>

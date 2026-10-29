@@ -43,9 +43,9 @@ export function ApplicationUpdateDialog({
               <RefreshCwIcon className="size-5" />
             </span>
             <div className="grid min-w-0 gap-1">
-              <small className="font-mono text-[9px] font-semibold tracking-[0.1em] text-muted-foreground uppercase">Fuente local validada</small>
-              <strong className="text-[13px] font-semibold">{sourceName} · versión {targetVersion}</strong>
-              <p className="text-[11px] text-muted-foreground">Se reemplazará únicamente la aplicación de cada instancia; cada perfil permanece separado.</p>
+              <small className="font-mono text-(length:--fs-micro) font-semibold tracking-[0.1em] text-muted-foreground uppercase">Fuente local validada</small>
+              <strong className="text-(length:--fs-body) font-semibold">{sourceName} · versión {targetVersion}</strong>
+              <p className="text-(length:--fs-small) text-muted-foreground">Se reemplazará únicamente la aplicación de cada instancia; cada perfil permanece separado.</p>
             </div>
           </div>
 
@@ -57,7 +57,7 @@ export function ApplicationUpdateDialog({
                 </ItemMedia>
                 <ItemContent className="min-w-0 gap-1">
                   <ItemTitle className="block max-w-full truncate text-xs font-semibold">{instance.name}</ItemTitle>
-                  <ItemDescription className="font-mono text-[10px]">
+                  <ItemDescription className="font-mono text-(length:--fs-small)">
                     {instance.sourceVersion ?? "sin versión"} <span className="px-1 text-primary-text">→</span> {targetVersion}
                   </ItemDescription>
                 </ItemContent>
@@ -69,7 +69,7 @@ export function ApplicationUpdateDialog({
           {(runningInstances.length > 0 || !canSynchronize || eligibleInstances.length === 0) && (
             <Alert className="border-warning/30 text-warning">
               <CircleStopIcon />
-              <AlertDescription className="text-[11px] leading-relaxed text-warning">
+              <AlertDescription className="text-(length:--fs-small) leading-relaxed text-warning">
                 {!canSynchronize
                   ? unavailableReason ?? "La fuente local ya no es elegible. Vuelve a escanear el sistema."
                   : runningInstances.length
@@ -81,7 +81,7 @@ export function ApplicationUpdateDialog({
 
           <Alert className="text-muted-foreground">
             <HardDriveIcon />
-            <AlertDescription className="text-[11px] leading-relaxed">
+            <AlertDescription className="text-(length:--fs-small) leading-relaxed">
               Las cuentas, sesiones, preferencias y datos de los perfiles no se modifican. Si el reemplazo falla, se restaura automáticamente la aplicación anterior.
             </AlertDescription>
           </Alert>
@@ -89,7 +89,7 @@ export function ApplicationUpdateDialog({
 
         <DialogFooter className="items-center">
           {busy && (
-            <span className="mr-auto font-mono text-[10px] text-muted-foreground">Cada instancia devuelve un resultado independiente</span>
+            <span className="mr-auto font-mono text-(length:--fs-small) text-muted-foreground">Cada instancia devuelve un resultado independiente</span>
           )}
           <Button variant="outline" size="lg" onClick={onClose} disabled={busy}>Cancelar</Button>
           <Button size="lg" className="min-w-36" onClick={() => void onConfirm()} disabled={busy || !ready}>

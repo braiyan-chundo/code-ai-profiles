@@ -29,7 +29,7 @@ export function Titlebar() {
         <span data-tauri-drag-region className="truncate text-xl font-bold tracking-[-0.045em] text-foreground">
           Code AI Profiles
         </span>
-        <span className="rounded-[5px] border border-(--line-strong) px-1.5 pt-1 pb-[3px] font-mono text-[8px] leading-none font-semibold tracking-[0.12em] text-muted-foreground">
+        <span className="rounded-[5px] border border-(--line-strong) px-1.5 pt-1 pb-[3px] font-mono text-(length:--fs-micro) leading-none font-semibold tracking-[0.12em] text-muted-foreground">
           BETA
         </span>
       </div>

@@ -55,9 +55,9 @@ export function SessionTransferDialog({
               <TerminalSquareIcon className="size-[19px]" />
             </span>
             <div className="grid min-w-0 gap-1">
-              <small className="font-mono text-[9px] font-semibold tracking-[0.11em] text-muted-foreground uppercase">Sesión actual</small>
-              <strong className="truncate text-[13px] font-semibold">{session.title}</strong>
-              <span className="text-[11px] text-muted-foreground">
+              <small className="font-mono text-(length:--fs-micro) font-semibold tracking-[0.11em] text-muted-foreground uppercase">Sesión actual</small>
+              <strong className="truncate text-(length:--fs-body) font-semibold">{session.title}</strong>
+              <span className="text-(length:--fs-small) text-muted-foreground">
                 En {source.name}
                 {registeredOrigin && registeredOrigin.id !== source.id ? ` · origen: ${registeredOrigin.name}` : ""}
               </span>
@@ -74,7 +74,7 @@ export function SessionTransferDialog({
               className="grid-cols-2 gap-2"
             >
               <ChoiceCard id="transfer-mode-move" value="move" title="Mover" description="Queda visible solo en el destino">
-                <Badge variant="secondary" className="font-mono text-[8px] tracking-[0.06em] text-primary-text">RECOMENDADO</Badge>
+                <Badge variant="secondary" className="font-mono text-(length:--fs-micro) tracking-[0.06em] text-primary-text">RECOMENDADO</Badge>
               </ChoiceCard>
               <ChoiceCard id="transfer-mode-copy" value="copy" title="Copiar" description="Permanece visible en ambos perfiles" />
             </RadioGroup>
@@ -117,7 +117,7 @@ export function SessionTransferDialog({
           {!ready && candidates.length > 0 && (
             <Alert className="border-warning/30 text-warning">
               <CircleStopIcon />
-              <AlertDescription className="text-[11px] leading-relaxed text-warning">
+              <AlertDescription className="text-(length:--fs-small) leading-relaxed text-warning">
                 Detén {sourceStopped ? target?.name : targetStopped ? source.name : "ambos perfiles"} antes de transferir. La app no los cerrará automáticamente.
               </AlertDescription>
             </Alert>
@@ -133,7 +133,7 @@ export function SessionTransferDialog({
               />
               <FieldContent>
                 <FieldTitle className="text-xs">Incluir copias locales de artefactos si están disponibles</FieldTitle>
-                <FieldDescription className="text-[11px] leading-snug">
+                <FieldDescription className="text-(length:--fs-small) leading-snug">
                   Los archivos se copian como bytes opacos. Si el esquema no es verificable, quedan en una exportación administrada para importarlos o publicarlos de nuevo.
                 </FieldDescription>
               </FieldContent>
@@ -142,7 +142,7 @@ export function SessionTransferDialog({
 
           <Alert className="text-muted-foreground">
             <TriangleAlertIcon />
-            <AlertDescription className="grid gap-2 text-[11px] leading-relaxed [&_p:not(:last-child)]:mb-0">
+            <AlertDescription className="grid gap-2 text-(length:--fs-small) leading-relaxed [&_p:not(:last-child)]:mb-0">
               <p>
                 {mode === "move"
                   ? "La sesión se retira del origen después de confirmar la copia en el destino. Se crea un respaldo y podrás devolverla a su origen desde el botón de desvincular."
@@ -177,7 +177,7 @@ export function SessionTransferDialog({
   );
 }
 
-const LEGEND = "mb-0 pl-0.5 font-mono data-[variant=label]:text-[9px] font-semibold tracking-[0.11em] text-muted-foreground uppercase";
+const LEGEND = "mb-0 pl-0.5 font-mono data-[variant=label]:text-(length:--fs-micro) font-semibold tracking-[0.11em] text-muted-foreground uppercase";
 
 /** Una opción de la transferencia: el radio, su título y su descripción; `children` va a la derecha. */
 function ChoiceCard({ id, value, title, description, children }: {
@@ -193,7 +193,7 @@ function ChoiceCard({ id, value, title, description, children }: {
         <RadioGroupItem value={value} id={id} />
         <FieldContent className="min-w-0 gap-1">
           <FieldTitle className="max-w-full truncate text-xs">{title}</FieldTitle>
-          <FieldDescription className="text-[11px] leading-snug">{description}</FieldDescription>
+          <FieldDescription className="text-(length:--fs-small) leading-snug">{description}</FieldDescription>
         </FieldContent>
         {children}
       </Field>
@@ -206,7 +206,7 @@ function ProfileStatus({ status }: { status: SessionProfile["status"] }) {
   return (
     <span
       data-status={status}
-      className="inline-flex shrink-0 items-center gap-1.5 self-center font-mono text-[9px] font-semibold text-muted-foreground uppercase data-[status=missing]:text-destructive data-[status=running]:text-primary-text"
+      className="inline-flex shrink-0 items-center gap-1.5 self-center font-mono text-(length:--fs-micro) font-semibold text-muted-foreground uppercase data-[status=missing]:text-destructive data-[status=running]:text-primary-text"
     >
       <i aria-hidden="true" className="size-1.5 rounded-full bg-current" />
       {status === "stopped" ? "Detenido" : status === "running" ? "Ejecutándose" : "No disponible"}

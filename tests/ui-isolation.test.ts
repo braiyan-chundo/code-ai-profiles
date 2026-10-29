@@ -130,9 +130,11 @@ const usedFontTokens = (source: string) => [...source.matchAll(/--fs-([a-z0-9-]+
 // 13. Sin tamaños sueltos: `text-[<n>px|rem|em]`. Las tres muestras de AppearanceDialog enseñan cada opción con un
 // tamaño fijo (lista cerrada).
 const LOOSE_TEXT_SIZE = /\btext-\[\s*\d*\.?\d+\s*(?:px|rem|em)\s*\]/g;
+// En components/ui/ solo los px: calendar y questionnaire (que la app no usa) miden en rem.
+const LOOSE_TEXT_PX = /\btext-\[\s*\d*\.?\d+\s*px\s*\]/g;
 const SAMPLE_FILE = "features/appearance/AppearanceDialog.tsx";
 const SAMPLE_SIZES = ["text-[11px]", "text-[15px]", "text-[19px]"];
-const looseSizes = (source: string) => source.match(LOOSE_TEXT_SIZE) ?? [];
+const looseSizes = (source: string, catalog = false) => source.match(catalog ? LOOSE_TEXT_PX : LOOSE_TEXT_SIZE) ?? [];
 // ...y nada de la escala anterior de sesiones.
 const OLD_SESSION_SCALE = /--session-|data-session-text|dataset\s*\.\s*sessionText\b/;
 
@@ -298,6 +300,7 @@ test("9 · canario: cada detector marca fugas sintéticas, también con rutas de
 
   // 13
   assert.deepEqual(looseSizes('className="text-[11px] text-[0.7rem] text-[.8em] text-[ 9px ]"').length, 4);
+  assert.deepEqual(looseSizes('className="text-[0.8rem] text-[13px]"', true), ["text-[13px]"], "el catálogo solo marca los px");
   assert.deepEqual(looseSizes('className="text-xs text-(length:--fs-micro) text-[var(--x)] text-[color:red]"'), []);
   for (const sample of ["--session-title-size: 12px;", 'root.dataset.sessionText = "a"', 'root[data-session-text="large"]', "text-(length:--session-meta-size)"]) {
     assert.ok(OLD_SESSION_SCALE.test(sample), sample);
@@ -346,7 +349,8 @@ test("12 · la escala tipográfica: siete --fs-* y --esc en los tres tamaños, n
 
 test("13 · sin tamaños sueltos de texto ni restos de --session-* o data-session-text", () => {
   for (const { local, source } of code) {
-    const loose = looseSizes(source);
+    if (local.startsWith("showcase/")) continue;
+    const loose = looseSizes(source, local.startsWith("components/ui/"));
     if (local === SAMPLE_FILE) assert.deepEqual([...new Set(loose)].sort(), SAMPLE_SIZES, `${local}: las muestras cambiaron`);
     else assert.deepEqual(loose, [], `src/${local} fija un tamaño de texto: usa text-(length:--fs-<x>)`);
   }

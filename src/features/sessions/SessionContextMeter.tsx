@@ -7,7 +7,7 @@ const LEVEL_TEXT: Record<SessionContextLevel, string> = {
   normal: "text-success",
   elevated: "text-warning",
   critical: "text-destructive",
-  unknown: "text-(--quiet)",
+  unknown: "text-muted-foreground",
 };
 const LEVEL_BAR: Record<SessionContextLevel, string> = {
   normal: "[&>[data-slot=progress-indicator]]:bg-success",
@@ -43,7 +43,7 @@ export function SessionContextMeter({ session }: { session: CodeSession }) {
   return (
     <div
       data-level={level}
-      className="grid gap-[5px] font-mono text-(length:--session-context-size) leading-[1.1] font-semibold"
+      className="grid gap-[5px] font-mono text-(length:--fs-micro) leading-[1.1] font-semibold"
       title={tokens == null
         ? "La aplicación aún no registra uso de contexto para esta sesión"
         : hasKnownLimit
@@ -51,7 +51,7 @@ export function SessionContextMeter({ session }: { session: CodeSession }) {
           : `${formatter.format(tokens)} tokens usados. Límite no identificado para este modelo`}
       aria-label={accessibleLabel}
     >
-      <div className={cn("flex items-center justify-between gap-2", level === "unknown" ? "text-(--quiet)" : "text-muted-foreground")}>
+      <div className="flex items-center justify-between gap-2 text-muted-foreground">
         <span className="truncate">
           {tokens == null
             ? "Contexto sin datos"
@@ -64,13 +64,13 @@ export function SessionContextMeter({ session }: { session: CodeSession }) {
           value={progress}
           aria-label={`Contexto usado: ${Math.round(percent)}%`}
           aria-valuenow={Math.round(progress)}
-          className={cn("h-(--session-track-height)", LEVEL_BAR[level])}
+          className={cn("h-1", LEVEL_BAR[level])}
         />
       )}
       <small
         className={cn(
-          "text-(length:--session-hint-size) font-medium",
-          level === "elevated" || level === "critical" ? LEVEL_TEXT[level] : "text-(--quiet)",
+          "text-(length:--fs-micro) font-medium",
+          level === "elevated" || level === "critical" ? LEVEL_TEXT[level] : "text-muted-foreground",
         )}
       >
         {description}

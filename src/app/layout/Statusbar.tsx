@@ -11,7 +11,7 @@ export function Statusbar() {
   const buildLabel = state.system.appVersion || (loading ? "cargando…" : "no disponible");
   const healthy = Boolean(state.system.sourcePath);
   return (
-    <footer className="row-start-4 flex h-13 shrink-0 items-center justify-between gap-4 border-t border-border bg-(--surface-soft)/60 px-[38px] text-[9px] text-(--quiet) max-[1070px]:h-12 max-[1070px]:px-[25px]">
+    <footer className="row-start-4 flex h-13 shrink-0 items-center justify-between gap-4 border-t border-border bg-(--surface-soft)/60 px-[38px] text-(length:--fs-micro) text-muted-foreground max-[1070px]:h-12 max-[1070px]:px-[25px]">
       <div className="flex min-w-0 items-center gap-[18px]">
         <span
           className={cn(
@@ -31,7 +31,7 @@ export function Statusbar() {
           {formatBytes(state.system.managedBytes)} administrados
         </span>
       </div>
-      <div className="flex shrink-0 items-center gap-3.5 font-mono text-[8px] leading-none font-medium tracking-[0.14em]">
+      <div className="flex shrink-0 items-center gap-3.5 font-mono text-(length:--fs-micro) leading-none font-medium tracking-[0.14em]">
         <span>AUTO · 60S</span>
         <Dot className="size-[5px] text-primary-text/60" />
         <span aria-label={`Versión de Code AI Profiles ${buildLabel}`}>BUILD {buildLabel}</span>
