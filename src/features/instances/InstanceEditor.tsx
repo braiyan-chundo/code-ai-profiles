@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import type { CreateInstanceRequest, DashboardState, ManagedInstance } from "../../types";
-import { ChevronDownIcon, HardDriveIcon, ImageUpIcon, InfoIcon, PlusIcon, RotateCwIcon } from "lucide-react";
+import { ChevronDownIcon, HardDriveIcon, ImageUpIcon, InfoIcon, PlusIcon, RotateCwIcon, TriangleAlertIcon } from "lucide-react";
 import { BrandMark } from "../../components/BrandMark";
 import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert";
 import { Button } from "../../components/ui/button";
@@ -9,7 +9,7 @@ import { Field, FieldError, FieldLabel } from "../../components/ui/field";
 import { Input } from "../../components/ui/input";
 import { Spinner } from "../../components/ui/spinner";
 import { cn } from "../../lib/utils";
-import { iconRetryState } from "./icon-status";
+import { iconRetryState, iconStatusLead } from "./icon-status";
 import { iconDimensionsError, iconFileError } from "./icon-validation";
 import { managedIconSource } from "./instance-icon";
 import type { InstanceIconChange } from "./instance-types";
@@ -20,6 +20,7 @@ export function InstanceEditor({
   platform,
   busy,
   iconBusy,
+  actionError,
   onClose,
   onRetryIcon,
   onSave,
@@ -30,6 +31,8 @@ export function InstanceEditor({
   busy: boolean;
   /** «Reintentar» el icono del Dock en curso. */
   iconBusy: boolean;
+  /** El error de la última operación del panel: el aviso global queda tras el fondo del diálogo. */
+  actionError: string | null;
   onClose: () => void;
   onRetryIcon: () => Promise<void>;
   onSave: (request: CreateInstanceRequest, iconChange: InstanceIconChange) => Promise<void>;
@@ -41,6 +44,7 @@ export function InstanceEditor({
   const [iconPreviewUrl, setIconPreviewUrl] = useState<string | null>(null);
   const [removeIcon, setRemoveIcon] = useState(false);
   const [iconError, setIconError] = useState<string | null>(null);
+  const [retried, setRetried] = useState(false);
   const isNew = !instance;
   const currentIconUrl = instance ? managedIconSource(instance) : null;
   const locked = busy || iconBusy;
@@ -80,6 +84,11 @@ export function InstanceEditor({
     } catch {
       setIconError("No se pudo decodificar la imagen seleccionada.");
     }
+  };
+
+  const retryIcon = () => {
+    setRetried(true);
+    return onRetryIcon();
   };
 
   const submit = async (event: FormEvent) => {
@@ -172,32 +181,45 @@ export function InstanceEditor({
             <InfoIcon />
             <AlertDescription className="text-(length:--fs-small) leading-relaxed">
               {platform === "macos"
-                ? "Al guardar, Code AI Profiles intentará aplicar el icono al Dock y verificará la copia administrada. El resultado aparecerá aquí cuando termine."
+                ? "Al guardar, el icono se pone en la copia de esta instancia y se verá en el Dock la próxima vez que la abras. La firma de la aplicación no cambia."
                 : platform === "windows"
                   ? "En Windows el ejecutable conserva su icono oficial; la imagen personalizada identifica la instancia dentro de Code AI Profiles."
                   : "En Linux se intenta aplicar el icono al launcher; Wayland o el compositor pueden conservar el icono oficial."}
             </AlertDescription>
           </Alert>
-          {instance?.customIcon && !removeIcon && (
+          {instance?.customIcon && !removeIcon && (retry.appManagement ? (
+            <Alert className="border-warning/30 text-warning">
+              <TriangleAlertIcon />
+              <AlertTitle className="text-xs">Permiso de Gestión de apps</AlertTitle>
+              <AlertDescription className="text-(length:--fs-small) leading-relaxed text-warning">
+                {instance.customIcon.systemMessage}
+              </AlertDescription>
+              <div className="col-start-2 mt-2 grid justify-items-start gap-1.5">
+                <RetryIconButton enabled={retry.enabled} loading={iconBusy} onRetry={retryIcon} />
+                {retry.hint && <span className="text-(length:--fs-small)">{retry.hint}</span>}
+              </div>
+            </Alert>
+          ) : (
             <div className="-mt-2 grid gap-1.5">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                 <p
                   data-applied={instance.customIcon.systemApplied}
                   className="min-w-0 flex-1 basis-60 px-0.5 font-mono text-(length:--fs-small) leading-snug text-muted-foreground data-[applied=true]:text-success"
                 >
-                  {platform === "macos" && (
-                    <strong>{instance.customIcon.systemApplied ? "Dock aplicado. " : "No se aplicó al Dock. "}</strong>
-                  )}
+                  {platform === "macos" && <strong>{iconStatusLead(instance.customIcon.systemApplied)}</strong>}
                   {instance.customIcon.systemMessage}
                 </p>
-                {retry.visible && (
-                  <Button type="button" variant="outline" size="sm" disabled={!retry.enabled} onClick={() => void onRetryIcon()}>
-                    {iconBusy ? <Spinner aria-hidden="true" /> : <RotateCwIcon />} Reintentar
-                  </Button>
-                )}
+                {retry.visible && <RetryIconButton enabled={retry.enabled} loading={iconBusy} onRetry={retryIcon} />}
               </div>
               {retry.hint && <p className="px-0.5 text-(length:--fs-small) text-muted-foreground">{retry.hint}</p>}
             </div>
+          ))}
+
+          {retried && actionError && !iconBusy && (
+            <Alert variant="destructive">
+              <TriangleAlertIcon aria-hidden="true" />
+              <AlertDescription className="text-(length:--fs-small) leading-relaxed text-destructive">{actionError}</AlertDescription>
+            </Alert>
           )}
 
           {isNew && (
@@ -247,5 +269,13 @@ export function InstanceEditor({
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function RetryIconButton({ enabled, loading, onRetry }: { enabled: boolean; loading: boolean; onRetry: () => Promise<void> }) {
+  return (
+    <Button type="button" variant="outline" size="sm" disabled={!enabled} onClick={() => void onRetry()}>
+      {loading ? <Spinner aria-hidden="true" /> : <RotateCwIcon />} Reintentar
+    </Button>
   );
 }

@@ -5,6 +5,7 @@ import { Card, CardAction, CardContent, CardHeader, CardTitle } from "../../comp
 import { formatCaptureTime } from "../../lib/format";
 import type { CodeSession, DashboardState, ManagedInstance } from "../../types";
 import { SessionList } from "../sessions";
+import { iconBadgeLabel } from "./icon-status";
 import { managedIconSource } from "./instance-icon";
 import { InstanceAvatar } from "./InstanceAvatar";
 import { InstanceStatusBadge } from "./InstanceStatusBadge";
@@ -87,9 +88,7 @@ export function InstanceDetail({
                   className="border-success/30 text-(length:--fs-micro) text-success"
                   title={instance.customIcon.systemMessage}
                 >
-                  Icono personalizado · {platform === "macos"
-                    ? instance.customIcon.systemApplied ? "Dock aplicado" : "Dock no aplicado"
-                    : instance.customIcon.systemApplied ? "sistema aplicado" : "solo en la app"}
+                  Icono personalizado · {iconBadgeLabel(platform, instance.customIcon.systemApplied)}
                 </Badge>
               )}
             </div>
