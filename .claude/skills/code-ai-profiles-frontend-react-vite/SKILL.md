@@ -23,12 +23,12 @@ El detalle y las reglas de dependencias, en `docs/arquitectura/frontend.md`. Lo 
 src/
   main.tsx            aviso de motor (webview-support), fuentes locales (@fontsource), styles/index.css y <App />
   app/                App.tsx (solo compone), router.tsx (createHashRouter), RouteErrorBoundary
-    providers/        AppProviders, DashboardRuntime (efectos en orden fijo), DialogsProvider (siete banderas)
+    providers/        AppProviders, DashboardRuntime (efectos en orden fijo), DialogsProvider (seis banderas)
     layout/           AppShell, AppSidebar, Titlebar, Statusbar, FeedbackArea, DialogHost, PageHeader/Content/Skeleton
-    routes/<pantalla> dashboard (índice), original e instance (lazy), con lo que solo usa esa pantalla
+    routes/<pantalla> dashboard (índice), original, instance y settings (lazy), con lo que solo usa esa pantalla
   features/<feature>/ componentes, hooks, lógica pura y tipos; su API pública en index.ts
                       dashboard (núcleo: store, selectores, useDashboard), scan, updates, instances,
-                      sessions, original-app, appearance
+                      sessions, original-app, appearance, permissions
   components/         piezas sin dominio: BrandMark, EmptyState, NoticeAlert
     ui/               catálogo shadcn (63, `@/components/ui/<id>` dentro; imports relativos desde la app)
   hooks/              hooks del catálogo (use-mobile, use-highlighted-code); lib/utils.ts exporta `cn`
@@ -41,7 +41,7 @@ tests/*.test.ts       node --test sobre los módulos puros
 
 - `app/` importa todo; nadie importa de `app/`. Entre features, **solo por su `index.ts`** y sin ciclos;
   `features/dashboard` no importa ninguna feature. Dentro de una feature, imports directos. Imports relativos.
-- **Rutas** (hash): `#/` dashboard, `#/original`, `#/instancias/<id>` (UUID opaco); cualquier otra vuelve a `#/`, y
+- **Rutas** (hash): `#/` dashboard, `#/original`, `#/instancias/<id>` (UUID opaco), `#/configuracion/apariencia` y `#/configuracion/permisos` (pestañas controladas por la ruta; sin sección o con otra va a apariencia); cualquier otra vuelve a `#/`, y
   un id que no está, también. **Pantalla nueva**: `app/routes/<pantalla>/<Pantalla>Route.tsx`, hija de `/` en
   `app/router.tsx` con `lazy`, que pinta dos hijos sin envoltorio: `PageHeader` (fila 1) y `PageContent` (fila 3). Su
   entrada en `AppSidebar`. Se navega con `<Link>` o `useNavigate()`. La URL nunca lleva nombres, rutas ni títulos.
