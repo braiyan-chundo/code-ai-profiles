@@ -4527,20 +4527,33 @@ fn launch_instance_sync(app: &AppHandle, id: String) -> Result<(), String> {
     let mut registry = load_registry(&paths)?;
     let inventory = ProcessInventory::capture();
     refresh_instance_statuses(&mut registry, &inventory);
-    let instance = registry
+    let position = registry
         .instances
-        .iter_mut()
-        .find(|instance| instance.id == id)
+        .iter()
+        .position(|instance| instance.id == id)
         .ok_or_else(|| "La instancia ya no existe.".to_string())?;
 
-    if instance.status == InstanceStatus::Running {
+    if registry.instances[position].status == InstanceStatus::Running {
         return save_registry(&paths, &registry);
     }
-    let app_path = PathBuf::from(&instance.app_path);
+    let app_path = PathBuf::from(&registry.instances[position].app_path);
     let executable = provider_executable(&app_path);
     if !executable.is_file() {
         return Err("La aplicación de esta instancia no está disponible.".to_string());
     }
+    // HU-0020 (A-4.5): a copy with a custom icon is verified, and its icon reapplied, before it launches.
+    #[cfg(target_os = "macos")]
+    if registry.instances[position].custom_icon.is_some() {
+        let original = detect_provider_source();
+        if macos_icon::launch_preflight(
+            &paths,
+            &mut registry.instances[position],
+            original.as_deref(),
+        )? {
+            save_registry(&paths, &registry)?;
+        }
+    }
+    let instance = &mut registry.instances[position];
     let profile_path = PathBuf::from(&instance.profile_path);
     fs::create_dir_all(&profile_path)
         .map_err(|error| format!("No se pudo preparar el perfil: {error}"))?;

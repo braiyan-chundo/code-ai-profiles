@@ -1066,6 +1066,94 @@ pub(crate) fn apply_branding_after_update(
     .map(Some)
 }
 
+/// A-4.5 · launch preflight, only for an instance with `custom_icon` and with the instance still stopped.
+/// Returns `Ok(true)` when the instance changed (provenance or icon fields) and must be saved before launching.
+///
+/// - Iconized copy: A-2 or it does not launch.
+/// - Clean copy without a provider-signed provenance (★ D-C): registered and reapplied if it passes `--strict`;
+///   otherwise it launches as before.
+/// - Clean copy with provenance (D-3): `--strict`, the original's requirement and a version not below the
+///   registered one, then re-registered and reapplied; otherwise it does not launch.
+/// - The reapply is skipped while App Management blocks it, and a failed reapply still launches.
+pub(crate) fn launch_preflight(
+    paths: &ManagedPaths,
+    instance: &mut ManagedInstance,
+    original: Option<&Path>,
+) -> Result<bool, String> {
+    let Some(custom_icon) = instance.custom_icon.clone() else {
+        return Ok(false);
+    };
+    let name = instance.name.clone();
+    let (root, bundle) = managed_bundle_of(paths, instance)?;
+    let shape = bundle_shape(&bundle).map_err(|_| bundle_changed_message(&name))?;
+    let Some(original) = original else {
+        return match shape {
+            BundleShape::Iconized => Err(format!(
+                "No se encontró la aplicación original para verificar la copia de «{name}», así que no se abrirá."
+            )),
+            BundleShape::Clean => Ok(false),
+        };
+    };
+    if shape == BundleShape::Iconized {
+        verify_managed_bundle(
+            &bundle,
+            original,
+            instance.provider_provenance.as_ref(),
+            &name,
+        )?;
+        return Ok(false);
+    }
+    let previous = instance
+        .provider_provenance
+        .as_ref()
+        .filter(|provenance| provenance.provider_signature_preserved);
+    let registered = match previous {
+        None => match register_clean_provenance(&bundle, original, None) {
+            Ok(registered) => registered,
+            Err(_) => return Ok(false),
+        },
+        Some(previous) => {
+            register_clean_provenance(&bundle, original, Some(&previous.provider_version))
+                .map_err(|_| bundle_changed_message(&name))?
+        }
+    };
+    instance.provider_provenance = Some(registered.clone());
+    let icon_path = root.join("branding/icon.png");
+    if custom_icon.system_issue == Some(CustomIconSystemIssue::AppManagement)
+        || Path::new(&custom_icon.path) != icon_path
+        || !icon_path.is_file()
+    {
+        return Ok(true);
+    }
+    let outcome = match apply_icon_to_registered(
+        &paths.instances,
+        &bundle,
+        &icon_path,
+        original,
+        registered.clone(),
+        &name,
+        MESSAGE_APPLIED,
+    ) {
+        Ok(outcome) => outcome,
+        Err(_) => {
+            // The icon was removed again: the copy launches only if it is back to a verified clean copy.
+            check_managed_bundle(&bundle, original, Some(&registered), IdentityCheck::Fresh)
+                .map_err(|_| bundle_changed_message(&name))?;
+            IconOutcome {
+                provenance: registered,
+                system_applied: false,
+                system_issue: None,
+                system_message: MESSAGE_REJECTED.to_string(),
+            }
+        }
+    };
+    instance.provider_provenance = Some(outcome.provenance.clone());
+    if let Some(icon) = instance.custom_icon.as_mut() {
+        outcome.write_to(icon);
+    }
+    Ok(true)
+}
+
 #[cfg(test)]
 pub(crate) mod tests {
     use super::*;
@@ -1932,6 +2020,180 @@ pub(crate) mod tests {
             original_before,
             "the original never receives the icon"
         );
+    }
+
+    #[test]
+    fn launch_preflight_skips_instances_without_a_custom_icon() {
+        let fixture = IconFixture::new("preflight-none", None);
+        let mut registry = registry_for(&fixture);
+        fs::write(fixture.managed.join("Contents/Resources/extra"), b"x").unwrap();
+        assert_eq!(
+            launch_preflight(
+                &fixture.paths,
+                &mut registry.instances[0],
+                Some(&fixture.original)
+            ),
+            Ok(false),
+            "copies without an icon launch as before, unverified"
+        );
+    }
+
+    #[test]
+    fn launch_preflight_verifies_an_iconized_copy_and_refuses_a_changed_one() {
+        let fixture = IconFixture::new("preflight-iconized", Some(EXPLICIT_REQUIREMENT));
+        let mut registry = registry_for(&fixture);
+        set_instance_icon(
+            &fixture.paths,
+            &mut registry,
+            0,
+            &fixture.original,
+            &icon_png(&fixture),
+        )
+        .unwrap();
+        let mut instance = registry.instances[0].clone();
+        assert_eq!(
+            launch_preflight(&fixture.paths, &mut instance, Some(&fixture.original)),
+            Ok(false)
+        );
+        assert_eq!(
+            launch_preflight(&fixture.paths, &mut instance, None),
+            Err(
+                "No se encontró la aplicación original para verificar la copia de «Trabajo», así que no se abrirá."
+                    .to_string()
+            )
+        );
+        fs::write(fixture.managed.join("Contents/Resources/extra"), b"x").unwrap();
+        assert_eq!(
+            launch_preflight(&fixture.paths, &mut instance, Some(&fixture.original)),
+            Err(bundle_changed_message("Trabajo"))
+        );
+    }
+
+    #[test]
+    fn launch_preflight_migrates_an_old_icon_lazily() {
+        let fixture = IconFixture::new("preflight-migrate", Some(EXPLICIT_REQUIREMENT));
+        let mut registry = registry_for(&fixture);
+        let managed_icon = fixture.instance_root.join("branding/icon.png");
+        assert_eq!(managed_icon, fixture.icon);
+        registry.instances[0].custom_icon = Some(CustomIcon {
+            path: managed_icon.to_string_lossy().to_string(),
+            revision: 4,
+            system_applied: false,
+            system_message: "El icono se guardó para Code AI Profiles.".to_string(),
+            system_issue: None,
+        });
+        let mut instance = registry.instances[0].clone();
+        assert_eq!(
+            launch_preflight(&fixture.paths, &mut instance, Some(&fixture.original)),
+            Ok(true)
+        );
+        let icon = instance.custom_icon.as_ref().unwrap();
+        assert!(icon.system_applied);
+        assert_eq!(icon.revision, 4);
+        assert_eq!(
+            bundle_shape(&fixture.managed).unwrap(),
+            BundleShape::Iconized
+        );
+        assert_eq!(
+            check(
+                &fixture,
+                &fixture.managed,
+                instance.provider_provenance.as_ref()
+            ),
+            Ok(ManagedBundleState::Iconized)
+        );
+
+        let legacy = fixture.another_copy();
+        fs::write(legacy.join("Contents/Resources/extra"), b"x").unwrap();
+        let mut legacy_instance = registry.instances[0].clone();
+        legacy_instance.app_path = legacy.to_string_lossy().to_string();
+        legacy_instance.id = legacy
+            .parent()
+            .and_then(Path::parent)
+            .and_then(Path::file_name)
+            .unwrap()
+            .to_string_lossy()
+            .to_string();
+        assert_eq!(
+            launch_preflight(
+                &fixture.paths,
+                &mut legacy_instance,
+                Some(&fixture.original)
+            ),
+            Ok(false),
+            "a copy that does not pass --strict launches as before"
+        );
+        assert!(legacy_instance.provider_provenance.is_none());
+    }
+
+    #[test]
+    fn launch_preflight_accepts_a_self_update_and_rejects_a_downgrade() {
+        let fixture = IconFixture::new("preflight-d3", Some(EXPLICIT_REQUIREMENT));
+        let mut registry = registry_for(&fixture);
+        set_instance_icon(
+            &fixture.paths,
+            &mut registry,
+            0,
+            &fixture.original,
+            &icon_png(&fixture),
+        )
+        .unwrap();
+        let registered = registry.instances[0].provider_provenance.clone().unwrap();
+        // ShipIt replaced the bundle: no icon, newer version, another CDHash.
+        clear_workspace_icon(&fixture.paths.instances, &fixture.managed).unwrap();
+        set_version(&fixture.managed, "1.0.1");
+        fixture.resign(&fixture.managed);
+        let mut updated = registry.instances[0].clone();
+        assert_eq!(
+            launch_preflight(&fixture.paths, &mut updated, Some(&fixture.original)),
+            Ok(true)
+        );
+        let renewed = updated.provider_provenance.as_ref().unwrap();
+        assert_eq!(renewed.provider_version, "1.0.1");
+        assert_ne!(renewed.managed_code_hash, registered.managed_code_hash);
+        assert!(updated.custom_icon.as_ref().unwrap().system_applied);
+        assert_eq!(
+            bundle_shape(&fixture.managed).unwrap(),
+            BundleShape::Iconized
+        );
+
+        clear_workspace_icon(&fixture.paths.instances, &fixture.managed).unwrap();
+        set_version(&fixture.managed, "0.9");
+        fixture.resign(&fixture.managed);
+        let mut downgraded = registry.instances[0].clone();
+        assert_eq!(
+            launch_preflight(&fixture.paths, &mut downgraded, Some(&fixture.original)),
+            Err(bundle_changed_message("Trabajo"))
+        );
+    }
+
+    #[test]
+    fn launch_preflight_does_not_retry_while_app_management_blocks_the_icon() {
+        let fixture = IconFixture::new("preflight-blocked", Some(EXPLICIT_REQUIREMENT));
+        let mut registry = registry_for(&fixture);
+        {
+            let _locked = Immutable::new(&fixture.managed);
+            set_instance_icon(
+                &fixture.paths,
+                &mut registry,
+                0,
+                &fixture.original,
+                &icon_png(&fixture),
+            )
+            .unwrap();
+        }
+        let mut instance = registry.instances[0].clone();
+        assert_eq!(
+            launch_preflight(&fixture.paths, &mut instance, Some(&fixture.original)),
+            Ok(true)
+        );
+        let icon = instance.custom_icon.as_ref().unwrap();
+        assert!(!icon.system_applied);
+        assert_eq!(
+            icon.system_issue,
+            Some(CustomIconSystemIssue::AppManagement)
+        );
+        assert_eq!(bundle_shape(&fixture.managed).unwrap(), BundleShape::Clean);
     }
 
     #[test]
