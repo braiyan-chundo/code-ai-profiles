@@ -21,6 +21,7 @@ mod config;
 #[cfg(target_os = "macos")]
 mod macos_icon;
 mod original_update;
+mod projects;
 
 const REGISTRY_VERSION: u32 = 1;
 const ORIGINAL_INSTANCE_ID: &str = "__claude_original__";
@@ -5109,7 +5110,12 @@ fn open_instance_folder(app: AppHandle, id: String) -> Result<(), String> {
     if !profile.exists() {
         return Err("La carpeta del perfil ya no existe.".to_string());
     }
+    open_in_file_manager(&profile)
+}
 
+/// Abre una carpeta en el gestor de archivos del sistema. La ruta la decide Rust (registro de
+/// instancias o de proyectos), nunca el frontend.
+fn open_in_file_manager(path: &Path) -> Result<(), String> {
     #[cfg(target_os = "macos")]
     let mut command = Command::new("/usr/bin/open");
     #[cfg(target_os = "windows")]
@@ -5118,10 +5124,75 @@ fn open_instance_folder(app: AppHandle, id: String) -> Result<(), String> {
     let mut command = Command::new("xdg-open");
 
     command
-        .arg(profile)
+        .arg(path)
         .spawn()
         .map_err(|error| format!("No se pudo abrir la carpeta: {error}"))?;
     Ok(())
+}
+
+// ── Proyectos anclados (HU-0023): envoltorios finos de projects.rs ──────────
+
+#[tauri::command]
+async fn list_projects(app: AppHandle) -> Result<projects::ProjectsState, String> {
+    tauri::async_runtime::spawn_blocking(move || projects::list_projects_sync(&app))
+        .await
+        .map_err(|error| format!("La lectura de los proyectos terminó inesperadamente: {error}"))?
+}
+
+#[tauri::command]
+async fn read_project(app: AppHandle, id: String) -> Result<projects::ProjectSummary, String> {
+    tauri::async_runtime::spawn_blocking(move || projects::read_project_sync(&app, &id))
+        .await
+        .map_err(|error| format!("La lectura del proyecto terminó inesperadamente: {error}"))?
+}
+
+/// Abre el selector nativo de carpetas con la ventana `main` de padre e inspecciona la elegida sin
+/// anclarla. `None` si la persona cancela.
+#[tauri::command]
+async fn pick_project_folder(app: AppHandle) -> Result<Option<projects::ProjectCandidate>, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        use tauri_plugin_dialog::DialogExt;
+        let mut dialog = app
+            .dialog()
+            .file()
+            .set_title("Elige la carpeta del proyecto");
+        if let Some(window) = app.get_webview_window("main") {
+            dialog = dialog.set_parent(&window);
+        }
+        let Some(picked) = dialog.blocking_pick_folder() else {
+            return Ok(None);
+        };
+        let path = picked
+            .into_path()
+            .map_err(|error| format!("No se pudo leer la carpeta elegida: {error}"))?;
+        projects::inspect_candidate_sync(&app, &path).map(Some)
+    })
+    .await
+    .map_err(|error| format!("El selector de carpetas terminó inesperadamente: {error}"))?
+}
+
+#[tauri::command]
+async fn pin_project(app: AppHandle, path: String) -> Result<projects::ProjectSummary, String> {
+    tauri::async_runtime::spawn_blocking(move || projects::pin_project_sync(&app, &path))
+        .await
+        .map_err(|error| format!("Anclar el proyecto terminó inesperadamente: {error}"))?
+}
+
+#[tauri::command]
+async fn unpin_project(app: AppHandle, id: String) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || projects::unpin_project_sync(&app, &id))
+        .await
+        .map_err(|error| format!("Desanclar el proyecto terminó inesperadamente: {error}"))?
+}
+
+#[tauri::command]
+async fn open_project_folder(app: AppHandle, id: String) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let path = projects::project_folder_sync(&app, &id)?;
+        open_in_file_manager(&path)
+    })
+    .await
+    .map_err(|error| format!("Abrir la carpeta del proyecto terminó inesperadamente: {error}"))?
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
@@ -5378,6 +5449,7 @@ fn delete_instance_sync(app: &AppHandle, id: String) -> Result<(), String> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
             config::validate().map_err(std::io::Error::other)?;
             let handle = app.handle().clone();
@@ -5408,7 +5480,13 @@ pub fn run() {
             update_original_application,
             install_original_update,
             cancel_original_update,
-            delete_instance
+            delete_instance,
+            list_projects,
+            read_project,
+            pick_project_folder,
+            pin_project,
+            unpin_project,
+            open_project_folder
         ])
         .run(tauri::generate_context!())
         .expect("error while running Code AI Profiles");
