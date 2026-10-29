@@ -35,8 +35,6 @@ const ARTIFACT_EXPORT_MAX_BYTES: u64 = 256 * 1024 * 1024;
 const MANAGED_BYTES_CACHE_TTL: Duration = Duration::from_secs(30);
 #[cfg(not(target_os = "macos"))]
 const DOCK_ICON_MACOS_ONLY: &str = "El icono del Dock solo se aplica en macOS.";
-#[cfg(target_os = "macos")]
-const MACOS_WORKSPACE_ICON_STRICT_INCOMPATIBLE: &str = "workspace-icon-strict-incompatible";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -1634,59 +1632,6 @@ fn fingerprint_label(path: &Path) -> Result<String, String> {
     let mut hasher = DefaultHasher::new();
     fingerprint.hash(&mut hasher);
     Ok(format!("{:016x}", hasher.finish()))
-}
-
-#[cfg(target_os = "macos")]
-fn validate_managed_provenance(
-    candidate: &Path,
-    original: &Path,
-    provenance: &ProviderProvenance,
-) -> Result<(), String> {
-    let status = Command::new("/usr/bin/codesign")
-        .args(["--verify", "--deep", "--strict"])
-        .arg(candidate)
-        .status()
-        .map_err(|error| format!("No se pudo validar la firma administrada: {error}"))?;
-    if !status.success() {
-        return Err("La firma de la copia administrada no es válida.".to_string());
-    }
-    let original_bundle = macos_bundle_value(original, "CFBundleIdentifier")
-        .ok_or_else(|| "La original no expone una identidad de bundle.".to_string())?;
-    let candidate_bundle = macos_bundle_value(candidate, "CFBundleIdentifier")
-        .ok_or_else(|| "La copia no expone una identidad de bundle.".to_string())?;
-    if provenance.bundle_identifier != original_bundle || candidate_bundle != original_bundle {
-        return Err("La provenance ya no coincide con la identidad del proveedor.".to_string());
-    }
-    if provenance.provider_team_identifier != macos_team_identifier(original) {
-        return Err(
-            "El proveedor original cambió de firmante; se requiere una copia nueva.".to_string(),
-        );
-    }
-    if provenance.provider_signature_preserved {
-        validate_provider_identity_uncached(candidate, original)?;
-    }
-    let expected_code_hash = provenance
-        .managed_code_hash
-        .as_deref()
-        .ok_or_else(|| "La copia no tiene un sello de provenance vigente.".to_string())?;
-    if macos_code_hash(candidate).as_deref() != Some(expected_code_hash) {
-        return Err("El sello firmado de la copia administrada cambió.".to_string());
-    }
-    if provenance.managed_fingerprint != fingerprint_label(candidate)? {
-        return Err(
-            "La copia administrada fue modificada fuera del flujo de branding.".to_string(),
-        );
-    }
-    Ok(())
-}
-
-#[cfg(not(target_os = "macos"))]
-fn validate_managed_provenance(
-    _candidate: &Path,
-    _original: &Path,
-    _provenance: &ProviderProvenance,
-) -> Result<(), String> {
-    Err("La provenance administrada solo aplica a bundles macOS.".to_string())
 }
 
 fn validate_managed_application_source(
@@ -4104,11 +4049,6 @@ fn update_instance_application_from_source_sync(
         .position(|instance| instance.id == id)
         .ok_or_else(|| "La instancia ya no existe.".to_string())?;
     let current = registry.instances[position].clone();
-    let source_provenance = registry
-        .instances
-        .iter()
-        .find(|instance| Path::new(&instance.app_path) == source)
-        .and_then(|instance| instance.provider_provenance.clone());
     if current.status == InstanceStatus::Running {
         return Err(format!(
             "Detén “{}” antes de actualizar su aplicación.",
@@ -4188,12 +4128,12 @@ fn update_instance_application_from_source_sync(
     let updated_app_path = destination_application.join(relative_app_path);
     #[cfg(target_os = "macos")]
     let updated_branding = {
-        match apply_macos_branding_after_update(
+        match macos_icon::apply_branding_after_update(
+            &paths.instances,
             &updated_app_path,
             current.custom_icon.as_ref(),
             &original,
-            source,
-            source_provenance.as_ref(),
+            &current.name,
         ) {
             Ok(outcome) => outcome,
             Err(error) => {
@@ -4218,14 +4158,14 @@ fn update_instance_application_from_source_sync(
     registry.instances[position].status = InstanceStatus::Stopped;
     #[cfg(target_os = "macos")]
     {
-        registry.instances[position].provider_provenance = updated_branding.provenance;
-        if let (Some(icon), Some(system_applied), Some(system_message)) = (
-            registry.instances[position].custom_icon.as_mut(),
-            updated_branding.system_applied,
-            updated_branding.system_message,
-        ) {
-            icon.system_applied = system_applied;
-            icon.system_message = system_message;
+        let target = &mut registry.instances[position];
+        target.provider_provenance = updated_branding
+            .as_ref()
+            .map(|outcome| outcome.provenance.clone());
+        if let (Some(icon), Some(outcome)) =
+            (target.custom_icon.as_mut(), updated_branding.as_ref())
+        {
+            outcome.write_to(icon);
         }
     }
     #[cfg(not(target_os = "macos"))]
@@ -4902,286 +4842,6 @@ fn clone_directory(source: &Path, destination: &Path) -> Result<(), String> {
         .ok_or_else(|| "No se pudo respaldar el bundle administrado.".to_string())
 }
 
-#[cfg(target_os = "macos")]
-fn set_macos_workspace_icon(bundle: &Path, icon_path: Option<&Path>) -> Result<(), String> {
-    use std::ffi::{c_char, c_void, CString};
-
-    type ObjcId = *mut c_void;
-    type ObjcSel = *mut c_void;
-    #[link(name = "AppKit", kind = "framework")]
-    extern "C" {}
-    #[link(name = "Foundation", kind = "framework")]
-    extern "C" {}
-    extern "C" {
-        fn objc_getClass(name: *const c_char) -> ObjcId;
-        fn sel_registerName(name: *const c_char) -> ObjcSel;
-        fn objc_msgSend();
-    }
-
-    fn c_string(value: &str, label: &str) -> Result<CString, String> {
-        CString::new(value).map_err(|_| format!("{label} contiene un carácter no válido."))
-    }
-
-    let bundle_text = bundle
-        .to_str()
-        .ok_or_else(|| "La ruta del bundle no es UTF-8 válida.".to_string())?;
-    let bundle_text = c_string(bundle_text, "La ruta del bundle")?;
-    let icon_text = icon_path
-        .map(|path| {
-            path.to_str()
-                .ok_or_else(|| "La ruta del icono no es UTF-8 válida.".to_string())
-                .and_then(|value| c_string(value, "La ruta del icono"))
-        })
-        .transpose()?;
-
-    let class_pool = c_string("NSAutoreleasePool", "Clase")?;
-    let class_string = c_string("NSString", "Clase")?;
-    let class_image = c_string("NSImage", "Clase")?;
-    let class_workspace = c_string("NSWorkspace", "Clase")?;
-    let selector_new = c_string("new", "Selector")?;
-    let selector_string = c_string("stringWithUTF8String:", "Selector")?;
-    let selector_alloc = c_string("alloc", "Selector")?;
-    let selector_init_image = c_string("initWithContentsOfFile:", "Selector")?;
-    let selector_workspace = c_string("sharedWorkspace", "Selector")?;
-    let selector_set_icon = c_string("setIcon:forFile:options:", "Selector")?;
-    let selector_release = c_string("release", "Selector")?;
-    let selector_drain = c_string("drain", "Selector")?;
-
-    unsafe {
-        let raw_message_send = objc_msgSend as *const ();
-        let send_id: unsafe extern "C" fn(ObjcId, ObjcSel) -> ObjcId =
-            std::mem::transmute(raw_message_send);
-        let send_id_cstr: unsafe extern "C" fn(ObjcId, ObjcSel, *const c_char) -> ObjcId =
-            std::mem::transmute(raw_message_send);
-        let send_id_id: unsafe extern "C" fn(ObjcId, ObjcSel, ObjcId) -> ObjcId =
-            std::mem::transmute(raw_message_send);
-        let send_set_icon: unsafe extern "C" fn(ObjcId, ObjcSel, ObjcId, ObjcId, usize) -> bool =
-            std::mem::transmute(raw_message_send);
-        let send_void: unsafe extern "C" fn(ObjcId, ObjcSel) =
-            std::mem::transmute(raw_message_send);
-
-        let pool = send_id(
-            objc_getClass(class_pool.as_ptr()),
-            sel_registerName(selector_new.as_ptr()),
-        );
-        let string_class = objc_getClass(class_string.as_ptr());
-        let path = send_id_cstr(
-            string_class,
-            sel_registerName(selector_string.as_ptr()),
-            bundle_text.as_ptr(),
-        );
-        if path.is_null() {
-            send_void(pool, sel_registerName(selector_drain.as_ptr()));
-            return Err("NSWorkspace no pudo representar la ruta del bundle.".to_string());
-        }
-        let image = if let Some(icon_text) = icon_text.as_ref() {
-            let icon_path = send_id_cstr(
-                string_class,
-                sel_registerName(selector_string.as_ptr()),
-                icon_text.as_ptr(),
-            );
-            let allocated = send_id(
-                objc_getClass(class_image.as_ptr()),
-                sel_registerName(selector_alloc.as_ptr()),
-            );
-            send_id_id(
-                allocated,
-                sel_registerName(selector_init_image.as_ptr()),
-                icon_path,
-            )
-        } else {
-            std::ptr::null_mut()
-        };
-        if icon_path.is_some() && image.is_null() {
-            send_void(pool, sel_registerName(selector_drain.as_ptr()));
-            return Err("NSWorkspace no pudo cargar la imagen personalizada.".to_string());
-        }
-        let workspace = send_id(
-            objc_getClass(class_workspace.as_ptr()),
-            sel_registerName(selector_workspace.as_ptr()),
-        );
-        let applied = send_set_icon(
-            workspace,
-            sel_registerName(selector_set_icon.as_ptr()),
-            image,
-            path,
-            0,
-        );
-        if !image.is_null() {
-            send_void(image, sel_registerName(selector_release.as_ptr()));
-        }
-        send_void(pool, sel_registerName(selector_drain.as_ptr()));
-        if !applied {
-            return Err("NSWorkspace rechazó el icono personalizado.".to_string());
-        }
-    }
-    Ok(())
-}
-
-#[cfg(target_os = "macos")]
-fn apply_macos_custom_icon(
-    bundle: &Path,
-    icon_path: &Path,
-    original: &Path,
-    inherited: Option<(&Path, &ProviderProvenance)>,
-) -> Result<ProviderProvenance, String> {
-    let bundle_identifier = macos_bundle_value(bundle, "CFBundleIdentifier")
-        .ok_or_else(|| "El bundle administrado no tiene CFBundleIdentifier.".to_string())?;
-    let original_identifier = macos_bundle_value(original, "CFBundleIdentifier")
-        .ok_or_else(|| "La aplicación original no tiene CFBundleIdentifier.".to_string())?;
-    if bundle_identifier != original_identifier {
-        return Err("La copia no conserva la identidad de bundle del proveedor.".to_string());
-    }
-    let provider_version = cached_source_version(bundle)
-        .ok_or_else(|| "No se pudo capturar la versión de provenance.".to_string())?;
-    let (provider_team_identifier, provider_source_fingerprint, original_icon_file) = if let Some(
-        (trusted_source, provenance),
-    ) =
-        inherited
-    {
-        validate_managed_provenance(trusted_source, original, provenance)?;
-        if !provenance.provider_signature_preserved {
-            return Err("La copia conserva una firma ad-hoc heredada. Sincronízala desde la original antes de reaplicar el icono.".to_string());
-        }
-        if provenance.bundle_identifier != original_identifier
-            || provenance.provider_team_identifier != macos_team_identifier(original)
-        {
-            return Err("La provenance heredada no coincide con el proveedor actual.".to_string());
-        }
-        (
-            provenance.provider_team_identifier.clone(),
-            provenance.provider_source_fingerprint.clone(),
-            provenance.original_icon_file.clone(),
-        )
-    } else {
-        validate_provider_identity_uncached(bundle, original)?;
-        (
-            macos_team_identifier(original),
-            fingerprint_label(bundle)?,
-            macos_bundle_value(bundle, "CFBundleIconFile"),
-        )
-    };
-
-    set_macos_workspace_icon(bundle, Some(icon_path))?;
-    // A workspace icon is stored as file metadata. The signed bundle contents,
-    // designated requirement and provider signature must remain untouched.
-    if let Err(validation_error) = validate_provider_identity_uncached(bundle, original) {
-        let rollback = set_macos_workspace_icon(bundle, None)
-            .and_then(|_| validate_provider_identity_uncached(bundle, original));
-        return Err(match rollback {
-            Ok(()) => format!(
-                "{MACOS_WORKSPACE_ICON_STRICT_INCOMPATIBLE}: macOS aplicó metadata de icono que invalida la verificación estricta; se restauró el bundle: {validation_error}"
-            ),
-            Err(rollback_error) => format!(
-                "La metadata de icono invalidó la firma ({validation_error}) y no pudo restaurarse ({rollback_error})."
-            ),
-        });
-    }
-    invalidate_application_cache();
-    Ok(ProviderProvenance {
-        bundle_identifier,
-        provider_team_identifier,
-        provider_version,
-        provider_source_fingerprint,
-        managed_fingerprint: fingerprint_label(bundle)?,
-        managed_code_hash: macos_code_hash(bundle),
-        provider_signature_preserved: true,
-        original_icon_file,
-    })
-}
-
-#[cfg(target_os = "macos")]
-struct MacosUpdateBrandingOutcome {
-    provenance: Option<ProviderProvenance>,
-    system_applied: Option<bool>,
-    system_message: Option<String>,
-}
-
-#[cfg(target_os = "macos")]
-fn apply_macos_branding_after_update(
-    updated_bundle: &Path,
-    custom_icon: Option<&CustomIcon>,
-    original: &Path,
-    source: &Path,
-    source_provenance: Option<&ProviderProvenance>,
-) -> Result<MacosUpdateBrandingOutcome, String> {
-    if let Some(custom_icon) = custom_icon {
-        return match apply_macos_custom_icon(
-            updated_bundle,
-            Path::new(&custom_icon.path),
-            original,
-            source_provenance.map(|provenance| (source, provenance)),
-        ) {
-            Ok(provenance) => Ok(MacosUpdateBrandingOutcome {
-                provenance: Some(provenance),
-                system_applied: Some(true),
-                system_message: Some(
-                    "Icono reaplicado después de actualizar y firma verificada.".to_string(),
-                ),
-            }),
-            Err(error) if error.starts_with(MACOS_WORKSPACE_ICON_STRICT_INCOMPATIBLE) => {
-                // apply_macos_custom_icon already removed the workspace metadata and
-                // revalidated the provider bundle. Keep the provider update and the
-                // UI-only icon instead of rolling back the whole application.
-                Ok(MacosUpdateBrandingOutcome {
-                    provenance: None,
-                    system_applied: Some(false),
-                    system_message: Some(
-                        "La aplicación se actualizó y el icono sigue disponible en Code AI Profiles, pero macOS no permite dejarlo en el Dock sin invalidar la verificación estricta del bundle."
-                            .to_string(),
-                    ),
-                })
-            }
-            Err(error) => Err(error),
-        };
-    }
-
-    let provenance = if let Some(mut provenance) = source_provenance.cloned() {
-        provenance.managed_fingerprint = fingerprint_label(updated_bundle)?;
-        Some(clear_macos_custom_icon(
-            updated_bundle,
-            original,
-            &provenance,
-        )?)
-    } else {
-        None
-    };
-    Ok(MacosUpdateBrandingOutcome {
-        provenance,
-        system_applied: None,
-        system_message: None,
-    })
-}
-
-#[cfg(target_os = "macos")]
-fn restore_macos_workspace_icon_after_failure(
-    bundle: &Path,
-    previous_custom_icon: Option<&CustomIcon>,
-    original: &Path,
-) -> Result<(), String> {
-    let icon = previous_custom_icon
-        .filter(|icon| icon.system_applied)
-        .map(|icon| Path::new(&icon.path));
-    set_macos_workspace_icon(bundle, icon)?;
-    validate_provider_identity_uncached(bundle, original)
-}
-
-#[cfg(target_os = "macos")]
-fn clear_macos_custom_icon(
-    bundle: &Path,
-    original: &Path,
-    provenance: &ProviderProvenance,
-) -> Result<ProviderProvenance, String> {
-    validate_managed_provenance(bundle, original, provenance)?;
-    set_macos_workspace_icon(bundle, None)?;
-    validate_provider_identity_uncached(bundle, original)?;
-    invalidate_application_cache();
-    let mut updated = provenance.clone();
-    updated.managed_fingerprint = fingerprint_label(bundle)?;
-    updated.managed_code_hash = macos_code_hash(bundle);
-    Ok(updated)
-}
-
 #[cfg(target_os = "linux")]
 fn desktop_entry_value(value: &str) -> String {
     value
@@ -5268,6 +4928,7 @@ async fn set_instance_icon(
 
 fn set_instance_icon_sync(app: &AppHandle, request: SetInstanceIconRequest) -> Result<(), String> {
     let paths = ManagedPaths::resolve(app)?;
+    #[cfg_attr(target_os = "macos", allow(unused_variables))]
     let root = paths.root_for(&request.id)?;
     let normalized = normalized_icon_png(&request.bytes)?;
     let mut registry = load_registry(&paths)?;
@@ -5281,91 +4942,23 @@ fn set_instance_icon_sync(app: &AppHandle, request: SetInstanceIconRequest) -> R
     if registry.instances[position].status != InstanceStatus::Stopped {
         return Err("Detén la instancia antes de cambiar su icono.".to_string());
     }
-    let branding = root.join("branding");
-    let icon_path = branding.join("icon.png");
-    let previous_icon = fs::read(&icon_path).ok();
-    #[cfg(target_os = "macos")]
-    let previous_custom_icon = registry.instances[position].custom_icon.clone();
-    let revision = registry.instances[position]
-        .custom_icon
-        .as_ref()
-        .map(|icon| icon.revision.saturating_add(1))
-        .unwrap_or(1);
     #[cfg(target_os = "macos")]
     {
-        let app_path = PathBuf::from(&registry.instances[position].app_path);
-        if !path_is_within(&app_path, &root) {
-            return Err("El bundle quedó fuera del root administrado.".to_string());
-        }
         let original = detect_provider_source().ok_or_else(|| {
-            "No se encontró la aplicación original para validar provenance.".to_string()
+            "No se encontró la aplicación original para verificar la copia.".to_string()
         })?;
-        let inherited = registry.instances[position].provider_provenance.clone();
-        if let Some(provenance) = inherited.as_ref() {
-            validate_managed_provenance(&app_path, &original, provenance)?;
-        } else {
-            validate_provider_identity_uncached(&app_path, &original)?;
-        }
-        let transaction = (|| {
-            fs::create_dir_all(&branding)
-                .map_err(|error| format!("No se pudo preparar el icono administrado: {error}"))?;
-            atomic_replace_file(&icon_path, &normalized)?;
-            let applied = apply_macos_custom_icon(
-                &app_path,
-                &icon_path,
-                &original,
-                inherited
-                    .as_ref()
-                    .map(|provenance| (app_path.as_path(), provenance)),
-            );
-            let (system_applied, system_message) = match applied {
-                Ok(provenance) => {
-                    registry.instances[position].provider_provenance = Some(provenance);
-                    (
-                        true,
-                        "Icono aplicado mediante NSWorkspace; firma del proveedor verificada."
-                            .to_string(),
-                    )
-                }
-                Err(error) if error.starts_with(MACOS_WORKSPACE_ICON_STRICT_INCOMPATIBLE) => {
-                    registry.instances[position].provider_provenance = None;
-                    (
-                        false,
-                        "El icono se guardó para Code AI Profiles, pero macOS no permite dejarlo en el Dock sin invalidar la verificación estricta del bundle."
-                            .to_string(),
-                    )
-                }
-                Err(error) => return Err(error),
-            };
-            registry.instances[position].custom_icon = Some(CustomIcon {
-                path: icon_path.to_string_lossy().to_string(),
-                revision,
-                system_applied,
-                system_message,
-                system_issue: None,
-            });
-            save_registry(&paths, &registry)
-        })();
-        if let Err(error) = transaction {
-            restore_optional_file(&icon_path, previous_icon.as_deref());
-            let rollback = restore_macos_workspace_icon_after_failure(
-                &app_path,
-                previous_custom_icon.as_ref(),
-                &original,
-            );
-            return Err(match rollback {
-                Ok(()) => format!("No se aplicó el icono y se restauró la metadata: {error}"),
-                Err(rollback_error) => format!(
-                    "Falló el icono ({error}) y el rollback de metadata ({rollback_error})."
-                ),
-            });
-        }
-        invalidate_application_cache();
-        invalidate_managed_bytes_cache();
-        return Ok(());
+        macos_icon::set_instance_icon(&paths, &mut registry, position, &original, &normalized)
     }
     #[cfg(not(target_os = "macos"))]
     {
+        let branding = root.join("branding");
+        let icon_path = branding.join("icon.png");
+        let previous_icon = fs::read(&icon_path).ok();
+        let revision = registry.instances[position]
+            .custom_icon
+            .as_ref()
+            .map(|icon| icon.revision.saturating_add(1))
+            .unwrap_or(1);
         fs::create_dir_all(&branding)
             .map_err(|error| format!("No se pudo preparar el icono administrado: {error}"))?;
         atomic_replace_file(&icon_path, &normalized)?;
@@ -5405,6 +4998,7 @@ async fn clear_instance_icon(app: AppHandle, id: String) -> Result<DashboardStat
 
 fn clear_instance_icon_sync(app: &AppHandle, id: String) -> Result<(), String> {
     let paths = ManagedPaths::resolve(app)?;
+    #[cfg_attr(target_os = "macos", allow(unused_variables))]
     let root = paths.root_for(&id)?;
     let mut registry = load_registry(&paths)?;
     let position = registry
@@ -5417,82 +5011,20 @@ fn clear_instance_icon_sync(app: &AppHandle, id: String) -> Result<(), String> {
     if registry.instances[position].status != InstanceStatus::Stopped {
         return Err("Detén la instancia antes de restaurar su icono.".to_string());
     }
-    let managed_icon = root.join("branding/icon.png");
-    let previous_icon = fs::read(&managed_icon).ok();
-    let launcher = root.join("launcher.desktop");
-    let previous_launcher = fs::read(&launcher).ok();
-    #[cfg(target_os = "macos")]
-    let previous_custom_icon = registry.instances[position].custom_icon.clone();
     #[cfg(target_os = "macos")]
     {
-        let app_path = PathBuf::from(&registry.instances[position].app_path);
-        if !path_is_within(&app_path, &root) {
-            return Err("El bundle quedó fuera del root administrado.".to_string());
-        }
         let original = detect_provider_source().ok_or_else(|| {
             "No se encontró la aplicación original para restaurar el icono.".to_string()
         })?;
-        let provenance = registry.instances[position].provider_provenance.clone();
-        if let Some(provenance) = provenance.as_ref() {
-            validate_managed_provenance(&app_path, &original, provenance)?;
-        } else {
-            validate_provider_identity_uncached(&app_path, &original)?;
-        }
-        let transaction = (|| {
-            if let Some(provenance) = provenance.as_ref() {
-                clear_macos_custom_icon(&app_path, &original, provenance)?;
-            } else {
-                set_macos_workspace_icon(&app_path, None)?;
-                validate_provider_identity_uncached(&app_path, &original)?;
-            }
-            if registry.instances[position]
-                .custom_icon
-                .as_ref()
-                .is_some_and(|icon| Path::new(&icon.path) == managed_icon)
-            {
-                match fs::remove_file(&managed_icon) {
-                    Ok(()) => {}
-                    Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
-                    Err(error) => {
-                        return Err(format!("No se pudo retirar el icono administrado: {error}"));
-                    }
-                }
-            }
-            match fs::remove_file(&launcher) {
-                Ok(()) => {}
-                Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
-                Err(error) => {
-                    return Err(format!(
-                        "No se pudo retirar el launcher administrado: {error}"
-                    ));
-                }
-            }
-            registry.instances[position].custom_icon = None;
-            registry.instances[position].provider_provenance = None;
-            save_registry(&paths, &registry)
-        })();
-        if let Err(error) = transaction {
-            restore_optional_file(&managed_icon, previous_icon.as_deref());
-            restore_optional_file(&launcher, previous_launcher.as_deref());
-            let rollback = restore_macos_workspace_icon_after_failure(
-                &app_path,
-                previous_custom_icon.as_ref(),
-                &original,
-            );
-            return Err(match rollback {
-                Ok(()) => format!("No se restauró el icono; se recuperó la metadata: {error}"),
-                Err(rollback_error) => format!(
-                    "Falló la restauración ({error}) y el rollback de metadata ({rollback_error})."
-                ),
-            });
-        }
-        invalidate_application_cache();
-        invalidate_managed_bytes_cache();
-        return Ok(());
+        macos_icon::clear_instance_icon(&paths, &mut registry, position, &original)
     }
 
     #[cfg(not(target_os = "macos"))]
     {
+        let managed_icon = root.join("branding/icon.png");
+        let previous_icon = fs::read(&managed_icon).ok();
+        let launcher = root.join("launcher.desktop");
+        let previous_launcher = fs::read(&launcher).ok();
         if registry.instances[position]
             .custom_icon
             .as_ref()
@@ -5526,8 +5058,23 @@ async fn reapply_instance_icon(app: AppHandle, id: String) -> Result<DashboardSt
 
 #[cfg(target_os = "macos")]
 fn reapply_instance_icon_sync(app: &AppHandle, id: String) -> Result<(), String> {
-    let _ = (app, id);
-    Err("El reintento del icono todavía no está disponible.".to_string())
+    let paths = ManagedPaths::resolve(app)?;
+    paths.root_for(&id)?;
+    let mut registry = load_registry(&paths)?;
+    let inventory = ProcessInventory::capture();
+    refresh_instance_statuses(&mut registry, &inventory);
+    let position = registry
+        .instances
+        .iter()
+        .position(|instance| instance.id == id)
+        .ok_or_else(|| "La instancia ya no existe.".to_string())?;
+    if registry.instances[position].status != InstanceStatus::Stopped {
+        return Err("Detén la instancia antes de reintentar el icono.".to_string());
+    }
+    let original = detect_provider_source().ok_or_else(|| {
+        "No se encontró la aplicación original para verificar la copia.".to_string()
+    })?;
+    macos_icon::reapply_instance_icon(&paths, &mut registry, position, &original)
 }
 
 #[cfg(not(target_os = "macos"))]
@@ -5816,7 +5363,7 @@ mod tests {
 
     #[cfg(target_os = "macos")]
     #[derive(Debug, PartialEq, Eq)]
-    struct MacosSignatureSnapshot {
+    pub(crate) struct MacosSignatureSnapshot {
         deep_status: Option<i32>,
         deep_diagnostic: String,
         strict_status: Option<i32>,
@@ -5874,7 +5421,7 @@ mod tests {
     }
 
     #[cfg(target_os = "macos")]
-    fn macos_signature_snapshot(bundle: &Path) -> MacosSignatureSnapshot {
+    pub(crate) fn macos_signature_snapshot(bundle: &Path) -> MacosSignatureSnapshot {
         let (deep_status, deep_diagnostic) = codesign_verification(bundle, false);
         let (strict_status, strict_diagnostic) = codesign_verification(bundle, true);
         MacosSignatureSnapshot {
@@ -6117,133 +5664,6 @@ int main(int argc, const char **argv) {
 
     #[cfg(target_os = "macos")]
     #[test]
-    fn macos_branding_fixture_verifies_launches_and_preserves_profile_bytes() {
-        let root = env::temp_dir().join(format!("code-ai-dock-fixture-{}", Uuid::new_v4()));
-        let original = root.join("Original.app");
-        let managed = root.join("managed/application/Fixture.app");
-        let profile = root.join("managed/profile/state.bin");
-        fs::create_dir_all(profile.parent().unwrap()).unwrap();
-        fs::write(&profile, b"private-profile-sentinel").unwrap();
-        let before = fs::read(&profile).unwrap();
-        write_signed_fixture_bundle(&original);
-        clone_directory(&original, &managed).unwrap();
-
-        let icon =
-            image::DynamicImage::ImageRgba8(image::ImageBuffer::from_fn(512, 512, |x, y| {
-                if (x / 64 + y / 64) % 2 == 0 {
-                    image::Rgba([32, 96, 255, 255])
-                } else {
-                    image::Rgba([255, 96, 48, 255])
-                }
-            }));
-        let mut encoded = Cursor::new(Vec::new());
-        icon.write_to(&mut encoded, image::ImageFormat::Png)
-            .unwrap();
-        let icon_path = root.join("managed/branding/icon.png");
-        fs::create_dir_all(icon_path.parent().unwrap()).unwrap();
-        fs::write(&icon_path, encoded.into_inner()).unwrap();
-
-        let plist = managed.join("Contents/Info.plist");
-        let plist_before = fs::read(&plist).unwrap();
-        let code_hash_before = macos_code_hash(&managed);
-        let error = apply_macos_custom_icon(&managed, &icon_path, &original, None).unwrap_err();
-        assert!(error.contains("verificación estricta"));
-        validate_provider_identity_uncached(&managed, &original).unwrap();
-        assert_eq!(macos_code_hash(&managed), code_hash_before);
-        assert_eq!(fs::read(&plist).unwrap(), plist_before);
-        let launched = Command::new(provider_executable(&managed))
-            .arg("--smoke")
-            .status()
-            .unwrap();
-        assert!(launched.success());
-        assert_eq!(fs::read(&profile).unwrap(), before);
-
-        fs::write(
-            managed.join("Contents/Resources/external-tamper"),
-            b"tamper",
-        )
-        .unwrap();
-        assert!(validate_provider_identity_uncached(&managed, &original).is_err());
-        fs::remove_dir_all(root).unwrap();
-    }
-
-    #[cfg(target_os = "macos")]
-    #[test]
-    fn macos_update_keeps_new_bundle_when_workspace_icon_is_strict_incompatible() {
-        let root = env::temp_dir().join(format!("code-ai-update-icon-{}", Uuid::new_v4()));
-        let original = root.join("Original.app");
-        let updated = root.join("managed/application/Updated.app");
-        write_signed_fixture_bundle(&original);
-        clone_directory(&original, &updated).unwrap();
-        let baseline = macos_signature_snapshot(&updated);
-
-        let icon = image::DynamicImage::new_rgba8(512, 512);
-        let mut encoded = Cursor::new(Vec::new());
-        icon.write_to(&mut encoded, image::ImageFormat::Png)
-            .unwrap();
-        let icon_path = root.join("managed/branding/icon.png");
-        fs::create_dir_all(icon_path.parent().unwrap()).unwrap();
-        fs::write(&icon_path, encoded.into_inner()).unwrap();
-        let custom_icon = CustomIcon {
-            path: icon_path.to_string_lossy().to_string(),
-            revision: 1,
-            system_applied: false,
-            system_message: "UI only".to_string(),
-            system_issue: None,
-        };
-
-        let outcome = apply_macos_branding_after_update(
-            &updated,
-            Some(&custom_icon),
-            &original,
-            &original,
-            None,
-        )
-        .unwrap();
-        assert_eq!(outcome.system_applied, Some(false));
-        assert!(outcome.provenance.is_none());
-        assert!(outcome
-            .system_message
-            .as_deref()
-            .is_some_and(|message| message.contains("se actualizó")));
-        assert_eq!(macos_signature_snapshot(&updated), baseline);
-        validate_provider_identity_uncached(&updated, &original).unwrap();
-        fs::remove_dir_all(root).unwrap();
-    }
-
-    #[cfg(target_os = "macos")]
-    #[test]
-    fn macos_ui_only_icon_rollback_clears_workspace_metadata() {
-        let root = env::temp_dir().join(format!("code-ai-icon-rollback-{}", Uuid::new_v4()));
-        let original = root.join("Original.app");
-        let managed = root.join("managed/application/Fixture.app");
-        write_signed_fixture_bundle(&original);
-        clone_directory(&original, &managed).unwrap();
-        let baseline = macos_signature_snapshot(&managed);
-
-        let icon = image::DynamicImage::new_rgba8(512, 512);
-        let mut encoded = Cursor::new(Vec::new());
-        icon.write_to(&mut encoded, image::ImageFormat::Png)
-            .unwrap();
-        let icon_path = root.join("managed/branding/icon.png");
-        fs::create_dir_all(icon_path.parent().unwrap()).unwrap();
-        fs::write(&icon_path, encoded.into_inner()).unwrap();
-        set_macos_workspace_icon(&managed, Some(&icon_path)).unwrap();
-        let previous = CustomIcon {
-            path: icon_path.to_string_lossy().to_string(),
-            revision: 1,
-            system_applied: false,
-            system_message: "UI only".to_string(),
-            system_issue: None,
-        };
-
-        restore_macos_workspace_icon_after_failure(&managed, Some(&previous), &original).unwrap();
-        assert_eq!(macos_signature_snapshot(&managed), baseline);
-        fs::remove_dir_all(root).unwrap();
-    }
-
-    #[cfg(target_os = "macos")]
-    #[test]
     #[ignore = "visual spike: requires an explicit provider source and retained temp root"]
     fn macos_provider_clone_dock_visual_spike() {
         let source = env::var_os("CODE_AI_PROFILES_DOCK_PROVIDER_SOURCE")
@@ -6279,7 +5699,7 @@ int main(int argc, const char **argv) {
         icon.write_to(&mut encoded, image::ImageFormat::Png)
             .unwrap();
         fs::write(&icon_path, encoded.into_inner()).unwrap();
-        set_macos_workspace_icon(&managed, Some(&icon_path)).unwrap();
+        macos_icon::set_workspace_icon(&root, &managed, Some(&icon_path)).unwrap();
         let iconized = macos_signature_snapshot(&managed);
         assert_eq!(iconized.code_hash, baseline.code_hash);
         assert_eq!(iconized.team_identifier, baseline.team_identifier);
@@ -6301,7 +5721,7 @@ int main(int argc, const char **argv) {
             .and_then(|value| value.parse::<u64>().ok())
             .unwrap_or(1_500);
         thread::sleep(Duration::from_millis(capture_ms));
-        set_macos_workspace_icon(&managed, None).unwrap();
+        macos_icon::set_workspace_icon(&root, &managed, None).unwrap();
         let restored = macos_signature_snapshot(&managed);
         assert_eq!(
             restored, baseline,

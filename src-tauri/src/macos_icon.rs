@@ -16,6 +16,8 @@ use std::process::Stdio;
 pub(crate) const ROOT_ICON_FILE: &str = "Icon\r";
 const CONTENTS_DIRECTORY: &str = "Contents";
 const FINDER_INFO_XATTR: &[u8] = b"com.apple.FinderInfo";
+const WORKSPACE_ICON_ATTEMPTS: usize = 3;
+const WORKSPACE_ICON_RETRY_DELAY: Duration = Duration::from_millis(150);
 const RESOURCE_FORK_XATTR: &[u8] = b"com.apple.ResourceFork";
 
 /// A-2: the only message a person sees when a managed copy fails the check. No paths, no `codesign` output.
@@ -448,6 +450,622 @@ pub(crate) fn verify_managed_bundle(
         .map_err(|_| bundle_changed_message(name))
 }
 
+/// A-5 · literal messages for `CustomIcon.system_message`.
+pub(crate) const MESSAGE_APPLIED: &str =
+    "Icono aplicado a la copia. Se verá en el Dock al abrir la instancia.";
+pub(crate) const MESSAGE_REAPPLIED_AFTER_SYNC: &str = "Icono reaplicado después de sincronizar.";
+pub(crate) const MESSAGE_APP_MANAGEMENT: &str = "macOS no dejó a Code AI Profiles cambiar el icono de la copia. Para verlo en el Dock, activa Code AI Profiles en Ajustes del Sistema › Privacidad y seguridad › Gestión de apps y pulsa «Reintentar». Si sigue igual, cierra y vuelve a abrir Code AI Profiles. El icono sigue visible dentro de la app.";
+pub(crate) const MESSAGE_REJECTED: &str = "macOS no aplicó el icono a la copia. Sigue visible en Code AI Profiles; pulsa «Reintentar» con la instancia detenida.";
+const MESSAGE_REMOVE_REJECTED: &str =
+    "macOS no quitó el icono de la copia. Vuelve a intentarlo con la instancia detenida.";
+const MESSAGE_OUTSIDE_INSTANCES: &str =
+    "El icono del Dock solo se aplica a copias administradas por Code AI Profiles.";
+
+fn rejected_message(issue: Option<CustomIconSystemIssue>) -> &'static str {
+    match issue {
+        Some(CustomIconSystemIssue::AppManagement) => MESSAGE_APP_MANAGEMENT,
+        None => MESSAGE_REJECTED,
+    }
+}
+
+/// Why NSWorkspace or the direct removal did not change the bundle.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) enum WorkspaceIconError {
+    /// Refused before touching anything: path guard or an unusable path. Always fatal.
+    Refused(String),
+    /// macOS did not apply the change. Not fatal when applying (A-4.1); fatal when removing (A-4.2).
+    Rejected(Option<CustomIconSystemIssue>),
+}
+
+impl WorkspaceIconError {
+    fn message(&self) -> String {
+        match self {
+            Self::Refused(message) => message.clone(),
+            Self::Rejected(issue) => rejected_message(*issue).to_string(),
+        }
+    }
+}
+
+/// A-5 · `EPERM` writing inside the bundle is the signature of App Management. Anything else is generic.
+pub(crate) fn classify_write_error(error: &io::Error) -> Option<CustomIconSystemIssue> {
+    (error.raw_os_error() == Some(libc::EPERM)).then_some(CustomIconSystemIssue::AppManagement)
+}
+
+/// A-5 · after `setIcon` returned `false`: try to open `<root>/Icon\r` for writing (never following a symlink)
+/// and remove it again if it did not exist. Never queries TCC and never asks for the permission.
+fn classify_rejection(bundle: &Path) -> Option<CustomIconSystemIssue> {
+    use std::os::unix::fs::OpenOptionsExt;
+
+    let icon = bundle.join(ROOT_ICON_FILE);
+    let existed = fs::symlink_metadata(&icon).is_ok();
+    match fs::OpenOptions::new()
+        .write(true)
+        .create(true)
+        .custom_flags(libc::O_NOFOLLOW)
+        .open(&icon)
+    {
+        Ok(file) => {
+            drop(file);
+            if !existed {
+                let _ = fs::remove_file(&icon);
+            }
+            None
+        }
+        Err(error) => classify_write_error(&error),
+    }
+}
+
+/// A-3 · NSWorkspace only ever touches a bundle inside `ManagedPaths.instances` (canonicalized). The original
+/// and anything else are refused before calling AppKit.
+fn guard_managed_bundle(instances_root: &Path, bundle: &Path) -> Result<(), WorkspaceIconError> {
+    let refused = || WorkspaceIconError::Refused(MESSAGE_OUTSIDE_INSTANCES.to_string());
+    let root = fs::canonicalize(instances_root).map_err(|_| refused())?;
+    let metadata = fs::symlink_metadata(bundle).map_err(|_| refused())?;
+    if !metadata.is_dir() {
+        return Err(refused());
+    }
+    let canonical = fs::canonicalize(bundle).map_err(|_| refused())?;
+    if canonical == root || !canonical.starts_with(&root) {
+        return Err(refused());
+    }
+    Ok(())
+}
+
+/// `NSWorkspace.setIcon:forFile:options:`. `Ok(false)` is NSWorkspace's own refusal.
+fn workspace_set_icon(bundle: &Path, icon_path: Option<&Path>) -> Result<bool, WorkspaceIconError> {
+    use std::ffi::c_void;
+
+    type ObjcId = *mut c_void;
+    type ObjcSel = *mut c_void;
+    #[link(name = "AppKit", kind = "framework")]
+    extern "C" {}
+    #[link(name = "Foundation", kind = "framework")]
+    extern "C" {}
+    extern "C" {
+        fn objc_getClass(name: *const c_char) -> ObjcId;
+        fn sel_registerName(name: *const c_char) -> ObjcSel;
+        fn objc_msgSend();
+    }
+
+    fn c_string(value: &str) -> Result<CString, WorkspaceIconError> {
+        CString::new(value).map_err(|_| {
+            WorkspaceIconError::Refused(
+                "La ruta del icono contiene un carácter no válido.".to_string(),
+            )
+        })
+    }
+    let unusable =
+        || WorkspaceIconError::Refused("La ruta del icono no es válida para macOS.".to_string());
+
+    let bundle_text = c_string(bundle.to_str().ok_or_else(unusable)?)?;
+    let icon_text = icon_path
+        .map(|path| path.to_str().ok_or_else(unusable).and_then(c_string))
+        .transpose()?;
+
+    let class_pool = c_string("NSAutoreleasePool")?;
+    let class_string = c_string("NSString")?;
+    let class_image = c_string("NSImage")?;
+    let class_workspace = c_string("NSWorkspace")?;
+    let selector_new = c_string("new")?;
+    let selector_string = c_string("stringWithUTF8String:")?;
+    let selector_alloc = c_string("alloc")?;
+    let selector_init_image = c_string("initWithContentsOfFile:")?;
+    let selector_workspace = c_string("sharedWorkspace")?;
+    let selector_set_icon = c_string("setIcon:forFile:options:")?;
+    let selector_release = c_string("release")?;
+    let selector_drain = c_string("drain")?;
+
+    // SAFETY: plain Objective-C messaging with the documented signatures of each selector, inside an
+    // autorelease pool that is always drained. The image is released after use.
+    unsafe {
+        let raw_message_send = objc_msgSend as *const ();
+        let send_id: unsafe extern "C" fn(ObjcId, ObjcSel) -> ObjcId =
+            std::mem::transmute(raw_message_send);
+        let send_id_cstr: unsafe extern "C" fn(ObjcId, ObjcSel, *const c_char) -> ObjcId =
+            std::mem::transmute(raw_message_send);
+        let send_id_id: unsafe extern "C" fn(ObjcId, ObjcSel, ObjcId) -> ObjcId =
+            std::mem::transmute(raw_message_send);
+        let send_set_icon: unsafe extern "C" fn(ObjcId, ObjcSel, ObjcId, ObjcId, usize) -> bool =
+            std::mem::transmute(raw_message_send);
+        let send_void: unsafe extern "C" fn(ObjcId, ObjcSel) =
+            std::mem::transmute(raw_message_send);
+
+        let pool = send_id(
+            objc_getClass(class_pool.as_ptr()),
+            sel_registerName(selector_new.as_ptr()),
+        );
+        let string_class = objc_getClass(class_string.as_ptr());
+        let path = send_id_cstr(
+            string_class,
+            sel_registerName(selector_string.as_ptr()),
+            bundle_text.as_ptr(),
+        );
+        if path.is_null() {
+            send_void(pool, sel_registerName(selector_drain.as_ptr()));
+            return Err(unusable());
+        }
+        let image = if let Some(icon_text) = icon_text.as_ref() {
+            let icon_path = send_id_cstr(
+                string_class,
+                sel_registerName(selector_string.as_ptr()),
+                icon_text.as_ptr(),
+            );
+            let allocated = send_id(
+                objc_getClass(class_image.as_ptr()),
+                sel_registerName(selector_alloc.as_ptr()),
+            );
+            send_id_id(
+                allocated,
+                sel_registerName(selector_init_image.as_ptr()),
+                icon_path,
+            )
+        } else {
+            std::ptr::null_mut()
+        };
+        if icon_text.is_some() && image.is_null() {
+            // The saved PNG could not be read: macOS did not apply anything.
+            send_void(pool, sel_registerName(selector_drain.as_ptr()));
+            return Err(WorkspaceIconError::Rejected(None));
+        }
+        let workspace = send_id(
+            objc_getClass(class_workspace.as_ptr()),
+            sel_registerName(selector_workspace.as_ptr()),
+        );
+        let applied = send_set_icon(
+            workspace,
+            sel_registerName(selector_set_icon.as_ptr()),
+            image,
+            path,
+            0,
+        );
+        if !image.is_null() {
+            send_void(image, sel_registerName(selector_release.as_ptr()));
+        }
+        send_void(pool, sel_registerName(selector_drain.as_ptr()));
+        Ok(applied)
+    }
+}
+
+/// Puts (`Some`) or removes (`None`) the Finder icon of a managed copy through NSWorkspace. A refusal is
+/// classified (A-5).
+pub(crate) fn set_workspace_icon(
+    instances_root: &Path,
+    bundle: &Path,
+    icon_path: Option<&Path>,
+) -> Result<(), WorkspaceIconError> {
+    guard_managed_bundle(instances_root, bundle)?;
+    // NSWorkspace is not safe to drive from several threads at once: concurrent `setIcon` calls fail at random.
+    // Commands already run inside `with_registry_operation`; this lock covers every other caller.
+    static WORKSPACE_ICON_LOCK: Mutex<()> = Mutex::new(());
+    let _serialized = WORKSPACE_ICON_LOCK
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner());
+    // `setIcon` is idempotent and local. It can return `false` for a moment on a bundle macOS is still
+    // registering, so it gets a few short attempts before the refusal is classified.
+    let mut applied = false;
+    for attempt in 0..WORKSPACE_ICON_ATTEMPTS {
+        if attempt > 0 {
+            thread::sleep(WORKSPACE_ICON_RETRY_DELAY);
+        }
+        applied = workspace_set_icon(bundle, icon_path)?;
+        if applied {
+            break;
+        }
+    }
+    invalidate_application_cache();
+    if applied {
+        Ok(())
+    } else {
+        Err(WorkspaceIconError::Rejected(classify_rejection(bundle)))
+    }
+}
+
+/// Removes the Finder icon: `setIcon(nil)` and then the direct removal of `Icon\r` and the root FinderInfo,
+/// which also covers the case where NSWorkspace refused. `EPERM` on the direct removal is App Management.
+pub(crate) fn clear_workspace_icon(
+    instances_root: &Path,
+    bundle: &Path,
+) -> Result<(), WorkspaceIconError> {
+    match set_workspace_icon(instances_root, bundle, None) {
+        Ok(()) | Err(WorkspaceIconError::Rejected(_)) => {}
+        Err(refused) => return Err(refused),
+    }
+    strip_inherited_icon(bundle)
+        .map_err(|error| WorkspaceIconError::Rejected(classify_write_error(&error)))
+}
+
+/// What applying the icon left: the registered provenance and the three `CustomIcon` fields.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct IconOutcome {
+    pub(crate) provenance: ProviderProvenance,
+    pub(crate) system_applied: bool,
+    pub(crate) system_issue: Option<CustomIconSystemIssue>,
+    pub(crate) system_message: String,
+}
+
+impl IconOutcome {
+    pub(crate) fn write_to(&self, icon: &mut CustomIcon) {
+        icon.system_applied = self.system_applied;
+        icon.system_issue = self.system_issue;
+        icon.system_message = self.system_message.clone();
+    }
+}
+
+/// The provenance an icon may be applied with: a clean copy is registered now (no downgrade below what was
+/// registered), an iconized one must pass A-2 with the provenance it already has.
+pub(crate) fn provenance_for_icon(
+    bundle: &Path,
+    original: &Path,
+    provenance: Option<&ProviderProvenance>,
+    name: &str,
+) -> Result<ProviderProvenance, String> {
+    let changed = |_| bundle_changed_message(name);
+    match bundle_shape(bundle).map_err(|_| bundle_changed_message(name))? {
+        BundleShape::Clean => register_clean_provenance(
+            bundle,
+            original,
+            provenance.map(|provenance| provenance.provider_version.as_str()),
+        )
+        .map_err(changed),
+        BundleShape::Iconized => {
+            check_iconized(bundle, original, provenance).map_err(changed)?;
+            provenance
+                .cloned()
+                .ok_or_else(|| bundle_changed_message(name))
+        }
+    }
+}
+
+/// A-4.1 after the provenance is settled: `setIcon`, then A-2 with the icon in place. A refused `setIcon` is not
+/// fatal: the copy is left clean (or as it was) with `systemApplied=false`. A-2 failing after a successful
+/// `setIcon` is fatal: the icon is removed and the caller restores the previous state.
+pub(crate) fn apply_icon_to_registered(
+    instances_root: &Path,
+    bundle: &Path,
+    icon_path: &Path,
+    original: &Path,
+    registered: ProviderProvenance,
+    name: &str,
+    applied_message: &str,
+) -> Result<IconOutcome, String> {
+    match set_workspace_icon(instances_root, bundle, Some(icon_path)) {
+        Ok(()) => {
+            match check_managed_bundle(bundle, original, Some(&registered), IdentityCheck::Fresh) {
+                Ok(ManagedBundleState::Iconized) => Ok(IconOutcome {
+                    provenance: registered,
+                    system_applied: true,
+                    system_issue: None,
+                    system_message: applied_message.to_string(),
+                }),
+                Ok(ManagedBundleState::Clean { .. }) => Ok(IconOutcome {
+                    provenance: registered,
+                    system_applied: false,
+                    system_issue: None,
+                    system_message: MESSAGE_REJECTED.to_string(),
+                }),
+                Err(_) => {
+                    let _ = clear_workspace_icon(instances_root, bundle);
+                    Err(bundle_changed_message(name))
+                }
+            }
+        }
+        Err(WorkspaceIconError::Refused(message)) => Err(message),
+        Err(WorkspaceIconError::Rejected(issue)) => {
+            let _ = clear_workspace_icon(instances_root, bundle);
+            check_managed_bundle(bundle, original, Some(&registered), IdentityCheck::Fresh)
+                .map_err(|_| bundle_changed_message(name))?;
+            Ok(IconOutcome {
+                provenance: registered,
+                system_applied: false,
+                system_issue: issue,
+                system_message: rejected_message(issue).to_string(),
+            })
+        }
+    }
+}
+
+/// A-4.2 · removes the icon and requires `--strict` again. App Management returns the A-5 text and changes nothing.
+pub(crate) fn remove_custom_icon(
+    instances_root: &Path,
+    bundle: &Path,
+    original: &Path,
+    name: &str,
+) -> Result<(), String> {
+    match clear_workspace_icon(instances_root, bundle) {
+        Ok(()) => {}
+        Err(WorkspaceIconError::Refused(message)) => return Err(message),
+        Err(WorkspaceIconError::Rejected(Some(CustomIconSystemIssue::AppManagement))) => {
+            return Err(MESSAGE_APP_MANAGEMENT.to_string());
+        }
+        Err(WorkspaceIconError::Rejected(None)) => return Err(MESSAGE_REMOVE_REJECTED.to_string()),
+    }
+    invalidate_application_cache();
+    if bundle_shape(bundle).ok() != Some(BundleShape::Clean)
+        || validate_provider_identity_uncached(bundle, original).is_err()
+    {
+        return Err(bundle_changed_message(name));
+    }
+    Ok(())
+}
+
+/// Puts back what the registry still says after a failed transaction: the previous icon when it was applied,
+/// a clean copy otherwise.
+pub(crate) fn restore_after_failure(
+    instances_root: &Path,
+    bundle: &Path,
+    previous_icon: Option<&CustomIcon>,
+    previous_provenance: Option<&ProviderProvenance>,
+    original: &Path,
+) -> Result<(), String> {
+    match previous_icon.filter(|icon| icon.system_applied) {
+        Some(icon) => {
+            set_workspace_icon(instances_root, bundle, Some(Path::new(&icon.path)))
+                .map_err(|error| error.message())?;
+            check_managed_bundle(bundle, original, previous_provenance, IdentityCheck::Fresh)
+                .map(|_| ())
+                .map_err(|_| "La copia no volvió a su estado anterior.".to_string())
+        }
+        None => {
+            clear_workspace_icon(instances_root, bundle).map_err(|error| error.message())?;
+            validate_provider_identity_uncached(bundle, original)
+                .map_err(|_| "La copia no volvió a su estado anterior.".to_string())
+        }
+    }
+}
+
+fn with_rollback(error: String, rollback: Result<(), String>) -> String {
+    match rollback {
+        Ok(()) => error,
+        Err(rollback_error) => {
+            format!("{error} Además, no se pudo restaurar el icono anterior: {rollback_error}")
+        }
+    }
+}
+
+fn managed_bundle_of(
+    paths: &ManagedPaths,
+    instance: &ManagedInstance,
+) -> Result<(PathBuf, PathBuf), String> {
+    let root = paths.root_for(&instance.id)?;
+    let app_path = PathBuf::from(&instance.app_path);
+    if !path_is_within(&app_path, &root) {
+        return Err("El bundle quedó fuera del root administrado.".to_string());
+    }
+    Ok((root, app_path))
+}
+
+/// A-4.1 · `set_instance_icon`: the caller checked that the instance is stopped and holds the registry operation.
+pub(crate) fn set_instance_icon(
+    paths: &ManagedPaths,
+    registry: &mut Registry,
+    position: usize,
+    original: &Path,
+    normalized_png: &[u8],
+) -> Result<(), String> {
+    let previous = registry.instances[position].clone();
+    let (root, app_path) = managed_bundle_of(paths, &previous)?;
+    let branding = root.join("branding");
+    let icon_path = branding.join("icon.png");
+    let previous_png = fs::read(&icon_path).ok();
+    let revision = previous
+        .custom_icon
+        .as_ref()
+        .map(|icon| icon.revision.saturating_add(1))
+        .unwrap_or(1);
+    let registered = provenance_for_icon(
+        &app_path,
+        original,
+        previous.provider_provenance.as_ref(),
+        &previous.name,
+    )?;
+    let transaction = (|| {
+        fs::create_dir_all(&branding)
+            .map_err(|error| format!("No se pudo preparar el icono administrado: {error}"))?;
+        atomic_replace_file(&icon_path, normalized_png)?;
+        let outcome = apply_icon_to_registered(
+            &paths.instances,
+            &app_path,
+            &icon_path,
+            original,
+            registered,
+            &previous.name,
+            MESSAGE_APPLIED,
+        )?;
+        let target = &mut registry.instances[position];
+        target.provider_provenance = Some(outcome.provenance.clone());
+        target.custom_icon = Some(CustomIcon {
+            path: icon_path.to_string_lossy().to_string(),
+            revision,
+            system_applied: outcome.system_applied,
+            system_message: outcome.system_message,
+            system_issue: outcome.system_issue,
+        });
+        save_registry(paths, registry)
+    })();
+    if let Err(error) = transaction {
+        restore_optional_file(&icon_path, previous_png.as_deref());
+        registry.instances[position] = previous.clone();
+        let rollback = restore_after_failure(
+            &paths.instances,
+            &app_path,
+            previous.custom_icon.as_ref(),
+            previous.provider_provenance.as_ref(),
+            original,
+        );
+        return Err(with_rollback(error, rollback));
+    }
+    invalidate_application_cache();
+    invalidate_managed_bytes_cache();
+    Ok(())
+}
+
+/// A-4.1 · `reapply_instance_icon`: the person retries with the saved `branding/icon.png`. Same revision.
+pub(crate) fn reapply_instance_icon(
+    paths: &ManagedPaths,
+    registry: &mut Registry,
+    position: usize,
+    original: &Path,
+) -> Result<(), String> {
+    let previous = registry.instances[position].clone();
+    let custom_icon = previous
+        .custom_icon
+        .clone()
+        .ok_or_else(|| "Esta instancia no tiene un icono personalizado.".to_string())?;
+    let (root, app_path) = managed_bundle_of(paths, &previous)?;
+    let icon_path = root.join("branding/icon.png");
+    if Path::new(&custom_icon.path) != icon_path || !icon_path.is_file() {
+        return Err(
+            "No se encontró el icono guardado de la instancia. Vuelve a elegirlo.".to_string(),
+        );
+    }
+    let registered = provenance_for_icon(
+        &app_path,
+        original,
+        previous.provider_provenance.as_ref(),
+        &previous.name,
+    )?;
+    let transaction = (|| {
+        let outcome = apply_icon_to_registered(
+            &paths.instances,
+            &app_path,
+            &icon_path,
+            original,
+            registered,
+            &previous.name,
+            MESSAGE_APPLIED,
+        )?;
+        let target = &mut registry.instances[position];
+        target.provider_provenance = Some(outcome.provenance.clone());
+        if let Some(icon) = target.custom_icon.as_mut() {
+            outcome.write_to(icon);
+        }
+        save_registry(paths, registry)
+    })();
+    if let Err(error) = transaction {
+        registry.instances[position] = previous.clone();
+        let rollback = restore_after_failure(
+            &paths.instances,
+            &app_path,
+            previous.custom_icon.as_ref(),
+            previous.provider_provenance.as_ref(),
+            original,
+        );
+        return Err(with_rollback(error, rollback));
+    }
+    invalidate_application_cache();
+    Ok(())
+}
+
+/// A-4.2 · `clear_instance_icon`: removes the icon from the copy, `--strict` in green, and only then forgets
+/// `custom_icon` and the provenance.
+pub(crate) fn clear_instance_icon(
+    paths: &ManagedPaths,
+    registry: &mut Registry,
+    position: usize,
+    original: &Path,
+) -> Result<(), String> {
+    let previous = registry.instances[position].clone();
+    let (root, app_path) = managed_bundle_of(paths, &previous)?;
+    verify_managed_bundle(
+        &app_path,
+        original,
+        previous.provider_provenance.as_ref(),
+        &previous.name,
+    )?;
+    let managed_icon = root.join("branding/icon.png");
+    let previous_png = fs::read(&managed_icon).ok();
+    remove_custom_icon(&paths.instances, &app_path, original, &previous.name)?;
+    let transaction = (|| {
+        if previous
+            .custom_icon
+            .as_ref()
+            .is_some_and(|icon| Path::new(&icon.path) == managed_icon)
+        {
+            match fs::remove_file(&managed_icon) {
+                Ok(()) => {}
+                Err(error) if error.kind() == io::ErrorKind::NotFound => {}
+                Err(error) => {
+                    return Err(format!("No se pudo retirar el icono administrado: {error}"));
+                }
+            }
+        }
+        let target = &mut registry.instances[position];
+        target.custom_icon = None;
+        target.provider_provenance = None;
+        save_registry(paths, registry)
+    })();
+    if let Err(error) = transaction {
+        restore_optional_file(&managed_icon, previous_png.as_deref());
+        registry.instances[position] = previous.clone();
+        let rollback = restore_after_failure(
+            &paths.instances,
+            &app_path,
+            previous.custom_icon.as_ref(),
+            previous.provider_provenance.as_ref(),
+            original,
+        );
+        return Err(with_rollback(error, rollback));
+    }
+    invalidate_application_cache();
+    invalidate_managed_bytes_cache();
+    Ok(())
+}
+
+/// A-4.4 · after a sync or chained update, on the new bundle (already clean and verified in staging, then
+/// swapped). With an icon: register and apply, skipping `setIcon` while App Management blocks it. Without an
+/// icon: `Ok(None)`, and the caller clears the provenance.
+pub(crate) fn apply_branding_after_update(
+    instances_root: &Path,
+    updated_bundle: &Path,
+    custom_icon: Option<&CustomIcon>,
+    original: &Path,
+    name: &str,
+) -> Result<Option<IconOutcome>, String> {
+    let Some(custom_icon) = custom_icon else {
+        return Ok(None);
+    };
+    let registered = register_clean_provenance(updated_bundle, original, None)
+        .map_err(|_| bundle_changed_message(name))?;
+    if custom_icon.system_issue == Some(CustomIconSystemIssue::AppManagement) {
+        return Ok(Some(IconOutcome {
+            provenance: registered,
+            system_applied: false,
+            system_issue: custom_icon.system_issue,
+            system_message: custom_icon.system_message.clone(),
+        }));
+    }
+    apply_icon_to_registered(
+        instances_root,
+        updated_bundle,
+        Path::new(&custom_icon.path),
+        original,
+        registered,
+        name,
+        MESSAGE_REAPPLIED_AFTER_SYNC,
+    )
+    .map(Some)
+}
+
 #[cfg(test)]
 pub(crate) mod tests {
     use super::*;
@@ -467,6 +1085,8 @@ pub(crate) mod tests {
     pub(crate) struct IconFixture {
         pub(crate) root: PathBuf,
         pub(crate) paths: ManagedPaths,
+        pub(crate) instance_id: String,
+        pub(crate) instance_root: PathBuf,
         pub(crate) original: PathBuf,
         pub(crate) managed: PathBuf,
         pub(crate) icon: PathBuf,
@@ -477,7 +1097,8 @@ pub(crate) mod tests {
         pub(crate) fn new(case: &str, requirement: Option<&'static str>) -> Self {
             let root = env::temp_dir().join(format!("code-ai-icon-{case}-{}", Uuid::new_v4()));
             let paths = test_managed_paths(&root);
-            let instance_root = paths.instances.join(Uuid::new_v4().to_string());
+            let instance_id = Uuid::new_v4().to_string();
+            let instance_root = paths.instances.join(&instance_id);
             let original = root.join("original/Original.app");
             let managed = instance_root.join("application/Fixture.app");
             let icon = instance_root.join("branding/icon.png");
@@ -497,6 +1118,8 @@ pub(crate) mod tests {
             Self {
                 root,
                 paths,
+                instance_id,
+                instance_root,
                 original,
                 managed,
                 icon,
@@ -583,8 +1206,54 @@ pub(crate) mod tests {
     }
 
     fn put_icon(fixture: &IconFixture, bundle: &Path) {
-        set_macos_workspace_icon(bundle, Some(&fixture.icon)).unwrap();
+        set_workspace_icon(&fixture.paths.instances, bundle, Some(&fixture.icon)).unwrap();
         assert_eq!(bundle_shape(bundle).unwrap(), BundleShape::Iconized);
+    }
+
+    /// A registry with one stopped instance whose bundle is the fixture's managed copy.
+    fn registry_for(fixture: &IconFixture) -> Registry {
+        let mut instance = crate::tests::test_instance(&fixture.instance_root);
+        instance.id = fixture.instance_id.clone();
+        instance.name = "Trabajo".to_string();
+        instance.app_path = fixture.managed.to_string_lossy().to_string();
+        instance.profile_path = fixture
+            .instance_root
+            .join("profile")
+            .to_string_lossy()
+            .to_string();
+        Registry {
+            version: REGISTRY_VERSION,
+            instances: vec![instance],
+        }
+    }
+
+    fn icon_png(fixture: &IconFixture) -> Vec<u8> {
+        normalized_icon_png(&fs::read(&fixture.icon).unwrap()).unwrap()
+    }
+
+    /// `chflags uchg` on a directory, undone on drop even if the test fails. It reproduces what App Management
+    /// does to a bundle: `setIcon` returns `false` and writing inside gives `EPERM`.
+    struct Immutable(PathBuf);
+
+    impl Immutable {
+        fn new(path: &Path) -> Self {
+            let status = Command::new("/usr/bin/chflags")
+                .arg("uchg")
+                .arg(path)
+                .status()
+                .unwrap();
+            assert!(status.success());
+            Self(path.to_path_buf())
+        }
+    }
+
+    impl Drop for Immutable {
+        fn drop(&mut self) {
+            let _ = Command::new("/usr/bin/chflags")
+                .arg("nouchg")
+                .arg(&self.0)
+                .status();
+        }
     }
 
     fn check(
@@ -907,6 +1576,361 @@ pub(crate) mod tests {
         assert_eq!(
             check_clean_against_original(&odd, &fixture.original),
             Err(BundleCheckFailure::RootShape)
+        );
+    }
+
+    #[test]
+    fn icon_stays_on_the_copy_with_the_provider_signature_and_the_copy_launches() {
+        for requirement in [None, Some(EXPLICIT_REQUIREMENT)] {
+            let fixture = IconFixture::new("inverted", requirement);
+            let profile = fixture.instance_root.join("profile/state.bin");
+            fs::create_dir_all(profile.parent().unwrap()).unwrap();
+            fs::write(&profile, b"private-profile-sentinel").unwrap();
+            let plist = fixture.managed.join("Contents/Info.plist");
+            let plist_before = fs::read(&plist).unwrap();
+            let code_hash_before = macos_code_hash(&fixture.managed);
+            let mut registry = registry_for(&fixture);
+
+            set_instance_icon(
+                &fixture.paths,
+                &mut registry,
+                0,
+                &fixture.original,
+                &icon_png(&fixture),
+            )
+            .unwrap();
+
+            let instance = &registry.instances[0];
+            let icon = instance.custom_icon.as_ref().unwrap();
+            assert!(icon.system_applied);
+            assert_eq!(icon.system_issue, None);
+            assert_eq!(icon.system_message, MESSAGE_APPLIED);
+            assert_eq!(icon.revision, 1);
+            let provenance = instance.provider_provenance.as_ref().unwrap();
+            assert_eq!(provenance.managed_code_hash, code_hash_before);
+            assert_eq!(
+                check(&fixture, &fixture.managed, Some(provenance)),
+                Ok(ManagedBundleState::Iconized)
+            );
+            assert!(!strict_passes(&fixture.managed), "the Finder icon is kept");
+            assert_eq!(macos_code_hash(&fixture.managed), code_hash_before);
+            assert_eq!(fs::read(&plist).unwrap(), plist_before);
+            let saved = load_registry(&fixture.paths).unwrap();
+            assert_eq!(saved.instances[0].custom_icon, instance.custom_icon);
+            let launched = Command::new(provider_executable(&fixture.managed))
+                .arg("--smoke")
+                .status()
+                .unwrap();
+            assert!(launched.success());
+            assert_eq!(fs::read(&profile).unwrap(), b"private-profile-sentinel");
+
+            fs::write(fixture.managed.join("Contents/Resources/extra"), b"x").unwrap();
+            assert!(verify_managed_bundle(
+                &fixture.managed,
+                &fixture.original,
+                Some(provenance),
+                "Trabajo"
+            )
+            .is_err());
+        }
+    }
+
+    #[test]
+    fn replacing_the_icon_keeps_the_registered_provenance() {
+        let fixture = IconFixture::new("replace", Some(EXPLICIT_REQUIREMENT));
+        let mut registry = registry_for(&fixture);
+        let png = icon_png(&fixture);
+        set_instance_icon(&fixture.paths, &mut registry, 0, &fixture.original, &png).unwrap();
+        let first = registry.instances[0].provider_provenance.clone();
+        set_instance_icon(&fixture.paths, &mut registry, 0, &fixture.original, &png).unwrap();
+        let icon = registry.instances[0].custom_icon.as_ref().unwrap();
+        assert!(icon.system_applied);
+        assert_eq!(icon.revision, 2);
+        assert_eq!(registry.instances[0].provider_provenance, first);
+    }
+
+    #[test]
+    fn sync_branding_registers_the_new_bundle_and_reapplies_the_target_icon() {
+        let fixture = IconFixture::new("sync", Some(EXPLICIT_REQUIREMENT));
+        put_icon(&fixture, &fixture.managed);
+        let custom_icon = CustomIcon {
+            path: fixture.icon.to_string_lossy().to_string(),
+            revision: 1,
+            system_applied: false,
+            system_message: "UI only".to_string(),
+            system_issue: None,
+        };
+        let copy_of_donor = |label: &str| {
+            let copy = fixture
+                .paths
+                .instances
+                .join(Uuid::new_v4().to_string())
+                .join(format!("application/{label}.app"));
+            clone_directory(&fixture.managed, &copy).unwrap();
+            strip_inherited_icon(&copy).unwrap();
+            assert!(strict_passes(&copy), "{label}: clean after the strip");
+            copy
+        };
+
+        let with_icon = copy_of_donor("WithIcon");
+        let outcome = apply_branding_after_update(
+            &fixture.paths.instances,
+            &with_icon,
+            Some(&custom_icon),
+            &fixture.original,
+            "Destino",
+        )
+        .unwrap()
+        .unwrap();
+        assert!(outcome.system_applied);
+        assert_eq!(outcome.system_message, MESSAGE_REAPPLIED_AFTER_SYNC);
+        assert_eq!(
+            check(&fixture, &with_icon, Some(&outcome.provenance)),
+            Ok(ManagedBundleState::Iconized)
+        );
+
+        let without_icon = copy_of_donor("WithoutIcon");
+        let baseline = crate::tests::macos_signature_snapshot(&without_icon);
+        assert_eq!(
+            apply_branding_after_update(
+                &fixture.paths.instances,
+                &without_icon,
+                None,
+                &fixture.original,
+                "Destino",
+            ),
+            Ok(None)
+        );
+        assert_eq!(
+            crate::tests::macos_signature_snapshot(&without_icon),
+            baseline
+        );
+
+        let blocked = copy_of_donor("Blocked");
+        let blocked_icon = CustomIcon {
+            system_issue: Some(CustomIconSystemIssue::AppManagement),
+            system_message: MESSAGE_APP_MANAGEMENT.to_string(),
+            ..custom_icon.clone()
+        };
+        let outcome = apply_branding_after_update(
+            &fixture.paths.instances,
+            &blocked,
+            Some(&blocked_icon),
+            &fixture.original,
+            "Destino",
+        )
+        .unwrap()
+        .unwrap();
+        assert!(!outcome.system_applied);
+        assert_eq!(
+            outcome.system_issue,
+            Some(CustomIconSystemIssue::AppManagement)
+        );
+        assert_eq!(bundle_shape(&blocked).unwrap(), BundleShape::Clean);
+        assert_eq!(
+            outcome.provenance.managed_code_hash,
+            macos_code_hash(&blocked)
+        );
+    }
+
+    #[test]
+    fn rollback_without_an_applied_icon_restores_the_exact_signature_baseline() {
+        let fixture = IconFixture::new("rollback", None);
+        let baseline = crate::tests::macos_signature_snapshot(&fixture.managed);
+        put_icon(&fixture, &fixture.managed);
+        let previous = CustomIcon {
+            path: fixture.icon.to_string_lossy().to_string(),
+            revision: 1,
+            system_applied: false,
+            system_message: "UI only".to_string(),
+            system_issue: None,
+        };
+        restore_after_failure(
+            &fixture.paths.instances,
+            &fixture.managed,
+            Some(&previous),
+            None,
+            &fixture.original,
+        )
+        .unwrap();
+        assert_eq!(
+            crate::tests::macos_signature_snapshot(&fixture.managed),
+            baseline
+        );
+    }
+
+    #[test]
+    fn clearing_returns_the_copy_to_strict_and_forgets_icon_and_provenance() {
+        let fixture = IconFixture::new("clear", Some(EXPLICIT_REQUIREMENT));
+        let baseline = crate::tests::macos_signature_snapshot(&fixture.managed);
+        let mut registry = registry_for(&fixture);
+        set_instance_icon(
+            &fixture.paths,
+            &mut registry,
+            0,
+            &fixture.original,
+            &icon_png(&fixture),
+        )
+        .unwrap();
+        let managed_icon = fixture.instance_root.join("branding/icon.png");
+        assert!(managed_icon.is_file());
+
+        clear_instance_icon(&fixture.paths, &mut registry, 0, &fixture.original).unwrap();
+
+        assert!(strict_passes(&fixture.managed));
+        assert_eq!(
+            crate::tests::macos_signature_snapshot(&fixture.managed),
+            baseline
+        );
+        assert!(registry.instances[0].custom_icon.is_none());
+        assert!(registry.instances[0].provider_provenance.is_none());
+        assert!(!managed_icon.exists());
+        let saved = load_registry(&fixture.paths).unwrap();
+        assert!(saved.instances[0].custom_icon.is_none());
+        assert!(saved.instances[0].provider_provenance.is_none());
+    }
+
+    #[test]
+    fn retry_applies_the_saved_icon_again() {
+        let fixture = IconFixture::new("retry", Some(EXPLICIT_REQUIREMENT));
+        let mut registry = registry_for(&fixture);
+        set_instance_icon(
+            &fixture.paths,
+            &mut registry,
+            0,
+            &fixture.original,
+            &icon_png(&fixture),
+        )
+        .unwrap();
+        clear_workspace_icon(&fixture.paths.instances, &fixture.managed).unwrap();
+        if let Some(icon) = registry.instances[0].custom_icon.as_mut() {
+            icon.system_applied = false;
+            icon.system_issue = Some(CustomIconSystemIssue::AppManagement);
+            icon.system_message = MESSAGE_APP_MANAGEMENT.to_string();
+        }
+
+        reapply_instance_icon(&fixture.paths, &mut registry, 0, &fixture.original).unwrap();
+
+        let icon = registry.instances[0].custom_icon.as_ref().unwrap();
+        assert!(icon.system_applied);
+        assert_eq!(icon.system_issue, None);
+        assert_eq!(icon.revision, 1);
+        assert_eq!(
+            bundle_shape(&fixture.managed).unwrap(),
+            BundleShape::Iconized
+        );
+    }
+
+    #[test]
+    fn eperm_is_classified_as_app_management() {
+        assert_eq!(
+            classify_write_error(&io::Error::from_raw_os_error(libc::EPERM)),
+            Some(CustomIconSystemIssue::AppManagement)
+        );
+        assert_eq!(
+            classify_write_error(&io::Error::from_raw_os_error(libc::EACCES)),
+            None
+        );
+        assert_eq!(
+            classify_write_error(&io::Error::from(io::ErrorKind::NotFound)),
+            None
+        );
+    }
+
+    #[test]
+    fn a_locked_bundle_keeps_the_icon_in_the_app_and_reports_app_management() {
+        let fixture = IconFixture::new("locked", Some(EXPLICIT_REQUIREMENT));
+        let mut registry = registry_for(&fixture);
+        {
+            let _locked = Immutable::new(&fixture.managed);
+            assert_eq!(
+                set_workspace_icon(
+                    &fixture.paths.instances,
+                    &fixture.managed,
+                    Some(&fixture.icon)
+                ),
+                Err(WorkspaceIconError::Rejected(Some(
+                    CustomIconSystemIssue::AppManagement
+                )))
+            );
+            set_instance_icon(
+                &fixture.paths,
+                &mut registry,
+                0,
+                &fixture.original,
+                &icon_png(&fixture),
+            )
+            .unwrap();
+        }
+        let icon = registry.instances[0].custom_icon.as_ref().unwrap();
+        assert!(!icon.system_applied);
+        assert_eq!(
+            icon.system_issue,
+            Some(CustomIconSystemIssue::AppManagement)
+        );
+        assert_eq!(icon.system_message, MESSAGE_APP_MANAGEMENT);
+        assert!(registry.instances[0].provider_provenance.is_some());
+        assert_eq!(bundle_shape(&fixture.managed).unwrap(), BundleShape::Clean);
+        assert!(strict_passes(&fixture.managed));
+    }
+
+    #[test]
+    fn clearing_a_locked_bundle_returns_the_app_management_text_and_changes_nothing() {
+        let fixture = IconFixture::new("locked-clear", Some(EXPLICIT_REQUIREMENT));
+        let mut registry = registry_for(&fixture);
+        set_instance_icon(
+            &fixture.paths,
+            &mut registry,
+            0,
+            &fixture.original,
+            &icon_png(&fixture),
+        )
+        .unwrap();
+        let before = registry.instances[0].clone();
+        let error = {
+            let _locked = Immutable::new(&fixture.managed);
+            clear_instance_icon(&fixture.paths, &mut registry, 0, &fixture.original).unwrap_err()
+        };
+        assert_eq!(error, MESSAGE_APP_MANAGEMENT);
+        assert_eq!(registry.instances[0].custom_icon, before.custom_icon);
+        assert_eq!(
+            registry.instances[0].provider_provenance,
+            before.provider_provenance
+        );
+        assert_eq!(
+            check(
+                &fixture,
+                &fixture.managed,
+                before.provider_provenance.as_ref()
+            ),
+            Ok(ManagedBundleState::Iconized)
+        );
+    }
+
+    #[test]
+    fn the_workspace_icon_is_refused_outside_the_managed_instances() {
+        let fixture = IconFixture::new("guard", None);
+        let original_before = crate::tests::macos_signature_snapshot(&fixture.original);
+        for target in [
+            fixture.original.clone(),
+            fixture.paths.instances.clone(),
+            fixture.root.join("missing.app"),
+        ] {
+            assert!(matches!(
+                set_workspace_icon(&fixture.paths.instances, &target, Some(&fixture.icon)),
+                Err(WorkspaceIconError::Refused(_))
+            ));
+        }
+        let link = fixture.instance_root.join("application/Link.app");
+        std::os::unix::fs::symlink(&fixture.original, &link).unwrap();
+        assert!(matches!(
+            set_workspace_icon(&fixture.paths.instances, &link, Some(&fixture.icon)),
+            Err(WorkspaceIconError::Refused(_))
+        ));
+        assert_eq!(
+            crate::tests::macos_signature_snapshot(&fixture.original),
+            original_before,
+            "the original never receives the icon"
         );
     }
 
