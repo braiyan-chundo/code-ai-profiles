@@ -64,6 +64,71 @@ pub(crate) fn launch_macos_original_application_with(
     })
 }
 
+pub(crate) fn update_original_application_sync(
+    app: &AppHandle,
+) -> Result<OriginalApplicationUpdateResult, String> {
+    if original_update::original_update_in_flight() {
+        return Err(
+            "Hay una actualización de la original en curso. Espera a que termine.".to_string(),
+        );
+    }
+    let source = require_provider_source(detect_provider_source())?;
+
+    #[cfg(target_os = "macos")]
+    {
+        let paths = ManagedPaths::resolve(app)?;
+        return launch_macos_original_application_with(&paths, &source, |launch| {
+            let status = Command::new(launch.executable)
+                .args(&launch.arguments)
+                .status()
+                .map_err(|error| format!("No se pudo abrir la aplicación original: {error}"))?;
+            if status.success() {
+                Ok(())
+            } else {
+                Err(format!(
+                    "El sistema no pudo abrir la aplicación original (código {status})."
+                ))
+            }
+        });
+    }
+
+    #[cfg(not(target_os = "macos"))]
+    {
+        let _ = source;
+        let _ = app;
+        let platform = platform_name();
+        let target = original_application_update_target(&platform, std::env::consts::ARCH)
+            .ok_or_else(|| {
+                "La actualización oficial no está soportada en esta plataforma.".to_string()
+            })?;
+
+        let status = open_update_url(target.url);
+
+        let status = status.map_err(|error| {
+            format!("No se pudo abrir el canal oficial de actualización: {error}")
+        })?;
+        if !status.success() {
+            return Err(format!(
+                "El sistema no pudo abrir el canal oficial de actualización (código {}).",
+                status
+            ));
+        }
+
+        let message = match target.action {
+            OriginalApplicationUpdateAction::Download => {
+                "Se abrió la descarga oficial. Ejecuta el instalador para actualizar la aplicación original; las instancias permanecen intactas."
+            }
+            OriginalApplicationUpdateAction::Instructions => {
+                "Se abrieron las instrucciones oficiales para actualizar Claude Desktop en Linux; las instancias permanecen intactas."
+            }
+        };
+        Ok(OriginalApplicationUpdateResult {
+            action: target.action,
+            message: message.to_string(),
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

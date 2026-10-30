@@ -1,5 +1,5 @@
 //! Ciclo de vida de las instancias administradas: crear (copia de la aplicación y perfil propio),
-//! renombrar y eliminar. Lanzar y detener están en `launch.rs`; el icono, en `icons.rs`.
+//! renombrar, eliminar y abrir la carpeta del perfil. Lanzar y detener están en `launch.rs`; el icono, en `icons.rs`.
 
 use super::*;
 
@@ -189,6 +189,21 @@ pub(crate) fn delete_instance_sync(app: &AppHandle, id: String) -> Result<(), St
     invalidate_application_cache();
     invalidate_managed_bytes_cache();
     Ok(())
+}
+
+pub(crate) fn open_instance_folder_sync(app: &AppHandle, id: String) -> Result<(), String> {
+    let paths = ManagedPaths::resolve(app)?;
+    let registry = load_registry(&paths)?;
+    let instance = registry
+        .instances
+        .iter()
+        .find(|instance| instance.id == id)
+        .ok_or_else(|| "La instancia ya no existe.".to_string())?;
+    let profile = PathBuf::from(&instance.profile_path);
+    if !profile.exists() {
+        return Err("La carpeta del perfil ya no existe.".to_string());
+    }
+    open_in_file_manager(&profile)
 }
 
 #[cfg(test)]
