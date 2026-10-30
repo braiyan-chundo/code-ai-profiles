@@ -12,6 +12,9 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 - **Proyectos**: ancla carpetas con la metodología agéntica v4 y muestra su resumen (fase, perfil, tecnologías, repos con rama y último commit, historias por estado, «Desde», «Tiempo en fases» y tokens de `metricas.json`), con una sección en el sidebar. Solo lectura: no ejecuta nada del proyecto, no escribe en él, no usa la red ni lee fuera de la carpeta. Añade `tauri-plugin-dialog` 2.7 (selector de carpetas, solo desde Rust) y los textos de los avisos de macOS en `Info.plist`.
 
 - En macOS, la versión nueva de Claude se detecta en la publicación oficial (`downloads.claude.ai`), también durante un despliegue escalonado, y el dashboard pregunta «Hay una nueva versión de Claude (X). ¿Deseas instalarla?». «Instalar» usa el flujo verificado de «Descargar e instalar» sin abrir la original. Las instancias por detrás muestran «Actualizar» y el botón «Actualizar instancias obsoletas». Nueva variable `CAP_UPDATE_RELEASES_URL`.
+- **Proyectos**: los datos incompletos ya no ocupan la página como avisos. Cada historia lleva «Sin tiempo» o «Sin métricas», y el chip «N historias con datos incompletos · Ver» abre un modal agrupado con la causa y, para las que no tienen métricas, el comando que las genera en el proyecto, listo para copiar.
+- **Lector de historias**: al pulsar una historia se abren sus `hu.md`, `arquitectura.md`, `verificacion.md` y `seguimiento.md` en pestañas, renderizados como Markdown. Sin HTML embebido ni imágenes; los enlaces `http`/`https` se abren en el navegador del sistema. Añade `react-markdown` 10.1.0 y `remark-gfm` 4.0.1, cargados solo al abrir el lector.
+- **Abrir y detener** cada instancia desde el sidebar (al pasar el ratón o con el foco) y desde «Uso por instancia» del dashboard, sin entrar en su página.
 
 ### Changed
 
@@ -23,6 +26,9 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ### Fixed
 
+- «Actualizar» en la página de un proyecto indica que está trabajando y termina en «✓ Actualizado» con la hora; antes no daba ninguna respuesta visible.
+- Una historia con `minutosTotales` nulo ya no cuenta como 0 minutos en «Tiempo en fases».
+- En la página de una instancia, Abrir y Detener se desactivan mientras corre otra operación.
 - El registro de instancias (`instances.json`) se guarda de forma atómica: un cierre o un fallo a mitad ya no lo deja a medias ni hace desaparecer las instancias de la app.
 - Los enlaces de sesión, la caché de versiones y los índices de sesión se reemplazan en un solo paso y forzados a disco, sin un momento en que el archivo falte.
 - Una instancia con icono personalizado que Claude actualizó por su cuenta ya no queda bloqueada como «cambió fuera de Code AI Profiles»: si sigue firmada por Anthropic y su versión es mayor que la registrada, se acepta, se vuelve a registrar y puede usarse como fuente para sincronizar las demás.

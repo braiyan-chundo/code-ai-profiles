@@ -1,0 +1,192 @@
+{
+  "hu": "HU-0025",
+  "generado": "2026-10-30T14:35:57.634Z",
+  "perfil": "S",
+  "fases": [
+    {
+      "fase": "requisitos",
+      "desde": "2026-10-30T06:39:00.000Z",
+      "hasta": "2026-10-30T07:02:00.000Z",
+      "minutos": 23
+    },
+    {
+      "fase": "arquitectura",
+      "desde": "2026-10-30T07:02:00.000Z",
+      "hasta": "2026-10-30T07:04:00.000Z",
+      "minutos": 2
+    },
+    {
+      "fase": "implementacion",
+      "desde": "2026-10-30T07:04:00.000Z",
+      "hasta": "2026-10-30T12:25:00.000Z",
+      "minutos": 321
+    },
+    {
+      "fase": "verificacion",
+      "desde": "2026-10-30T12:25:00.000Z",
+      "hasta": "2026-10-30T14:35:00.000Z",
+      "minutos": 130
+    }
+  ],
+  "minutosTotales": 476,
+  "agentes": [
+    {
+      "agente": "frontend",
+      "rol": "frontend",
+      "fase": "implementacion",
+      "modelos": [
+        "claude-sonnet-5-5",
+        "sonnet"
+      ],
+      "despachos": 1,
+      "minutos": 298,
+      "tokens": {
+        "entrada": 138,
+        "salida": 80091,
+        "cacheEscritura": 410479,
+        "cacheLectura": 10527127,
+        "total": 11017835
+      }
+    },
+    {
+      "agente": "frontend",
+      "rol": "frontend",
+      "fase": "arquitectura",
+      "modelos": [
+        "claude-opus-5-5",
+        "opus"
+      ],
+      "despachos": 1,
+      "minutos": 10,
+      "tokens": {
+        "entrada": 144,
+        "salida": 55174,
+        "cacheEscritura": 168722,
+        "cacheLectura": 8380472,
+        "total": 8604512
+      }
+    },
+    {
+      "agente": "architect",
+      "rol": "architect",
+      "fase": "implementacion",
+      "modelos": [
+        "claude-opus-5-5"
+      ],
+      "despachos": 1,
+      "minutos": 11,
+      "tokens": {
+        "entrada": 96,
+        "salida": 41594,
+        "cacheEscritura": 191403,
+        "cacheLectura": 5397017,
+        "total": 5630110
+      }
+    },
+    {
+      "agente": "frontend",
+      "rol": "frontend",
+      "fase": "requisitos",
+      "modelos": [
+        "claude-sonnet-5-5",
+        "sonnet"
+      ],
+      "despachos": 3,
+      "minutos": 20,
+      "tokens": {
+        "entrada": 172,
+        "salida": 147874,
+        "cacheEscritura": 447578,
+        "cacheLectura": 10325680,
+        "total": 10921304
+      }
+    },
+    {
+      "agente": "backend",
+      "rol": "backend",
+      "fase": "implementacion",
+      "modelos": [
+        "claude-opus-5-5",
+        "opus"
+      ],
+      "despachos": 1,
+      "minutos": 10,
+      "tokens": {
+        "entrada": 88,
+        "salida": 50397,
+        "cacheEscritura": 181850,
+        "cacheLectura": 5692217,
+        "total": 5924552
+      }
+    },
+    {
+      "agente": "architect",
+      "rol": "architect",
+      "fase": "requisitos",
+      "modelos": [
+        "claude-opus-5-5"
+      ],
+      "despachos": 1,
+      "minutos": 10,
+      "tokens": {
+        "entrada": 120,
+        "salida": 57977,
+        "cacheEscritura": 195306,
+        "cacheLectura": 6971091,
+        "total": 7224494
+      }
+    }
+  ],
+  "orquestador": {
+    "aproximado": true,
+    "porFase": [
+      {
+        "fase": "requisitos",
+        "tokens": {
+          "entrada": 48,
+          "salida": 16028,
+          "cacheEscritura": 31335,
+          "cacheLectura": 6930017,
+          "total": 6977428
+        }
+      },
+      {
+        "fase": "arquitectura",
+        "tokens": {
+          "entrada": 6,
+          "salida": 1805,
+          "cacheEscritura": 5884,
+          "cacheLectura": 843055,
+          "total": 850750
+        }
+      },
+      {
+        "fase": "implementacion",
+        "tokens": {
+          "entrada": 102,
+          "salida": 25654,
+          "cacheEscritura": 122596,
+          "cacheLectura": 7756321,
+          "total": 7904673
+        }
+      },
+      {
+        "fase": "verificacion",
+        "tokens": {
+          "entrada": 34,
+          "salida": 10217,
+          "cacheEscritura": 140555,
+          "cacheLectura": 2122722,
+          "total": 2273528
+        }
+      }
+    ]
+  },
+  "totales": {
+    "tokensAgentes": 49322807,
+    "tokensOrquestador": 18006379,
+    "tokens": 67329186,
+    "despachos": 8
+  },
+  "notas": []
+}

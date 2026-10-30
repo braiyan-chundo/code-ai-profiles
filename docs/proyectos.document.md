@@ -1,6 +1,7 @@
 # Proyectos
 
-Documento funcional de [HU-0023](../hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/hu.md). Reglas de negocio:
+Documento funcional de [HU-0023](../hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/hu.md) y
+[HU-0025](../hu/HU-0025-proyectos-datos-incompletos-y-lector-de-/hu.md). Reglas de negocio:
 [RN-02 a RN-04](producto/reglas/proyectos.md).
 
 Proyectos muestra el estado de las carpetas de proyectos que siguen la metodología agéntica v4, sin abrirlas a mano.
@@ -24,13 +25,29 @@ Es una vista de solo lectura: no se cruza con las instancias de Claude ni escrib
 | Cifras | Historias por estado, «Desde» (días entre la primera historia y la última actividad), «Tiempo en fases» (horas) y tokens |
 | Tecnologías | Lenguajes y frameworks de los manifiestos de cada repo y los packs de la config, con su versión mayor |
 | Repos | Número y lista, con la rama, el commit corto y la fecha en que llegó a la rama |
-| Historias | La lista con estado y fase, filtrable por estado; las terminadas con su tiempo y sus tokens; las descartadas atenuadas |
+| Historias | La lista con estado y fase, filtrable por estado; las terminadas con su tiempo y sus tokens; las descartadas atenuadas. Pulsar una historia abre el lector |
 
 **Cifras.**
 
 - «Tiempo en fases» es la suma de `minutosTotales` de las métricas: reloj entre fases, esperas incluidas.
 - Los tokens son el total, con el porcentaje de caché, y como cifra secundaria entrada + salida.
 - Solo suman las historias terminadas. Las descartadas enseñan sus cifras tachadas y no cuentan (RN-03).
+
+**Datos incompletos.** Una historia sin `minutosTotales` lleva la etiqueta «Sin tiempo» y una terminada sin
+`metricas.json`, «Sin métricas»; ninguna suma a las cifras que le faltan. La cabecera muestra el chip «N historias con
+datos incompletos · Ver» (con los avisos de lectura, si los hay), que abre un modal agrupado:
+
+| Grupo | Causa | Cómo se completa |
+| --- | --- | --- |
+| Avisos | Archivos ilegibles, encabezados rotos, permisos o nube | Según el aviso |
+| Sin métricas | La historia se cerró sin generar `metricas.json` | En el proyecto, con `node .metodo/scripts/metricas.mjs hu HU-####`; el modal da el comando de cada una para copiarlo. La app no lo ejecuta |
+| Sin tiempo | Se cerró sin transiciones de fase, así que el método no pudo medir su tiempo | No se recupera; los tokens sí cuentan |
+
+**Lector de historias.** Muestra los `.md` de la historia, uno por pestaña y solo los que existen, en este orden:
+`hu.md`, `arquitectura.md`, `verificacion.md` y `seguimiento.md`. Se leen al abrirlo y se renderizan como Markdown
+(títulos, listas, tablas, casillas, código y citas). No pinta HTML embebido ni imágenes (muestra su texto
+alternativo). Los enlaces `http`/`https` se abren en el navegador del sistema; los demás se muestran como texto. Un
+`.md` ilegible o demasiado grande lo dice dentro de su pestaña, con «Reintentar».
 
 **Cuándo se lee.** Al abrir la app, al entrar en un proyecto y al pulsar «Actualizar». No hay vigilancia de la carpeta
 en segundo plano.
@@ -47,6 +64,8 @@ y la última línea del reflog, de la que se toman solo el SHA y la fecha.
   perfiles ni los datos de Code AI Profiles.
 - Los archivos que están solo en la nube (iCloud, OneDrive) no se descargan: se saltan con un aviso.
 - Los archivos tienen tamaños máximos y los avisos se limitan a 20.
+- El lector solo lee los cuatro `.md` de la carpeta de esa historia, hasta 512 KiB cada uno, y no sigue enlaces
+  simbólicos que lleven a otra parte del proyecto (RN-02).
 
 Code AI Profiles guarda en su carpeta de datos (`projects.json`) solo la ruta, el último nombre leído y las fechas de
 anclado y de última lectura de cada proyecto (RN-04). No guarda cifras, historias ni personas.

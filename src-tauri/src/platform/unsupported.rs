@@ -120,3 +120,10 @@ pub(crate) fn apply_external_icon_best_effort(
 pub(crate) fn open_update_url(_url: &str) -> Result<std::process::ExitStatus, std::io::Error> {
     unreachable!()
 }
+
+/// Abre un enlace del lector en el navegador (HU-0025): no existe en esta plataforma.
+pub(crate) fn open_external_url(_url: &str) -> Result<(), AppError> {
+    Err(AppError::unsupported(
+        "Esta plataforma no puede abrir enlaces en el navegador.",
+    ))
+}

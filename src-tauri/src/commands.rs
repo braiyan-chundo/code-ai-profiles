@@ -283,6 +283,29 @@ pub(crate) async fn open_project_folder(app: AppHandle, id: String) -> Result<()
     .map_err(|error| format!("Abrir la carpeta del proyecto terminó inesperadamente: {error}"))?
 }
 
+/// Lector de historias (HU-0025): los `.md` fijos de `hu/<folder>` del proyecto anclado `id`. La ruta
+/// del proyecto sale del registro; `folder` se valida en Rust.
+#[tauri::command]
+pub(crate) async fn read_project_history(
+    app: AppHandle,
+    id: String,
+    folder: String,
+) -> Result<projects::ProjectHistoryDocuments, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        projects::read_project_history_sync(&app, &id, &folder)
+    })
+    .await
+    .map_err(|error| format!("La lectura de la historia terminó inesperadamente: {error}"))?
+}
+
+/// Abre en el navegador del sistema un enlace `http`/`https` que la persona pulsó en el lector.
+#[tauri::command]
+pub(crate) async fn open_external_link(url: String) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || projects::open_external_link_sync(&url))
+        .await
+        .map_err(|error| format!("La apertura del enlace terminó inesperadamente: {error}"))?
+}
+
 #[tauri::command]
 pub(crate) async fn open_system_settings(panel: SystemSettingsPanel) -> Result<(), String> {
     tauri::async_runtime::spawn_blocking(move || open_system_settings_sync(panel))

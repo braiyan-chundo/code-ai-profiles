@@ -649,6 +649,17 @@ test("18 · ni alert, ni confirm, ni prompt en src/: el plugin del diálogo los 
   assert.ok(NATIVE_DIALOG_CALL.test(withoutComments("const url = 'http://x'; confirm('y');")), "una URL con // no oculta la llamada");
 });
 
+test("19 · HU-0025: el lector de Markdown no pinta href, src ni HTML crudo, y contiene el menú contextual", () => {
+  const source = withoutComments(readFileSync(join(src, "features/projects/HistoryMarkdown.tsx"), "utf8"));
+  // Un `href` real deja que el menú contextual o el arrastre del webview carguen la web en la ventana de la app.
+  assert.doesNotMatch(source, /\bhref=\{/, "el enlace externo no lleva href: se abre solo por openExternalLink");
+  assert.doesNotMatch(source, /<img\b|\bsrc=\{/, "ninguna imagen: sería una petición a la red");
+  assert.doesNotMatch(source, /rehype|dangerouslySetInnerHTML/, "nada que reactive el HTML crudo");
+  assert.match(source, /\bskipHtml\b/, "el HTML crudo no se pinta");
+  assert.match(source, /onContextMenu=/, "el clic derecho se contiene");
+  assert.match(source, /draggable=\{false\}/, "el enlace no se arrastra");
+});
+
 test("10 · los .css de src/ son solo index.css, tokens.css, ui-theme.css y showcase.css", () => {
   const css = walk(src).map((path) => toPosix(path.slice(src.length + 1))).filter((local) => local.endsWith(".css")).sort();
   assert.deepEqual(css, CSS_FILES, "el CSS propio se retiró en HU-0016: una pieza nueva usa el catálogo y las utilidades");

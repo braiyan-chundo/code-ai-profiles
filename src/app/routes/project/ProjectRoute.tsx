@@ -11,6 +11,7 @@ import {
   projectName,
   useProjects,
 } from "../../../features/projects";
+import { useDialogs } from "../../providers/dialogs-context";
 import { PageContent } from "../../layout/PageContent";
 import { PageHeader } from "../../layout/PageHeader";
 import { PageSkeleton } from "../../layout/PageSkeleton";
@@ -24,6 +25,7 @@ export function ProjectRoute() {
   const { projectId } = useParams();
   const navigate = useNavigate();
   const { status, projects, refreshing, refreshOne, unpin } = useProjects();
+  const { setProjectDialog } = useDialogs();
   const [unpinning, setUnpinning] = useState(false);
   const project = findProject(projects, projectId);
 
@@ -75,7 +77,12 @@ export function ProjectRoute() {
       <PageHeader eyebrow="Proyectos" title={projectName(project)} />
       <PageContent aria-live="polite">
         {isReadable(project) ? (
-          <ProjectPage project={project} onUnpinned={() => navigate("/proyectos", { replace: true })} />
+          <ProjectPage
+            project={project}
+            onUnpinned={() => navigate("/proyectos", { replace: true })}
+            onOpenIncomplete={() => setProjectDialog({ kind: "incomplete", projectId: project.id })}
+            onOpenHistory={(folder) => setProjectDialog({ kind: "reader", projectId: project.id, folder })}
+          />
         ) : (
           <ProjectBrokenPage
             project={project}

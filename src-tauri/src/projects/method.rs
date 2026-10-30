@@ -304,7 +304,7 @@ fn field<'f>(fields: &'f [(String, FmValue)], key: &str) -> Option<&'f str> {
 
 // ── Historias ───────────────────────────────────────────────────────────────
 
-fn is_history_folder(name: &str) -> bool {
+pub(super) fn is_history_folder(name: &str) -> bool {
     let bytes = name.as_bytes();
     bytes.len() >= 7
         && name.starts_with("HU-")
@@ -404,6 +404,7 @@ fn read_history(
         minutes: None,
         tokens: None,
         counts_in_totals: false,
+        data_gaps: Vec::new(),
     };
     let target = Some(prefix);
 
@@ -470,24 +471,37 @@ fn read_history(
         )),
     }
 
+    // Lo incompleto por cómo se cerró la historia es un dato (`data_gaps`), no un aviso; lo roto sigue
+    // siendo aviso. Los dos datos que faltan solo se marcan en terminadas y se excluyen entre sí.
+    let done = history.state == ProjectHistoryState::Done;
     let mut roles = Vec::new();
     let mut orchestrator = None;
     match ctx.read(&base.join("metricas.json"), ReadMode::Whole(METRICS_LIMIT)) {
         Ok(text) => match parse_metrics(&text) {
             Ok(metrics) => {
+                if metrics.invalid_minutes {
+                    warnings.push(ProjectWarning::new(
+                        ProjectWarningScope::Metrics,
+                        target,
+                        "«minutosTotales» en metricas.json no es un número válido; la historia queda sin tiempo.",
+                    ));
+                }
                 if metrics.missing_numbers > 0 {
                     warnings.push(ProjectWarning::new(
                         ProjectWarningScope::Metrics,
                         target,
                         format!(
-                            "Faltan {} cifras en metricas.json; cuentan como 0.",
+                            "Faltan {} cifras de tokens en metricas.json; cuentan como 0.",
                             metrics.missing_numbers
                         ),
                     ));
                 }
-                history.minutes = Some(metrics.minutes);
+                history.minutes = metrics.minutes;
                 history.tokens = Some(metrics.tokens);
-                history.counts_in_totals = history.state == ProjectHistoryState::Done;
+                history.counts_in_totals = done;
+                if done && metrics.minutes.is_none() {
+                    history.data_gaps.push(ProjectDataGap::NoTime);
+                }
                 roles = metrics.roles;
                 orchestrator = metrics.orchestrator;
             }
@@ -498,12 +512,8 @@ fn read_history(
             )),
         },
         Err(Skip::Missing) => {
-            if history.state == ProjectHistoryState::Done {
-                warnings.push(ProjectWarning::new(
-                    ProjectWarningScope::Metrics,
-                    target,
-                    "La historia está terminada pero no tiene metricas.json; no suma en los totales.",
-                ));
+            if done {
+                history.data_gaps.push(ProjectDataGap::NoMetrics);
             }
         }
         Err(skip) => warnings.push(ProjectWarning::new(
@@ -538,11 +548,32 @@ fn read_history(
 // ── Métricas ────────────────────────────────────────────────────────────────
 
 pub(super) struct Metrics {
-    pub(super) minutes: u64,
+    /// `None` si `minutosTotales` falta, es nulo o no es válido.
+    pub(super) minutes: Option<u64>,
     pub(super) tokens: TokenBreakdown,
     pub(super) roles: Vec<(String, TokenBreakdown)>,
     pub(super) orchestrator: Option<(TokenBreakdown, bool)>,
+    /// Cifras de tokens que faltan o no son válidas (cuentan como 0).
     pub(super) missing_numbers: usize,
+    /// `minutosTotales` presente pero no numérico o negativo.
+    pub(super) invalid_minutes: bool,
+}
+
+/// `minutosTotales`: ausente o `null` es «sin tiempo» (el método no lo midió), no una cifra que falta.
+/// Presente pero no numérico o negativo → `None` y `true` (aviso).
+fn minutes_of(value: Option<&Value>) -> (Option<u64>, bool) {
+    match value {
+        None | Some(Value::Null) => (None, false),
+        Some(value) => {
+            let mut invalid = 0;
+            let minutes = number(Some(value), &mut invalid);
+            if invalid > 0 {
+                (None, true)
+            } else {
+                (Some(minutes), false)
+            }
+        }
+    }
 }
 
 fn number(value: Option<&Value>, missing: &mut usize) -> u64 {
@@ -597,7 +628,7 @@ pub(super) fn parse_metrics(text: &str) -> Result<Metrics, String> {
         );
     }
     let mut missing = 0;
-    let minutes = number(value.get("minutosTotales"), &mut missing);
+    let (minutes, invalid_minutes) = minutes_of(value.get("minutosTotales"));
     let mut tokens = TokenBreakdown::default();
     let mut roles: Vec<(String, TokenBreakdown)> = Vec::new();
     for agent in value
@@ -648,6 +679,7 @@ pub(super) fn parse_metrics(text: &str) -> Result<Metrics, String> {
         roles,
         orchestrator,
         missing_numbers: missing,
+        invalid_minutes,
     })
 }
 
@@ -700,7 +732,10 @@ pub(super) fn summarize(histories: &[HistoryRead]) -> Summary {
             continue;
         }
         totals.histories += 1;
-        totals.minutes = totals.minutes.saturating_add(history.minutes.unwrap_or(0));
+        if let Some(minutes) = history.minutes {
+            totals.minutes = totals.minutes.saturating_add(minutes);
+            totals.timed_histories += 1;
+        }
         if let Some(tokens) = &history.tokens {
             totals.tokens.add(tokens);
         }

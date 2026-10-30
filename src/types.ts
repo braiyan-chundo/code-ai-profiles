@@ -245,6 +245,8 @@ export type ProjectHistoryState = "waiting" | "inProgress" | "done" | "discarded
 export type ProjectRepoStatus = "ok" | "missing" | "outside" | "forbidden" | "unreadable";
 export type ProjectGitStatus = "ok" | "none" | "unsupported" | "unreadable";
 export type ProjectWarningScope = "config" | "history" | "metrics" | "timeline" | "repo" | "manifest" | "git" | "limit";
+/** Lo que le falta a una historia terminada (HU-0025): «Sin tiempo» o «Sin métricas». No es un aviso. */
+export type ProjectDataGap = "noTime" | "noMetrics";
 
 export interface TokenBreakdown { input: number; output: number; cacheWrite: number; cacheRead: number; total: number }
 export interface ProjectWarning { scope: ProjectWarningScope; target: string | null; message: string }
@@ -264,10 +266,16 @@ export interface ProjectHistory {
   id: string; folder: string; title: string; state: ProjectHistoryState; phase: string | null; area: string | null;
   priority: string | null; created: string | null; minutes: number | null; tokens: TokenBreakdown | null;
   countsInTotals: boolean;
+  /** Solo en terminadas; `noTime` y `noMetrics` se excluyen entre sí. */
+  dataGaps: ProjectDataGap[];
 }
 export interface ProjectRoleUsage { role: string; tokens: TokenBreakdown; approximate: boolean }
 export interface ProjectCounts { total: number; waiting: number; inProgress: number; done: number; discarded: number; unknown: number }
-export interface ProjectTotals { histories: number; minutes: number; tokens: TokenBreakdown; byRole: ProjectRoleUsage[] }
+export interface ProjectTotals {
+  histories: number; minutes: number; tokens: TokenBreakdown; byRole: ProjectRoleUsage[];
+  /** Las que suman en los totales y tienen minutos (divisor de «Tiempo en fases»). */
+  timedHistories: number;
+}
 export interface ProjectInfo {
   name: string; slug: string | null; summary: string | null; profile: string | null; phase: string | null;
   approver: string | null; packageManager: string | null; packs: string[]; repos: ProjectRepo[];
@@ -280,3 +288,22 @@ export interface ProjectSummary {
   protectedLocation: ProjectProtectedLocation | null; info: ProjectInfo | null; warnings: ProjectWarning[];
 }
 export interface ProjectsState { projects: ProjectSummary[]; readAt: string }
+
+/* ── Lector de historias (HU-0025) ────────────────────────────────────────── */
+
+export type ProjectDocumentKind = "hu" | "architecture" | "verification" | "timeline";
+export type ProjectDocumentStatus = "ok" | "unreadable";
+export interface ProjectDocument {
+  kind: ProjectDocumentKind;
+  /** Nombre fijo del archivo (`hu.md`). */
+  file: string;
+  /** Relativa a la carpeta del proyecto, con `/` (`hu/<carpeta>/hu.md`). */
+  path: string;
+  status: ProjectDocumentStatus;
+  /** El Markdown completo, solo si `status` es `ok`. */
+  content: string | null;
+  /** Qué pasó, solo si `status` es `unreadable`. */
+  message: string | null;
+}
+/** Los `.md` de una historia en orden hu → arquitectura → verificación → seguimiento, solo los que existen. */
+export interface ProjectHistoryDocuments { folder: string; documents: ProjectDocument[]; readAt: string }

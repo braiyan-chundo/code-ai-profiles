@@ -10,6 +10,7 @@ import {
   formatTokensCompact,
   inputPlusOutput,
 } from "./projects-format";
+import { timeHint } from "./projects-detail";
 import { EYEBROW } from "./projects-styles";
 
 const FIGURE = "font-mono text-(length:--fs-figure)/(--lh-figure) font-semibold tracking-[-0.05em]";
@@ -44,11 +45,10 @@ function repoHint(info: ProjectInfo): string | null {
 /**
  * Las cifras de la página (HU-0023, AC-03 y AC-04) en la retícula de 12 columnas: Historias 4/12 con la barra por
  * estados y cuatro de 2/12 (Repos, Desde, Tiempo en fases, Tokens). Por debajo de 1071 px, Historias ocupa toda la fila y
- * las otras cuatro, 3/12. Tiempo y tokens suman solo las historias terminadas con métricas: las descartadas no cuentan.
+ * las otras cuatro, 3/12. Tiempo y tokens suman solo las historias terminadas con métricas, y el tiempo, las que además tienen minutos (HU-0025): las descartadas no cuentan.
  */
 export function ProjectFigures({ info, now }: { info: ProjectInfo; now: Date }) {
   const { totals } = info;
-  const closed = totals.histories;
   const cache = formatCacheShare(totals.tokens);
   return (
     <section aria-label="Resumen del proyecto" className="grid grid-cols-12 gap-6">
@@ -74,8 +74,8 @@ export function ProjectFigures({ info, now }: { info: ProjectInfo; now: Date }) 
       />
       <Figure
         label="Tiempo en fases"
-        value={closed > 0 ? formatHoursCompact(totals.minutes) : "—"}
-        hint={closed > 0 ? `de ${closed} ${closed === 1 ? "historia cerrada" : "historias cerradas"}` : "Aún sin historias cerradas"}
+        value={totals.timedHistories > 0 ? formatHoursCompact(totals.minutes) : "—"}
+        hint={timeHint(totals, info.counts)}
         className="col-span-2 max-[1070px]:col-span-3"
       />
       <Figure

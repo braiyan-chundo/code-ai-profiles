@@ -9,7 +9,8 @@ export interface DashboardContextValue extends DashboardStore {
   updateDashboard: (update: (current: DashboardState) => DashboardState) => void;
   setBusy: (busy: string | null) => void;
   updateBusy: (update: (current: string | null) => string | null) => void;
-  setError: (error: string | null) => void;
+  /** `title` nombra lo que falló (HU-0026); sin él, el mensaje es el título del aviso, como siempre. */
+  setError: (error: string | null, title?: string) => void;
   setNotice: (notice: string | null) => void;
   clearFeedback: () => void;
   finishLoading: () => void;
@@ -19,8 +20,15 @@ export interface DashboardContextValue extends DashboardStore {
   finishOriginalInstall: () => void;
   addPendingSync: (instanceIds: string[]) => void;
   removePendingSync: (instanceIds: string[]) => void;
-  /** Marca `busy`, limpia el error, reemplaza el estado con el resultado y libera `busy`. */
-  runAction: (key: string, action: () => Promise<DashboardState>) => Promise<void>;
+  /**
+   * Marca `busy`, limpia el error, reemplaza el estado con el resultado y libera `busy`. Con `errorTitle`, el error
+   * sale con ese título y el mensaje de Rust debajo (HU-0026, A-2).
+   */
+  runAction: (key: string, action: () => Promise<DashboardState>, options?: RunActionOptions) => Promise<void>;
+}
+
+export interface RunActionOptions {
+  errorTitle?: string;
 }
 
 export const DashboardContext = createContext<DashboardContextValue | null>(null);

@@ -430,21 +430,28 @@ fn projects_done_history_without_valid_metrics_does_not_count() {
         warnings_for(&warnings, ProjectWarningScope::Metrics, "HU-0001").len(),
         1
     );
-    assert!(!info.histories[1].counts_in_totals);
-    assert_eq!(
-        warnings_for(&warnings, ProjectWarningScope::Metrics, "HU-0002").len(),
-        1
+    assert!(
+        info.histories[0].data_gaps.is_empty(),
+        "broken is a warning, not a gap"
     );
+    // HU-0025: terminada sin metricas.json es un dato que falta, no un aviso.
+    assert!(!info.histories[1].counts_in_totals);
+    assert_eq!(info.histories[1].data_gaps, vec![ProjectDataGap::NoMetrics]);
+    assert!(warnings_for(&warnings, ProjectWarningScope::Metrics, "HU-0002").is_empty());
     assert!(
         info.histories[2].counts_in_totals,
         "missing numbers count as 0"
     );
+    let partial = warnings_for(&warnings, ProjectWarningScope::Metrics, "HU-0003");
+    assert_eq!(partial.len(), 1);
     assert_eq!(
-        warnings_for(&warnings, ProjectWarningScope::Metrics, "HU-0003").len(),
-        1
+        partial[0].message,
+        "Faltan 3 cifras de tokens en metricas.json; cuentan como 0."
     );
+    assert!(info.histories[2].data_gaps.is_empty());
     assert_eq!(info.totals.histories, 1);
     assert_eq!(info.totals.minutes, 30);
+    assert_eq!(info.totals.timed_histories, 1);
     assert_eq!(info.totals.tokens.total, 5);
 }
 
@@ -1397,4 +1404,547 @@ fn projects_info_plist_explains_every_protected_location() {
             .count(),
         5
     );
+}
+
+// ── HU-0025 · Datos incompletos ─────────────────────────────────────────────
+
+// H25-1 · `minutosTotales: null` y `fases: []` en una terminada: sin tiempo, no un aviso.
+#[test]
+fn projects_done_history_without_minutes_is_a_time_gap() {
+    let fixture = Fixture::new("no-time");
+    fixture.write("p/.metodo/config.json", config(json!([])));
+    fixture.write(
+        "p/hu/HU-0001-con/hu.md",
+        frontmatter("HU-0001", "Con", "terminada", "2026-10-01"),
+    );
+    fixture.write(
+        "p/hu/HU-0001-con/metricas.json",
+        metrics(40, &[("backend", [1, 1, 1, 7, 10])], None),
+    );
+    fixture.write(
+        "p/hu/HU-0002-nulo/hu.md",
+        frontmatter("HU-0002", "Nulo", "terminada", "2026-10-01"),
+    );
+    fixture.write(
+        "p/hu/HU-0002-nulo/metricas.json",
+        json!({
+            "hu": "HU-0002", "minutosTotales": null, "fases": [],
+            "agentes": [{ "rol": "frontend", "tokens": tokens([2, 2, 2, 94, 100]) }]
+        })
+        .to_string(),
+    );
+    fixture.write(
+        "p/hu/HU-0003-ausente/hu.md",
+        frontmatter("HU-0003", "Ausente", "terminada", "2026-10-01"),
+    );
+    fixture.write(
+        "p/hu/HU-0003-ausente/metricas.json",
+        json!({ "agentes": [{ "rol": "backend", "tokens": tokens([0, 0, 0, 0, 1_000]) }] })
+            .to_string(),
+    );
+    // En curso con minutos nulos: no se marca (S-2).
+    fixture.write(
+        "p/hu/HU-0004-curso/hu.md",
+        frontmatter("HU-0004", "Curso", "en-proceso", "2026-10-01"),
+    );
+    fixture.write(
+        "p/hu/HU-0004-curso/metricas.json",
+        json!({ "minutosTotales": null, "agentes": [] }).to_string(),
+    );
+    let (info, warnings) = read_v4(&fixture, "p");
+
+    let gaps: Vec<&[ProjectDataGap]> = info
+        .histories
+        .iter()
+        .map(|history| history.data_gaps.as_slice())
+        .collect();
+    assert_eq!(
+        gaps,
+        vec![
+            &[][..],
+            &[ProjectDataGap::NoTime][..],
+            &[ProjectDataGap::NoTime][..],
+            &[][..]
+        ]
+    );
+    for history in &info.histories[1..] {
+        assert_eq!(history.minutes, None, "{}", history.id);
+    }
+    assert!(info.histories[1].counts_in_totals, "its tokens still count");
+    assert!(info.histories[2].counts_in_totals);
+    for target in ["HU-0001", "HU-0002", "HU-0003", "HU-0004"] {
+        assert!(
+            warnings_for(&warnings, ProjectWarningScope::Metrics, target).is_empty(),
+            "{target}: {warnings:?}"
+        );
+    }
+    assert_eq!(info.totals.histories, 3);
+    assert_eq!(info.totals.minutes, 40, "only the timed one adds minutes");
+    assert_eq!(info.totals.timed_histories, 1);
+    assert_eq!(info.totals.tokens.total, 1_110);
+}
+
+// H25-1b · `minutosTotales` presente pero no numérico: sin tiempo y con aviso.
+#[test]
+fn projects_invalid_minutes_are_a_warning_and_a_time_gap() {
+    let fixture = Fixture::new("bad-minutes");
+    fixture.write("p/.metodo/config.json", config(json!([])));
+    fixture.write(
+        "p/hu/HU-0001-x/hu.md",
+        frontmatter("HU-0001", "X", "terminada", "2026-10-01"),
+    );
+    fixture.write(
+        "p/hu/HU-0001-x/metricas.json",
+        json!({ "minutosTotales": "mucho", "agentes": [{ "rol": "a", "tokens": tokens([1, 1, 1, 1, 4]) }] })
+            .to_string(),
+    );
+    fixture.write(
+        "p/hu/HU-0002-y/hu.md",
+        frontmatter("HU-0002", "Y", "terminada", "2026-10-01"),
+    );
+    fixture.write(
+        "p/hu/HU-0002-y/metricas.json",
+        json!({ "minutosTotales": -5, "agentes": [] }).to_string(),
+    );
+    let (info, warnings) = read_v4(&fixture, "p");
+    for (index, target) in ["HU-0001", "HU-0002"].into_iter().enumerate() {
+        let history = &info.histories[index];
+        assert_eq!(history.minutes, None);
+        assert_eq!(history.data_gaps, vec![ProjectDataGap::NoTime]);
+        let found = warnings_for(&warnings, ProjectWarningScope::Metrics, target);
+        assert_eq!(found.len(), 1, "{target}");
+        assert!(found[0].message.contains("minutosTotales"));
+    }
+    assert_eq!(info.totals.timed_histories, 0);
+    assert_eq!(info.totals.tokens.total, 4);
+}
+
+// H25-2 · Terminada sin metricas.json → `NoMetrics`; en curso sin metricas.json → nada.
+#[test]
+fn projects_done_history_without_metrics_file_is_a_metrics_gap() {
+    let fixture = Fixture::new("no-metrics");
+    write_reference_project(&fixture, "p");
+    fixture.write(
+        "p/hu/HU-0004-sin/hu.md",
+        frontmatter("HU-0004", "Sin", "terminada", "2026-10-04"),
+    );
+    let (info, warnings) = read_v4(&fixture, "p");
+
+    let in_progress = &info.histories[0];
+    assert_eq!(in_progress.state, ProjectHistoryState::InProgress);
+    assert!(in_progress.data_gaps.is_empty());
+    let done = &info.histories[1];
+    assert!(done.data_gaps.is_empty(), "complete metrics: no gap");
+    assert_eq!(done.minutes, Some(120));
+    let discarded = &info.histories[2];
+    assert!(discarded.data_gaps.is_empty());
+    let missing = &info.histories[3];
+    assert_eq!(missing.data_gaps, vec![ProjectDataGap::NoMetrics]);
+    assert_eq!(missing.minutes, None);
+    assert_eq!(missing.tokens, None);
+    assert!(!missing.counts_in_totals);
+    assert!(warnings_for(&warnings, ProjectWarningScope::Metrics, "HU-0004").is_empty());
+    assert_eq!(info.totals.histories, 1);
+    assert_eq!(info.totals.timed_histories, 1);
+    assert_eq!(info.totals.minutes, 120);
+}
+
+// ── HU-0025 · Lector de historias ───────────────────────────────────────────
+
+/// Escribe el proyecto de referencia, lo ancla y devuelve su id.
+fn pinned_reference(fixture: &Fixture, env: &ProjectEnv) -> String {
+    write_reference_project(fixture, "p");
+    pin_project_at(&fixture.app_data(), env, &fixture.path("p"))
+        .expect("pin")
+        .id
+}
+
+fn kinds(documents: &ProjectHistoryDocuments) -> Vec<(ProjectDocumentKind, &str)> {
+    documents
+        .documents
+        .iter()
+        .map(|document| (document.kind, document.file.as_str()))
+        .collect()
+}
+
+// H25-4a · Los cuatro en orden, solo los que existen, sin otros nombres; nada cambia en la carpeta.
+#[test]
+fn projects_reader_returns_fixed_documents_in_order() {
+    let fixture = Fixture::new("reader");
+    let env = fixture.env();
+    let id = pinned_reference(&fixture, &env);
+    let folder = "HU-0002-registro";
+    fixture.write(
+        &format!("p/hu/{folder}/arquitectura.md"),
+        "# Arquitectura\r\n\r\n| a | b |\n",
+    );
+    fixture.write(
+        &format!("p/hu/{folder}/verificacion.md"),
+        "# Verificación\n",
+    );
+    fixture.write(&format!("p/hu/{folder}/notas.md"), "no se lee");
+    fixture.write(&format!("p/hu/{folder}/diseno/vista.md"), "no se lee");
+    let registry = fs::read(fixture.app_data().join(PROJECTS_FILE)).expect("registry");
+    let before = fingerprint(&fixture.path("p"));
+
+    let read =
+        reader::read_project_history_at(&fixture.app_data(), &env, &id, folder).expect("documents");
+    assert_eq!(read.folder, folder);
+    assert_eq!(
+        kinds(&read),
+        vec![
+            (ProjectDocumentKind::Hu, "hu.md"),
+            (ProjectDocumentKind::Architecture, "arquitectura.md"),
+            (ProjectDocumentKind::Verification, "verificacion.md"),
+            (ProjectDocumentKind::Timeline, "seguimiento.md"),
+        ]
+    );
+    assert!(
+        read.documents
+            .iter()
+            .all(|document| document.status == ProjectDocumentStatus::Ok
+                && document.message.is_none())
+    );
+    assert_eq!(
+        read.documents[0].path, "hu/HU-0002-registro/hu.md",
+        "relative with /"
+    );
+    assert_eq!(
+        read.documents[0].content.as_deref(),
+        Some(frontmatter("HU-0002", "Registro de clínicas", "terminada", "2026-10-02").as_str())
+    );
+    assert_eq!(
+        read.documents[1].content.as_deref(),
+        Some("# Arquitectura\n\n| a | b |\n"),
+        "CRLF normalized"
+    );
+
+    // Solo hu.md y seguimiento.md.
+    let partial = reader::read_project_history_at(&fixture.app_data(), &env, &id, "HU-0001-agenda")
+        .expect("partial");
+    assert_eq!(
+        kinds(&partial),
+        vec![
+            (ProjectDocumentKind::Hu, "hu.md"),
+            (ProjectDocumentKind::Timeline, "seguimiento.md"),
+        ]
+    );
+
+    // Solo lectura: ni la carpeta ni el registro (lastReadAt) cambian.
+    assert_eq!(fingerprint(&fixture.path("p")), before);
+    assert_eq!(
+        fs::read(fixture.app_data().join(PROJECTS_FILE)).expect("registry"),
+        registry
+    );
+
+    // La historia ya no está.
+    let gone = reader::read_project_history_at(&fixture.app_data(), &env, &id, "HU-0099-nada")
+        .expect_err("missing folder");
+    assert_eq!(
+        gone.to_string(),
+        "La historia ya no está en el proyecto. Pulsa «Actualizar»."
+    );
+    // Un archivo con el nombre de la carpeta tampoco.
+    fixture.write("p/hu/HU-0098-archivo", "x");
+    assert!(
+        reader::read_project_history_at(&fixture.app_data(), &env, &id, "HU-0098-archivo").is_err()
+    );
+    // Proyecto no anclado.
+    let not_pinned = reader::read_project_history_at(
+        &fixture.app_data(),
+        &env,
+        &Uuid::new_v4().to_string(),
+        folder,
+    )
+    .expect_err("not pinned");
+    assert_eq!(not_pinned.to_string(), NOT_PINNED);
+}
+
+// H25-4b · `\0` y más de 512 KiB → ilegible; el resto de pestañas sigue.
+#[test]
+fn projects_reader_marks_binary_and_large_documents_unreadable() {
+    let fixture = Fixture::new("reader-limits");
+    let env = fixture.env();
+    let id = pinned_reference(&fixture, &env);
+    let folder = "HU-0002-registro";
+    fixture.write(
+        &format!("p/hu/{folder}/arquitectura.md"),
+        "texto\0binario".as_bytes(),
+    );
+    fixture.write(
+        &format!("p/hu/{folder}/verificacion.md"),
+        "a".repeat(reader::DOCUMENT_LIMIT as usize + 1),
+    );
+    fixture.write(
+        &format!("p/hu/{folder}/seguimiento.md"),
+        "b".repeat(reader::DOCUMENT_LIMIT as usize),
+    );
+    let read =
+        reader::read_project_history_at(&fixture.app_data(), &env, &id, folder).expect("documents");
+    let status: Vec<ProjectDocumentStatus> = read
+        .documents
+        .iter()
+        .map(|document| document.status)
+        .collect();
+    assert_eq!(
+        status,
+        vec![
+            ProjectDocumentStatus::Ok,
+            ProjectDocumentStatus::Unreadable,
+            ProjectDocumentStatus::Unreadable,
+            ProjectDocumentStatus::Ok,
+        ]
+    );
+    assert_eq!(read.documents[1].content, None);
+    assert_eq!(
+        read.documents[1].message.as_deref(),
+        Some("arquitectura.md no es un archivo de texto.")
+    );
+    assert_eq!(read.documents[2].content, None);
+    assert_eq!(
+        read.documents[2].message.as_deref(),
+        Some("verificacion.md supera el tamaño máximo que se lee (512 KiB).")
+    );
+    assert_eq!(
+        read.documents[3].content.as_ref().map(String::len),
+        Some(reader::DOCUMENT_LIMIT as usize),
+        "exactly the limit is read"
+    );
+}
+
+// H25-4c · `folder` manipulado → entrada no válida, antes de tocar el disco.
+#[test]
+fn projects_reader_rejects_folders_that_are_not_one_history() {
+    let fixture = Fixture::new("reader-folder");
+    let env = fixture.env();
+    let id = pinned_reference(&fixture, &env);
+    let absolute = fixture.path("p/hu/HU-0002-registro");
+    let too_long = format!("HU-0002-{}", "a".repeat(120));
+    for folder in [
+        "",
+        "..",
+        "../p",
+        "HU-0002-registro/..",
+        "HU-0002-registro/../HU-0001-agenda",
+        "HU-0002-a/b",
+        "HU-0002-a\\b",
+        "HU-0002-..",
+        "/etc",
+        absolute.to_str().expect("utf8"),
+        "HU-12",
+        "HU-12-mal",
+        "HU-00021",
+        "hu-0002-registro",
+        "HU-0002-x:y",
+        "HU-0002-tab\tx",
+        "HU-0002-nul\0",
+        "HU-0002-recortado…",
+        too_long.as_str(),
+    ] {
+        let error = reader::read_project_history_at(&fixture.app_data(), &env, &id, folder)
+            .expect_err(folder);
+        assert_eq!(error.kind(), AppErrorKind::InvalidInput, "{folder:?}");
+        assert_eq!(error.to_string(), "La historia no es válida.", "{folder:?}");
+    }
+    for folder in ["HU-0002", "HU-0002-registro"] {
+        assert!(reader::validate_folder(folder).is_ok(), "{folder}");
+    }
+}
+
+// H25-4d · Un `.md` que es un symlink fuera no se lee; un proyecto bajo la exclusión, tampoco.
+#[cfg(unix)]
+#[test]
+fn projects_reader_keeps_symlink_deny_and_cloud_protections() {
+    use std::os::unix::fs::symlink;
+    let fixture = Fixture::new("reader-protect");
+    let env = fixture.env();
+    let id = pinned_reference(&fixture, &env);
+    let folder = "HU-0002-registro";
+    fixture.write("cerrada/arquitectura.md", "secreto de fuera");
+    symlink(
+        fixture.path("cerrada/arquitectura.md"),
+        fixture.path(&format!("p/hu/{folder}/arquitectura.md")),
+    )
+    .expect("symlink");
+    // Con la carpeta de destino cerrada, si se intentara leer daría «el sistema no deja leerlo».
+    set_mode(&fixture.path("cerrada"), 0o000);
+    let read = reader::read_project_history_at(&fixture.app_data(), &env, &id, folder);
+    set_mode(&fixture.path("cerrada"), 0o755);
+    let read = read.expect("documents");
+    let architecture = &read.documents[1];
+    assert_eq!(architecture.kind, ProjectDocumentKind::Architecture);
+    assert_eq!(architecture.status, ProjectDocumentStatus::Unreadable);
+    assert_eq!(architecture.content, None);
+    assert!(
+        architecture
+            .message
+            .as_deref()
+            .is_some_and(|message| message.contains("fuera")),
+        "{:?}",
+        architecture.message
+    );
+
+    // La carpeta de la historia, un symlink hacia fuera.
+    fixture.write("otra/HU-0007-x/hu.md", "fuera");
+    symlink(
+        fixture.path("otra/HU-0007-x"),
+        fixture.path("p/hu/HU-0007-x"),
+    )
+    .expect("folder symlink");
+    let error = reader::read_project_history_at(&fixture.app_data(), &env, &id, "HU-0007-x")
+        .expect_err("outside folder");
+    assert!(error.to_string().contains("fuera"), "{error}");
+
+    // R-2 · Un symlink a otro archivo del mismo proyecto tampoco se sigue, ni la carpeta hacia otra carpeta.
+    fixture.write("p/.env", "CLAVE=no");
+    fixture.write("p/docs/hu.md", "no es una historia");
+    let _ = fs::remove_file(fixture.path(&format!("p/hu/{folder}/seguimiento.md")));
+    symlink("../../.env", fixture.path(&format!("p/hu/{folder}/seguimiento.md"))).expect("inner symlink");
+    let read = reader::read_project_history_at(&fixture.app_data(), &env, &id, folder).expect("documents");
+    let timeline = read
+        .documents
+        .iter()
+        .find(|document| document.kind == ProjectDocumentKind::Timeline)
+        .expect("timeline");
+    assert_eq!(timeline.status, ProjectDocumentStatus::Unreadable);
+    assert_eq!(timeline.content, None);
+    assert!(read.documents.iter().all(|document| document.content.as_deref() != Some("CLAVE=no")));
+    symlink("../docs", fixture.path("p/hu/HU-0008-docs")).expect("inner folder symlink");
+    let error = reader::read_project_history_at(&fixture.app_data(), &env, &id, "HU-0008-docs")
+        .expect_err("folder inside the project");
+    assert!(error.to_string().contains("carpeta de la historia"), "{error}");
+
+    // Nube: no se lee para no descargarlo.
+    let mut cloud = fixture.env();
+    cloud.cloud = |_, _| true;
+    let read = reader::read_project_history_at(&fixture.app_data(), &cloud, &id, "HU-0001-agenda")
+        .expect("documents");
+    assert!(read.documents.iter().all(|document| {
+        document.status == ProjectDocumentStatus::Unreadable
+            && document
+                .message
+                .as_deref()
+                .is_some_and(|message| message.contains("nube"))
+    }));
+
+    // Un anclado que hoy cae en la exclusión (p. ej. un symlink que ahora apunta a ~/.claude).
+    write_reference_project(&fixture, "home/.claude/proyecto");
+    let denied_id = Uuid::new_v4().to_string();
+    let mut file = load_projects(&fixture.app_data()).expect("registry");
+    file.projects.push(PinnedProject {
+        id: denied_id.clone(),
+        path: fixture
+            .path("home/.claude/proyecto")
+            .to_string_lossy()
+            .into_owned(),
+        last_name: None,
+        pinned_at: now_rfc3339(),
+        last_read_at: None,
+    });
+    save_projects(&fixture.app_data(), &file).expect("save");
+    let error = reader::read_project_history_at(&fixture.app_data(), &env, &denied_id, folder)
+        .expect_err("denied");
+    assert_eq!(error.to_string(), FORBIDDEN_MESSAGE);
+}
+
+// H25-5 · Enlaces externos: solo http/https completos, reserializados.
+#[test]
+fn projects_external_link_accepts_only_full_http_urls() {
+    let url = reader::external_link("https://x.test/a?b#c").expect("https");
+    assert_eq!(url.as_str(), "https://x.test/a?b#c");
+    assert!(reader::external_link("http://x.test").is_ok());
+    let quoted = reader::external_link("https://x.test/a b\"c").expect("encoded");
+    assert!(!quoted.as_str().contains([' ', '"']), "{quoted}");
+    assert!(quoted.as_str().starts_with("https://"));
+    let long_ok = format!("https://x.test/{}", "a".repeat(2_048 - 15));
+    assert_eq!(long_ok.len(), 2_048);
+    assert!(reader::external_link(&long_ok).is_ok());
+    let too_long = format!("https://x.test/{}", "a".repeat(2_048));
+    for raw in [
+        "",
+        "file:///etc/passwd",
+        "javascript:alert(1)",
+        "mailto:a@x.test",
+        "data:text/html,hola",
+        "ftp://x.test/a",
+        "https://",
+        "https://?q",
+        "https://usuario@x.test/",
+        "https://usuario:clave@x.test/",
+        "https://:clave@x.test/",
+        "/relativa/a",
+        "relativa.md",
+        "#ancla",
+        "//x.test/a",
+        "https://x.test/\na",
+        "https://x.test/\u{7}",
+        too_long.as_str(),
+    ] {
+        let error = reader::external_link(raw).expect_err(raw);
+        assert_eq!(error.kind(), AppErrorKind::InvalidInput, "{raw:?}");
+    }
+}
+
+// H25-6 · Nombres del contrato.
+#[test]
+fn projects_serializes_reader_and_gap_contract_names() {
+    assert_eq!(
+        serde_json::to_value(ProjectDataGap::NoTime).expect("json"),
+        json!("noTime")
+    );
+    assert_eq!(
+        serde_json::to_value(ProjectDataGap::NoMetrics).expect("json"),
+        json!("noMetrics")
+    );
+    assert_eq!(
+        serde_json::to_value(ProjectDocumentKind::Architecture).expect("json"),
+        json!("architecture")
+    );
+    assert_eq!(
+        serde_json::to_value(ProjectDocumentKind::Verification).expect("json"),
+        json!("verification")
+    );
+    assert_eq!(
+        serde_json::to_value(ProjectDocumentKind::Timeline).expect("json"),
+        json!("timeline")
+    );
+    assert_eq!(
+        serde_json::to_value(ProjectDocumentStatus::Unreadable).expect("json"),
+        json!("unreadable")
+    );
+    let totals = serde_json::to_value(ProjectTotals::default()).expect("json");
+    assert_eq!(totals["timedHistories"], json!(0));
+    let documents = serde_json::to_value(ProjectHistoryDocuments {
+        folder: "HU-0001-x".into(),
+        documents: vec![ProjectDocument {
+            kind: ProjectDocumentKind::Hu,
+            file: "hu.md".into(),
+            path: "hu/HU-0001-x/hu.md".into(),
+            status: ProjectDocumentStatus::Ok,
+            content: Some("# x".into()),
+            message: None,
+        }],
+        read_at: "2026-10-30T10:00:00Z".into(),
+    })
+    .expect("json");
+    assert_eq!(
+        documents,
+        json!({
+            "folder": "HU-0001-x",
+            "documents": [{
+                "kind": "hu", "file": "hu.md", "path": "hu/HU-0001-x/hu.md",
+                "status": "ok", "content": "# x", "message": null
+            }],
+            "readAt": "2026-10-30T10:00:00Z"
+        })
+    );
+    let fixture = Fixture::new("gap-json");
+    fixture.write("p/.metodo/config.json", config(json!([])));
+    fixture.write(
+        "p/hu/HU-0001-x/hu.md",
+        frontmatter("HU-0001", "X", "terminada", "2026-10-01"),
+    );
+    let (info, _) = read_v4(&fixture, "p");
+    let history = serde_json::to_value(&info.histories[0]).expect("json");
+    assert_eq!(history["dataGaps"], json!(["noMetrics"]));
 }

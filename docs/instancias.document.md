@@ -1,6 +1,6 @@
 # Ciclo de vida e identidad visual de instancias
 
-Documento funcional relacionado con [HU-0004](hu/HU-0004-sincronizacion-desde-la-instancia-mas-reciente-cierre-robusto-artefactos-locales-e-identidad-visual.md) y [HU-0005](hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md).
+Documento funcional relacionado con [HU-0004](hu/HU-0004-sincronizacion-desde-la-instancia-mas-reciente-cierre-robusto-artefactos-locales-e-identidad-visual.md) y [HU-0005](hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md); abrir y detener desde el sidebar y el dashboard, de [HU-0026](../hu/HU-0026-arrancar-y-detener-instancias-desde-el-s/hu.md).
 
 ## Inicio, detección y cierre
 
@@ -14,6 +14,15 @@ Al detener, primero vuelve a comprobar que el proceso encontrado corresponde a e
 - Si la identidad no se puede comprobar o aún quedan procesos después del cierre forzado, la instancia continúa como ejecutándose y la interfaz devuelve un error accionable. No se informa un éxito falso ni se cierra por nombre, bundle ID o un PID viejo.
 
 La verificación local reduce el riesgo de reutilización de PID, pero la integración no puede asegurar el comportamiento de un updater o helper que escape de la identidad verificada. En ese caso la persona debe cerrar la ventana restante desde el sistema y volver a escanear.
+
+### Abrir y detener sin entrar en la instancia
+
+Desde HU-0026, cada instancia se abre o se detiene también desde el sidebar y desde «Uso por instancia» del dashboard,
+sin cambiar de página. En el sidebar el botón (▶ o ■) aparece al pasar el ratón o con el foco del teclado; en el
+dashboard está en cada fila. Usan los mismos comandos y la misma verificación de identidad que la página de la
+instancia, sin confirmación al detener. Mientras una operación corre, los botones de Abrir y Detener quedan
+desactivados y la fila dice «Abriendo…» o «Deteniendo…»; si falla, el aviso de siempre se titula «No se pudo
+abrir/detener {nombre}». La Claude original y las instancias sin copia no llevan botón.
 
 ## Iconos por instancia
 

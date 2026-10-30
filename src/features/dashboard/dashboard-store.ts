@@ -37,6 +37,8 @@ export interface DashboardStore {
   loading: boolean;
   busy: string | null;
   error: string | null;
+  /** El título del error cuando nombra lo que falló («No se pudo abrir {nombre}», HU-0026); el mensaje va debajo. */
+  errorTitle: string | null;
   notice: string | null;
   iconPreviews: Record<string, string>;
   /** El avance de «Descargar e instalar» (HU-0017); `null` cuando no hay una instalación en curso. */
@@ -51,7 +53,7 @@ export type DashboardAction =
   | { type: "loading/finished" }
   | { type: "busy/changed"; busy: string | null }
   | { type: "busy/updated"; update: (current: string | null) => string | null }
-  | { type: "error/changed"; error: string | null }
+  | { type: "error/changed"; error: string | null; title?: string | null }
   | { type: "notice/changed"; notice: string | null }
   | { type: "feedback/cleared" }
   | { type: "icon-preview/stored"; instanceId: string; url: string }
@@ -66,6 +68,7 @@ export const initialDashboardStore: DashboardStore = {
   loading: true,
   busy: null,
   error: null,
+  errorTitle: null,
   notice: null,
   iconPreviews: {},
   originalInstall: null,
@@ -103,12 +106,17 @@ export function dashboardReducer(store: DashboardStore, action: DashboardAction)
       return withField(store, "busy", action.busy);
     case "busy/updated":
       return withField(store, "busy", action.update(store.busy));
-    case "error/changed":
-      return withField(store, "error", action.error);
+    case "error/changed": {
+      // Sin error no hay título; un error sin título borra el de antes.
+      const errorTitle = action.error === null ? null : (action.title ?? null);
+      return store.error === action.error && store.errorTitle === errorTitle ? store : { ...store, error: action.error, errorTitle };
+    }
     case "notice/changed":
       return withField(store, "notice", action.notice);
     case "feedback/cleared":
-      return store.error === null && store.notice === null ? store : { ...store, error: null, notice: null };
+      return store.error === null && store.errorTitle === null && store.notice === null
+        ? store
+        : { ...store, error: null, errorTitle: null, notice: null };
     case "icon-preview/stored":
       return store.iconPreviews[action.instanceId] === action.url
         ? store
