@@ -37,4 +37,11 @@ Este comando es de solo lectura y falla si alguna fuente de versión no coincide
 
 ## Publicación
 
-Actualizar la versión del repositorio no crea tags, GitHub Releases, descargas ni instaladores. Esas operaciones se planifican y validan por separado.
+Actualizar la versión del repositorio no crea tags, GitHub Releases, descargas ni instaladores.
+
+Al empujar un tag `v<versión>` desde `main`, el workflow **Build desktop installers** compila las cuatro variantes en
+sus runners nativos y, en un último job, crea una GitHub Release **en borrador** con los 7 instaladores (`.dmg`,
+`.exe`, `.msi`, y `.deb` y `.AppImage` para Linux x64 y ARM64) y las notas de la sección de esa versión del
+`CHANGELOG.md`. El job falla, sin crear nada, si el tag no coincide con la versión de `package.json`, si falta la
+sección del CHANGELOG o si no están los 7 instaladores. El borrador no es visible hasta que el mantenedor lo revisa y
+lo publica. Cómo se instala cada paquete está en la sección «Descargar e instalar» del README.
