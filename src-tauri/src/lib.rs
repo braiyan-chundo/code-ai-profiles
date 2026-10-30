@@ -18,17 +18,18 @@ use tauri::{AppHandle, Emitter, Manager, WebviewWindow};
 use uuid::Uuid;
 
 mod config;
+mod contract;
 #[cfg(target_os = "macos")]
 mod macos_icon;
 mod official_release;
 mod original_update;
 mod projects;
-
 #[cfg(test)]
 mod test_support;
 
+use contract::*;
+
 const REGISTRY_VERSION: u32 = 1;
-const ORIGINAL_INSTANCE_ID: &str = "__claude_original__";
 const UPDATE_CACHE_FRESH_MS: i64 = 6 * 60 * 60 * 1_000;
 const UPDATE_CACHE_STALE_MS: i64 = 7 * 24 * 60 * 60 * 1_000;
 /// Un resultado con aviso (una fuente falló o no se pudo verificar) solo cuenta como fresco este tiempo.
@@ -65,158 +66,6 @@ impl Default for Registry {
 
 fn registry_version() -> u32 {
     REGISTRY_VERSION
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-struct ManagedInstance {
-    id: String,
-    name: String,
-    account_label: Option<String>,
-    #[serde(default)]
-    avatar_url: Option<String>,
-    plan: AccountPlan,
-    source_version: Option<String>,
-    app_path: String,
-    profile_path: String,
-    created_at: String,
-    last_launched_at: Option<String>,
-    #[serde(default)]
-    pid: Option<u32>,
-    #[serde(default)]
-    process_identity: Option<ManagedProcessIdentity>,
-    #[serde(default)]
-    launch_generation: u64,
-    #[serde(default)]
-    custom_icon: Option<CustomIcon>,
-    #[serde(default)]
-    provider_provenance: Option<ProviderProvenance>,
-    #[serde(default)]
-    status: InstanceStatus,
-    #[serde(default)]
-    usage: Option<UsageStats>,
-    #[serde(default)]
-    code_sessions: Vec<CodeSession>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-#[serde(rename_all = "camelCase")]
-struct ProviderProvenance {
-    bundle_identifier: String,
-    provider_team_identifier: Option<String>,
-    provider_version: String,
-    provider_source_fingerprint: String,
-    managed_fingerprint: String,
-    #[serde(default)]
-    managed_code_hash: Option<String>,
-    #[serde(default)]
-    provider_signature_preserved: bool,
-    original_icon_file: Option<String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-#[serde(rename_all = "camelCase")]
-struct ManagedProcessIdentity {
-    root_pid: u32,
-    process_group_id: Option<u32>,
-    start_time: Option<u64>,
-    fingerprint: String,
-    profile_argument: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-#[serde(rename_all = "camelCase")]
-struct CustomIcon {
-    path: String,
-    revision: u64,
-    system_applied: bool,
-    system_message: String,
-    /// macOS only: why the copy could not receive the Finder icon. `None` unless App Management blocked it.
-    #[serde(default)]
-    system_issue: Option<CustomIconSystemIssue>,
-}
-
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
-#[serde(rename_all = "camelCase")]
-#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
-enum CustomIconSystemIssue {
-    AppManagement,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq)]
-#[serde(rename_all = "lowercase")]
-enum AccountPlan {
-    Free,
-    Pro,
-    Max,
-    Team,
-    Enterprise,
-    #[default]
-    Unknown,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
-#[serde(rename_all = "lowercase")]
-enum InstanceStatus {
-    Running,
-    #[default]
-    Stopped,
-    Missing,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-struct UsageStats {
-    session_percent: Option<f64>,
-    weekly_percent: Option<f64>,
-    captured_at: Option<i64>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-struct CodeSession {
-    id: String,
-    title: String,
-    model: Option<String>,
-    effort: Option<String>,
-    completed_turns: u64,
-    created_at: Option<i64>,
-    last_activity_at: Option<i64>,
-    is_archived: bool,
-    context_tokens: Option<u64>,
-    context_window_tokens: Option<u64>,
-    context_percent: Option<f64>,
-    #[serde(default)]
-    published_artifact_count: u64,
-    #[serde(default)]
-    artifact_monitor: Option<ArtifactMonitorSummary>,
-    #[serde(default)]
-    transfer: Option<SessionTransferInfo>,
-    #[serde(skip)]
-    cli_session_id: Option<String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-#[serde(rename_all = "camelCase")]
-struct ArtifactMonitorSummary {
-    monitor_type: String,
-    state: Option<String>,
-    artifact_count: u64,
-}
-
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Default, PartialEq, Eq)]
-#[serde(rename_all = "lowercase")]
-enum SessionTransferMode {
-    #[default]
-    Copy,
-    Move,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-struct SessionTransferInfo {
-    origin_instance_id: String,
-    mode: SessionTransferMode,
 }
 
 #[derive(Debug, Deserialize)]
@@ -338,23 +187,6 @@ struct SessionContextSnapshot {
     context_window_tokens: Option<u64>,
 }
 
-#[derive(Debug, Clone, Serialize)]
-#[serde(rename_all = "camelCase")]
-struct SystemInfo {
-    app_version: String,
-    platform: String,
-    source_path: Option<String>,
-    source_name: Option<String>,
-    source_version: Option<String>,
-    source_update: SourceUpdateInfo,
-    version_topology: VersionTopology,
-    original_profile_path: Option<String>,
-    original_status: InstanceStatus,
-    original_code_sessions: Vec<CodeSession>,
-    free_bytes: Option<u64>,
-    managed_bytes: u64,
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct RefreshScope {
     processes: bool,
@@ -474,76 +306,6 @@ fn with_registry_operation<T>(operation: impl FnOnce() -> Result<T, String>) -> 
     operation()
 }
 
-#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
-#[serde(rename_all = "camelCase")]
-struct VersionTopology {
-    latest_installed_version: Option<String>,
-    latest_source: Option<VersionSource>,
-    stale_instance_ids: Vec<String>,
-    original_behind: bool,
-    can_synchronize_managed: bool,
-    reason: Option<String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-#[serde(rename_all = "camelCase")]
-struct VersionSource {
-    kind: VersionSourceKind,
-    instance_id: Option<String>,
-    name: String,
-}
-
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
-#[serde(rename_all = "lowercase")]
-enum VersionSourceKind {
-    Original,
-    Managed,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-#[serde(rename_all = "camelCase")]
-struct SourceUpdateInfo {
-    status: SourceUpdateStatus,
-    latest_version: Option<String>,
-    checked_at: Option<i64>,
-    stale: bool,
-    source: Option<SourceUpdateSource>,
-    /// Frase para la persona cuando una fuente oficial falló o no se pudo verificar (AC-06). Sin URLs ni
-    /// cuerpos de respuesta.
-    #[serde(default)]
-    warning: Option<String>,
-}
-
-impl Default for SourceUpdateInfo {
-    fn default() -> Self {
-        Self {
-            status: SourceUpdateStatus::Unavailable,
-            latest_version: None,
-            checked_at: None,
-            stale: false,
-            source: None,
-            warning: None,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
-#[serde(rename_all = "lowercase")]
-enum SourceUpdateStatus {
-    Current,
-    Available,
-    Unavailable,
-}
-
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
-#[serde(rename_all = "camelCase")]
-enum SourceUpdateSource {
-    OfficialFeed,
-    AptCache,
-    /// La versión salió de la publicación oficial (`RELEASES.json`) y el feed confirmó su paquete.
-    OfficialRelease,
-}
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct SourceUpdateCache {
@@ -552,28 +314,6 @@ struct SourceUpdateCache {
     platform: String,
     installed_version: String,
     result: SourceUpdateInfo,
-}
-
-#[derive(Debug, Clone, Serialize)]
-#[serde(rename_all = "camelCase")]
-struct UsageSnapshot {
-    instance_id: String,
-    usage: UsageStats,
-}
-
-#[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq)]
-#[serde(rename_all = "lowercase")]
-enum OriginalApplicationUpdateAction {
-    #[cfg_attr(target_os = "macos", allow(dead_code))]
-    Download,
-    Instructions,
-}
-
-#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
-#[serde(rename_all = "camelCase")]
-struct OriginalApplicationUpdateResult {
-    action: OriginalApplicationUpdateAction,
-    message: String,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -588,123 +328,6 @@ struct OriginalApplicationUpdateTarget {
 struct MacosOriginalLaunch {
     executable: &'static str,
     arguments: Vec<std::ffi::OsString>,
-}
-
-#[derive(Debug, Clone, Serialize)]
-#[serde(rename_all = "camelCase")]
-struct DashboardState {
-    instances: Vec<ManagedInstance>,
-    system: SystemInfo,
-}
-
-#[derive(Debug, Clone, Serialize)]
-#[serde(rename_all = "camelCase")]
-struct ScanProgress {
-    progress: u8,
-    label: &'static str,
-}
-
-#[derive(Debug, Clone, Serialize)]
-#[serde(rename_all = "camelCase")]
-struct ProcessExitEvent {
-    instance_id: String,
-    generation: u64,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-#[serde(rename_all = "camelCase")]
-struct CreateInstanceRequest {
-    name: String,
-    source_path: Option<String>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-#[serde(rename_all = "camelCase")]
-struct UpdateInstanceRequest {
-    id: String,
-    name: String,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-#[serde(rename_all = "camelCase")]
-struct CopyCodeSessionRequest {
-    source_instance_id: String,
-    target_instance_id: String,
-    session_id: String,
-    #[serde(default)]
-    mode: SessionTransferMode,
-    #[serde(default = "default_include_local_artifacts")]
-    include_local_artifacts: bool,
-}
-
-fn default_include_local_artifacts() -> bool {
-    true
-}
-
-#[derive(Debug, Clone, Serialize, Default, PartialEq, Eq)]
-#[serde(rename_all = "camelCase")]
-struct ArtifactTransferOutcome {
-    local_candidates: u64,
-    copied: u64,
-    registered: u64,
-    preserved_for_manual_import: u64,
-    remote_references_omitted: u64,
-    monitors_omitted: u64,
-    export_path: Option<String>,
-    warnings: Vec<String>,
-}
-
-#[derive(Debug, Clone, Serialize)]
-#[serde(rename_all = "camelCase")]
-struct SessionTransferResult {
-    dashboard: DashboardState,
-    artifacts: ArtifactTransferOutcome,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-#[serde(rename_all = "camelCase")]
-struct SynchronizeManagedApplicationsRequest {
-    source: VersionSource,
-    target_instance_ids: Vec<String>,
-}
-
-#[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq)]
-#[serde(rename_all = "lowercase")]
-enum SynchronizationStatus {
-    Updated,
-    Skipped,
-    Failed,
-}
-
-#[derive(Debug, Clone, Serialize)]
-#[serde(rename_all = "camelCase")]
-struct SynchronizationItemResult {
-    instance_id: String,
-    status: SynchronizationStatus,
-    from_version: Option<String>,
-    to_version: Option<String>,
-    message: String,
-}
-
-#[derive(Debug, Clone, Serialize)]
-#[serde(rename_all = "camelCase")]
-struct SynchronizeManagedApplicationsResult {
-    dashboard: DashboardState,
-    results: Vec<SynchronizationItemResult>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-#[serde(rename_all = "camelCase")]
-struct SetInstanceIconRequest {
-    id: String,
-    bytes: Vec<u8>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-#[serde(rename_all = "camelCase")]
-struct UnlinkCodeSessionRequest {
-    instance_id: String,
-    session_id: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -5298,20 +4921,6 @@ async fn open_project_folder(app: AppHandle, id: String) -> Result<(), String> {
     .map_err(|error| format!("Abrir la carpeta del proyecto terminó inesperadamente: {error}"))?
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
-#[serde(rename_all = "camelCase")]
-enum SystemSettingsPanel {
-    AppManagement,
-    FilesAndFolders,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
-#[serde(rename_all = "camelCase")]
-struct AccountFacts {
-    /// macOS: the user belongs to the `admin` group. None off macOS or when `id` fails.
-    admin: Option<bool>,
-}
-
 /// Enlace fijado al compilar (`config.rs`). El frontend solo envía el panel, nunca una URL.
 #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
 fn system_settings_url(panel: SystemSettingsPanel) -> &'static str {
@@ -5831,30 +5440,6 @@ mod tests {
     }
 
     #[test]
-    fn migrates_legacy_pid_records_without_trusting_the_pid_as_identity() {
-        let instance: ManagedInstance = serde_json::from_value(serde_json::json!({
-            "id": "96812ba4-6864-40d5-a70a-0470f244022c",
-            "name": "Legacy",
-            "accountLabel": null,
-            "avatarUrl": null,
-            "plan": "unknown",
-            "sourceVersion": "1.0.0",
-            "appPath": "/managed/application.app",
-            "profilePath": "/managed/profile",
-            "createdAt": "2026-10-10T00:00:00Z",
-            "lastLaunchedAt": null,
-            "pid": 42,
-            "status": "running",
-            "usage": null,
-            "codeSessions": []
-        }))
-        .unwrap();
-        assert_eq!(instance.pid, Some(42));
-        assert!(instance.process_identity.is_none());
-        assert_eq!(instance.launch_generation, 0);
-    }
-
-    #[test]
     fn process_fingerprint_binds_application_and_exact_profile_argument() {
         let app = Path::new("/managed/Test.app");
         let first = process_fingerprint(app, "--user-data-dir=/profiles/a");
@@ -5910,45 +5495,6 @@ mod tests {
         assert_eq!((decoded.width(), decoded.height()), (512, 512));
         assert!(normalized_icon_png(b"not-an-image").is_err());
         assert!(normalized_icon_png(&vec![0; ICON_MAX_BYTES + 1]).is_err());
-    }
-
-    #[test]
-    fn custom_icon_contract_does_not_modify_the_application_path() {
-        let root = env::temp_dir().join(format!("code-ai-icon-contract-{}", Uuid::new_v4()));
-        let mut instance = test_instance(&root);
-        let original_app_path = instance.app_path.clone();
-        instance.custom_icon = Some(CustomIcon {
-            path: root.join("branding/icon.png").to_string_lossy().to_string(),
-            revision: 1,
-            system_applied: false,
-            system_message: "UI only".to_string(),
-            system_issue: None,
-        });
-        assert_eq!(instance.app_path, original_app_path);
-        assert!(!instance.custom_icon.unwrap().system_applied);
-    }
-
-    #[test]
-    fn custom_icon_without_system_issue_reads_as_none_and_serializes_camel_case() {
-        let icon: CustomIcon = serde_json::from_value(serde_json::json!({
-            "path": "/managed/branding/icon.png",
-            "revision": 3,
-            "systemApplied": false,
-            "systemMessage": "UI only"
-        }))
-        .unwrap();
-        assert_eq!(icon.system_issue, None);
-        let blocked = CustomIcon {
-            system_issue: Some(CustomIconSystemIssue::AppManagement),
-            ..icon
-        };
-        let value = serde_json::to_value(&blocked).unwrap();
-        assert_eq!(value["systemIssue"], "appManagement");
-        let back: CustomIcon = serde_json::from_value(value).unwrap();
-        assert_eq!(
-            back.system_issue,
-            Some(CustomIconSystemIssue::AppManagement)
-        );
     }
 
     #[test]
@@ -7095,34 +6641,6 @@ mod tests {
         );
         assert!(system_settings_url(SystemSettingsPanel::FilesAndFolders)
             .ends_with("Privacy_FilesAndFolders"));
-    }
-
-    #[test]
-    fn system_settings_panel_accepts_only_known_values() {
-        assert_eq!(
-            serde_json::from_str::<SystemSettingsPanel>("\"appManagement\"").unwrap(),
-            SystemSettingsPanel::AppManagement
-        );
-        assert_eq!(
-            serde_json::from_str::<SystemSettingsPanel>("\"filesAndFolders\"").unwrap(),
-            SystemSettingsPanel::FilesAndFolders
-        );
-        assert!(serde_json::from_str::<SystemSettingsPanel>("\"fullDisk\"").is_err());
-        assert!(
-            serde_json::from_str::<SystemSettingsPanel>("\"x-apple.systempreferences:a\"").is_err()
-        );
-    }
-
-    #[test]
-    fn account_facts_serializes_admin_as_nullable() {
-        assert_eq!(
-            serde_json::to_string(&AccountFacts { admin: None }).unwrap(),
-            "{\"admin\":null}"
-        );
-        assert_eq!(
-            serde_json::to_string(&AccountFacts { admin: Some(true) }).unwrap(),
-            "{\"admin\":true}"
-        );
     }
 
     #[test]
