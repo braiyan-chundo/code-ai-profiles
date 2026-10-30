@@ -6,7 +6,20 @@ Fecha: 2026-10-30 · Revisa: architect · HEAD revisado: `91c553b` (rama `ajuste
 - **Fuera de la revisión:** los commits de la HU-0025 de la misma rama. Lo único que comparten es la línea
   `dialogOpen` de `AppSidebar.tsx`. La HU-0025 añadió `projectDialog` sin tocar `launch`/`stop` ni la lista de instancias.
 
-## Veredicto: **PASS con observaciones**
+## Veredicto final: **PASS** (re-revisión del 2026-10-30, HEAD `16c35ea`)
+
+Revisé solo el diff de `16c35ea`. Las tres observaciones están corregidas tal como las propuse, sin efectos laterales.
+No corrí pruebas. La suite completa sigue pendiente, una vez, sobre el SHA final.
+
+| # | Estado | Cómo quedó |
+| --- | --- | --- |
+| R-1 | **Corregida** | `UsageRanking.tsx:40`: `ItemGroup` sin `role="group"`, así que vuelve a ser `role="list"` (catálogo) y conserva su `aria-label`. Los `listitem` ya tienen el padre que pide ARIA |
+| R-2 | **Corregida** | `InstanceDetail.tsx`: Abrir y Detener con `disabled={busy !== null}`, el mismo criterio que `instanceToggle.disabled` y que «Actualizar». La etiqueta «Abriendo…»/«Deteniendo…» sigue dependiendo solo de la operación de esta instancia |
+| R-3 | **Corregida** | `UsageRanking.tsx:81-82`: `pointer-events-none` en los dos `UsageBar`. El clic sobre la barra llega al enlace que cubre la fila. La barra sigue en el árbol de accesibilidad con su `aria-label` |
+
+Lo que sigue es la revisión original (HEAD `91c553b`).
+
+## Veredicto inicial: **PASS con observaciones**
 
 No hay nada que bloquee. R-1 a R-3 son observaciones baratas y las puede corregir el frontend antes de cerrar o en un
 `/fix`.

@@ -366,10 +366,10 @@ export function incompleteGroups(info: ProjectInfo, warnings: readonly ProjectWa
 
 /**
  * El comando que genera `metricas.json` de una historia. Sale de `folder`, nunca del `id` del frontmatter, y solo si
- * empieza por `HU-####-`: el texto se pega en una terminal. Rust ya lo garantiza; esto es la segunda barrera.
+ * es `HU-####` o empieza por `HU-####-`: el texto se pega en una terminal. Rust ya lo garantiza; esto es la segunda barrera.
  */
 export function metricsCommand(folder: string): string | null {
-  const code = /^(HU-\d{4})-/.exec(folder)?.[1];
+  const code = /^(HU-\d{4})(?:-|$)/.exec(folder)?.[1];
   return code ? `node .metodo/scripts/metricas.mjs hu ${code}` : null;
 }
 

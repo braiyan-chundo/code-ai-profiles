@@ -7,7 +7,36 @@ Fecha: 2026-10-30 · Revisa: architect · HEAD revisado: `91c553b` (rama `ajuste
 - **Fuera de la revisión:** los commits de la HU-0026. Comparte con ella solo la línea `dialogOpen` de
   `AppSidebar.tsx`, que añade `projectDialog` sin pisar `launch`/`stop` de la HU-0026.
 
-## Veredicto: **FAIL**, por una corrección pequeña de frontend (R-1)
+## Veredicto final: **PASS** (re-revisión del 2026-10-30, HEAD `088a36c`)
+
+Revisé solo el diff de `088a36c` contra cada R-n. R-1 (la que bloqueaba), R-2 y R-3 están corregidas. Queda una
+observación nueva, O-1, que no bloquea. No corrí pruebas. Las cifras que da quien implementó son `test:ui` 20/20,
+`test:projects` 42/42, y build y relacionadas en verde. La suite completa sigue pendiente, una vez, sobre el SHA final.
+
+| # | Estado | Cómo quedó |
+| --- | --- | --- |
+| R-1 | **Corregida** | `HistoryMarkdown.tsx`: el enlace externo es `<a role="link" tabIndex={0}>` **sin `href`**, con `draggable={false}`, `onContextMenu` → `preventDefault`, Enter y clic (también el central) → `openExternalLink`. Sin URL en el DOM no hay «Abrir enlace» nativo ni arrastre que cargue la web en la ventana. Se quitó el comentario falso. La prueba 19 de `test:ui` prohíbe `href={`, `<img`, `src={`, `rehype` y `dangerouslySetInnerHTML`, y exige `skipHtml`, `onContextMenu` y `draggable={false}` |
+| R-2 | **Corregida** | `reader.rs`: la carpeta y cada `.md` se resuelven con `ctx.resolve` y tienen que dar exactamente `root/hu/<carpeta>[/<archivo>]`. Un symlink a otra parte del proyecto da error de carpeta («apunta fuera de la carpeta de la historia») o deja ese archivo como ilegible, sin leerlo. La comparación es correcta en las tres plataformas: `resolve` construye la ruta con los mismos componentes y sin `canonicalize`, así que no influyen las mayúsculas ni el separador. No modifica `ReadContext::resolve`, solo lo usa. La prueba amplía `projects_reader_keeps_symlink_deny_and_cloud_protections` con `seguimiento.md -> ../../.env` (ilegible y sin contenido) y una carpeta `HU-0008-docs -> ../docs` (error) |
+| R-3 | **Corregida** | `metricsCommand` devuelve `null` si `folder` no casa con `^(HU-\d{4})-`. `\d` sin `u` solo admite dígitos ASCII. El modal omite el bloque y el botón, y «Copiar todos» salta esas historias. Hay prueba con `HU-12; rm -rf ~`, `../HU-0023-x`, minúsculas, letras y espacio inicial |
+
+**O-1 · no bloquea · frontend.** El patrón de R-3 exige el guion, así que una carpeta exactamente `HU-0023`, sin
+slug, se queda sin comando. Rust sí la acepta (`is_history_folder`), y la prueba lo fija como `null`. El método siempre
+crea las carpetas con slug, de modo que hoy no afecta a nadie. Si se quiere cubrir, basta con `^(HU-\d{4})(?:-|$)`.
+
+**Efecto colateral aceptado de R-2:** si `hu/` entero es un symlink a otra carpeta del proyecto, el lector se niega
+(«apunta fuera de la carpeta de la historia»), aunque la página del proyecto sí lista esas historias. Es más estricto de
+lo que hace falta, pero coherente con AC-05. Si algún proyecto real lo usa, se resuelve con un `/fix`.
+
+**Delta de RN-02:** con R-2 corregido, el texto que dejé en `arquitectura.md` ya es exacto: se leen los cuatro `.md`
+«solo dentro de `hu/<carpeta de la historia>` y con las mismas exclusiones». Al aplicarlo, conviene añadir una frase
+para que quede explícito: «ni la carpeta ni sus `.md` se siguen si son un enlace simbólico a otra parte del proyecto».
+
+**Lo que solo comprueba una persona** sigue siendo lo de abajo. En R-1 ya se puede probar en macOS: clic derecho y
+arrastre sobre un enlace del lector sin que la ventana navegue, y clic y Enter abriendo el navegador del sistema.
+
+Lo que sigue es la revisión original (HEAD `91c553b`).
+
+## Veredicto inicial: **FAIL**, por una corrección pequeña de frontend (R-1)
 
 El backend cumple el diseño entero. El frontend también, salvo una cosa: el enlace externo del lector sigue siendo un
 `<a href>` real. Eso deja abierta la vía que el diseño quería cerrar, que la ventana de la app navegue a la red. El

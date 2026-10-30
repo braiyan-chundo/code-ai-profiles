@@ -578,8 +578,9 @@ test("metricsCommand sale de folder y no del id, que puede traer cualquier cosa"
   assert.equal(metricsCommands([]), "");
 });
 
-test("metricsCommand no arma comando si la carpeta no empieza por HU-####-", () => {
-  for (const folder of ["HU-12; rm -rf ~", "HU-0023", "../HU-0023-x", "hu-0023-x", "HU-00a3-x", " HU-0023-x"]) {
+test("metricsCommand no arma comando si la carpeta no es HU-#### ni empieza por HU-####-", () => {
+  assert.equal(metricsCommand("HU-0023"), "node .metodo/scripts/metricas.mjs hu HU-0023");
+  for (const folder of ["HU-12; rm -rf ~", "HU-00231-x", "HU-0023;x", "../HU-0023-x", "hu-0023-x", "HU-00a3-x", " HU-0023-x"]) {
     assert.equal(metricsCommand(folder), null, folder);
   }
   assert.equal(metricsCommands([missing("HU-12; rm -rf ~"), missing("HU-0008-x")]), "node .metodo/scripts/metricas.mjs hu HU-0008");
