@@ -268,3 +268,24 @@ pub(crate) fn open_update_url(url: &str) -> Result<std::process::ExitStatus, std
         .args(["url.dll,FileProtocolHandler", url])
         .status()
 }
+
+/// Abre en el navegador del sistema un enlace `http`/`https` que la persona pulsó en el lector
+/// (HU-0025). `url` llega ya validada y reserializada por `projects::reader::external_link`; va como
+/// argumento, nunca en una cadena de shell. Distinto de `open_update_url`, que es solo del canal oficial.
+pub(crate) fn open_external_url(url: &str) -> Result<(), AppError> {
+    let status = Command::new("rundll32.exe")
+        .args(["url.dll,FileProtocolHandler", url])
+        .status()
+        .map_err(|error| {
+            AppError::process(format!(
+                "No se pudo abrir el enlace en el navegador: {error}"
+            ))
+        })?;
+    if status.success() {
+        Ok(())
+    } else {
+        Err(AppError::process(
+            "No se pudo abrir el enlace en el navegador.",
+        ))
+    }
+}

@@ -7,6 +7,9 @@
 //! `ReadContext`, que recorre cada ruta componente a componente sin seguir symlinks que salgan de la
 //! carpeta, y exige que quede dentro de ella y fuera de la lista de exclusión (`~/.claude`, `app_data` y el perfil de la original). Lo único que se escribe es
 //! `<app_data>/projects.json`, con `write_json_atomic`.
+//!
+//! El lector de historias (HU-0025, `reader.rs`) lee, al abrirlo, los cuatro `.md` fijos de una historia
+//! con el mismo `ReadContext`, y valida los enlaces externos que la persona pulsa.
 
 use super::*;
 use chrono::{NaiveDate, NaiveDateTime, SecondsFormat};
@@ -14,7 +17,10 @@ use std::{collections::VecDeque, io::ErrorKind, path::Component};
 
 mod git;
 mod method;
+mod reader;
 mod tech;
+
+pub(crate) use reader::{open_external_link_sync, read_project_history_sync};
 
 const PROJECTS_FILE: &str = "projects.json";
 const PROJECTS_VERSION: u32 = 1;
@@ -107,6 +113,17 @@ pub(crate) enum ProjectWarningScope {
     Manifest,
     Git,
     Limit,
+}
+
+/// Lo que le falta a una historia terminada por cómo se cerró (HU-0025). No es un aviso: el proyecto
+/// no está roto, el método no pudo medir el dato.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) enum ProjectDataGap {
+    /// `metricas.json` sin `minutosTotales` (ausente o nulo): sus tokens suman, su tiempo no.
+    NoTime,
+    /// Terminada sin `metricas.json`: no suma en los totales.
+    NoMetrics,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
@@ -212,9 +229,12 @@ pub(crate) struct ProjectHistory {
     pub(crate) area: Option<String>,
     pub(crate) priority: Option<String>,
     pub(crate) created: Option<String>,
+    /// `None` si no hay métricas o si `minutosTotales` falta, es nulo o no es válido.
     pub(crate) minutes: Option<u64>,
     pub(crate) tokens: Option<TokenBreakdown>,
     pub(crate) counts_in_totals: bool,
+    /// Solo en historias terminadas; `NoTime` y `NoMetrics` se excluyen entre sí.
+    pub(crate) data_gaps: Vec<ProjectDataGap>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -243,6 +263,8 @@ pub(crate) struct ProjectTotals {
     pub(crate) minutes: u64,
     pub(crate) tokens: TokenBreakdown,
     pub(crate) by_role: Vec<ProjectRoleUsage>,
+    /// Las que suman en los totales y tienen minutos: el divisor honesto de «Tiempo en fases».
+    pub(crate) timed_histories: usize,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -287,6 +309,48 @@ pub(crate) struct ProjectSummary {
 #[serde(rename_all = "camelCase")]
 pub(crate) struct ProjectsState {
     pub(crate) projects: Vec<ProjectSummary>,
+    pub(crate) read_at: String,
+}
+
+// ── Lector de historias (HU-0025, A-1) ──────────────────────────────────────
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) enum ProjectDocumentKind {
+    Hu,
+    Architecture,
+    Verification,
+    Timeline,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) enum ProjectDocumentStatus {
+    Ok,
+    Unreadable,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct ProjectDocument {
+    pub(crate) kind: ProjectDocumentKind,
+    /// El nombre fijo del archivo (`hu.md`).
+    pub(crate) file: String,
+    /// Relativa a la carpeta del proyecto, con `/` (`hu/<carpeta>/hu.md`).
+    pub(crate) path: String,
+    pub(crate) status: ProjectDocumentStatus,
+    /// El Markdown completo, solo si `status` es `Ok`.
+    pub(crate) content: Option<String>,
+    /// Qué pasó, solo si `status` es `Unreadable`.
+    pub(crate) message: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct ProjectHistoryDocuments {
+    pub(crate) folder: String,
+    /// En el orden hu → arquitectura → verificación → seguimiento, solo los que existen.
+    pub(crate) documents: Vec<ProjectDocument>,
     pub(crate) read_at: String,
 }
 

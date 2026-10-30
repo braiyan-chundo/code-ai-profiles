@@ -3,7 +3,8 @@
 //!
 //! - `macos.rs`, `windows.rs`, `linux.rs` y `unsupported.rs` (cualquier otro) definen la detección de la
 //!   aplicación y su perfil, la versión, la firma, la copia del bundle, el gestor de archivos, Ajustes del
-//!   Sistema y la cuenta. Las que solo usa el código de fuera de macOS (`apply_external_icon_best_effort`,
+//!   Sistema, la cuenta y `open_external_url` (el enlace que se pulsa en el lector de historias, HU-0025).
+//!   Las que solo usa el código de fuera de macOS (`apply_external_icon_best_effort`,
 //!   `open_update_url`) no existen en macOS, igual que sus llamadores.
 //! - `unix.rs` (macOS, Linux y cualquier unix) y `windows.rs` definen las señales y los grupos de procesos;
 //!   `unsupported.rs` solo cuando no es unix.
