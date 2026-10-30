@@ -86,11 +86,12 @@ export function formatDay(value: string): string {
 
 const pad = (value: number) => String(value).padStart(2, "0");
 
-/** «02:31», la hora local de una marca de tiempo. Vacío si no se puede leer. */
-export function formatClock(value: string): string {
+/** «02:31», la hora local de una marca de tiempo; con `seconds`, «02:31:07». Vacío si no se puede leer. */
+export function formatClock(value: string, seconds = false): string {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
-  return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  const clock = `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  return seconds ? `${clock}:${pad(date.getSeconds())}` : clock;
 }
 
 /** «17 oct», el día local de una marca de tiempo con zona (`readAt`, `lastReadAt`). Vacío si no se puede leer. */

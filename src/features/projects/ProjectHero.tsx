@@ -1,4 +1,5 @@
-import { CircleCheckIcon, FolderOpenIcon, HistoryIcon, PinOffIcon, RefreshCwIcon } from "lucide-react";
+import { CheckIcon, CircleCheckIcon, FolderOpenIcon, HistoryIcon, PinOffIcon, RefreshCwIcon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
@@ -20,6 +21,7 @@ export function ProjectHero({
   project,
   refreshing,
   unpinning,
+  refreshFailed,
   onRefresh,
   onOpenFolder,
   onUnpin,
@@ -27,12 +29,26 @@ export function ProjectHero({
   project: ReadableProject;
   refreshing: boolean;
   unpinning: boolean;
+  /** La última lectura falló: no se anuncia «Actualizado» (el error se ve en el aviso de la página). */
+  refreshFailed: boolean;
   onRefresh: () => void;
   onOpenFolder: () => void;
   onUnpin: () => void;
 }) {
   const { info } = project;
   const name = projectName(project);
+  // «Actualizado» se enseña un par de segundos al terminar una lectura buena, para que el clic tenga respuesta.
+  const [justUpdated, setJustUpdated] = useState(false);
+  const wasRefreshing = useRef(false);
+  useEffect(() => {
+    const finished = wasRefreshing.current && !refreshing;
+    wasRefreshing.current = refreshing;
+    if (refreshing) setJustUpdated(false);
+    if (!finished || refreshFailed) return;
+    setJustUpdated(true);
+    const timer = setTimeout(() => setJustUpdated(false), 2500);
+    return () => clearTimeout(timer);
+  }, [refreshing, refreshFailed]);
   return (
     <Card>
       <CardContent className="grid grid-cols-[64px_minmax(0,1fr)_auto] items-start gap-6 max-[1070px]:grid-cols-[64px_minmax(0,1fr)]">
@@ -59,7 +75,12 @@ export function ProjectHero({
             </span>
             <span className={META}>
               <HistoryIcon aria-hidden="true" className="size-4 shrink-0" />
-              Leído a las {formatClock(project.readAt)}
+              Leído a las {formatClock(project.readAt, true)}
+              {justUpdated && (
+                <span role="status" className="inline-flex items-center gap-1 font-medium text-success">
+                  <CheckIcon aria-hidden="true" className="size-4" /> Actualizado
+                </span>
+              )}
             </span>
           </div>
         </div>

@@ -5,6 +5,10 @@ import type { ProjectSummary } from "../../types";
 import { ProjectsContext, type PickResult, type ProjectsContextValue } from "./projects-context";
 import { initialProjectsStore, projectsReducer } from "./projects-store";
 
+/** Lo mínimo que gira «Actualizar»: una lectura local es casi instantánea y sin esto el botón no se vería reaccionar. */
+const MIN_REFRESH_MS = 400;
+const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
 /**
  * El estado de Proyectos, encima del router y debajo de `DashboardRuntime` (HU-0023, A-4). Carga la lista una vez al
  * montar; después solo se relee al entrar en una pantalla o con «Actualizar». Sin `focus`, `blur`, `visibilitychange`,
@@ -36,9 +40,13 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
 
   const refreshOne = useCallback((id: string) => dedupe(`one:${id}`, async () => {
     dispatch({ type: "project/requested", id });
+    const minimum = wait(MIN_REFRESH_MS);
     try {
-      dispatch({ type: "project/loaded", project: await bridge.readProject(id) });
+      const project = await bridge.readProject(id);
+      await minimum;
+      dispatch({ type: "project/loaded", project });
     } catch (reason) {
+      await minimum;
       dispatch({ type: "project/failed", id, error: friendlyError(reason) });
     }
   }), [dedupe]);

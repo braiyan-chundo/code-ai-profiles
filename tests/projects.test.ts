@@ -202,6 +202,8 @@ test("fechas relativas, hora y día locales", () => {
   assert.equal(formatClock(new Date(2026, 9, 29, 2, 31).toISOString()), "02:31");
   assert.equal(formatLocalDay(new Date(2026, 9, 17, 14, 20).toISOString()), "17 oct");
   assert.equal(formatClock("basura"), "");
+  assert.equal(formatClock(new Date(2026, 9, 29, 2, 31, 7).toISOString(), true), "02:31:07", "con segundos, para ver que releyó");
+  assert.equal(formatClock("basura", true), "");
 });
 
 test("plurales y fases", () => {
@@ -439,6 +441,17 @@ test("R-9: una lectura tardía no devuelve un proyecto desanclado ni pisa una m�
   assert.equal(old.projects[0].lastName, "n", "una lectura anterior no pisa la actual");
   const fresh = run([{ type: "project/loaded", project: { ...newer, readAt: "2026-10-29T10:00:00Z", lastName: "nuevo" } }], base);
   assert.equal(fresh.projects[0].lastName, "nuevo");
+});
+
+test("Actualizar: una relectura en el mismo segundo (Rust trunca a segundos) sí reemplaza los datos y libera la marca", () => {
+  const same = project("m", "v4", { readAt: "2026-10-29T09:00:00Z" });
+  const base = run([{ type: "list/loaded", state: { projects: [same], readAt: "x" } }, { type: "project/requested", id: "m" }]);
+  const done = run([{ type: "project/loaded", project: { ...same, lastName: "releído" } }], base);
+  assert.equal(done.projects[0].lastName, "releído", "un readAt igual no descarta la lectura");
+  assert.deepEqual(done.refreshing, {});
+  const failed = run([{ type: "project/failed", id: "m", error: "no se pudo" }], base);
+  assert.deepEqual(failed.refreshing, {});
+  assert.equal(failed.actionError, "no se pudo", "el error se ve");
 });
 
 test("R-9: la lista completa no suelta las lecturas de proyectos que siguen en vuelo", () => {

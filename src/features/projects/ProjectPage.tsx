@@ -50,6 +50,7 @@ export function ProjectPage({ project, onUnpinned }: { project: ReadableProject;
         project={project}
         refreshing={Boolean(refreshing[project.id])}
         unpinning={unpinning}
+        refreshFailed={Boolean(actionError)}
         onRefresh={() => void refreshOne(project.id)}
         onOpenFolder={() => void openFolder(project.id)}
         onUnpin={() => void handleUnpin()}
