@@ -1,6 +1,10 @@
 import { bridge } from "../../lib/bridge";
 import { friendlyError } from "../../lib/errors";
-import { mergeSourceUpdateForInstallation, sourceInstallationIdentity } from "../../lib/source-update-controller";
+import {
+  mergeSourceUpdateForInstallation,
+  sourceInstallationIdentity,
+  summarizeSourceUpdateCheck,
+} from "../../lib/source-update-controller";
 import type { ManagedInstance, VersionSource } from "../../types";
 import { originalAppName, useDashboard } from "../dashboard";
 import { originalInstallAvailability, summarizeOriginalInstall } from "./original-install";
@@ -8,8 +12,9 @@ import { useSourceUpdate } from "./source-update-context";
 import { summarizeSynchronization } from "./update-messages";
 
 /**
- * Sincronizar instancias, entregar la original a su canal oficial (ambas reciben `close` como antes) y descargar e
- * instalar la original en macOS (HU-0017), que no abre ningún diálogo ni sale de la ventana.
+ * Sincronizar instancias, entregar la original a su canal oficial (ambas reciben `close` como antes), descargar e
+ * instalar la original en macOS (HU-0017) y comprobar la publicación oficial a petición; estas dos no abren ningún
+ * diálogo ni salen de la ventana.
  */
 export function useUpdateActions() {
   const {
@@ -100,6 +105,30 @@ export function useUpdateActions() {
     }
   };
 
+  /**
+   * «Comprobar actualización»: consulta la publicación oficial desde Code AI Profiles, sin abrir la original. Si hay
+   * versión nueva, el aviso pasa a ofrecer «Instalar»; si no, lo dice.
+   */
+  const checkOriginalUpdate = async () => {
+    if (busyRef.current !== null) return;
+    const { system } = dashboard;
+    const expected = sourceInstallationIdentity(system);
+    const appName = originalAppName(system);
+    setBusy("check-original-update");
+    clearFeedback();
+    try {
+      const sourceUpdate = await bridge.checkSourceUpdate();
+      updateDashboard((current) => mergeSourceUpdateForInstallation(current, expected, sourceUpdate));
+      const summary = summarizeSourceUpdateCheck(sourceUpdate, appName);
+      if (summary.notice) setNotice(summary.notice);
+      if (summary.error) setError(summary.error);
+    } catch (reason) {
+      setError(friendlyError(reason));
+    } finally {
+      setBusy(null);
+    }
+  };
+
   const cancelInstall = async () => {
     try {
       await bridge.cancelOriginalUpdate();
@@ -108,5 +137,5 @@ export function useUpdateActions() {
     }
   };
 
-  return { synchronize, updateOriginal, installOriginal, cancelInstall };
+  return { synchronize, updateOriginal, installOriginal, checkOriginalUpdate, cancelInstall };
 }

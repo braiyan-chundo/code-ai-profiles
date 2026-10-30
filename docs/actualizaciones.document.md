@@ -9,7 +9,7 @@ Code AI Profiles distingue deliberadamente la aplicación original de las instan
 | Operación | Origen | Resultado | Qué permanece intacto |
 | --- | --- | --- | --- |
 | Descargar e instalar (macOS) | Paquete oficial que publica el feed | Descarga, verifica y reemplaza la original sin abrirla; después sincroniza las instancias detenidas | Perfiles y sesiones de la original y de las instancias |
-| Actualizar original (handoff) | Canal oficial de Claude Desktop | En macOS abre la aplicación original validada y guía al actualizador nativo; en Windows y Linux conserva el canal oficial correspondiente | Perfiles, sesiones e instancias administradas |
+| Actualizar original (handoff) | Canal oficial de Claude Desktop | Solo Windows y Linux: abre el canal oficial correspondiente. En macOS la interfaz ya no abre la original para actualizarla | Perfiles, sesiones e instancias administradas |
 | Sincronizar instancias | La instalación local válida más reciente: original o una instancia administrada | Sincroniza cada copia administrada detenida que esté detrás de esa fuente | Perfil y sesiones de cada instancia, y siempre la original |
 
 El handoff «Actualizar original» no encadena una sincronización de instancias; «Descargar e instalar» en macOS sí (ver más abajo). La comprobación de disponibilidad y el handoff manual son independientes: la primera solo determina si existe una versión posterior; la segunda entrega el proceso al canal oficial para que el usuario complete la instalación. Cuando el usuario vuelve a Code AI Profiles, se solicita una actualización dirigida de versiones y topología, sin iniciar el escaneo completo, sin modal de progreso y sin releer sesiones, uso o almacenamiento. Ese retorno puede omitir una vez el cooldown general y se deduplica si llegan juntos los eventos de foco y visibilidad. Si una instancia quedó atrás, el flujo separado «Sincronizar instancias» la ofrece como candidata.
@@ -30,6 +30,8 @@ La detección se limita a metadatos de la instalación. No abre perfiles ni lee 
 
 ## Flujo de actualización original
 
+Este flujo es el de Windows y Linux. En macOS, desde el 2026-10-30, la interfaz no abre la original para actualizarla: «Comprobar actualización» consulta la publicación oficial y, si hay versión nueva, se instala con «Descargar e instalar» (ver más abajo).
+
 1. El botón «Actualizar original» aparece únicamente dentro de la tarjeta de una instalación fuente detectada. Dentro de esa tarjeta se deshabilita solo mientras existe una operación en curso; la ausencia del perfil original y su estado `Missing` no bloquean la actualización si la fuente existe.
 2. El modal muestra el nombre, la versión local conocida y la plataforma. También explica que Code AI Profiles entregará el proceso al canal oficial y que la instalación debe completarse manualmente.
 3. La confirmación vuelve a validar la instalación fuente. En macOS abre únicamente el bundle original validado con `/usr/bin/open -n -a <ruta>` y muestra la guía «Claude > Check for Updates». No abre una instancia administrada, no descarga un DMG fijo y no automatiza menús nativos. Windows y Linux conservan el handler oficial apropiado; el comando no acepta URL ni parámetros proporcionados por el usuario.
@@ -42,7 +44,7 @@ La existencia del perfil original no es una precondición de actualización. `so
 
 ## Descargar e instalar la original en macOS
 
-Desde HU-0017, cuando el feed oficial anuncia una versión posterior a la instalada, el dashboard y la página de la original muestran «Descargar e instalar» como acción principal; «Abrir Claude» (el handoff) queda como secundaria. Es un solo clic, sin diálogo de confirmación, y la original no se abre.
+Desde HU-0017, cuando el feed oficial anuncia una versión posterior a la instalada, el dashboard y la página de la original muestran «Descargar e instalar» como única acción: la original no se abre para actualizarla. Es un solo clic, sin diálogo de confirmación, y la original no se abre.
 
 1. **Preparar.** Se vuelve a leer el feed y se comprueba que la versión anunciada es la que vio la persona, que la original detectada pertenece al usuario, está firmada con un requisito designado (no ad hoc) y no está en marcha.
 2. **Descargar.** Solo `https` al host permitido por la configuración (`CAP_UPDATE_DOWNLOAD_HOSTS`), con hasta 3 redirecciones a hosts permitidos, el `size` del feed como tope, corte tras 60 s sin bytes y 30 min en total, sin cookies y con el identificador nulo. El `sha256` se calcula mientras llega. Se puede cancelar.
@@ -72,7 +74,7 @@ La fuente puede dejar de ser válida entre el escaneo y la confirmación. En ese
 
 ## Detección de versión disponible
 
-El dashboard mantiene `sourceVersion` como la versión instalada y expone por separado el estado de actualización oficial, junto con la versión más reciente, fecha de comprobación, indicador `stale` y origen cuando existan. Solo metadata oficial fresca puede afirmar `available` o `current`: `available` conserva un aviso y su acción reutiliza el handoff manual «Actualizar original»; `current` con una instancia local mayor comunica esa diferencia sin declarar que la original esté atrasada; metadata `stale`, indisponible, errónea o desconocida comunica incertidumbre. Ninguno de estos estados descarga ni instala nada por sí mismo; en macOS, `available` habilita «Descargar e instalar».
+El dashboard mantiene `sourceVersion` como la versión instalada y expone por separado el estado de actualización oficial, junto con la versión más reciente, fecha de comprobación, indicador `stale` y origen cuando existan. Solo metadata oficial fresca puede afirmar `available` o `current`: `available` muestra el aviso, con «Instalar» en macOS y con el handoff a su canal oficial en Windows y Linux; `current` con una instancia local mayor comunica esa diferencia sin declarar que la original esté atrasada; metadata `stale`, indisponible, errónea o desconocida comunica incertidumbre. Ninguno de estos estados descarga ni instala nada por sí mismo; en macOS, `available` habilita «Descargar e instalar».
 
 | Plataforma | Fuente de metadata | Límites |
 | --- | --- | --- |
@@ -84,11 +86,23 @@ El dashboard mantiene `sourceVersion` como la versión instalada y expone por se
 
 El resultado exitoso se guarda localmente por seis horas y queda ligado a la versión instalada con la que se obtuvo. Puede conservarse como último resultado `stale` durante hasta siete días si la fuente deja de responder, pero no afirma un estado actual. La caché (`schema` 2 desde HU-0024) contiene solo versión, fecha, plataforma, origen y el aviso, si lo hay; no guarda IDs, cookies, tokens ni credenciales. Un timeout, feed inválido, caché corrupta o caché de otra versión instalada no bloquea el dashboard ni inventa un aviso de disponibilidad.
 
+**Cuándo se comprueba.** Al abrir la app, cada 15 minutos mientras la ventana está visible y en cuanto el escaneo trae
+el último resultado caducado. Mientras la caché es fresca, la comprobación responde sin red, así que solo se consulta a
+Anthropic cada 6 horas (30 minutos si el último resultado traía aviso). Antes el sondeo iba cada 6 horas desde el
+arranque: llegaba segundos antes de caducar la caché, se quedaba con el resultado guardado y el aviso «no es reciente»
+aparecía hasta el sondeo siguiente.
+
+**Comprobar actualización.** Si el estado es incierto (sin respuesta o resultado caducado), el aviso ofrece
+«Comprobar actualización»; en macOS el botón también está en la página de la original. Consulta la publicación oficial
+desde la app, con «Buscando…» mientras tanto, y dice el resultado: «Claude está al día: X es la última versión
+publicada», el aviso de versión nueva con «Instalar», o que no se pudo consultar. No abre la original ni ningún
+diálogo.
+
 ## Comportamiento por plataforma
 
 | Plataforma | Acción | Canal |
 | --- | --- | --- |
-| macOS x64 o Apple Silicon | «Abrir Claude Desktop» | Bundle original detectado y validado; el usuario selecciona `Claude > Check for Updates` |
+| macOS x64 o Apple Silicon | «Comprobar actualización» y, con versión nueva, «Descargar e instalar» | Publicación oficial consultada desde la app; la original no se abre |
 | Windows x64 | «Abrir descarga oficial» | Instalador x64 mediante el redirect oficial de Claude |
 | Windows ARM64 | «Abrir descarga oficial» | Instalador ARM64 mediante el redirect oficial de Claude |
 | Linux | «Ver instrucciones oficiales» | Guía oficial de instalación y repositorio apt |

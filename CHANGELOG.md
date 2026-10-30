@@ -26,6 +26,8 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ### Fixed
 
+- En macOS, «Comprobar actualización» consulta la publicación oficial desde la app, con «Buscando…» y el resultado a la vista; ya no abre el diálogo que mandaba a actualizar desde la Claude original. Con una versión nueva, la única acción es «Instalar».
+- El aviso «No se pudo confirmar el estado de actualización · no es reciente» ya no aparece sin motivo: el estado oficial se pide cada 15 minutos (la caché sigue evitando la red durante 6 h) y en cuanto el resultado caduca. Antes el sondeo de 6 h llegaba justo antes de caducar la caché y el aviso se quedaba hasta el siguiente.
 - «Actualizar» en la página de un proyecto indica que está trabajando y termina en «✓ Actualizado» con la hora; antes no daba ninguna respuesta visible.
 - Una historia con `minutosTotales` nulo ya no cuenta como 0 minutos en «Tiempo en fases».
 - En la página de una instancia, Abrir y Detener se desactivan mientras corre otra operación.
