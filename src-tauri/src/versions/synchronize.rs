@@ -232,7 +232,7 @@ fn update_instance_application_from_source_sync(
         let _ = fs::remove_dir_all(staging_root);
     }
     invalidate_application_cache();
-    invalidate_managed_bytes_cache();
+    app_state(app).invalidate_managed_bytes();
     Ok(())
 }
 

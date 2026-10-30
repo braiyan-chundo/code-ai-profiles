@@ -1,6 +1,6 @@
 //! Persistencia local de la app: rutas administradas (`ManagedPaths`), registro de instancias,
-//! escritura atómica de archivos propios, la caché en memoria del proceso y el mutex que serializa
-//! las operaciones sobre el registro.
+//! escritura atómica de archivos propios y el estado compartido (`AppState`): la caché del panel y
+//! el cerrojo que serializa las operaciones sobre el registro.
 
 use super::*;
 
@@ -28,32 +28,89 @@ pub(crate) fn registry_version() -> u32 {
     REGISTRY_VERSION
 }
 
+/// Lo que la app ya calculó y que depende de su propio estado: el último panel y los bytes del
+/// espacio administrado. Vive en `AppState`.
 #[derive(Default)]
 pub(crate) struct RuntimeCache {
     pub(crate) dashboard: Option<DashboardState>,
-    pub(crate) versions: HashMap<ApplicationFingerprint, Option<String>>,
-    pub(crate) identities:
-        HashMap<(ApplicationFingerprint, ApplicationFingerprint), Result<(), String>>,
     pub(crate) managed_bytes: Option<(PathBuf, Instant, u64)>,
 }
 
-pub(crate) fn runtime_cache() -> &'static Mutex<RuntimeCache> {
-    static CACHE: OnceLock<Mutex<RuntimeCache>> = OnceLock::new();
-    CACHE.get_or_init(|| Mutex::new(RuntimeCache::default()))
+/// Hechos sobre un bundle en disco (su versión y si es la aplicación compatible), indexados por
+/// su huella (`ApplicationFingerprint`: ruta canónica, tamaños y fechas). Es un memo del proceso
+/// y no forma parte de `AppState` porque lo consultan y lo invalidan funciones sin `AppHandle`
+/// ni estado a mano (la verificación de copias de `macos_icon.rs`, la topología o la instalación
+/// de la original); pasarlo por parámetro obligaría a reescribir esas cadenas. La misma huella da
+/// la misma respuesta, así que compartirlo no mezcla estados distintos.
+#[derive(Default)]
+pub(crate) struct ApplicationCache {
+    pub(crate) versions: HashMap<ApplicationFingerprint, Option<String>>,
+    pub(crate) identities:
+        HashMap<(ApplicationFingerprint, ApplicationFingerprint), Result<(), String>>,
 }
 
-fn registry_operation_mutex() -> &'static Mutex<()> {
-    static MUTEX: OnceLock<Mutex<()>> = OnceLock::new();
-    MUTEX.get_or_init(|| Mutex::new(()))
+pub(crate) fn application_cache() -> &'static Mutex<ApplicationCache> {
+    static CACHE: OnceLock<Mutex<ApplicationCache>> = OnceLock::new();
+    CACHE.get_or_init(|| Mutex::new(ApplicationCache::default()))
 }
 
-pub(crate) fn with_registry_operation<T>(
-    operation: impl FnOnce() -> Result<T, String>,
-) -> Result<T, String> {
-    let _guard = registry_operation_mutex()
-        .lock()
-        .map_err(|_| "El coordinador local de instancias quedó bloqueado.".to_string())?;
-    operation()
+/// Serializa las operaciones que leen, modifican y guardan el registro de instancias.
+#[derive(Default)]
+pub(crate) struct RegistryLock(Mutex<()>);
+
+impl RegistryLock {
+    pub(crate) fn run<T>(
+        &self,
+        operation: impl FnOnce() -> Result<T, String>,
+    ) -> Result<T, String> {
+        let _guard = self
+            .0
+            .lock()
+            .map_err(|_| "El coordinador local de instancias quedó bloqueado.".to_string())?;
+        operation()
+    }
+}
+
+/// Estado compartido de la app: se registra con `.manage(AppState::default())` en `run()` y los
+/// comandos lo leen con `app.state::<AppState>()` (los envoltorios ya mueven el `AppHandle` a
+/// `spawn_blocking`). Las funciones de dominio reciben la parte que necesitan, así que cada prueba
+/// puede construir el suyo.
+#[derive(Default)]
+pub(crate) struct AppState {
+    pub(crate) registry: RegistryLock,
+    pub(crate) runtime: Mutex<RuntimeCache>,
+}
+
+impl AppState {
+    pub(crate) fn with_registry_operation<T>(
+        &self,
+        operation: impl FnOnce() -> Result<T, String>,
+    ) -> Result<T, String> {
+        self.registry.run(operation)
+    }
+
+    pub(crate) fn previous_dashboard(&self) -> Option<DashboardState> {
+        self.runtime
+            .lock()
+            .ok()
+            .and_then(|cache| cache.dashboard.clone())
+    }
+
+    pub(crate) fn remember_dashboard(&self, dashboard: &DashboardState) {
+        if let Ok(mut cache) = self.runtime.lock() {
+            cache.dashboard = Some(dashboard.clone());
+        }
+    }
+
+    pub(crate) fn invalidate_managed_bytes(&self) {
+        if let Ok(mut cache) = self.runtime.lock() {
+            cache.managed_bytes = None;
+        }
+    }
+}
+
+pub(crate) fn app_state(app: &AppHandle) -> tauri::State<'_, AppState> {
+    app.state::<AppState>()
 }
 
 pub(crate) struct ManagedPaths {
@@ -153,15 +210,9 @@ pub(crate) fn write_file_atomic(
 }
 
 pub(crate) fn invalidate_application_cache() {
-    if let Ok(mut cache) = runtime_cache().lock() {
+    if let Ok(mut cache) = application_cache().lock() {
         cache.versions.clear();
         cache.identities.clear();
-    }
-}
-
-pub(crate) fn invalidate_managed_bytes_cache() {
-    if let Ok(mut cache) = runtime_cache().lock() {
-        cache.managed_bytes = None;
     }
 }
 
@@ -217,6 +268,37 @@ pub(crate) fn path_size(path: &Path) -> u64 {
 mod tests {
     use super::*;
     use crate::test_support::*;
+
+    const LOCKED_COORDINATOR: &str = "El coordinador local de instancias quedó bloqueado.";
+
+    #[test]
+    fn two_app_states_keep_their_registry_operations_apart() {
+        let first = AppState::default();
+        let second = AppState::default();
+        let nested = first.with_registry_operation(|| {
+            assert!(first.registry.0.try_lock().is_err());
+            // Con un mutex estático compartido, esta llamada se bloquearía para siempre.
+            second.with_registry_operation(|| Ok(second.registry.0.try_lock().is_err()))
+        });
+        assert_eq!(nested, Ok(true));
+        assert!(first.registry.0.try_lock().is_ok());
+        assert!(second.registry.0.try_lock().is_ok());
+    }
+
+    #[test]
+    fn a_poisoned_registry_lock_keeps_its_message_and_spares_other_states() {
+        let poisoned = AppState::default();
+        let healthy = AppState::default();
+        let _ = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            let _guard = poisoned.registry.0.lock().unwrap();
+            panic!("poison the registry lock");
+        }));
+        assert_eq!(
+            poisoned.with_registry_operation(|| Ok(())),
+            Err(LOCKED_COORDINATOR.to_string())
+        );
+        assert_eq!(healthy.with_registry_operation(|| Ok(7)), Ok(7));
+    }
 
     #[test]
     fn atomically_creates_and_replaces_session_index() {

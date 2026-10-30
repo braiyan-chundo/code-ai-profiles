@@ -72,7 +72,7 @@ pub(crate) fn application_fingerprint(path: &Path) -> Option<ApplicationFingerpr
 
 pub(crate) fn cached_source_version(source: &Path) -> Option<String> {
     let fingerprint = application_fingerprint(source)?;
-    if let Some(cached) = runtime_cache()
+    if let Some(cached) = application_cache()
         .lock()
         .ok()
         .and_then(|cache| cache.versions.get(&fingerprint).cloned())
@@ -80,7 +80,7 @@ pub(crate) fn cached_source_version(source: &Path) -> Option<String> {
         return cached;
     }
     let version = source_version(source);
-    if let Ok(mut cache) = runtime_cache().lock() {
+    if let Ok(mut cache) = application_cache().lock() {
         cache.versions.insert(fingerprint, version.clone());
     }
     version
@@ -120,7 +120,7 @@ pub(crate) fn validate_provider_identity(candidate: &Path, original: &Path) -> R
     let original_fingerprint = application_fingerprint(original)
         .ok_or_else(|| "No se pudo obtener el fingerprint de la original.".to_string())?;
     let key = (candidate_fingerprint, original_fingerprint);
-    if let Some(cached) = runtime_cache()
+    if let Some(cached) = application_cache()
         .lock()
         .ok()
         .and_then(|cache| cache.identities.get(&key).cloned())
@@ -128,7 +128,7 @@ pub(crate) fn validate_provider_identity(candidate: &Path, original: &Path) -> R
         return cached;
     }
     let result = validate_provider_identity_uncached(candidate, original);
-    if let Ok(mut cache) = runtime_cache().lock() {
+    if let Ok(mut cache) = application_cache().lock() {
         cache.identities.insert(key, result.clone());
     }
     result

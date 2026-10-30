@@ -188,9 +188,9 @@ fn refresh_instance_code_sessions(registry: &mut Registry, transcripts: &HashMap
     }
 }
 
-fn managed_bytes(paths: &ManagedPaths, force: bool) -> u64 {
+fn managed_bytes(runtime: &Mutex<RuntimeCache>, paths: &ManagedPaths, force: bool) -> u64 {
     if !force {
-        if let Some(value) = runtime_cache().lock().ok().and_then(|cache| {
+        if let Some(value) = runtime.lock().ok().and_then(|cache| {
             cache
                 .managed_bytes
                 .as_ref()
@@ -205,7 +205,7 @@ fn managed_bytes(paths: &ManagedPaths, force: bool) -> u64 {
     #[cfg(test)]
     record_refresh_work(|counters| counters.storage_walks += 1);
     let value = path_size(&paths.instances);
-    if let Ok(mut cache) = runtime_cache().lock() {
+    if let Ok(mut cache) = runtime.lock() {
         cache.managed_bytes = Some((paths.instances.clone(), Instant::now(), value));
     }
     value
@@ -236,6 +236,7 @@ fn system_info_seed(previous: Option<&SystemInfo>) -> SystemInfo {
 }
 
 pub(crate) fn system_info_scoped(
+    runtime: &Mutex<RuntimeCache>,
     paths: &ManagedPaths,
     registry: &Registry,
     session_links: &SessionLinkRegistry,
@@ -291,7 +292,7 @@ pub(crate) fn system_info_scoped(
     }
     if scope.storage {
         info.free_bytes = fs2::available_space(&paths.app_data).ok();
-        info.managed_bytes = managed_bytes(paths, scope.force_storage);
+        info.managed_bytes = managed_bytes(runtime, paths, scope.force_storage);
     }
     info
 }
@@ -300,14 +301,20 @@ fn dashboard_from_scope(
     app: &AppHandle,
     requested_scope: RefreshScope,
 ) -> Result<DashboardState, String> {
-    with_registry_operation(|| dashboard_from_scope_unlocked(app, requested_scope, true))
+    let state = app_state(app);
+    state.with_registry_operation(|| {
+        dashboard_from_scope_unlocked(app, &state, requested_scope, true)
+    })
 }
 
 fn dashboard_from_exact_scope(
     app: &AppHandle,
     requested_scope: RefreshScope,
 ) -> Result<DashboardState, String> {
-    with_registry_operation(|| dashboard_from_scope_unlocked(app, requested_scope, false))
+    let state = app_state(app);
+    state.with_registry_operation(|| {
+        dashboard_from_scope_unlocked(app, &state, requested_scope, false)
+    })
 }
 
 fn effective_refresh_scope(
@@ -348,14 +355,12 @@ fn preserve_unrequested_instance_state(
 
 fn dashboard_from_scope_unlocked(
     app: &AppHandle,
+    state: &AppState,
     requested_scope: RefreshScope,
     allow_full_bootstrap: bool,
 ) -> Result<DashboardState, String> {
     let paths = ManagedPaths::resolve(app)?;
-    let previous = runtime_cache()
-        .lock()
-        .ok()
-        .and_then(|cache| cache.dashboard.clone());
+    let previous = state.previous_dashboard();
     let scope = effective_refresh_scope(requested_scope, previous.is_some(), allow_full_bootstrap);
     let mut registry = load_registry(&paths)?;
     preserve_unrequested_instance_state(&mut registry, previous.as_ref(), scope);
@@ -370,6 +375,7 @@ fn dashboard_from_scope_unlocked(
     };
     save_registry(&paths, &registry)?;
     let system = system_info_scoped(
+        &state.runtime,
         &paths,
         &registry,
         &session_links,
@@ -382,9 +388,7 @@ fn dashboard_from_scope_unlocked(
         instances: registry.instances,
         system,
     };
-    if let Ok(mut cache) = runtime_cache().lock() {
-        cache.dashboard = Some(dashboard.clone());
-    }
+    state.remember_dashboard(&dashboard);
     Ok(dashboard)
 }
 
@@ -433,6 +437,7 @@ pub(crate) fn get_live_usage_sync(
 
 pub(crate) fn scan_system_sync(
     app: &AppHandle,
+    state: &AppState,
     window: &WebviewWindow,
 ) -> Result<DashboardState, String> {
     let emit_progress = |progress, label| {
@@ -461,11 +466,9 @@ pub(crate) fn scan_system_sync(
     apply_session_links(&mut registry, &session_links);
 
     emit_progress(88, "Buscando la aplicación compatible y su versión…");
-    let previous = runtime_cache()
-        .lock()
-        .ok()
-        .and_then(|cache| cache.dashboard.clone());
+    let previous = state.previous_dashboard();
     let system = system_info_scoped(
+        &state.runtime,
         &paths,
         &registry,
         &session_links,
@@ -483,9 +486,7 @@ pub(crate) fn scan_system_sync(
         instances: registry.instances,
         system,
     };
-    if let Ok(mut cache) = runtime_cache().lock() {
-        cache.dashboard = Some(dashboard.clone());
-    }
+    state.remember_dashboard(&dashboard);
     Ok(dashboard)
 }
 
@@ -493,6 +494,48 @@ pub(crate) fn scan_system_sync(
 mod tests {
     use super::*;
     use crate::test_support::*;
+
+    #[test]
+    fn two_app_states_keep_their_managed_bytes_apart() {
+        let root = env::temp_dir().join(format!("code-ai-two-states-{}", Uuid::new_v4()));
+        let paths = test_managed_paths(&root);
+        fs::create_dir_all(&paths.instances).unwrap();
+        fs::write(paths.instances.join("first.bin"), [0_u8; 10]).unwrap();
+        let first = AppState::default();
+        let second = AppState::default();
+
+        assert_eq!(managed_bytes(&first.runtime, &paths, false), 10);
+        fs::write(paths.instances.join("second.bin"), [0_u8; 5]).unwrap();
+        // El primero sigue con su caché; el segundo no la comparte y mide de nuevo.
+        assert_eq!(managed_bytes(&first.runtime, &paths, false), 10);
+        assert_eq!(managed_bytes(&second.runtime, &paths, false), 15);
+        // Invalidar uno no toca al otro.
+        fs::write(paths.instances.join("third.bin"), [0_u8; 1]).unwrap();
+        first.invalidate_managed_bytes();
+        assert_eq!(managed_bytes(&first.runtime, &paths, false), 16);
+        assert_eq!(managed_bytes(&second.runtime, &paths, false), 15);
+
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn each_app_state_remembers_its_own_dashboard() {
+        let root = env::temp_dir().join(format!("code-ai-dashboard-{}", Uuid::new_v4()));
+        let first = AppState::default();
+        let second = AppState::default();
+        let dashboard = DashboardState {
+            instances: vec![test_instance(&root)],
+            system: system_info_seed(None),
+        };
+        first.remember_dashboard(&dashboard);
+        assert_eq!(
+            first
+                .previous_dashboard()
+                .map(|value| value.instances.len()),
+            Some(1)
+        );
+        assert!(second.previous_dashboard().is_none());
+    }
 
     #[test]
     fn light_refresh_executes_one_inventory_and_skips_expensive_work() {

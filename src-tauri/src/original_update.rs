@@ -1972,6 +1972,7 @@ fn install_and_synchronize(
 /// A-5 completo con el entorno y las herramientas que se le pasen. Los errores ya llevan su final
 /// («La original no cambió.» o «Se restauró la versión anterior.»).
 fn run_install(
+    registry: &RegistryLock,
     env: &dyn InstallEnvironment,
     tools: &dyn MacosTools,
     paths: &ManagedPaths,
@@ -1996,7 +1997,7 @@ fn run_install(
         false,
     ));
     // Los temporales (`prepared`) se borran al salir, ya fuera del mutex; el vuelo se libera después.
-    with_registry_operation(|| install_and_synchronize(env, paths, tools, &prepared, progress))
+    registry.run(|| install_and_synchronize(env, paths, tools, &prepared, progress))
 }
 
 #[cfg(target_os = "macos")]
@@ -2008,6 +2009,7 @@ pub(crate) fn install_original_update_sync(
     let flight = begin_flight()?;
     let paths = ManagedPaths::resolve(app).map_err(unchanged)?;
     run_install(
+        &app_state(app).registry,
         &SystemEnvironment { app },
         &SystemMacosTools,
         &paths,
@@ -3667,6 +3669,7 @@ drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 App.app/\n";
         ) {
             let seen = std::cell::RefCell::new(Vec::new());
             let result = run_install(
+                &RegistryLock::default(),
                 &self.env,
                 &self.tools,
                 &self.paths,

@@ -1180,7 +1180,7 @@ pub(crate) fn set_instance_icon(
         return Err(with_rollback(error, rollback));
     }
     invalidate_application_cache();
-    invalidate_managed_bytes_cache();
+    // The caller invalidates the managed-bytes cache, which lives in `AppState`.
     Ok(())
 }
 
@@ -1299,7 +1299,7 @@ pub(crate) fn clear_instance_icon(
         return Err(with_rollback(error, rollback));
     }
     invalidate_application_cache();
-    invalidate_managed_bytes_cache();
+    // The caller invalidates the managed-bytes cache, which lives in `AppState`.
     Ok(())
 }
 

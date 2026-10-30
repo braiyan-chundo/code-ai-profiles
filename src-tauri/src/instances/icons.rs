@@ -64,7 +64,9 @@ pub(crate) fn set_instance_icon_sync(
         let original = detect_provider_source().ok_or_else(|| {
             "No se encontró la aplicación original para verificar la copia.".to_string()
         })?;
-        macos_icon::set_instance_icon(&paths, &mut registry, position, &original, &normalized)
+        macos_icon::set_instance_icon(&paths, &mut registry, position, &original, &normalized)?;
+        app_state(app).invalidate_managed_bytes();
+        Ok(())
     }
     #[cfg(not(target_os = "macos"))]
     {
@@ -97,7 +99,7 @@ pub(crate) fn set_instance_icon_sync(
             return Err(error);
         }
         invalidate_application_cache();
-        invalidate_managed_bytes_cache();
+        app_state(app).invalidate_managed_bytes();
         Ok(())
     }
 }
@@ -122,7 +124,9 @@ pub(crate) fn clear_instance_icon_sync(app: &AppHandle, id: String) -> Result<()
         let original = detect_provider_source().ok_or_else(|| {
             "No se encontró la aplicación original para restaurar el icono.".to_string()
         })?;
-        macos_icon::clear_instance_icon(&paths, &mut registry, position, &original)
+        macos_icon::clear_instance_icon(&paths, &mut registry, position, &original)?;
+        app_state(app).invalidate_managed_bytes();
+        Ok(())
     }
 
     #[cfg(not(target_os = "macos"))]
@@ -146,7 +150,7 @@ pub(crate) fn clear_instance_icon_sync(app: &AppHandle, id: String) -> Result<()
             return Err(error);
         }
         invalidate_application_cache();
-        invalidate_managed_bytes_cache();
+        app_state(app).invalidate_managed_bytes();
         Ok(())
     }
 }

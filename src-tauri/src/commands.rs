@@ -1,5 +1,5 @@
 //! Los comandos IPC (`#[tauri::command]`): envoltorios finos que pasan la E/S bloqueante a
-//! `spawn_blocking`, serializan con `with_registry_operation` lo que muta el registro y devuelven el
+//! `spawn_blocking`, serializan con `AppState::with_registry_operation` lo que muta el registro y devuelven el
 //! panel con el alcance más estrecho que sirva. La lógica vive en los módulos de dominio.
 
 use super::*;
@@ -40,7 +40,8 @@ pub(crate) async fn scan_system(
     window: WebviewWindow,
 ) -> Result<DashboardState, String> {
     tauri::async_runtime::spawn_blocking(move || {
-        with_registry_operation(|| scan_system_sync(&app, &window))
+        let state = app_state(&app);
+        state.with_registry_operation(|| scan_system_sync(&app, &state, &window))
     })
     .await
     .map_err(|error| format!("El escaneo terminó inesperadamente: {error}"))?
@@ -53,12 +54,13 @@ pub(crate) async fn create_instance(
 ) -> Result<DashboardState, String> {
     let worker_app = app.clone();
     tauri::async_runtime::spawn_blocking(move || {
-        with_registry_operation(|| create_instance_sync(&worker_app, request))
+        app_state(&worker_app)
+            .with_registry_operation(|| create_instance_sync(&worker_app, request))
     })
     .await
     .map_err(|error| format!("La tarea de creación terminó inesperadamente: {error}"))??;
     invalidate_application_cache();
-    invalidate_managed_bytes_cache();
+    app_state(&app).invalidate_managed_bytes();
     dashboard_from_scope_async(app, RefreshScope::VERSIONS, "La actualización del panel").await
 }
 
@@ -69,7 +71,8 @@ pub(crate) async fn update_instance_application(
 ) -> Result<DashboardState, String> {
     let worker_app = app.clone();
     tauri::async_runtime::spawn_blocking(move || {
-        with_registry_operation(|| update_instance_application_sync(&worker_app, &id))
+        app_state(&worker_app)
+            .with_registry_operation(|| update_instance_application_sync(&worker_app, &id))
     })
     .await
     .map_err(|error| format!("La actualización terminó inesperadamente: {error}"))??;
@@ -83,7 +86,8 @@ pub(crate) async fn synchronize_managed_applications(
 ) -> Result<SynchronizeManagedApplicationsResult, String> {
     let worker_app = app.clone();
     let results = tauri::async_runtime::spawn_blocking(move || {
-        with_registry_operation(|| synchronize_managed_applications_sync(&worker_app, request))
+        app_state(&worker_app)
+            .with_registry_operation(|| synchronize_managed_applications_sync(&worker_app, request))
     })
     .await
     .map_err(|error| format!("La sincronización terminó inesperadamente: {error}"))??;
@@ -105,11 +109,12 @@ pub(crate) async fn copy_code_session(
 ) -> Result<SessionTransferResult, String> {
     let worker_app = app.clone();
     let artifacts = tauri::async_runtime::spawn_blocking(move || {
-        with_registry_operation(|| copy_code_session_sync(&worker_app, request))
+        app_state(&worker_app)
+            .with_registry_operation(|| copy_code_session_sync(&worker_app, request))
     })
     .await
     .map_err(|error| format!("La transferencia terminó inesperadamente: {error}"))??;
-    invalidate_managed_bytes_cache();
+    app_state(&app).invalidate_managed_bytes();
     Ok(SessionTransferResult {
         dashboard: dashboard_from_scope_async(
             app,
@@ -128,11 +133,12 @@ pub(crate) async fn unlink_code_session(
 ) -> Result<DashboardState, String> {
     let worker_app = app.clone();
     tauri::async_runtime::spawn_blocking(move || {
-        with_registry_operation(|| unlink_code_session_sync(&worker_app, request))
+        app_state(&worker_app)
+            .with_registry_operation(|| unlink_code_session_sync(&worker_app, request))
     })
     .await
     .map_err(|error| format!("La desvinculación terminó inesperadamente: {error}"))??;
-    invalidate_managed_bytes_cache();
+    app_state(&app).invalidate_managed_bytes();
     dashboard_from_scope_async(app, RefreshScope::SESSIONS, "La actualización del panel").await
 }
 
@@ -143,7 +149,8 @@ pub(crate) async fn update_instance(
 ) -> Result<DashboardState, String> {
     let worker_app = app.clone();
     tauri::async_runtime::spawn_blocking(move || {
-        with_registry_operation(|| update_instance_sync(&worker_app, request))
+        app_state(&worker_app)
+            .with_registry_operation(|| update_instance_sync(&worker_app, request))
     })
     .await
     .map_err(|error| format!("La edición terminó inesperadamente: {error}"))??;
@@ -154,7 +161,7 @@ pub(crate) async fn update_instance(
 pub(crate) async fn launch_instance(app: AppHandle, id: String) -> Result<DashboardState, String> {
     let worker_app = app.clone();
     tauri::async_runtime::spawn_blocking(move || {
-        with_registry_operation(|| launch_instance_sync(&worker_app, id))
+        app_state(&worker_app).with_registry_operation(|| launch_instance_sync(&worker_app, id))
     })
     .await
     .map_err(|error| format!("El inicio terminó inesperadamente: {error}"))??;
@@ -177,7 +184,8 @@ pub(crate) async fn set_instance_icon(
 ) -> Result<DashboardState, String> {
     let worker_app = app.clone();
     tauri::async_runtime::spawn_blocking(move || {
-        with_registry_operation(|| set_instance_icon_sync(&worker_app, request))
+        app_state(&worker_app)
+            .with_registry_operation(|| set_instance_icon_sync(&worker_app, request))
     })
     .await
     .map_err(|error| format!("La personalización terminó inesperadamente: {error}"))??;
@@ -191,7 +199,7 @@ pub(crate) async fn clear_instance_icon(
 ) -> Result<DashboardState, String> {
     let worker_app = app.clone();
     tauri::async_runtime::spawn_blocking(move || {
-        with_registry_operation(|| clear_instance_icon_sync(&worker_app, id))
+        app_state(&worker_app).with_registry_operation(|| clear_instance_icon_sync(&worker_app, id))
     })
     .await
     .map_err(|error| format!("La restauración terminó inesperadamente: {error}"))??;
@@ -205,7 +213,8 @@ pub(crate) async fn reapply_instance_icon(
 ) -> Result<DashboardState, String> {
     let worker_app = app.clone();
     tauri::async_runtime::spawn_blocking(move || {
-        with_registry_operation(|| reapply_instance_icon_sync(&worker_app, id))
+        app_state(&worker_app)
+            .with_registry_operation(|| reapply_instance_icon_sync(&worker_app, id))
     })
     .await
     .map_err(|error| format!("El reintento del icono terminó inesperadamente: {error}"))??;
@@ -328,7 +337,7 @@ pub(crate) fn cancel_original_update() -> bool {
 pub(crate) async fn delete_instance(app: AppHandle, id: String) -> Result<DashboardState, String> {
     let worker_app = app.clone();
     tauri::async_runtime::spawn_blocking(move || {
-        with_registry_operation(|| delete_instance_sync(&worker_app, id))
+        app_state(&worker_app).with_registry_operation(|| delete_instance_sync(&worker_app, id))
     })
     .await
     .map_err(|error| format!("La eliminación terminó inesperadamente: {error}"))??;

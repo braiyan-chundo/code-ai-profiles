@@ -89,7 +89,8 @@ pub(crate) fn launch_instance_sync(app: &AppHandle, id: String) -> Result<(), St
 
 pub(crate) fn stop_instance_sync(app: &AppHandle, id: &str) -> Result<(), String> {
     let paths = ManagedPaths::resolve(&app)?;
-    let running = with_registry_operation(|| {
+    let state = app_state(app);
+    let running = state.with_registry_operation(|| {
         let mut registry = load_registry(&paths)?;
         let inventory = ProcessInventory::capture();
         refresh_instance_statuses(&mut registry, &inventory);
@@ -120,7 +121,7 @@ pub(crate) fn stop_instance_sync(app: &AppHandle, id: &str) -> Result<(), String
         // un inventario viejo (un PID pudo terminar o ser reutilizado).
         signal_instance_processes(&instance, &identity, true, &ProcessInventory::capture())?;
         if !wait_until_instance_stops(&instance, Duration::from_secs(2)) {
-            with_registry_operation(|| {
+            state.with_registry_operation(|| {
                 let mut registry = load_registry(&paths)?;
                 if let Some(current) = registry
                     .instances
@@ -134,7 +135,7 @@ pub(crate) fn stop_instance_sync(app: &AppHandle, id: &str) -> Result<(), String
             return Err("La instancia sigue ejecutándose después del cierre forzado. No se cambió su estado.".to_string());
         }
     }
-    with_registry_operation(|| {
+    state.with_registry_operation(|| {
         let mut registry = load_registry(&paths)?;
         let current = registry
             .instances

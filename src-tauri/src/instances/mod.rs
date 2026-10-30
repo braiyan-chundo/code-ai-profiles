@@ -188,7 +188,7 @@ pub(crate) fn delete_instance_sync(app: &AppHandle, id: String) -> Result<(), St
     registry.instances.remove(position);
     save_registry(&paths, &registry)?;
     invalidate_application_cache();
-    invalidate_managed_bytes_cache();
+    app_state(app).invalidate_managed_bytes();
     Ok(())
 }
 

@@ -50,6 +50,7 @@ use versions::*;
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
+        .manage(AppState::default())
         .setup(|app| {
             config::validate().map_err(std::io::Error::other)?;
             let handle = app.handle().clone();
