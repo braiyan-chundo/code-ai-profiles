@@ -91,6 +91,13 @@ original>` y el mismo bundle id y Team ID que la original. Una copia con icono c
 nunca registra. La provenance de la donante tampoco se hereda al sincronizar: se registra de nuevo sobre el bundle
 nuevo, también en la sincronización encadenada de la HU-0017.
 
+Excepción (autoactualización de Claude): si en una copia con icono solo difiere el CDHash (el paso 4) y la versión
+es estrictamente mayor que `provider_version` (numérica, con el sello y el requisito de la original ya
+verificados), `check_iconized` devuelve `IconizedSelfUpdated { version }`. `launch_preflight` re-registra la
+provenance (`refresh_provenance_after_self_update`) y guarda el registro sin reaplicar el icono; la misma versión
+con otro CDHash o una menor sigue rechazada (CodeHash). La topología solo lee: la copia vale como donante sin
+escribir nada.
+
 La raíz de confianza es la original instalada (`--strict`, con caché por fingerprint). El DR implícito
 (`cdhash H"…"`) se admite por paridad y para los fixtures ad hoc de las pruebas.
 
