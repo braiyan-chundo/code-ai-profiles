@@ -1795,6 +1795,25 @@ fn projects_reader_keeps_symlink_deny_and_cloud_protections() {
         .expect_err("outside folder");
     assert!(error.to_string().contains("fuera"), "{error}");
 
+    // R-2 · Un symlink a otro archivo del mismo proyecto tampoco se sigue, ni la carpeta hacia otra carpeta.
+    fixture.write("p/.env", "CLAVE=no");
+    fixture.write("p/docs/hu.md", "no es una historia");
+    let _ = fs::remove_file(fixture.path(&format!("p/hu/{folder}/seguimiento.md")));
+    symlink("../../.env", fixture.path(&format!("p/hu/{folder}/seguimiento.md"))).expect("inner symlink");
+    let read = reader::read_project_history_at(&fixture.app_data(), &env, &id, folder).expect("documents");
+    let timeline = read
+        .documents
+        .iter()
+        .find(|document| document.kind == ProjectDocumentKind::Timeline)
+        .expect("timeline");
+    assert_eq!(timeline.status, ProjectDocumentStatus::Unreadable);
+    assert_eq!(timeline.content, None);
+    assert!(read.documents.iter().all(|document| document.content.as_deref() != Some("CLAVE=no")));
+    symlink("../docs", fixture.path("p/hu/HU-0008-docs")).expect("inner folder symlink");
+    let error = reader::read_project_history_at(&fixture.app_data(), &env, &id, "HU-0008-docs")
+        .expect_err("folder inside the project");
+    assert!(error.to_string().contains("carpeta de la historia"), "{error}");
+
     // Nube: no se lee para no descargarlo.
     let mut cloud = fixture.env();
     cloud.cloud = |_, _| true;

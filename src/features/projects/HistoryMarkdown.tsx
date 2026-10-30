@@ -1,5 +1,5 @@
 import { ExternalLinkIcon, ImageOffIcon } from "lucide-react";
-import { Children, isValidElement, type ComponentProps, type MouseEvent, type ReactNode } from "react";
+import { Children, isValidElement, type ComponentProps, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 import Markdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Checkbox } from "../../components/ui/checkbox";
@@ -108,20 +108,24 @@ export function HistoryMarkdown({ content, onOpenLink }: { content: string; onOp
     ),
     a: ({ node: _node, href, children }) => {
       if (!href || linkTarget(href) !== "external") return <span>{children}</span>;
-      const open = (event: MouseEvent) => {
+      const open = (event: MouseEvent | KeyboardEvent) => {
         event.preventDefault();
         event.stopPropagation();
         onOpenLink(href);
       };
+      // Sin `href`: el menú contextual nativo («Abrir enlace») y el arrastre del webview no tienen URL que cargar
+      // en la ventana de la app. El enlace solo se abre por `openExternalLink`, con clic, clic central o Enter.
       return (
         <a
-          href={href}
+          role="link"
+          tabIndex={0}
           title={href}
-          rel="noopener noreferrer"
+          draggable={false}
           onClick={open}
-          // El clic central abre el enlace; el derecho y los demás solo se contienen, sin navegar la ventana.
           onAuxClick={(event) => (event.button === 1 ? open(event) : event.preventDefault())}
-          className="text-primary-text underline decoration-primary-text/45 underline-offset-3 hover:decoration-primary-text"
+          onKeyDown={(event) => event.key === "Enter" && open(event)}
+          onContextMenu={(event) => event.preventDefault()}
+          className="cursor-pointer text-primary-text underline decoration-primary-text/45 underline-offset-3 hover:decoration-primary-text focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
         >
           {children}
           <ExternalLinkIcon aria-hidden="true" className="ml-1 inline size-4 align-text-bottom" />

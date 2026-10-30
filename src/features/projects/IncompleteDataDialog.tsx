@@ -94,11 +94,13 @@ function NoMetricsSection({ histories }: { histories: ProjectHistory[] }) {
                   <span className={`${HISTORY_ID} mr-2`}>{history.id}</span>
                   <span className="text-(length:--fs-body)/(--lh-body)">{history.title}</span>
                 </span>
-                <CodeBlock size="sm" className="rounded-sm">
-                  <CodeBlockContent className="py-1 text-(length:--fs-small)/(--lh-small)">{command}</CodeBlockContent>
-                </CodeBlock>
+                {command && (
+                  <CodeBlock size="sm" className="rounded-sm">
+                    <CodeBlockContent className="py-1 text-(length:--fs-small)/(--lh-small)">{command}</CodeBlockContent>
+                  </CodeBlock>
+                )}
               </div>
-              <CopyButton value={command} ariaLabel={`Copiar el comando de ${history.id}`} />
+              {command && <CopyButton value={command} ariaLabel={`Copiar el comando de ${history.id}`} />}
             </li>
           );
         })}

@@ -4,7 +4,8 @@
 //! proyecto anclado: `hu.md`, `arquitectura.md`, `verificacion.md` y `seguimiento.md`, en ese orden.
 //! La ruta del proyecto sale del registro (`projects.json`), nunca del frontend; la carpeta de la
 //! historia se valida de forma léxica antes de tocar el disco, y todo pasa por el mismo `ReadContext`
-//! que la lectura del proyecto (symlinks que salen, lista de exclusión y nube). No se lista la carpeta,
+//! que la lectura del proyecto (symlinks que salen, lista de exclusión y nube); además, ni la carpeta ni sus `.md`
+//! pueden ser un symlink a otra parte del proyecto. No se lista la carpeta,
 //! no se escribe nada (tampoco `lastReadAt`), no se ejecuta nada del proyecto y no se usa la red.
 //!
 //! También valida los enlaces externos que la persona pulsa en el Markdown: solo `http`/`https`
@@ -26,6 +27,7 @@ const DOCUMENTS: [(ProjectDocumentKind, &str); 4] = [
 
 const INVALID_FOLDER: &str = "La historia no es válida.";
 const MISSING_FOLDER: &str = "La historia ya no está en el proyecto. Pulsa «Actualizar».";
+const OUTSIDE_HISTORY: &str = "apunta fuera de la carpeta de la historia y no se lee";
 const INVALID_LINK: &str =
     "El enlace no se puede abrir: solo se abren direcciones http o https completas.";
 
@@ -80,8 +82,16 @@ pub(super) fn read_project_history_at(
     let opened = open_root(Path::new(&entry.path), env).map_err(open_failure)?;
     let ctx = &opened.ctx;
     let base = Path::new("hu").join(folder);
-    match ctx.entry(&base) {
-        Ok(EntryKind::Directory) => {}
+    // La carpeta y cada `.md` deben resolverse a su propia ruta: un symlink que lleva a otra parte del
+    // proyecto (por ejemplo `arquitectura.md -> ../../.env`) tampoco se sigue.
+    let own_base = ctx.root.join(&base);
+    match ctx.resolve(&base) {
+        Ok((canonical, _)) if canonical != own_base => {
+            return Err(AppError::local_io(format!(
+                "La carpeta de la historia {OUTSIDE_HISTORY}."
+            )))
+        }
+        Ok((_, metadata)) if metadata.is_dir() => {}
         Ok(_) | Err(Skip::Missing) => return Err(AppError::local_io(MISSING_FOLDER)),
         Err(skip) => {
             return Err(AppError::local_io(format!(
@@ -94,7 +104,14 @@ pub(super) fn read_project_history_at(
     let mut documents = Vec::new();
     for (kind, file) in DOCUMENTS {
         let path = format!("hu/{folder}/{file}");
-        let document = match ctx.read(&base.join(file), ReadMode::Whole(DOCUMENT_LIMIT)) {
+        let rel = base.join(file);
+        let escapes = matches!(ctx.resolve(&rel), Ok((canonical, _)) if canonical != own_base.join(file));
+        let read = if escapes {
+            Err(Skip::Outside)
+        } else {
+            ctx.read(&rel, ReadMode::Whole(DOCUMENT_LIMIT))
+        };
+        let document = match read {
             Ok(text) if text.contains('\0') => unreadable(
                 kind,
                 file,
@@ -119,6 +136,9 @@ pub(super) fn read_project_history_at(
                     DOCUMENT_LIMIT / KIB
                 ),
             ),
+            Err(Skip::Outside) => {
+                unreadable(kind, file, path, format!("{file} {OUTSIDE_HISTORY}."))
+            }
             Err(skip) => unreadable(kind, file, path, format!("{file} {}.", skip.reason())),
         };
         documents.push(document);

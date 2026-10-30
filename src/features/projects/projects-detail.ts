@@ -365,16 +365,17 @@ export function incompleteGroups(info: ProjectInfo, warnings: readonly ProjectWa
 }
 
 /**
- * El comando que genera `metricas.json` de una historia. Sale de los 7 primeros caracteres de `folder` (`HU-0023`,
- * garantizados por Rust), nunca del `id` del frontmatter: el texto se pega en una terminal.
+ * El comando que genera `metricas.json` de una historia. Sale de `folder`, nunca del `id` del frontmatter, y solo si
+ * empieza por `HU-####-`: el texto se pega en una terminal. Rust ya lo garantiza; esto es la segunda barrera.
  */
-export function metricsCommand(folder: string): string {
-  return `node .metodo/scripts/metricas.mjs hu ${folder.slice(0, 7)}`;
+export function metricsCommand(folder: string): string | null {
+  const code = /^(HU-\d{4})-/.exec(folder)?.[1];
+  return code ? `node .metodo/scripts/metricas.mjs hu ${code}` : null;
 }
 
 /** Los comandos de varias historias, uno por línea, para «Copiar todos». */
 export function metricsCommands(histories: readonly Pick<ProjectHistory, "folder">[]): string {
-  return histories.map((history) => metricsCommand(history.folder)).join("\n");
+  return histories.flatMap((history) => metricsCommand(history.folder) ?? []).join("\n");
 }
 
 /** La pista de «Tiempo en fases»: «de 23 de 41 terminadas» si faltan tiempos; si no, «de 5 historias cerradas». */
