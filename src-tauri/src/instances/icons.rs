@@ -96,7 +96,7 @@ pub(crate) fn set_instance_icon_sync(
             } else {
                 let _ = fs::remove_file(&icon_path);
             }
-            return Err(error);
+            return Err(error.into());
         }
         invalidate_application_cache();
         app_state(app).invalidate_managed_bytes();
@@ -147,7 +147,7 @@ pub(crate) fn clear_instance_icon_sync(app: &AppHandle, id: String) -> Result<()
         if let Err(error) = save_registry(&paths, &registry) {
             restore_optional_file(&managed_icon, previous_icon.as_deref());
             restore_optional_file(&launcher, previous_launcher.as_deref());
-            return Err(error);
+            return Err(error.into());
         }
         invalidate_application_cache();
         app_state(app).invalidate_managed_bytes();

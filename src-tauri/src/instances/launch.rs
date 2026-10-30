@@ -15,7 +15,7 @@ pub(crate) fn launch_instance_sync(app: &AppHandle, id: String) -> Result<(), St
         .ok_or_else(|| "La instancia ya no existe.".to_string())?;
 
     if registry.instances[position].status == InstanceStatus::Running {
-        return save_registry(&paths, &registry);
+        return save_registry(&paths, &registry).map_err(String::from);
     }
     let app_path = PathBuf::from(&registry.instances[position].app_path);
     let executable = provider_executable(&app_path);
@@ -130,7 +130,7 @@ pub(crate) fn stop_instance_sync(app: &AppHandle, id: &str) -> Result<(), String
                 {
                     current.status = InstanceStatus::Running;
                 }
-                save_registry(&paths, &registry)
+                save_registry(&paths, &registry).map_err(String::from)
             })?;
             return Err("La instancia sigue ejecutándose después del cierre forzado. No se cambió su estado.".to_string());
         }
@@ -145,6 +145,6 @@ pub(crate) fn stop_instance_sync(app: &AppHandle, id: &str) -> Result<(), String
         current.pid = None;
         current.process_identity = None;
         current.status = InstanceStatus::Stopped;
-        save_registry(&paths, &registry)
+        save_registry(&paths, &registry).map_err(String::from)
     })
 }

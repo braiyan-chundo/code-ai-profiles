@@ -63,10 +63,9 @@ impl RegistryLock {
         &self,
         operation: impl FnOnce() -> Result<T, String>,
     ) -> Result<T, String> {
-        let _guard = self
-            .0
-            .lock()
-            .map_err(|_| "El coordinador local de instancias quedó bloqueado.".to_string())?;
+        let _guard = self.0.lock().map_err(|_| {
+            AppError::internal("El coordinador local de instancias quedó bloqueado.")
+        })?;
         operation()
     }
 }
@@ -125,14 +124,18 @@ pub(crate) struct ManagedPaths {
 }
 
 impl ManagedPaths {
-    pub(crate) fn resolve(app: &AppHandle) -> Result<Self, String> {
-        let app_data = app
-            .path()
-            .app_data_dir()
-            .map_err(|error| format!("No se pudo resolver el directorio de datos: {error}"))?;
+    pub(crate) fn resolve(app: &AppHandle) -> Result<Self, AppError> {
+        let app_data = app.path().app_data_dir().map_err(|error| {
+            AppError::local_io(format!(
+                "No se pudo resolver el directorio de datos: {error}"
+            ))
+        })?;
         let instances = app_data.join("managed-instances");
-        fs::create_dir_all(&instances)
-            .map_err(|error| format!("No se pudo crear el directorio administrado: {error}"))?;
+        fs::create_dir_all(&instances).map_err(|error| {
+            AppError::local_io(format!(
+                "No se pudo crear el directorio administrado: {error}"
+            ))
+        })?;
         Ok(Self {
             registry: app_data.join("instances.json"),
             session_backups: app_data.join("session-transfer-backups"),
@@ -145,34 +148,45 @@ impl ManagedPaths {
         })
     }
 
-    pub(crate) fn root_for(&self, id: &str) -> Result<PathBuf, String> {
+    pub(crate) fn root_for(&self, id: &str) -> Result<PathBuf, AppError> {
         Uuid::parse_str(id)
-            .map_err(|_| "El identificador de instancia no es válido.".to_string())?;
+            .map_err(|_| AppError::invalid_input("El identificador de instancia no es válido."))?;
         Ok(self.instances.join(id))
     }
 }
 
-pub(crate) fn load_registry(paths: &ManagedPaths) -> Result<Registry, String> {
+pub(crate) fn load_registry(paths: &ManagedPaths) -> Result<Registry, AppError> {
     if !paths.registry.exists() {
         return Ok(Registry::default());
     }
-    let contents = fs::read_to_string(&paths.registry)
-        .map_err(|error| format!("No se pudo leer el registro de instancias: {error}"))?;
-    serde_json::from_str(&contents)
-        .map_err(|error| format!("El registro de instancias está dañado: {error}"))
+    let contents = fs::read_to_string(&paths.registry).map_err(|error| {
+        AppError::local_io(format!(
+            "No se pudo leer el registro de instancias: {error}"
+        ))
+    })?;
+    serde_json::from_str(&contents).map_err(|error| {
+        AppError::damaged_data(format!("El registro de instancias está dañado: {error}"))
+    })
 }
 
-pub(crate) fn save_registry(paths: &ManagedPaths, registry: &Registry) -> Result<(), String> {
-    fs::create_dir_all(&paths.app_data)
-        .map_err(|error| format!("No se pudo preparar el directorio de datos: {error}"))?;
+pub(crate) fn save_registry(paths: &ManagedPaths, registry: &Registry) -> Result<(), AppError> {
+    fs::create_dir_all(&paths.app_data).map_err(|error| {
+        AppError::local_io(format!(
+            "No se pudo preparar el directorio de datos: {error}"
+        ))
+    })?;
     let mut persisted = registry.clone();
     for instance in &mut persisted.instances {
         instance.code_sessions.clear();
     }
-    let contents = serde_json::to_vec_pretty(&persisted)
-        .map_err(|error| format!("No se pudo serializar el registro: {error}"))?;
-    write_file_atomic(&paths.registry, &contents, ".instances")
-        .map_err(|error| format!("No se pudo guardar el registro de instancias: {error}"))
+    let contents = serde_json::to_vec_pretty(&persisted).map_err(|error| {
+        AppError::internal(format!("No se pudo serializar el registro: {error}"))
+    })?;
+    write_file_atomic(&paths.registry, &contents, ".instances").map_err(|error| {
+        AppError::local_io(format!(
+            "No se pudo guardar el registro de instancias: {error}"
+        ))
+    })
 }
 
 /// Escritura atómica de un archivo propio de la app: temporal `<prefijo>-<uuid>.tmp` en la misma
@@ -226,16 +240,21 @@ pub(crate) fn path_is_within(path: &Path, root: &Path) -> bool {
     path.starts_with(root)
 }
 
-pub(crate) fn atomic_replace_file(destination: &Path, contents: &[u8]) -> Result<(), String> {
+pub(crate) fn atomic_replace_file(destination: &Path, contents: &[u8]) -> Result<(), AppError> {
     let parent = destination
         .parent()
-        .ok_or_else(|| "El destino de la sesión no es válido.".to_string())?;
-    fs::create_dir_all(parent)
-        .map_err(|error| format!("No se pudo crear el índice de sesiones destino: {error}"))?;
+        .ok_or_else(|| AppError::invalid_input("El destino de la sesión no es válido."))?;
+    fs::create_dir_all(parent).map_err(|error| {
+        AppError::local_io(format!(
+            "No se pudo crear el índice de sesiones destino: {error}"
+        ))
+    })?;
     // Temporal en la misma carpeta, `sync_all` y `rename` que reemplaza en un solo paso: si algo
     // falla o la app cae, el destino anterior sigue intacto (nunca queda sin archivo).
     write_file_atomic(destination, contents, ".session-transfer").map_err(|error| {
-        format!("No se pudo reemplazar el archivo; se conservó el anterior: {error}")
+        AppError::local_io(format!(
+            "No se pudo reemplazar el archivo; se conservó el anterior: {error}"
+        ))
     })
 }
 
@@ -293,10 +312,8 @@ mod tests {
             let _guard = poisoned.registry.0.lock().unwrap();
             panic!("poison the registry lock");
         }));
-        assert_eq!(
-            poisoned.with_registry_operation(|| Ok(())),
-            Err(LOCKED_COORDINATOR.to_string())
-        );
+        let error = poisoned.with_registry_operation(|| Ok(())).unwrap_err();
+        assert_eq!(error, LOCKED_COORDINATOR);
         assert_eq!(healthy.with_registry_operation(|| Ok(7)), Ok(7));
     }
 
@@ -343,7 +360,10 @@ mod tests {
         fs::write(destination.join("keep.txt"), "x").unwrap();
 
         let error = atomic_replace_file(&destination, b"{}").unwrap_err();
-        assert!(error.starts_with("No se pudo reemplazar el archivo"));
+        assert_eq!(error.kind(), AppErrorKind::LocalIo);
+        assert!(error
+            .to_string()
+            .starts_with("No se pudo reemplazar el archivo; se conservó el anterior: "));
         assert!(destination.join("keep.txt").exists());
         let leftovers: Vec<_> = fs::read_dir(&root)
             .unwrap()
@@ -399,6 +419,37 @@ mod tests {
     }
 
     #[test]
+    fn registry_errors_keep_their_text_and_say_what_failed() {
+        let root = env::temp_dir().join(format!("code-ai-registry-errors-{}", Uuid::new_v4()));
+        fs::create_dir_all(&root).unwrap();
+        let paths = test_managed_paths(&root);
+
+        let invalid = paths.root_for("../fuera").unwrap_err();
+        assert_eq!(invalid.kind(), AppErrorKind::InvalidInput);
+        assert_eq!(
+            String::from(invalid),
+            "El identificador de instancia no es válido."
+        );
+
+        fs::write(&paths.registry, "{ no es json").unwrap();
+        let damaged = load_registry(&paths).unwrap_err();
+        assert_eq!(damaged.kind(), AppErrorKind::DamagedData);
+        assert!(damaged
+            .to_string()
+            .starts_with("El registro de instancias está dañado: "));
+
+        fs::remove_file(&paths.registry).unwrap();
+        fs::create_dir_all(&paths.registry).unwrap();
+        let unreadable = load_registry(&paths).unwrap_err();
+        assert_eq!(unreadable.kind(), AppErrorKind::LocalIo);
+        assert!(unreadable
+            .to_string()
+            .starts_with("No se pudo leer el registro de instancias: "));
+
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
     fn save_registry_replaces_existing_registry_without_temporaries() {
         let root = env::temp_dir().join(format!("code-ai-registry-{}", Uuid::new_v4()));
         let paths = test_managed_paths(&root);
@@ -436,7 +487,10 @@ mod tests {
 
         if !can_still_write {
             let message = result.expect_err("saving should fail");
-            assert!(message.starts_with("No se pudo guardar el registro de instancias"));
+            assert_eq!(message.kind(), AppErrorKind::LocalIo);
+            assert!(message
+                .to_string()
+                .starts_with("No se pudo guardar el registro de instancias: "));
             assert_eq!(load_registry(&paths).unwrap().instances.len(), 1);
             assert!(temporaries_in(&root).is_empty());
         }

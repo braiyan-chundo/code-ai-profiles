@@ -2007,7 +2007,9 @@ pub(crate) fn install_original_update_sync(
     progress: &dyn Fn(OriginalInstallProgress),
 ) -> Result<OriginalInstallOutcome, String> {
     let flight = begin_flight()?;
-    let paths = ManagedPaths::resolve(app).map_err(unchanged)?;
+    let paths = ManagedPaths::resolve(app)
+        .map_err(String::from)
+        .map_err(unchanged)?;
     run_install(
         &app_state(app).registry,
         &SystemEnvironment { app },

@@ -159,7 +159,7 @@ pub(crate) fn apply_external_icon_best_effort(
             "Se creó un launcher opcional por instancia, pero solo se aplicará al sistema si se abre desde ese launcher; Wayland o el compositor pueden conservar el icono oficial."
                 .to_string(),
         ),
-        Err(error) => (false, error),
+        Err(error) => (false, error.into()),
     }
 }
 

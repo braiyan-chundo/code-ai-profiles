@@ -1165,7 +1165,7 @@ pub(crate) fn set_instance_icon(
             system_message: outcome.system_message,
             system_issue: outcome.system_issue,
         });
-        save_registry(paths, registry)
+        save_registry(paths, registry).map_err(String::from)
     })();
     if let Err(error) = transaction {
         restore_optional_file(&icon_path, previous_png.as_deref());
@@ -1225,7 +1225,7 @@ pub(crate) fn reapply_instance_icon(
         if let Some(icon) = target.custom_icon.as_mut() {
             outcome.write_to(icon);
         }
-        save_registry(paths, registry)
+        save_registry(paths, registry).map_err(String::from)
     })();
     if let Err(error) = transaction {
         registry.instances[position] = previous.clone();
@@ -1284,7 +1284,7 @@ pub(crate) fn clear_instance_icon(
         let target = &mut registry.instances[position];
         target.custom_icon = None;
         target.provider_provenance = None;
-        save_registry(paths, registry)
+        save_registry(paths, registry).map_err(String::from)
     })();
     if let Err(error) = transaction {
         restore_optional_file(&managed_icon, previous_png.as_deref());

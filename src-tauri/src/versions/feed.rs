@@ -112,7 +112,7 @@ pub(crate) fn save_source_update_cache(
     };
     let contents = serde_json::to_vec_pretty(&cache)
         .map_err(|error| format!("No se pudo serializar la caché de actualización: {error}"))?;
-    atomic_replace_file(&paths.source_update_cache, &contents)
+    atomic_replace_file(&paths.source_update_cache, &contents).map_err(String::from)
 }
 
 /// Cómo se nombra en los mensajes el documento oficial que se consulta.

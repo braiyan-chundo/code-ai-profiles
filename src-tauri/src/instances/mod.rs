@@ -126,7 +126,7 @@ pub(crate) fn create_instance_sync(
         usage: None,
         code_sessions: Vec::new(),
     });
-    save_registry(&paths, &registry)
+    save_registry(&paths, &registry).map_err(String::from)
 }
 
 pub(crate) fn update_instance_sync(
@@ -152,7 +152,7 @@ pub(crate) fn update_instance_sync(
         .ok_or_else(|| "La instancia ya no existe.".to_string())?;
     instance.name = name;
     refresh_instance_bundle_names(&mut registry);
-    save_registry(&paths, &registry)
+    save_registry(&paths, &registry).map_err(String::from)
 }
 
 pub(crate) fn delete_instance_sync(app: &AppHandle, id: String) -> Result<(), String> {

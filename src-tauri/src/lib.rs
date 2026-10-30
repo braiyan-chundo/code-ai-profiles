@@ -20,6 +20,7 @@ use uuid::Uuid;
 mod commands;
 mod config;
 mod contract;
+mod error;
 mod instances;
 #[cfg(target_os = "macos")]
 mod macos_icon;
@@ -37,6 +38,7 @@ mod test_support;
 mod versions;
 
 use contract::*;
+use error::*;
 use instances::*;
 use platform::*;
 use processes::*;
