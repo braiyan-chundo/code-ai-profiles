@@ -145,8 +145,8 @@
     "semantic_hash": ""
   },
   "docs/instancias.document.md": {
-    "mtime": 1793275893.6678963,
-    "ast_hash": "9b30897ac5d6b6b8d06c8be08c0ebca1",
+    "mtime": 1793321003.8853703,
+    "ast_hash": "62d797d613f8ecedb27cff2cf6dce973",
     "semantic_hash": ""
   },
   "scripts/release-version.mjs": {
@@ -570,8 +570,8 @@
     "semantic_hash": ""
   },
   "src/features/sessions/SessionTransferDialog.tsx": {
-    "mtime": 1793255603.5297642,
-    "ast_hash": "b0b0651863d72e2188b201b5dc9eedb0",
+    "mtime": 1793320989.1944757,
+    "ast_hash": "38ae52c968fb7e227a2be11de7c25546",
     "semantic_hash": ""
   },
   "src/features/sessions/index.ts": {
@@ -1645,8 +1645,8 @@
     "semantic_hash": ""
   },
   "docs/arquitectura/backend.md": {
-    "mtime": 1793275856.4000874,
-    "ast_hash": "c93325547decaf772d2fe2b947085de0",
+    "mtime": 1793321013.4454699,
+    "ast_hash": "9a339321416c8dbb2f3e610d8b9b2a43",
     "semantic_hash": ""
   },
   "docs/decisiones/ADR-0002-modulos-rust-y-configuracion-en-compilacion.md": {
@@ -2135,8 +2135,8 @@
     "semantic_hash": ""
   },
   "src-tauri/src/macos_icon.rs": {
-    "mtime": 1793248079.0765464,
-    "ast_hash": "3aea236348254fd233c0197dc50ef011",
+    "mtime": 1793320983.3372533,
+    "ast_hash": "648eb3344b9d4d223cbbd724607cca5e",
     "semantic_hash": ""
   },
   "src/features/instances/icon-status.ts": {
