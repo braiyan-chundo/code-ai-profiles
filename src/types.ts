@@ -53,7 +53,7 @@ export interface CodeSession {
 }
 
 export type SourceUpdateStatus = "current" | "available" | "unavailable" | "unknown" | "error";
-export type SourceUpdateSource = "officialFeed" | "aptCache";
+export type SourceUpdateSource = "officialFeed" | "officialRelease" | "aptCache";
 
 export interface SourceUpdateInfo {
   status: SourceUpdateStatus;
@@ -61,6 +61,8 @@ export interface SourceUpdateInfo {
   checkedAt: number | null;
   stale: boolean;
   source: SourceUpdateSource | null;
+  /** Motivo por el que no se pudo confirmar una versión nueva (p. ej. la publicación y el feed no coinciden). */
+  warning: string | null;
 }
 
 export interface ManagedInstance {
@@ -225,3 +227,83 @@ export interface OriginalInstallResult {
   pendingInstanceIds: string[];
   dashboard: DashboardState;
 }
+
+/** Panel de Ajustes del Sistema que Code AI Profiles sabe abrir (solo macOS). */
+export type SystemSettingsPanel = "appManagement" | "filesAndFolders";
+
+export interface AccountFacts {
+  /** Solo macOS: la cuenta pertenece al grupo admin. null fuera de macOS o si no se pudo saber. */
+  admin: boolean | null;
+}
+
+/* ── Proyectos anclados (HU-0023) ─────────────────────────────────────────── */
+
+export type ProjectStatus =
+  | "v4" | "notV4" | "noConfig" | "configBroken" | "notFound" | "notDirectory" | "permissionDenied" | "forbidden";
+export type ProjectProtectedLocation = "desktop" | "documents" | "downloads" | "icloud" | "external";
+export type ProjectHistoryState = "waiting" | "inProgress" | "done" | "discarded" | "unknown";
+export type ProjectRepoStatus = "ok" | "missing" | "outside" | "forbidden" | "unreadable";
+export type ProjectGitStatus = "ok" | "none" | "unsupported" | "unreadable";
+export type ProjectWarningScope = "config" | "history" | "metrics" | "timeline" | "repo" | "manifest" | "git" | "limit";
+/** Lo que le falta a una historia terminada (HU-0025): «Sin tiempo» o «Sin métricas». No es un aviso. */
+export type ProjectDataGap = "noTime" | "noMetrics";
+
+export interface TokenBreakdown { input: number; output: number; cacheWrite: number; cacheRead: number; total: number }
+export interface ProjectWarning { scope: ProjectWarningScope; target: string | null; message: string }
+export interface ProjectCandidate {
+  path: string; displayPath: string; status: ProjectStatus; message: string | null;
+  configVersion: number | null; name: string | null; profile: string | null; phase: string | null;
+  historyCount: number | null; repoCount: number | null; alreadyPinnedId: string | null;
+}
+export interface ProjectGit {
+  status: ProjectGitStatus; branch: string | null; detached: boolean; shortSha: string | null; movedAt: string | null;
+}
+export interface ProjectRepo {
+  name: string; path: string; kind: string | null; status: ProjectRepoStatus; manifests: string[]; git: ProjectGit | null;
+}
+export interface ProjectTechnology { name: string; version: string | null; source: "pack" | "packageManager" | "manifest"; repo: string | null }
+export interface ProjectHistory {
+  id: string; folder: string; title: string; state: ProjectHistoryState; phase: string | null; area: string | null;
+  priority: string | null; created: string | null; minutes: number | null; tokens: TokenBreakdown | null;
+  countsInTotals: boolean;
+  /** Solo en terminadas; `noTime` y `noMetrics` se excluyen entre sí. */
+  dataGaps: ProjectDataGap[];
+}
+export interface ProjectRoleUsage { role: string; tokens: TokenBreakdown; approximate: boolean }
+export interface ProjectCounts { total: number; waiting: number; inProgress: number; done: number; discarded: number; unknown: number }
+export interface ProjectTotals {
+  histories: number; minutes: number; tokens: TokenBreakdown; byRole: ProjectRoleUsage[];
+  /** Las que suman en los totales y tienen minutos (divisor de «Tiempo en fases»). */
+  timedHistories: number;
+}
+export interface ProjectInfo {
+  name: string; slug: string | null; summary: string | null; profile: string | null; phase: string | null;
+  approver: string | null; packageManager: string | null; packs: string[]; repos: ProjectRepo[];
+  technologies: ProjectTechnology[]; histories: ProjectHistory[]; counts: ProjectCounts;
+  firstCreated: string | null; lastActivity: string | null; spanDays: number | null; totals: ProjectTotals;
+}
+export interface ProjectSummary {
+  id: string; path: string; displayPath: string; lastName: string | null; pinnedAt: string;
+  lastReadAt: string | null; readAt: string; status: ProjectStatus; message: string | null;
+  protectedLocation: ProjectProtectedLocation | null; info: ProjectInfo | null; warnings: ProjectWarning[];
+}
+export interface ProjectsState { projects: ProjectSummary[]; readAt: string }
+
+/* ── Lector de historias (HU-0025) ────────────────────────────────────────── */
+
+export type ProjectDocumentKind = "hu" | "architecture" | "verification" | "timeline";
+export type ProjectDocumentStatus = "ok" | "unreadable";
+export interface ProjectDocument {
+  kind: ProjectDocumentKind;
+  /** Nombre fijo del archivo (`hu.md`). */
+  file: string;
+  /** Relativa a la carpeta del proyecto, con `/` (`hu/<carpeta>/hu.md`). */
+  path: string;
+  status: ProjectDocumentStatus;
+  /** El Markdown completo, solo si `status` es `ok`. */
+  content: string | null;
+  /** Qué pasó, solo si `status` es `unreadable`. */
+  message: string | null;
+}
+/** Los `.md` de una historia en orden hu → arquitectura → verificación → seguimiento, solo los que existen. */
+export interface ProjectHistoryDocuments { folder: string; documents: ProjectDocument[]; readAt: string }

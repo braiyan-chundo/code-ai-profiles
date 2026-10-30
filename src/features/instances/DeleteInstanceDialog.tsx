@@ -37,7 +37,7 @@ export function DeleteInstanceDialog({
             <TriangleAlertIcon />
           </AlertDialogMedia>
           <AlertDialogTitle className="break-words">Eliminar “{instance.name}”</AlertDialogTitle>
-          <AlertDialogDescription className="text-xs leading-relaxed">
+          <AlertDialogDescription className="text-(length:--fs-small)/(--lh-prose)">
             Se borrarán la aplicación administrada y todos los datos locales de este perfil. La cuenta vinculada al proveedor no se elimina. Esta acción no se puede deshacer.
           </AlertDialogDescription>
         </AlertDialogHeader>

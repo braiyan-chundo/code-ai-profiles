@@ -61,7 +61,7 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 ## Diferencias con el registro
 
-Ninguna: es el código del registro `radix-vega` (2026-10-28) tal como se descargó.
+Ajuste HU-0022 (A-1 y A-2): la lista pierde el relleno `bg-muted` y se queda con un anillo (`ring-1 ring-inset ring-(--line-strong)`: el relleno daba 4,13:1 al texto inactivo en claro), con `h-(--ctl)`, `p-1`, `gap-1` y `rounded-md` (12); cada pestaña llena la lista (`h-full`), con `gap-2 px-3`, `rounded-sm` (8, anidado: 12 − 4), `leading-(--lh-body)` y texto `text-muted-foreground`. La activa toma `bg-card` (en oscuro `bg-accent`) y su propio anillo. El foco es un contorno de 2 px (`outline-2 outline-ring`), no un anillo, para no chocar con el de la activa. En la app las usa `SettingsRoute`, controladas por la ruta (`value` y `onValueChange → navigate`), con un `TabsContent` por sección.
 
 ## Qué no hacer
 

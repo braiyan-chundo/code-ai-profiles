@@ -194,7 +194,7 @@ function system(overrides: Partial<System> = {}): System {
     sourceName: "Claude",
     sourceVersion: "1.0.0",
     originalStatus: "stopped",
-    sourceUpdate: { status: "available", latestVersion: "1.1.0", checkedAt: 1_800_000_000, stale: false, source: "officialFeed" },
+    sourceUpdate: { status: "available", latestVersion: "1.1.0", checkedAt: 1_800_000_000, stale: false, source: "officialFeed", warning: null },
     ...overrides,
   };
 }

@@ -1,8 +1,8 @@
 ---
 id: HU-0010
 titulo: "Publicar el fix de actualización como versión 0.2.2"
-estado: en-proceso
-fase: verificacion
+estado: terminada
+fase: cierre
 area: versionado
 entrega: 1
 prioridad: media
@@ -63,3 +63,31 @@ El `.app` y el DMG de Apple Silicon reportan `0.2.2` y tienen su hash registrado
 
 - Hecho y commiteado en `be132e5`: AC-01, AC-02, la suite y el bundle local (DMG SHA-256 `e6a99355…0730`, evidencia en la HU original).
 - **Pendiente**: `graph:check` sobre el commit, el PR a `develop` y después a `main`. Todo push lo autoriza la persona.
+
+## Definición de Preparado
+
+- [x] Petición literal, problema, alcance y fuera de alcance escritos (en la HU heredada)
+- [x] Criterios numerados y observables
+- [x] Reglas de negocio afectadas nombradas (ninguna)
+
+## Definición de Terminado
+
+- [x] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
+- [x] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
+- [x] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas (sin código nuevo)
+- [x] Revisión técnica pasada, si la historia es riesgosa (no lo es)
+- [x] La persona probó y aprobó; su veredicto está en `verificacion.md`
+- [x] Delta de reglas de negocio aplicado en `docs/producto/reglas/` (sin delta)
+- [x] Commits con `HU: HU-0010`. Push y PR los hizo el mantenedor
+- [x] Lo que solo comprueba una persona, declarado como pendiente humano (descartado por el mantenedor)
+
+## Cierre
+
+2026-10-29, cerrada por el orquestador sobre el veredicto del mantenedor («mira las comprobaciones demosla por
+cerrada»). Se publicó como **0.3.0**, que incluye el fix de la 0.2.2 (decisión del mantenedor, 2026-10-28).
+
+SHA por repositorio (code-ai-profiles):
+- `e07a332`, `8f9feac`, `da117b4`: HU-0012 descartada, versión 0.3.0, CHANGELOG, README, versionado y grafo (PR #14).
+- `c882b58`: la 0.3.0 en `main` (PR #15), con la etiqueta `v0.3.0` y los instaladores de las cuatro plataformas en Actions.
+
+Pendientes humanos: ninguno (el mantenedor descartó las comprobaciones manuales el 2026-10-29).

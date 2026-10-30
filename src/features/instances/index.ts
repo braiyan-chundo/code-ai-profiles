@@ -10,4 +10,6 @@ export { useLiveUsage } from "./useLiveUsage";
 export { DeleteInstanceDialog } from "./DeleteInstanceDialog";
 export { useInstanceActions } from "./useInstanceActions";
 export { InstanceAvatar } from "./InstanceAvatar";
-export { instanceStatusLabel } from "./instance-status";
+export { InstanceToggleButton } from "./InstanceToggleButton";
+export { instancePending, instanceStatusLabel, instanceToggle } from "./instance-status";
+export type { InstancePending, InstanceToggle } from "./instance-status";

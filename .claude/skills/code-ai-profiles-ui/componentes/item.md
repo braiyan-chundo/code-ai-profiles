@@ -76,6 +76,8 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 Ajuste 3: `text-primary` (sin `-foreground`) pasa a `text-primary-text`, el naranja legible en claro (#9c5947).
 
+Ajuste HU-0022 (A-1.1, A-1.3 y A-1.6): los tamaños pasan a `gap-3 px-4 py-3` (`default`), `gap-2 px-3 py-2` (`sm`) y `gap-2 px-2 py-2` (`xs`); la variante `outline` usa `ring-1 ring-inset ring-border` en lugar de `border`, y el foco, `ring-2 ring-ring`. Un `Item` dentro de una tarjeta lleva `rounded-sm` (anidado). Título y descripción pierden `leading-snug` y `leading-normal`.
+
 ## Qué no hacer
 
 - No poner varios botones sin etiqueta en la fila.

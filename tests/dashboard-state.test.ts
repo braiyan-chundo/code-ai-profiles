@@ -18,6 +18,7 @@ import {
   usageRanking,
 } from "../src/features/dashboard/dashboard-selectors.ts";
 import { applyLiveUsage } from "../src/features/instances/live-usage.ts";
+import { instancePending, instanceStatusLabel, instanceToggle } from "../src/features/instances/instance-status.ts";
 import type { CodeSession, DashboardState, ManagedInstance, OriginalInstallProgress, UsageStats } from "../src/types.ts";
 
 function session(id: string, title: string): CodeSession {
@@ -60,6 +61,7 @@ test("el store inicial carga, sin operación, sin mensajes y con el panel vacío
   assert.equal(initialDashboardStore.loading, true);
   assert.equal(initialDashboardStore.busy, null);
   assert.equal(initialDashboardStore.error, null);
+  assert.equal(initialDashboardStore.errorTitle, null);
   assert.equal(initialDashboardStore.notice, null);
   assert.deepEqual(initialDashboardStore.iconPreviews, {});
   assert.equal(initialDashboardStore.originalInstall, null);
@@ -284,4 +286,95 @@ test("pending-sync/removed quita solo las indicadas y no cambia el store si no h
   assert.deepEqual(store.pendingSyncIds, ["a", "b", "c"]);
   assert.equal(dashboardReducer(next, { type: "pending-sync/removed", instanceIds: ["b"] }), next);
   assert.equal(dashboardReducer(next, { type: "pending-sync/removed", instanceIds: [] }), next);
+});
+
+test("error/changed guarda el título con el error y lo limpia con setError(null) y feedback/cleared (HU-0026)", () => {
+  const titled = dashboardReducer(initialDashboardStore, {
+    type: "error/changed",
+    error: "La copia no responde.",
+    title: "No se pudo abrir Perfil a",
+  });
+  assert.equal(titled.error, "La copia no responde.");
+  assert.equal(titled.errorTitle, "No se pudo abrir Perfil a");
+  assert.equal(
+    dashboardReducer(titled, { type: "error/changed", error: "La copia no responde.", title: "No se pudo abrir Perfil a" }),
+    titled,
+  );
+  const untitled = dashboardReducer(titled, { type: "error/changed", error: "Otro fallo" });
+  assert.equal(untitled.error, "Otro fallo");
+  assert.equal(untitled.errorTitle, null);
+  const nulled = dashboardReducer(titled, { type: "error/changed", error: null, title: "No se pudo abrir Perfil a" });
+  assert.equal(nulled.error, null);
+  assert.equal(nulled.errorTitle, null);
+  const cleared = dashboardReducer(titled, { type: "feedback/cleared" });
+  assert.equal(cleared.error, null);
+  assert.equal(cleared.errorTitle, null);
+  assert.equal(dashboardReducer(cleared, { type: "feedback/cleared" }), cleared);
+});
+
+test("instancePending lee el busy de la instancia y nada más (HU-0026)", () => {
+  assert.equal(instancePending("launch:a", "a"), "launching");
+  assert.equal(instancePending("stop:a", "a"), "stopping");
+  assert.equal(instancePending("launch:b", "a"), null);
+  assert.equal(instancePending("stop:ab", "a"), null);
+  assert.equal(instancePending("delete:a", "a"), null);
+  assert.equal(instancePending("icon:a", "a"), null);
+  assert.equal(instancePending("scan", "a"), null);
+  assert.equal(instancePending(null, "a"), null);
+});
+
+test("instanceStatusLabel pone la operación en curso delante del estado (HU-0026)", () => {
+  assert.equal(instanceStatusLabel("stopped"), "Detenido");
+  assert.equal(instanceStatusLabel("running"), "Ejecutándose");
+  assert.equal(instanceStatusLabel("missing"), "No disponible");
+  assert.equal(instanceStatusLabel("stopped", "launching"), "Abriendo…");
+  assert.equal(instanceStatusLabel("running", "stopping"), "Deteniendo…");
+  assert.equal(instanceStatusLabel("running", null), "Ejecutándose");
+});
+
+test("instanceToggle: sin botón si no está disponible, Detener si corre y Abrir si no (HU-0026)", () => {
+  assert.equal(instanceToggle(instance("a", { status: "missing" }), null), null);
+  assert.equal(instanceToggle(instance("a", { status: "missing" }), "launch:a"), null);
+  assert.deepEqual(instanceToggle(instance("a", { status: "running" }), null), {
+    action: "stop",
+    label: "Detener Perfil a",
+    pending: false,
+    disabled: false,
+  });
+  assert.deepEqual(instanceToggle(instance("a"), null), {
+    action: "launch",
+    label: "Abrir Perfil a",
+    pending: false,
+    disabled: false,
+  });
+});
+
+test("instanceToggle: la operación de otra desactiva sin marcar en curso; la propia marca y nombra (HU-0026)", () => {
+  assert.deepEqual(instanceToggle(instance("a"), "stop:b"), {
+    action: "launch",
+    label: "Abrir Perfil a",
+    pending: false,
+    disabled: true,
+  });
+  assert.deepEqual(instanceToggle(instance("a"), "scan"), {
+    action: "launch",
+    label: "Abrir Perfil a",
+    pending: false,
+    disabled: true,
+  });
+  assert.deepEqual(instanceToggle(instance("a"), "launch:a"), {
+    action: "launch",
+    label: "Abriendo Perfil a…",
+    pending: true,
+    disabled: true,
+  });
+  assert.deepEqual(instanceToggle(instance("a", { status: "running" }), "stop:a"), {
+    action: "stop",
+    label: "Deteniendo Perfil a…",
+    pending: true,
+    disabled: true,
+  });
+  // El estado aún no cambió: la acción es la que corre, no la que tocaría por el estado.
+  assert.equal(instanceToggle(instance("a", { status: "running" }), "launch:a")?.action, "launch");
+  assert.equal(instanceToggle(instance("a"), "stop:a")?.action, "stop");
 });

@@ -11,6 +11,7 @@ import type { InstanceIconChange } from "./instance-types";
 export function useInstanceActions() {
   const {
     dashboard: state,
+    busyRef,
     runAction,
     setBusy,
     setError,
@@ -19,8 +20,18 @@ export function useInstanceActions() {
     removeIconPreview,
   } = useDashboard();
 
-  const launch = (instance: ManagedInstance) => void runAction(`launch:${instance.id}`, () => bridge.launch(instance.id));
-  const stop = (instance: ManagedInstance) => void runAction(`stop:${instance.id}`, () => bridge.stop(instance.id));
+  /**
+   * Abrir y detener, desde la página de la instancia, el sidebar o el dashboard (HU-0026, A-2). `busyRef` corta un
+   * doble clic que llega antes de que el `disabled` esté en el DOM; el error nombra la instancia.
+   */
+  const launch = (instance: ManagedInstance) => {
+    if (busyRef.current !== null) return;
+    void runAction(`launch:${instance.id}`, () => bridge.launch(instance.id), { errorTitle: `No se pudo abrir ${instance.name}` });
+  };
+  const stop = (instance: ManagedInstance) => {
+    if (busyRef.current !== null) return;
+    void runAction(`stop:${instance.id}`, () => bridge.stop(instance.id), { errorTitle: `No se pudo detener ${instance.name}` });
+  };
   /**
    * Reaplica el icono al Dock con la instancia detenida (HU-0020, A-5); el panel se actualiza con el estado devuelto.
    * Como `runAction`, pero devuelve el error de este intento (o `null`) para que el editor muestre solo ese.

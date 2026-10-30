@@ -1,6 +1,6 @@
 # Ciclo de vida e identidad visual de instancias
 
-Documento funcional relacionado con [HU-0004](hu/HU-0004-sincronizacion-desde-la-instancia-mas-reciente-cierre-robusto-artefactos-locales-e-identidad-visual.md) y [HU-0005](hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md).
+Documento funcional relacionado con [HU-0004](hu/HU-0004-sincronizacion-desde-la-instancia-mas-reciente-cierre-robusto-artefactos-locales-e-identidad-visual.md) y [HU-0005](hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md); abrir y detener desde el sidebar y el dashboard, de [HU-0026](../hu/HU-0026-arrancar-y-detener-instancias-desde-el-s/hu.md).
 
 ## Inicio, detección y cierre
 
@@ -14,6 +14,15 @@ Al detener, primero vuelve a comprobar que el proceso encontrado corresponde a e
 - Si la identidad no se puede comprobar o aún quedan procesos después del cierre forzado, la instancia continúa como ejecutándose y la interfaz devuelve un error accionable. No se informa un éxito falso ni se cierra por nombre, bundle ID o un PID viejo.
 
 La verificación local reduce el riesgo de reutilización de PID, pero la integración no puede asegurar el comportamiento de un updater o helper que escape de la identidad verificada. En ese caso la persona debe cerrar la ventana restante desde el sistema y volver a escanear.
+
+### Abrir y detener sin entrar en la instancia
+
+Desde HU-0026, cada instancia se abre o se detiene también desde el sidebar y desde «Uso por instancia» del dashboard,
+sin cambiar de página. En el sidebar el botón (▶ o ■) aparece al pasar el ratón o con el foco del teclado; en el
+dashboard está en cada fila. Usan los mismos comandos y la misma verificación de identidad que la página de la
+instancia, sin confirmación al detener. Mientras una operación corre, los botones de Abrir y Detener quedan
+desactivados y la fila dice «Abriendo…» o «Deteniendo…»; si falla, el aviso de siempre se titula «No se pudo
+abrir/detener {nombre}». La Claude original y las instancias sin copia no llevan botón.
 
 ## Iconos por instancia
 
@@ -29,9 +38,9 @@ No se cambian archivos sellados del bundle (`app.asar`, ejecutables, `Info.plist
 
 **Comprobación de las copias con icono.** Para ellas, `--strict` se sustituye por una comprobación equivalente: `codesign --verify --deep --strict=symlinks` con el requisito designado de la original, el CDHash registrado en la provenance (que solo se registra tras un `--strict -R` en verde sobre la copia limpia), el mismo bundle id y Team ID, la raíz del bundle con solo `Contents` e `Icon\r`, y ningún FinderInfo ni resource fork fuera de la raíz. Cualquier otro cambio hace que la copia no se abra y pida sincronizarla. La original y la descarga de HU-0017 siguen con `--strict`. Sin la original instalada, una copia con icono no se abre, porque no hay contra qué comprobarla.
 
-**Ciclo de vida.** El icono se aplica con la instancia detenida, se reaplica al lanzar si Claude se actualizó sola dentro de la copia (solo si la versión es igual o mayor que la registrada) y tras sincronizar, y se quita con «Quitar». Tras cada cambio se avisa a LaunchServices (`LSRegisterURL` y `noteFileSystemChanged`) para que el Dock no use un icono en caché.
+**Ciclo de vida.** El icono se aplica con la instancia detenida, se reaplica al lanzar si Claude se actualizó sola dentro de la copia (solo si la versión es igual o mayor que la registrada) y tras sincronizar, y se quita con «Quitar». Si el actualizador de Claude cambió `Contents/` dentro de una copia que conserva el icono (deja `Icon\r` en la raíz), la copia se acepta y se vuelve a registrar al lanzar, y sirve de fuente de sincronización, solo si su firma sigue cumpliendo el requisito de la original y su versión es estrictamente mayor que la registrada; con la misma versión u otra menor se rechaza. Tras cada cambio se avisa a LaunchServices (`LSRegisterURL` y `noteFileSystemChanged`) para que el Dock no use un icono en caché.
 
-**Permiso «Gestión de apps».** macOS protege las copias que el actualizador de Claude ha modificado: para cambiarles el icono, Code AI Profiles necesita el permiso «Gestión de apps» (Ajustes del Sistema › Privacidad y seguridad). No se pide por adelantado: si macOS rechaza el cambio, el editor lo explica y ofrece «Reintentar». Como Code AI Profiles no se firma con un certificado de desarrollador, macOS puede volver a pedirlo tras instalar una versión nueva.
+**Permiso «Gestión de apps».** macOS protege las copias que el actualizador de Claude ha modificado: para cambiarles el icono, Code AI Profiles necesita el permiso «Gestión de apps» (Ajustes del Sistema › Privacidad y seguridad). No se pide por adelantado: si macOS rechaza el cambio, el editor lo explica y ofrece «Reintentar». Desde [HU-0022](configuracion.document.md), el permiso también se explica en Configuración › Permisos, con su estado y un acceso directo al panel. Como Code AI Profiles no se firma con un certificado de desarrollador, macOS puede volver a pedirlo tras instalar una versión nueva.
 
 La transacción se limita al icono y a la metadata administrada: no toca perfiles, sesiones, credenciales, autenticación ni transcripts, ni la instalación original.
 

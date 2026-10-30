@@ -24,9 +24,11 @@ Aplicación de escritorio open source creada con Tauri, React y Rust para admini
 - Lista sesiones locales con título, modelo, turnos, actividad, estado archivado y contexto estimado.
 - Permite desplegar o contraer las sesiones de cada perfil.
 - Permite copiar, mover, devolver y desvincular sesiones entre perfiles detenidos; las copias locales de artefactos se exportan de forma segura cuando el schema de destino no está confirmado.
+- Abre y detiene cada instancia desde su página, desde el sidebar o desde el dashboard.
 - Cierra instancias mediante una identidad de proceso verificada, con espera y escalación controlada si no terminan.
 - Permite asignar un icono PNG o JPEG a cada instancia dentro de Code AI Profiles, sin alterar los binarios firmados del proveedor.
-- Incluye temas claro, oscuro y del sistema, además de tres tamaños de texto para las sesiones.
+- Reúne en Configuración (⌘, / Ctrl+,) los temas claro, oscuro y del sistema, tres tamaños de texto para toda la interfaz y los permisos opcionales del sistema, cada uno con su explicación y un acceso directo a su panel.
+- Ancla carpetas de proyectos con la metodología agéntica v4 y resume su estado, tecnologías, repos, historias, tiempo y tokens, solo leyendo sus archivos. Marca las historias con datos incompletos y abre cada historia en un lector de Markdown.
 - Usa controles de ventana apropiados para macOS y decoraciones compatibles en Windows y Linux.
 
 ## Plataformas
@@ -68,13 +70,13 @@ cargo test --manifest-path src-tauri/Cargo.toml
 
 ## Versionado
 
-El repositorio usa Semantic Versioning y actualmente está en `0.3.0`. Para preparar una versión compatible, una funcionalidad o un cambio incompatible, ejecuta:
+El repositorio usa Semantic Versioning y actualmente está en `0.4.0`. Para preparar una versión compatible, una funcionalidad o un cambio incompatible, ejecuta:
 
 ```bash
 pnpm release:version patch
 pnpm release:version minor
 pnpm release:version major
-pnpm release:version 0.3.0
+pnpm release:version 0.4.0
 pnpm release:check
 ```
 
@@ -125,7 +127,7 @@ src-tauri/target/release/bundle/macos/Code AI Profiles.app
 src-tauri/target/release/bundle/dmg/*.dmg
 ```
 
-Como referencia histórica, la entrega local de Apple Silicon `0.2.1` fue verificada. La generación de `0.3.0` se realiza únicamente después de que el merge protegido llegue a `main`; la ruta esperada del DMG y la `.app`, su hash y su verificación se reportan junto con ese artefacto. Un paquete local puede estar firmado ad-hoc y no estar notarizado, por lo que macOS puede requerir clic derecho → **Abrir**. Un artefacto local no implica una publicación o GitHub Release.
+Como referencia histórica, la entrega local de Apple Silicon `0.2.1` fue verificada. La generación de `0.4.0` se realiza únicamente después de que el merge protegido llegue a `main`; la ruta esperada del DMG y la `.app`, su hash y su verificación se reportan junto con ese artefacto. Un paquete local puede estar firmado ad-hoc y no estar notarizado, por lo que macOS puede requerir clic derecho → **Abrir**. Un artefacto local no implica una publicación o GitHub Release.
 
 ### Windows x64
 
@@ -184,7 +186,7 @@ Code AI Profiles/
 - En Windows se copia el directorio de la aplicación y cada proceso recibe su propio directorio de datos.
 - En Linux se crea un lanzador hacia el binario instalado para conservar su sandbox y permitir que el gestor de paquetes actualice el ejecutable compartido.
 
-La actualización de la aplicación original y la sincronización de instancias son operaciones separadas. En macOS, Code AI Profiles valida y abre exclusivamente la aplicación original; dentro de ella el usuario elige `Claude > Check for Updates`. En Windows abre la descarga oficial y en Linux las instrucciones apt. Nunca sobrescribe la original. Al volver del handoff, refresca únicamente versiones y topología, sin escaneo manual ni lectura de sesiones. Después, una instalación gestionada válida con la mayor versión puede sincronizar otras instancias detenidas sin tocar sus perfiles. Consulta [la guía de actualizaciones](docs/actualizaciones.document.md).
+La actualización de la aplicación original y la sincronización de instancias son operaciones separadas. En macOS, Code AI Profiles consulta la publicación oficial («Comprobar actualización») y, si hay versión nueva, la descarga, la verifica y la instala sin abrir la original. En Windows abre la descarga oficial y en Linux las instrucciones apt. Al volver de ese handoff, refresca únicamente versiones y topología, sin escaneo manual ni lectura de sesiones. Después, una instalación gestionada válida con la mayor versión puede sincronizar otras instancias detenidas sin tocar sus perfiles. Consulta [la guía de actualizaciones](docs/actualizaciones.document.md).
 
 ## Sesiones y contexto
 
@@ -216,6 +218,12 @@ Las referencias cloud, la propiedad remota y los monitores de artefactos no se t
 El botón **Detener** verifica que el proceso pertenezca a la aplicación y perfil de la instancia antes de cerrarlo, intenta un cierre normal y solo después escala dentro del árbol o grupo verificado. Si aún quedan procesos, conserva el estado ejecutándose y explica el error en vez de informar un cierre falso.
 
 Puedes asignar un icono PNG o JPEG de hasta 5 MiB a cada instancia. El icono se muestra dentro de Code AI Profiles y sobrevive a la sincronización de su aplicación. En macOS el icono también se ve en el Dock, con la forma de los iconos de macOS y sin tocar la firma de Anthropic; para las copias que Claude actualizó por su cuenta, macOS pide el permiso «Gestión de apps». Windows conserva el icono del ejecutable firmado; Linux crea un launcher opcional cuyo resultado depende del compositor. Consulta [la guía de instancias](docs/instancias.document.md).
+
+## Configuración y proyectos
+
+**Configuración** reúne la apariencia y los permisos. Los permisos son opcionales: la app funciona sin ellos, no los pide al abrirse y solo enlaza al panel de Ajustes del Sistema que corresponde. En Windows y Linux no hace falta ninguno. Consulta [la guía de Configuración](docs/configuracion.document.md).
+
+**Proyectos** muestra el resumen de las carpetas que ancles si siguen la metodología agéntica v4: fase, perfil, tecnologías, repos con su rama y último commit, historias por estado, «Tiempo en fases» y tokens de sus métricas. Las historias sin tiempo o sin métricas llevan una etiqueta y un modal explica cómo completarlas; al pulsar una historia se leen sus `.md` en un lector de Markdown, con los enlaces abiertos en el navegador. Es de solo lectura: no ejecuta nada del proyecto, no escribe en él, no usa la red y no lee nada fuera de su carpeta. En macOS, leer carpetas en Escritorio, Documentos o Descargas puede mostrar el aviso de «Archivos y carpetas». Consulta [la guía de Proyectos](docs/proyectos.document.md).
 
 ## Privacidad y seguridad
 

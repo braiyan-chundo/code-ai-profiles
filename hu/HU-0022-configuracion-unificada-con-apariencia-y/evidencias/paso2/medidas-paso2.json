@@ -1,0 +1,666 @@
+{
+ "config-apariencia-dark-comodo-1440": {
+  "texts": 60,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "config-apariencia-dark-comodo-980": {
+  "texts": 59,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "config-apariencia-light-comodo-1440": {
+  "texts": 60,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "config-apariencia-light-comodo-980": {
+  "texts": 59,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-necesita-dark-comodo-1440": {
+  "texts": 48,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-necesita-dark-comodo-980": {
+  "texts": 47,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-necesita-light-comodo-1440": {
+  "texts": 48,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-necesita-light-comodo-980": {
+  "texts": 47,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-info-dark-comodo-1440": {
+  "texts": 57,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-info-dark-comodo-980": {
+  "texts": 56,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-info-light-comodo-1440": {
+  "texts": 57,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-info-light-comodo-980": {
+  "texts": 56,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-sin-uso-dark-comodo-1440": {
+  "texts": 53,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-sin-uso-dark-comodo-980": {
+  "texts": 52,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-sin-uso-light-comodo-1440": {
+  "texts": 53,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-sin-uso-light-comodo-980": {
+  "texts": 52,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-windows-dark-comodo-1440": {
+  "texts": 36,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "header paddingRight=160 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-windows-dark-comodo-980": {
+  "texts": 35,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "header paddingRight=160 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-windows-light-comodo-1440": {
+  "texts": 36,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "header paddingRight=160 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-windows-light-comodo-980": {
+  "texts": 35,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "header paddingRight=160 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-linux-dark-comodo-1440": {
+  "texts": 36,
+  "small": 0,
+  "spaceN": 0,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-linux-dark-comodo-980": {
+  "texts": 35,
+  "small": 0,
+  "spaceN": 0,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-linux-light-comodo-1440": {
+  "texts": 36,
+  "small": 0,
+  "spaceN": 0,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-linux-light-comodo-980": {
+  "texts": 35,
+  "small": 0,
+  "spaceN": 0,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "editor-d4-dark-comodo-1440": {
+  "texts": 84,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "editor-d4-dark-comodo-980": {
+  "texts": 83,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "editor-d4-light-comodo-1440": {
+  "texts": 84,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "editor-d4-light-comodo-980": {
+  "texts": 83,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "editor-d4-bloqueado-dark-comodo-1440": {
+  "texts": 35,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "editor-d4-bloqueado-dark-comodo-980": {
+  "texts": 34,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "editor-d4-bloqueado-light-comodo-1440": {
+  "texts": 35,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "editor-d4-bloqueado-light-comodo-980": {
+  "texts": 34,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "config-apariencia-dark-compacto-1440": {
+  "texts": 60,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "config-apariencia-dark-compacto-980": {
+  "texts": 59,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "config-apariencia-dark-grande-1440": {
+  "texts": 60,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "config-apariencia-dark-grande-980": {
+  "texts": 59,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "config-apariencia-light-compacto-1440": {
+  "texts": 60,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "config-apariencia-light-compacto-980": {
+  "texts": 59,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "config-apariencia-light-grande-1440": {
+  "texts": 60,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "config-apariencia-light-grande-980": {
+  "texts": 59,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-necesita-dark-compacto-1440": {
+  "texts": 48,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-necesita-dark-compacto-980": {
+  "texts": 47,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-necesita-dark-grande-1440": {
+  "texts": 48,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-necesita-dark-grande-980": {
+  "texts": 47,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-necesita-light-compacto-1440": {
+  "texts": 48,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-necesita-light-compacto-980": {
+  "texts": 47,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-necesita-light-grande-1440": {
+  "texts": 48,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "permisos-necesita-light-grande-980": {
+  "texts": 47,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "editor-d4-dark-compacto-1440": {
+  "texts": 84,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "editor-d4-dark-compacto-980": {
+  "texts": 83,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "editor-d4-dark-grande-1440": {
+  "texts": 84,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "editor-d4-dark-grande-980": {
+  "texts": 83,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "editor-d4-light-compacto-1440": {
+  "texts": 84,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "editor-d4-light-compacto-980": {
+  "texts": 83,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "editor-d4-light-grande-1440": {
+  "texts": 84,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ },
+ "editor-d4-light-grande-980": {
+  "texts": 83,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radiusTop": [],
+  "lhTop": []
+ }
+}

@@ -1,4 +1,4 @@
-export { AppearanceDialog } from "./AppearanceDialog";
+export { AppearanceSettings } from "./AppearanceSettings";
 export { AppearanceProvider } from "./AppearanceProvider";
 export { useAppearance, type AppearanceContextValue } from "./appearance-context";
 export {

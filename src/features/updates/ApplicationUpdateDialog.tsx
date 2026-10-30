@@ -38,26 +38,26 @@ export function ApplicationUpdateDialog({
         </DialogHeader>
 
         <div className="grid gap-4">
-          <div className="flex items-center gap-3.5 rounded-xl border border-primary/15 bg-primary/5 p-4">
+          <div className="flex items-center gap-4 rounded-sm ring-1 ring-inset ring-primary/15 bg-primary/5 p-4">
             <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary-text">
               <RefreshCwIcon className="size-5" />
             </span>
             <div className="grid min-w-0 gap-1">
-              <small className="font-mono text-(length:--fs-micro) font-semibold tracking-[0.1em] text-muted-foreground uppercase">Fuente local validada</small>
-              <strong className="text-(length:--fs-body) font-semibold">{sourceName} · versión {targetVersion}</strong>
-              <p className="text-(length:--fs-small) text-muted-foreground">Se reemplazará únicamente la aplicación de cada instancia; cada perfil permanece separado.</p>
+              <small className="font-mono text-(length:--fs-micro)/(--lh-micro) font-semibold tracking-[0.1em] text-muted-foreground uppercase">Fuente local validada</small>
+              <strong className="text-(length:--fs-body)/(--lh-body) font-semibold">{sourceName} · versión {targetVersion}</strong>
+              <p className="text-(length:--fs-small)/(--lh-prose) text-muted-foreground">Se reemplazará únicamente la aplicación de cada instancia; cada perfil permanece separado.</p>
             </div>
           </div>
 
           <ItemGroup aria-label="Instancias por actualizar" className="max-h-[220px] gap-2 overflow-y-auto">
             {instances.map((instance) => (
-              <Item key={instance.id} role="listitem" variant="outline" size="sm" className="flex-nowrap bg-(--surface-soft)">
-                <ItemMedia className="size-8 rounded-lg bg-muted">
-                  <InstanceAvatar iconSrc={managedIconSource(instance)} status={instance.status} className="size-[18px]" />
+              <Item key={instance.id} role="listitem" variant="outline" size="sm" className="flex-nowrap rounded-sm bg-(--surface-soft)">
+                <ItemMedia className="size-8 rounded-sm bg-muted">
+                  <InstanceAvatar iconSrc={managedIconSource(instance)} status={instance.status} className="size-4" />
                 </ItemMedia>
                 <ItemContent className="min-w-0 gap-1">
                   <ItemTitle className="block max-w-full truncate text-xs font-semibold">{instance.name}</ItemTitle>
-                  <ItemDescription className="font-mono text-(length:--fs-small)">
+                  <ItemDescription className="font-mono text-(length:--fs-small)/(--lh-small)">
                     {instance.sourceVersion ?? "sin versión"} <span className="px-1 text-primary-text">→</span> {targetVersion}
                   </ItemDescription>
                 </ItemContent>
@@ -67,9 +67,9 @@ export function ApplicationUpdateDialog({
           </ItemGroup>
 
           {(runningInstances.length > 0 || !canSynchronize || eligibleInstances.length === 0) && (
-            <Alert className="border-warning/30 text-warning">
+            <Alert className="ring-warning/30 text-warning">
               <CircleStopIcon />
-              <AlertDescription className="text-(length:--fs-small) leading-relaxed text-warning">
+              <AlertDescription className="text-(length:--fs-small)/(--lh-prose) text-warning">
                 {!canSynchronize
                   ? unavailableReason ?? "La fuente local ya no es elegible. Vuelve a escanear el sistema."
                   : runningInstances.length
@@ -81,7 +81,7 @@ export function ApplicationUpdateDialog({
 
           <Alert className="text-muted-foreground">
             <HardDriveIcon />
-            <AlertDescription className="text-(length:--fs-small) leading-relaxed">
+            <AlertDescription className="text-(length:--fs-small)/(--lh-prose)">
               Las cuentas, sesiones, preferencias y datos de los perfiles no se modifican. Si el reemplazo falla, se restaura automáticamente la aplicación anterior.
             </AlertDescription>
           </Alert>
@@ -89,7 +89,7 @@ export function ApplicationUpdateDialog({
 
         <DialogFooter className="items-center">
           {busy && (
-            <span className="mr-auto font-mono text-(length:--fs-small) text-muted-foreground">Cada instancia devuelve un resultado independiente</span>
+            <span className="mr-auto font-mono text-(length:--fs-small)/(--lh-small) text-muted-foreground">Cada instancia devuelve un resultado independiente</span>
           )}
           <Button variant="outline" size="lg" onClick={onClose} disabled={busy}>Cancelar</Button>
           <Button size="lg" className="min-w-36" onClick={() => void onConfirm()} disabled={busy || !ready}>

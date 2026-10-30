@@ -23,12 +23,12 @@ El detalle y las reglas de dependencias, en `docs/arquitectura/frontend.md`. Lo 
 src/
   main.tsx            aviso de motor (webview-support), fuentes locales (@fontsource), styles/index.css y <App />
   app/                App.tsx (solo compone), router.tsx (createHashRouter), RouteErrorBoundary
-    providers/        AppProviders, DashboardRuntime (efectos en orden fijo), DialogsProvider (siete banderas)
+    providers/        AppProviders, DashboardRuntime (efectos en orden fijo), DialogsProvider (seis banderas)
     layout/           AppShell, AppSidebar, Titlebar, Statusbar, FeedbackArea, DialogHost, PageHeader/Content/Skeleton
-    routes/<pantalla> dashboard (índice), original e instance (lazy), con lo que solo usa esa pantalla
+    routes/<pantalla> dashboard (índice), original, instance y settings (lazy), con lo que solo usa esa pantalla
   features/<feature>/ componentes, hooks, lógica pura y tipos; su API pública en index.ts
                       dashboard (núcleo: store, selectores, useDashboard), scan, updates, instances,
-                      sessions, original-app, appearance
+                      sessions, original-app, appearance, permissions, projects
   components/         piezas sin dominio: BrandMark, EmptyState, NoticeAlert
     ui/               catálogo shadcn (63, `@/components/ui/<id>` dentro; imports relativos desde la app)
   hooks/              hooks del catálogo (use-mobile, use-highlighted-code); lib/utils.ts exporta `cn`
@@ -41,7 +41,7 @@ tests/*.test.ts       node --test sobre los módulos puros
 
 - `app/` importa todo; nadie importa de `app/`. Entre features, **solo por su `index.ts`** y sin ciclos;
   `features/dashboard` no importa ninguna feature. Dentro de una feature, imports directos. Imports relativos.
-- **Rutas** (hash): `#/` dashboard, `#/original`, `#/instancias/<id>` (UUID opaco); cualquier otra vuelve a `#/`, y
+- **Rutas** (hash): `#/` dashboard, `#/original`, `#/instancias/<id>` (UUID opaco), `#/configuracion/apariencia` y `#/configuracion/permisos` (pestañas controladas por la ruta; sin sección o con otra va a apariencia), `#/proyectos` y `#/proyectos/<id>` (UUID opaco; HU-0023); cualquier otra vuelve a `#/`, y
   un id que no está, también. **Pantalla nueva**: `app/routes/<pantalla>/<Pantalla>Route.tsx`, hija de `/` en
   `app/router.tsx` con `lazy`, que pinta dos hijos sin envoltorio: `PageHeader` (fila 1) y `PageContent` (fila 3). Su
   entrada en `AppSidebar`. Se navega con `<Link>` o `useNavigate()`. La URL nunca lleva nombres, rutas ni títulos.
@@ -65,8 +65,9 @@ tests/*.test.ts       node --test sobre los módulos puros
 - **Plataformas y barra**: la raíz (`data-slot="desktop-shell"`) lleva `platform-macos|windows|linux` y fija
   `--titlebar-height: 52px` en las tres. Una sola fila: `Titlebar` sobre el sidebar y `PageHeader` a su derecha.
   Medidas y reglas por plataforma en `estilos.md`. `body` es transparente y el marco lleva `transform`.
-- **Escala**: el tamaño es siempre `text-(length:--fs-<x>)`, nunca `text-[Npx]` ni `text-micro`, y el gris de texto
-  es `text-muted-foreground`, no `--quiet` (pruebas 12 a 14). **Ventana reducida**: mínima 980×680, cortes
+- **Escala**: el texto es siempre `text-(length:--fs-<x>)/(--lh-<y>)`, nunca `text-[Npx]`, `text-micro` ni `leading-*` con
+  nombre; el gris de texto es `text-muted-foreground`, no `--quiet`; espaciado de 4 px (`0 1 2 3 4 6 8 12`), radios
+  4/8/12/16/20/24 y foco `ring-2 ring-ring` (pruebas 12 a 16). **Ventana reducida**: mínima 980×680, cortes
   `max-[1070px]:` y `prefers-reduced-motion`. Fuentes locales: `font-src 'self' data:`. Detalle en `estilos.md`.
 
 ## Iconos y componentes
@@ -122,6 +123,7 @@ Las URLs fijas van a `src/lib/links.ts` (no existe aún), nunca en un componente
 - `node:assert/strict` y `node:test`, con dobles a mano (ni Vitest, Testing Library ni MSW). `tsconfig.json` solo
   incluye `src/`. `test:ui` vigila las fronteras: entradas de CSS, showcase, catálogo sin dominio, cookies, R-1,
   los cuatro `.css` y la ausencia de `Icons.tsx`.
+- `test:projects` cubre el reducer, los selectores y el formato de Proyectos (`tests/projects.test.ts`).
 - Un archivo de prueba nuevo lleva su script `test:<area>`, su entrada en `stack.comandos` (`.metodo/config.json`)
   y su paso en `.github/workflows/validate.yml`.
 - Hooks, componentes, temas, plataformas, diálogos con `busy` y ventana reducida se revisan con la app abierta

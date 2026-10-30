@@ -1,6 +1,7 @@
 import { DownloadIcon, RefreshCwIcon, TerminalSquareIcon } from "lucide-react";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
+import { Spinner } from "../../components/ui/spinner";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import type { CodeSession, DashboardState, SessionProfile } from "../../types";
 import { InstanceAvatar, InstanceStatusBadge } from "../instances";
@@ -11,8 +12,9 @@ import type { OriginalInstallAvailability } from "../updates";
  * El cuerpo de `#/original` (HU-0016, AC-04): la aplicación original con su ruta, versión, estado, perfil local y
  * sesiones de Code, y sus acciones: actualizar por el canal oficial y, por sesión, transferir y desvincular o devolver.
  * Sustituye a la `OriginalAppSection`. Sus botones de sesión **no** se deshabilitan con `busy`, como antes; solo
- * «Actualizar original». Con una versión disponible en macOS (HU-0017, A-10) «Descargar e instalar» es el botón
- * principal y «Actualizar original» queda como secundario, con el motivo de bloqueo a la vista.
+ * los de actualizar. En macOS no se abre la original para actualizarla: «Comprobar actualización» consulta la
+ * publicación oficial desde la app y, con una versión disponible (HU-0017, A-10), «Descargar e instalar» es el botón
+ * principal, con el motivo de bloqueo a la vista. En Windows y Linux, «Actualizar original» abre su canal oficial.
  */
 export function OriginalDetail({
   appName,
@@ -26,6 +28,8 @@ export function OriginalDetail({
   install,
   onInstall,
   onUpdate,
+  checking,
+  onCheck,
   onTransfer,
   onUnlink,
 }: {
@@ -40,6 +44,9 @@ export function OriginalDetail({
   install: OriginalInstallAvailability;
   onInstall: () => void;
   onUpdate: () => void;
+  /** La comprobación oficial está en curso. */
+  checking: boolean;
+  onCheck: () => void;
   onTransfer: (session: CodeSession) => void;
   onUnlink: (session: CodeSession) => void;
 }) {
@@ -47,7 +54,7 @@ export function OriginalDetail({
   return (
     <div className="mx-auto grid w-full max-w-[1200px] gap-4">
       <Card size="sm" data-status={status} className="ring-primary/20 data-[status=missing]:opacity-60">
-        <CardContent className="flex-row flex-wrap items-center gap-x-5 gap-y-4">
+        <CardContent className="flex-row flex-wrap items-center gap-x-6 gap-y-4">
           <InstanceAvatar
             iconSrc={null}
             status={status}
@@ -57,34 +64,49 @@ export function OriginalDetail({
           <div className="grid min-w-0 flex-1 basis-60 gap-2">
             <div className="flex flex-wrap items-center gap-2">
               <InstanceStatusBadge status={status} />
-              <Badge variant="outline" className="border-primary/30 font-mono text-(length:--fs-micro) font-semibold tracking-[0.08em] text-primary-text uppercase">
+              <Badge variant="outline" className="border-primary/30 font-mono text-(length:--fs-micro)/(--lh-micro) font-semibold tracking-[0.08em] text-primary-text uppercase">
                 Principal
               </Badge>
-              <Badge variant="secondary" className="font-mono text-(length:--fs-micro) tracking-[0.06em] uppercase">Instalación original</Badge>
+              <Badge variant="secondary" className="font-mono text-(length:--fs-micro)/(--lh-micro) tracking-[0.06em] uppercase">Instalación original</Badge>
             </div>
-            <span className="truncate font-mono text-(length:--fs-small) leading-[1.4] font-medium text-muted-foreground" title={appPath}>
+            <span className="truncate font-mono text-(length:--fs-small)/(--lh-small) font-medium text-muted-foreground" title={appPath}>
               {appPath}
             </span>
-            <span className="font-mono text-(length:--fs-small) leading-none text-muted-foreground">Versión {version ?? "—"}</span>
+            <span className="font-mono text-(length:--fs-small)/(--lh-small) text-muted-foreground">Versión {version ?? "—"}</span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-3">
             <Metric label="Perfil local" value={profilePath ? "Detectado" : "Sin detectar"} />
             <Metric label="Sesiones Code" value={`${sessions.length}`} />
-            <div className="grid justify-items-end gap-1.5">
-              <div className="flex flex-wrap items-center justify-end gap-2.5">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="lg"
-                  onClick={onUpdate}
-                  disabled={busy}
-                  aria-label={`Actualizar ${appName} mediante su canal oficial`}
-                  title={`Abrir confirmación para el canal oficial de ${channel}`}
-                  className="px-4"
-                >
-                  <RefreshCwIcon /> Actualizar original
-                </Button>
+            <div className="grid justify-items-end gap-2">
+              <div className="flex flex-wrap items-center justify-end gap-3">
+                {platform === "macos" ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="lg"
+                    onClick={onCheck}
+                    disabled={busy}
+                    aria-busy={checking}
+                    title={`Consultar la publicación oficial de ${appName}`}
+                    className="min-w-56 px-4"
+                  >
+                    {checking ? <><Spinner aria-hidden="true" /> Buscando…</> : <><RefreshCwIcon /> Comprobar actualización</>}
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="lg"
+                    onClick={onUpdate}
+                    disabled={busy}
+                    aria-label={`Actualizar ${appName} mediante su canal oficial`}
+                    title={`Abrir confirmación para el canal oficial de ${channel}`}
+                    className="px-4"
+                  >
+                    <RefreshCwIcon /> Actualizar original
+                  </Button>
+                )}
                 {install.visible && (
                   <Button type="button" size="lg" onClick={onInstall} disabled={install.disabled} className="px-4">
                     <DownloadIcon /> Descargar e instalar
@@ -101,11 +123,11 @@ export function OriginalDetail({
 
       <Card size="sm" role="region" aria-label="Sesiones de Code de la aplicación original">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-(length:--fs-heading) font-semibold">
+          <CardTitle className="flex items-center gap-2 text-(length:--fs-heading)/(--lh-heading) font-semibold">
             <TerminalSquareIcon className="size-4 text-muted-foreground" aria-hidden="true" /> Sesiones de la aplicación original
           </CardTitle>
           <CardAction>
-            <Badge variant="secondary" className="font-mono text-(length:--fs-micro) tracking-[0.06em] uppercase">
+            <Badge variant="secondary" className="font-mono text-(length:--fs-micro)/(--lh-micro) tracking-[0.06em] uppercase">
               {sessions.length} {sessions.length === 1 ? "sesión" : "sesiones"}
             </Badge>
           </CardAction>
@@ -125,9 +147,9 @@ export function OriginalDetail({
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="grid min-w-24 gap-1.5 rounded-lg border border-border bg-(--surface-soft) px-3 py-2">
-      <small className="font-mono text-(length:--fs-micro) leading-none font-medium tracking-[0.08em] text-muted-foreground uppercase">{label}</small>
-      <strong className="font-mono text-(length:--fs-body) leading-none font-semibold text-foreground">{value}</strong>
+    <div className="grid min-w-24 gap-2 rounded-lg border border-border bg-(--surface-soft) px-3 py-2">
+      <small className="font-mono text-(length:--fs-micro)/(--lh-micro) font-medium tracking-[0.08em] text-muted-foreground uppercase">{label}</small>
+      <strong className="font-mono text-(length:--fs-body)/(--lh-body) font-semibold text-foreground">{value}</strong>
     </div>
   );
 }

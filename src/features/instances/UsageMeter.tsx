@@ -7,11 +7,11 @@ import { usageTone } from "./usage-tone";
 export function UsageMeter({ label, value, className }: { label: string; value: number | null; className?: string }) {
   const progress = Math.min(100, Math.max(0, value ?? 0));
   return (
-    <Card size="sm" className={cn("min-w-0 gap-2.5", className)}>
-      <CardContent className="gap-2.5">
-        <div className="flex items-end justify-between gap-2.5">
-          <span className="truncate text-(length:--fs-micro) font-bold tracking-[0.08em] text-muted-foreground uppercase">{label}</span>
-          <strong className="font-mono text-(length:--fs-figure) leading-[0.9] font-semibold tracking-[-0.06em] text-primary-text">
+    <Card size="sm" className={cn("min-w-0 gap-3", className)}>
+      <CardContent className="gap-3">
+        <div className="flex items-end justify-between gap-3">
+          <span className="truncate text-(length:--fs-micro)/(--lh-micro) font-bold tracking-[0.08em] text-muted-foreground uppercase">{label}</span>
+          <strong className="font-mono text-(length:--fs-figure)/(--lh-figure) font-semibold tracking-[-0.06em] text-primary-text">
             {value == null ? "—" : `${Math.round(value)}%`}
           </strong>
         </div>
@@ -21,7 +21,7 @@ export function UsageMeter({ label, value, className }: { label: string; value: 
           aria-valuenow={value == null ? undefined : Math.round(progress)}
           className={cn("h-2", usageTone(progress))}
         />
-        <small className="text-right font-mono text-(length:--fs-micro) leading-none font-medium text-muted-foreground uppercase">
+        <small className="text-right font-mono text-(length:--fs-micro)/(--lh-micro) font-medium text-muted-foreground uppercase">
           {value == null ? "Sin datos" : "usado"}
         </small>
       </CardContent>

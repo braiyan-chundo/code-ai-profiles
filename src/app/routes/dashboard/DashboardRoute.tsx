@@ -41,7 +41,7 @@ export function DashboardRoute() {
                 variant="outline"
                 onClick={scanManually}
                 disabled={loading || busy !== null}
-                className="px-3.5 max-[1070px]:w-(--ctl) max-[1070px]:px-0"
+                className="max-[1070px]:w-(--ctl) max-[1070px]:px-0"
               >
                 <RefreshCwIcon className={busy === "scan" ? "animate-spin" : undefined} />
                 <span className="max-[1070px]:sr-only">Escanear sistema</span>
@@ -52,7 +52,7 @@ export function DashboardRoute() {
         </Tooltip>
         {/* El title va en el contenedor: un botón deshabilitado no recibe el puntero (AC-06: la razón sigue visible). */}
         <span title={!sourceFound ? NO_SOURCE_TITLE : undefined}>
-          <Button onClick={() => setEditor("new")} disabled={!sourceFound || busy !== null} className="px-3.5">
+          <Button onClick={() => setEditor("new")} disabled={!sourceFound || busy !== null}>
             <PlusIcon /> Nueva instancia
           </Button>
         </span>

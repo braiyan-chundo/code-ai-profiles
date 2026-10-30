@@ -19,3 +19,4 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-10-28 21:58 | hu.mjs | fase implementacion → verificacion |
 | 2026-10-28 21:59 | orquestador | veredicto: «Aprobado, cierra» — Braiyan Rodriguez, 2026-10-28 |
 | 2026-10-28 21:59 | hu.mjs | estado en-proceso → terminada |
+| 2026-10-29 00:25 | orquestador | pendientes humanos descartados por el mantenedor, que prioriza otras historias: «necesito que ya no revisemos esas tareas… marcalas quizas como deprecadas o ignoradas» (2026-10-29). No se dan por comprobados; no se vuelven a listar |

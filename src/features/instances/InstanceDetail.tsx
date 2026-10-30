@@ -1,4 +1,4 @@
-import { FolderOpenIcon, PencilIcon, PlayIcon, SquareIcon, TerminalSquareIcon, Trash2Icon } from "lucide-react";
+import { FolderOpenIcon, PencilIcon, PlayIcon, RefreshCwIcon, SquareIcon, TerminalSquareIcon, Trash2Icon } from "lucide-react";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
@@ -8,6 +8,7 @@ import { SessionList } from "../sessions";
 import { iconBadgeLabel } from "./icon-status";
 import { managedIconSource } from "./instance-icon";
 import { InstanceAvatar } from "./InstanceAvatar";
+import { instancePending } from "./instance-status";
 import { InstanceStatusBadge } from "./InstanceStatusBadge";
 import { UsageMeter } from "./UsageMeter";
 
@@ -21,6 +22,8 @@ export interface InstanceDetailProps {
   iconPreviewUrl: string | null;
   onLaunch: () => void;
   onStop: () => void;
+  /** Abre el diálogo de sincronización con esta sola instancia (HU-0024, AC-03). */
+  onUpdate: () => void;
   onOpen: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -42,6 +45,7 @@ export function InstanceDetail({
   iconPreviewUrl,
   onLaunch,
   onStop,
+  onUpdate,
   onOpen,
   onEdit,
   onDelete,
@@ -51,51 +55,52 @@ export function InstanceDetail({
   const isRunning = instance.status === "running";
   const isBusy = busy?.endsWith(instance.id) ?? false;
   const isStopping = busy === `stop:${instance.id}`;
+  const pending = instancePending(busy, instance.id);
   const iconSrc = managedIconSource(instance, iconPreviewUrl);
   const sessionCount = instance.codeSessions.length;
 
   return (
-    <div className="mx-auto grid w-full max-w-[1200px] gap-4" aria-busy={isStopping}>
+    <div className="mx-auto grid w-full max-w-[1200px] gap-4" aria-busy={pending !== null}>
       <Card
         size="sm"
-        data-status={isStopping ? "stopping" : instance.status}
+        data-status={pending ?? instance.status}
         className="data-[status=missing]:opacity-60 data-[status=running]:ring-primary/30"
       >
-        <CardContent className="flex-row flex-wrap items-center gap-x-5 gap-y-4">
+        <CardContent className="flex-row flex-wrap items-center gap-x-6 gap-y-4">
           <InstanceAvatar
             iconSrc={iconSrc}
             status={instance.status}
-            stopping={isStopping}
+            pending={pending}
             className="size-16 rounded-2xl border border-(--line-strong) bg-secondary [&>svg]:size-9"
             dotClassName="-right-1 -bottom-1 size-3.5"
           />
           <div className="grid min-w-0 flex-1 basis-60 gap-2">
             <div className="flex flex-wrap items-center gap-2">
-              <InstanceStatusBadge status={instance.status} stopping={isStopping} />
+              <InstanceStatusBadge status={instance.status} pending={pending} />
               {updateAvailable && (
-                <Badge variant="outline" className="border-primary/30 font-mono text-(length:--fs-micro) tracking-[0.04em] text-primary-text uppercase">
+                <Badge variant="outline" className="border-primary/30 font-mono text-(length:--fs-micro)/(--lh-micro) tracking-[0.04em] text-primary-text uppercase">
                   Actualización disponible
                 </Badge>
               )}
               {syncPending && (
-                <Badge variant="outline" className="border-warning/30 font-mono text-(length:--fs-micro) tracking-[0.04em] text-warning uppercase">
+                <Badge variant="outline" className="border-warning/30 font-mono text-(length:--fs-micro)/(--lh-micro) tracking-[0.04em] text-warning uppercase">
                   Sincronización pendiente
                 </Badge>
               )}
               {instance.customIcon && (
                 <Badge
                   variant="outline"
-                  className="border-success/30 text-(length:--fs-micro) text-success"
+                  className="border-success/30 text-(length:--fs-micro)/(--lh-micro) text-success"
                   title={instance.customIcon.systemMessage}
                 >
                   Icono personalizado · {iconBadgeLabel(platform, instance.customIcon.systemApplied)}
                 </Badge>
               )}
             </div>
-            <span className="truncate font-mono text-(length:--fs-small) leading-[1.4] font-medium text-muted-foreground" title={instance.appPath}>
+            <span className="truncate font-mono text-(length:--fs-small)/(--lh-small) font-medium text-muted-foreground" title={instance.appPath}>
               {instance.appPath}
             </span>
-            <span className="font-mono text-(length:--fs-small) leading-none text-muted-foreground">Versión {instance.sourceVersion ?? "—"}</span>
+            <span className="font-mono text-(length:--fs-small)/(--lh-small) text-muted-foreground">Versión {instance.sourceVersion ?? "—"}</span>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
@@ -110,18 +115,26 @@ export function InstanceDetail({
                 <Trash2Icon />
               </Button>
             )}
+            {updateAvailable && (
+              // El title va en el contenedor: un botón deshabilitado no recibe el puntero.
+              <span title={isRunning ? "Detén la instancia para actualizarla" : undefined}>
+                <Button variant="outline" size="lg" disabled={isRunning || busy !== null} onClick={onUpdate} className="px-4">
+                  <RefreshCwIcon /> Actualizar
+                </Button>
+              </span>
+            )}
             {isRunning ? (
               <Button
                 variant="outline"
                 size="lg"
-                disabled={isBusy}
+                disabled={busy !== null}
                 onClick={onStop}
                 className="min-w-28 border-primary/30 bg-primary/10 px-4 text-primary-text hover:bg-primary/15 hover:text-primary-text"
               >
                 <SquareIcon /> {isStopping ? "Deteniendo…" : "Detener"}
               </Button>
             ) : (
-              <Button size="lg" disabled={isBusy || instance.status === "missing"} onClick={onLaunch} className="min-w-28 px-4">
+              <Button size="lg" disabled={busy !== null || instance.status === "missing"} onClick={onLaunch} className="min-w-28 px-4">
                 <PlayIcon /> {isBusy ? "Abriendo…" : "Abrir"}
               </Button>
             )}
@@ -134,18 +147,18 @@ export function InstanceDetail({
           <UsageMeter label="Uso de sesión" value={instance.usage?.sessionPercent ?? null} />
           <UsageMeter label="Límite semanal" value={instance.usage?.weeklyPercent ?? null} />
         </div>
-        <span className="text-right font-mono text-(length:--fs-small) leading-tight font-medium text-muted-foreground">
+        <span className="text-right font-mono text-(length:--fs-small)/(--lh-small) font-medium text-muted-foreground">
           {formatCaptureTime(instance.usage?.capturedAt)}
         </span>
       </div>
 
       <Card size="sm" role="region" aria-label={`Sesiones de Code de ${instance.name}`}>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-(length:--fs-heading) font-semibold">
+          <CardTitle className="flex items-center gap-2 text-(length:--fs-heading)/(--lh-heading) font-semibold">
             <TerminalSquareIcon className="size-4 text-muted-foreground" aria-hidden="true" /> Sesiones de Code
           </CardTitle>
           <CardAction>
-            <Badge variant="secondary" className="font-mono text-(length:--fs-micro) tracking-[0.06em] uppercase">
+            <Badge variant="secondary" className="font-mono text-(length:--fs-micro)/(--lh-micro) tracking-[0.06em] uppercase">
               {sessionCount} {sessionCount === 1 ? "sesión" : "sesiones"}
             </Badge>
           </CardAction>

@@ -54,7 +54,9 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 ## Diferencias con el registro
 
-Ajuste 1 (HU-0019, A-3): `h-9` → `h-(--ctl)` (36 px por `--esc`), para que el campo siga el tamaño del texto de Apariencia.
+Ajuste 1 (HU-0019, A-3): `h-9` → `h-(--ctl)` (36 px; 32 y 40 en Compacto y Grande), para que el campo siga el tamaño del texto de Apariencia.
+
+Ajuste HU-0022 (A-1.1 y A-1.4): `px-2.5` → `px-3` y el foco pasa a `ring-2 ring-ring` (antes `ring-3 ring-ring/50`). La altura `--ctl` ya no es el producto por `--esc` sino 32, 36 o 40 px según el tamaño del texto.
 
 ## Qué no hacer
 

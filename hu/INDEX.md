@@ -2,14 +2,14 @@
 
 > Generado por `node .metodo/scripts/hu.mjs index`. **No se edita a mano.**
 
-12 historias · ◻ en-espera: 2 · ◐ en-proceso: 3 · ◼ terminada: 6 · ✕ descartada: 1
+17 historias · ◻ en-espera: 2 · ◐ en-proceso: 2 · ◼ terminada: 11 · ✕ descartada: 2
 
 | | Historia | Área | Fase | Repos | Reglas |
 | --- | --- | --- | --- | --- | --- |
-| ◐ | [HU-0010](HU-0010-publicar-el-fix-de-actualizacion-como-ve/hu.md) Publicar el fix de actualización como versión 0.2.2 | versionado | verificacion | code-ai-profiles | — |
+| ◼ | [HU-0010](HU-0010-publicar-el-fix-de-actualizacion-como-ve/hu.md) Publicar el fix de actualización como versión 0.2.2 | versionado | cierre | code-ai-profiles | — |
 | ◼ | [HU-0011](HU-0011-adopcion-v4/hu.md) Adopción v4 | metodo | cierre | code-ai-profiles | — |
 | ✕ | [HU-0012](HU-0012-icono-distintivo-en-el-dock-de-macos/hu.md) Icono distintivo en el Dock de macOS | instancias | requisitos | code-ai-profiles | — |
-| ◻ | [HU-0013](HU-0013-describir-lo-construido-reglas-arquitect/hu.md) Describir lo construido: reglas, arquitectura y componentes | metodo | requisitos | code-ai-profiles | — |
+| ✕ | [HU-0013](HU-0013-describir-lo-construido-reglas-arquitect/hu.md) Describir lo construido: reglas, arquitectura y componentes | metodo | requisitos | code-ai-profiles | — |
 | ◼ | [HU-0014](HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md) Design system con shadcn y showcase local | interfaz | cierre | code-ai-profiles | — |
 | ◼ | [HU-0015](HU-0015-frontend-escalable-componentes-features-/hu.md) Frontend escalable: componentes, features y router | interfaz | cierre | code-ai-profiles | — |
 | ◼ | [HU-0016](HU-0016-rediseno-con-sidebar-dashboard-y-pagina-/hu.md) Rediseño con sidebar, dashboard y página por instancia | interfaz | cierre | code-ai-profiles | — |
@@ -18,3 +18,8 @@
 | ◼ | [HU-0019](HU-0019-header-compacto-sidebar-flotante-y-tipog/hu.md) Header compacto, sidebar flotante y tipografía legible | interfaz | cierre | code-ai-profiles | — |
 | ◼ | [HU-0020](HU-0020-icono-personalizado-de-la-instancia-en-e/hu.md) Icono personalizado de la instancia en el Dock de macOS | instancias | cierre | code-ai-profiles | — |
 | ◐ | [HU-0021](HU-0021-spike-relevo-del-retorno-de-inicio-de-se/hu.md) Spike: relevo del retorno de inicio de sesión a la instancia correcta | instancias | requisitos | code-ai-profiles | — |
+| ◼ | [HU-0022](HU-0022-configuracion-unificada-con-apariencia-y/hu.md) Configuración unificada con apariencia y permisos | interfaz | cierre | code-ai-profiles | — |
+| ◼ | [HU-0023](HU-0023-proyectos-resumen-de-proyectos-con-metod/hu.md) Proyectos: resumen de proyectos con metodología v4 | proyectos | cierre | code-ai-profiles | — |
+| ◻ | [HU-0024](HU-0024-detectar-la-version-nueva-en-la-publicac/hu.md) Detectar la versión nueva en la publicación oficial e instalarla | actualizaciones | verificacion | code-ai-profiles | — |
+| ◼ | [HU-0025](HU-0025-proyectos-datos-incompletos-y-lector-de-/hu.md) Proyectos: datos incompletos y lector de historias | proyectos | cierre | code-ai-profiles | RN-02 |
+| ◼ | [HU-0026](HU-0026-arrancar-y-detener-instancias-desde-el-s/hu.md) Arrancar y detener instancias desde el sidebar y el dashboard | instancias | cierre | code-ai-profiles | — |

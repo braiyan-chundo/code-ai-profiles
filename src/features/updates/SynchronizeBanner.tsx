@@ -35,7 +35,7 @@ export function SynchronizeBanner({
           onClick={onSynchronize}
           disabled={busy !== null || !state.system.versionTopology.canSynchronizeManaged}
         >
-          Sincronizar
+          Actualizar instancias obsoletas
         </Button>
       }
     >

@@ -31,8 +31,8 @@ export function NoticeAlert({
       {...props}
     >
       {icon}
-      <AlertTitle className={cn("text-(length:--fs-body) break-words", !children && "row-span-2 self-center")}>{title}</AlertTitle>
-      {children && <AlertDescription className="text-xs">{children}</AlertDescription>}
+      <AlertTitle className={cn("text-(length:--fs-body)/(--lh-body) break-words", !children && "row-span-2 self-center")}>{title}</AlertTitle>
+      {children && <AlertDescription className="col-start-2 text-xs">{children}</AlertDescription>}
       {action && (
         <AlertAction className="static col-start-3 row-span-2 row-start-1 flex items-center gap-2 self-center">
           {action}

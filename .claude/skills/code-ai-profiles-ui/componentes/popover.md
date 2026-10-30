@@ -80,7 +80,7 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 ## Diferencias con el registro
 
-Ninguna: es el código del registro `radix-vega` (2026-10-28) tal como se descargó.
+Ninguna: es el código del registro `radix-vega` (2026-10-28) tal como se descargó. En la app lo usa `PermissionCard` para la información de cada permiso, con `align="start"`, `sideOffset={8}`, `w-84` (336 px) y `gap-3`: Radix lo abre con clic, Intro o Espacio, lo cierra con Esc y devuelve el foco al botón (24 × 24, con `aria-label`).
 
 ## Qué no hacer
 

@@ -84,6 +84,8 @@ Ajuste 1 (velo): `bg-black/10 … backdrop-blur-xs` pasa a `bg-overlay … backd
 
 Ajuste 2 (HU-0016, A-4): `Close` → `Cerrar` en el `sr-only` de la X de `SheetContent`.
 
+Ajuste HU-0022 (A-1.1): `SheetHeader` usa `gap-2` (antes `gap-1.5`).
+
 ## Qué no hacer
 
 - No usarlo como navegación permanente: es `Sidebar`.

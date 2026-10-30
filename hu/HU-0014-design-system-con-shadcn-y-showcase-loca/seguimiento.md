@@ -21,3 +21,4 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-10-28 09:14 | orquestador | verificación preparada; suite una vez sobre el commit de verificación; entregada al mantenedor — pendiente su veredicto |
 | 2026-10-28 09:56 | orquestador | veredicto: «Aprobado, cierra» — Braiyan Rodriguez, 2026-10-28, tras revisar /showcase.html con pnpm dev |
 | 2026-10-28 09:56 | hu.mjs | estado en-proceso → terminada |
+| 2026-10-29 00:25 | orquestador | pendientes humanos descartados por el mantenedor, que prioriza otras historias: «necesito que ya no revisemos esas tareas… marcalas quizas como deprecadas o ignoradas» (2026-10-29). No se dan por comprobados; no se vuelven a listar |

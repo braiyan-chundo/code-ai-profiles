@@ -122,6 +122,14 @@ HU-0019 (A-2 y A-3): 4. **Alturas con el tamaño del texto**: `SidebarInput` y `
 pasan de `h-8` a `h-(--ctl-sm)`, y `SidebarMenuBadge`, de `h-5 min-w-5` a `h-(--ctl-badge) min-w-(--ctl-badge)`. El
 plegado a iconos sigue en `size-8!`: el panel de 50 px no crece con el texto.
 
+HU-0022 (A-1): 5. **Retícula de 4 px**: `SidebarMenuButton` y `SidebarMenuBadge` toman `rounded-sm` (8, concéntrico con el panel de 8 de relleno y 16 de radio) y `leading-(--lh-small)`; el plegado a iconos pasa de `size-8!` a `size-(--ctl-sm)!`; `SidebarMenuSub` usa `mx-4 px-2 py-1` y el rail `after:w-1`. El panel flotante sigue con `ring-1 ring-sidebar-border`, sin borde. `--sidebar-ring` es `--ui-primary-text` (foco de 2 px).
+
+HU-0026 (A-3): 6. **`SidebarMenuAction` en la caja del contador**: de `top-1.5 aspect-square w-5 rounded-md` (y sus
+`top-*` por tamaño del botón) a `size-(--ctl-badge) top-1/2 -translate-y-1/2 rounded-sm`, con iconos de 16
+(`[&>svg]:size-4`). Ocupa los mismos 24 × 24 que `SidebarMenuBadge`, a 4 px del borde, así que el botón y el contador se
+relevan sin mover la fila. Plegado sigue oculto (`group-data-[collapsible=icon]:hidden`). Lo usa `AppSidebar` para
+«Abrir»/«Detener» en cada instancia: hermano del `Link` dentro del `SidebarMenuItem`, nunca dentro de él.
+
 La app lo usa con `variant="floating"` (panel de 240 px con 8 px de margen; plegado, 50 px y una columna de 64), con
 `--sidebar` = `--surface-raised` en el marco y el anillo `*:data-[slot=sidebar-inner]:ring-foreground/10`. El contenedor
 `fixed` empieza bajo la barra (`top-(--titlebar-height)! h-auto!`). Los contadores usan `SidebarMenuBadge` con

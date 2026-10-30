@@ -1,0 +1,7 @@
+Marca «Code AI Profiles» en el panel del sidebar (desplegado), medida con Chrome sin interfaz.
+scrollWidth > clientWidth = truncada. Antes: px-4 y tracking -0.04em. Después: pl-4 pr-3 y tracking -0.05em.
+Tamaño      Antes (texto/caja)      Después (texto/caja)
+Compacto    108/108 sin truncar     105/105 sin truncar
+Cómodo      122/122 sin truncar     119/119 sin truncar
+Grande      137/132 TRUNCADA        134/134 sin truncar
+Igual a 1440x920 y a 980x680, en oscuro y claro.

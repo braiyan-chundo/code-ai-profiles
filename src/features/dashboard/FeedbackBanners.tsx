@@ -3,22 +3,27 @@ import { NoticeAlert } from "../../components/NoticeAlert";
 import { Button } from "../../components/ui/button";
 import { useDashboard } from "./dashboard-context";
 
-/** El error y el aviso de la última operación, cada uno con su botón de cerrar. */
+/**
+ * El error y el aviso de la última operación, cada uno con su botón de cerrar. Si el error trae título (HU-0026: «No se
+ * pudo abrir {nombre}»), el mensaje de Rust va debajo tal cual.
+ */
 export function FeedbackBanners() {
-  const { error, notice, setError, setNotice } = useDashboard();
+  const { error, errorTitle, notice, setError, setNotice } = useDashboard();
   return (
     <>
       {error && (
         <NoticeAlert
           variant="destructive"
           icon={<TriangleAlertIcon aria-hidden="true" />}
-          title={error}
+          title={errorTitle ?? error}
           action={
             <Button variant="ghost" size="icon-sm" onClick={() => setError(null)} aria-label="Cerrar error">
               <XIcon />
             </Button>
           }
-        />
+        >
+          {errorTitle ? error : undefined}
+        </NoticeAlert>
       )}
       {notice && (
         <NoticeAlert

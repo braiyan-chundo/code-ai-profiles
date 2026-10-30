@@ -1,6 +1,11 @@
 # ADR-0002 · Módulos Rust propios y configuración en compilación
 
-Fecha: 2026-10-28 · Historia: HU-0017 · Propone: architect · Decide: Braiyan Rodriguez (mantenedor) · Estado: aceptado (2026-10-28, «Sí, modificarlas»)
+Fecha: 2026-10-28 · Historia: HU-0017 · Propone: architect · Decide: Braiyan Rodriguez (mantenedor) · Estado: aceptado (2026-10-28, «Sí, modificarlas») · **Sustituido en parte por el ADR-0003**
+
+> **Sustituido en parte por el ADR-0003 (2026-10-30).** Ya no rige lo de que los `#[tauri::command]` siguen en
+> `lib.rs` y lo demás no se mueve, ni lo de que partir `lib.rs` requiere un ADR. `lib.rs` ya está partido en
+> módulos de dominio, y los comandos viven en `commands.rs`. Siguen vigentes `config.rs`, `original_update.rs`
+> y el punto 2 (configuración fijada al compilar).
 
 ## Contexto
 

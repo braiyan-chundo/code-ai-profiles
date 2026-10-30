@@ -6,6 +6,38 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-30
+
+Pendiente de probar con una versión real: la instalación directa en macOS de una versión nueva de Claude (detección en la publicación oficial e «Instalar») se probó con pruebas automáticas y datos simulados, porque Anthropic no ha publicado versión desde la 4.4212.0. Si falla, la app lo dice y no toca la original. Windows y Linux solo se han comprobado en CI.
+
+### Added
+
+- Página **Configuración** (⌘, / Ctrl+,) con Apariencia y Permisos. En macOS, una tarjeta por permiso opcional («Gestión de apps», «Archivos y carpetas» y «Cuenta de administrador») con su explicación, su estado cuando se puede saber sin avisos del sistema y un acceso directo al panel de Ajustes. Las direcciones de los paneles salen de `.env.example`.
+- **Proyectos**: ancla carpetas con la metodología agéntica v4 y muestra su resumen (fase, perfil, tecnologías, repos con rama y último commit, historias por estado, «Desde», «Tiempo en fases» y tokens de `metricas.json`), con una sección en el sidebar. Solo lectura: no ejecuta nada del proyecto, no escribe en él, no usa la red ni lee fuera de la carpeta. Añade `tauri-plugin-dialog` 2.7 (selector de carpetas, solo desde Rust) y los textos de los avisos de macOS en `Info.plist`.
+- En macOS, la versión nueva de Claude se detecta en la publicación oficial (`downloads.claude.ai`), también durante un despliegue escalonado, y el dashboard pregunta «Hay una nueva versión de Claude (X). ¿Deseas instalarla?». «Instalar» usa el flujo verificado de «Descargar e instalar» sin abrir la original. Las instancias por detrás muestran «Actualizar» y el botón «Actualizar instancias obsoletas». Nueva variable `CAP_UPDATE_RELEASES_URL`.
+- **Proyectos**: los datos incompletos ya no ocupan la página como avisos. Cada historia lleva «Sin tiempo» o «Sin métricas», y el chip «N historias con datos incompletos · Ver» abre un modal agrupado con la causa y, para las que no tienen métricas, el comando que las genera en el proyecto, listo para copiar.
+- **Lector de historias**: al pulsar una historia se abren sus `hu.md`, `arquitectura.md`, `verificacion.md` y `seguimiento.md` en pestañas, renderizados como Markdown. Sin HTML embebido ni imágenes; los enlaces `http`/`https` se abren en el navegador del sistema. Añade `react-markdown` 10.1.0 y `remark-gfm` 4.0.1, cargados solo al abrir el lector.
+- **Abrir y detener** cada instancia desde el sidebar (al pasar el ratón o con el foco) y desde «Uso por instancia» del dashboard, sin entrar en su página.
+
+### Changed
+
+- Backend reorganizado sin cambios de comportamiento (ADR-0003): `lib.rs` se parte en módulos por dominio (`commands`, `contract`, `storage`, `processes`, `scan`, `instances`, `sessions`, `versions`) y por plataforma (`platform/`); estado compartido en `tauri::State`; errores tipados internos que distinguen los fallos de red reintentables; «Detener» y el arranque de una instancia enumeran menos veces los procesos del sistema.
+- Sistema armónico en toda la interfaz: escala de espaciado de 4 px, alturas fijas de controles por tamaño de texto, interlineados múltiplos de 4, radios 4/8/12/16/20/24 y anillo de foco de 2 px.
+- El botón principal lleva texto oscuro (contraste 6:1, antes 3:1) y el verde de éxito del tema claro es algo más oscuro (4,77:1).
+- «Configuración» sustituye al diálogo «Apariencia» en el pie del sidebar. El aviso de «Gestión de apps» del editor enlaza a Configuración › Permisos.
+
+### Fixed
+
+- En macOS, «Comprobar actualización» consulta la publicación oficial desde la app, con «Buscando…» y el resultado a la vista; ya no abre el diálogo que mandaba a actualizar desde la Claude original. Con una versión nueva, la única acción es «Instalar».
+- El aviso «No se pudo confirmar el estado de actualización · no es reciente» ya no aparece sin motivo: el estado oficial se pide cada 15 minutos (la caché sigue evitando la red durante 6 h) y en cuanto el resultado caduca. Antes el sondeo de 6 h llegaba justo antes de caducar la caché y el aviso se quedaba hasta el siguiente.
+- «Actualizar» en la página de un proyecto indica que está trabajando y termina en «✓ Actualizado» con la hora; antes no daba ninguna respuesta visible.
+- Una historia con `minutosTotales` nulo ya no cuenta como 0 minutos en «Tiempo en fases».
+- En la página de una instancia, Abrir y Detener se desactivan mientras corre otra operación.
+- El registro de instancias (`instances.json`) se guarda de forma atómica: un cierre o un fallo a mitad ya no lo deja a medias ni hace desaparecer las instancias de la app.
+- Los enlaces de sesión, la caché de versiones y los índices de sesión se reemplazan en un solo paso y forzados a disco, sin un momento en que el archivo falte.
+- Una instancia con icono personalizado que Claude actualizó por su cuenta ya no queda bloqueada como «cambió fuera de Code AI Profiles»: si sigue firmada por Anthropic y su versión es mayor que la registrada, se acepta, se vuelve a registrar y puede usarse como fuente para sincronizar las demás.
+- El diálogo «Transferir sesión de Code» es compacto: modos del mismo alto, un destino por fila y el pie siempre visible.
+
 ## [0.3.0] - 2026-10-28
 
 ### Added

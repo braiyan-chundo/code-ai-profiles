@@ -41,10 +41,11 @@
 }
 
 /*
- * HU-0019 (A-3): la escala tipográfica de toda la interfaz. El tamaño del texto (Apariencia) cambia estos valores en
- * <html data-text-size>, así que también lo heredan los diálogos y menús que Radix pinta en `body`. Ningún valor baja
- * de 11 px (lo vigila test:ui, prueba 12). --esc es el factor del alto de los controles (--ctl*). En la app el tamaño
- * es siempre `text-(length:--fs-<x>)`; el catálogo lo toma por el puente --text-* de ui-theme.css.
+ * HU-0019 (A-3) y HU-0022 (A-1.2): la escala de toda la interfaz. El tamaño del texto (Apariencia) cambia estos valores
+ * en <html data-text-size>, así que también lo heredan los diálogos y menús que Radix pinta en `body`. Ningún --fs-*
+ * baja de 11 px y ningún --lh-* ni --ctl* deja la retícula de 4 px (lo vigila test:ui, prueba 12). No hay factor
+ * proporcional: cada tamaño declara sus alturas en px enteros. En la app un texto es siempre
+ * `text-(length:--fs-<x>)/(--lh-<y>)`; el catálogo lo toma por el puente --text-* de ui-theme.css.
  */
 :root {
   --fs-micro: 11px;
@@ -54,12 +55,19 @@
   --fs-title: 17px;
   --fs-figure: 22px;
   --fs-dialog: 22px;
-  --esc: 1;
-  --ctl: calc(36px * var(--esc));
-  --ctl-sm: calc(32px * var(--esc));
-  --ctl-lg: calc(40px * var(--esc));
-  --ctl-xs: calc(24px * var(--esc));
-  --ctl-badge: calc(20px * var(--esc));
+  --lh-micro: 16px;
+  --lh-small: 16px;
+  --lh-prose: 20px;
+  --lh-body: 20px;
+  --lh-heading: 20px;
+  --lh-title: 24px;
+  --lh-figure: 28px;
+  --lh-dialog: 28px;
+  --ctl: 36px;
+  --ctl-sm: 32px;
+  --ctl-lg: 40px;
+  --ctl-xs: 24px;
+  --ctl-badge: 24px;
 }
 :root[data-text-size="compact"] {
   --fs-micro: 11px;
@@ -69,7 +77,19 @@
   --fs-title: 15px;
   --fs-figure: 20px;
   --fs-dialog: 20px;
-  --esc: 0.93;
+  --lh-micro: 16px;
+  --lh-small: 16px;
+  --lh-prose: 20px;
+  --lh-body: 20px;
+  --lh-heading: 20px;
+  --lh-title: 20px;
+  --lh-figure: 24px;
+  --lh-dialog: 24px;
+  --ctl: 32px;
+  --ctl-sm: 28px;
+  --ctl-lg: 36px;
+  --ctl-xs: 24px;
+  --ctl-badge: 24px;
 }
 :root[data-text-size="large"] {
   --fs-micro: 12px;
@@ -79,7 +99,19 @@
   --fs-title: 19px;
   --fs-figure: 26px;
   --fs-dialog: 25px;
-  --esc: 1.143;
+  --lh-micro: 16px;
+  --lh-small: 20px;
+  --lh-prose: 24px;
+  --lh-body: 24px;
+  --lh-heading: 24px;
+  --lh-title: 24px;
+  --lh-figure: 32px;
+  --lh-dialog: 32px;
+  --ctl: 40px;
+  --ctl-sm: 36px;
+  --ctl-lg: 44px;
+  --ctl-xs: 28px;
+  --ctl-badge: 28px;
 }
 
 :root {
