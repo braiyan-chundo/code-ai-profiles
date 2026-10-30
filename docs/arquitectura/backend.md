@@ -8,9 +8,10 @@ HU-0017 y manda sobre la skill hasta que esta se regenere.
 | Archivo | Qué contiene |
 | --- | --- |
 | `src-tauri/src/lib.rs` | Solo las declaraciones `mod`, los `use <módulo>::*` que reexportan cada dominio en la raíz (así los hijos que usan `super::*` ven todo) y `run()` con `generate_handler![commands::…]` |
-| `src-tauri/src/commands.rs` | Los 29 `#[tauri::command]`: envoltorios finos con `spawn_blocking`, `with_registry_operation` y el `RefreshScope` del panel. Sin lógica |
+| `src-tauri/src/commands.rs` | Los 29 `#[tauri::command]`: envoltorios finos con `spawn_blocking`, `app_state(&app).with_registry_operation(…)` y el `RefreshScope` del panel. Sin lógica |
 | `src-tauri/src/contract.rs` | Tipos serde que cruzan el IPC y eventos de ventana (espejo de `src/types.ts`) y `ORIGINAL_INSTANCE_ID`. `ManagedInstance` es también el formato de `instances.json` |
-| `src-tauri/src/storage.rs` | `ManagedPaths`, registro (`load_registry`/`save_registry`), `write_file_atomic`, `atomic_replace_file`, la caché del proceso (`runtime_cache`) y `with_registry_operation` |
+| `src-tauri/src/storage.rs` | `ManagedPaths`, registro (`load_registry`/`save_registry`), `write_file_atomic`, `atomic_replace_file`, el estado compartido (`AppState`: `RegistryLock` y `RuntimeCache`) y el memo de bundles (`application_cache`). Ver § Estado compartido |
+| `src-tauri/src/error.rs` | `AppError`: el error interno con su clase (`AppErrorKind`). Ver § Errores |
 | `src-tauri/src/processes.rs` | `ProcessInventory`, identidad verificada, estado de instancias y de la original, señales, esperas y el reaper |
 | `src-tauri/src/platform/` | Fachada por sistema: `macos.rs`, `windows.rs`, `linux.rs`, `unix.rs` (señales y grupos de procesos) y `unsupported.rs` definen las mismas funciones con la misma firma; `mod.rs` reexporta las del sistema que se compila y guarda lo portable (nombres legibles, parseo de Linux probado en todas, `open_in_file_manager`, Ajustes del Sistema) |
 | `src-tauri/src/instances/` | `mod.rs`: crear, renombrar, eliminar y abrir la carpeta; `launch.rs`: lanzar y detener; `icons.rs`: icono personalizado |
@@ -32,6 +33,42 @@ archivos (o en `unix.rs` y `windows.rs`). En el dominio solo quedan `#[cfg(targe
 pasos propios: el icono y la verificación de copias de `macos_icon.rs`, el nombre del bundle
 (`refresh_instance_bundle_names`) y el handoff de `versions/original.rs`. Cada módulo usa `super::*` y lleva sus
 pruebas en `#[cfg(test)] mod tests`.
+
+## Estado compartido
+
+- `AppState` se registra con `.manage(AppState::default())` en `run()`. Los comandos ya mueven el `AppHandle` a
+  `spawn_blocking`, así que lo leen dentro con `app_state(&app)` (`app.state::<AppState>()`), no como
+  `tauri::State<'_, _>` (no es `'static`).
+- Contiene `registry: RegistryLock`, el mutex que serializa leer, modificar y guardar `instances.json`
+  (`state.with_registry_operation(|| …)`), y `runtime: Mutex<RuntimeCache>`, con el último panel y los bytes del
+  espacio administrado (`previous_dashboard`, `remember_dashboard`, `invalidate_managed_bytes`).
+- Las funciones de dominio reciben la parte que necesitan: `system_info_scoped(&state.runtime, …)`,
+  `scan_system_sync(app, &state, …)` y `run_install(&state.registry, …)` en `original_update.rs`. Una prueba construye
+  su propio `AppState::default()` o `RegistryLock::default()`; dos estados no se bloquean ni comparten caché.
+- Sigue siendo estático del proceso, a propósito:
+  - `application_cache()` (versiones e identidades de bundles, por `ApplicationFingerprint`). Lo consultan e
+    invalidan cadenas sin estado a mano (la verificación de `macos_icon.rs`, la topología, la instalación de la
+    original) y su clave es la huella del bundle, así que no mezcla estados. Pasarlo por parámetro obligaría a
+    reescribir `macos_icon.rs`.
+  - `projects_mutex` en `projects.rs` (ver § Proyectos anclados), el vuelo de `original_update.rs` y los cerrojos de
+    `setIcon` en `macos_icon.rs`.
+- En macOS, `set_instance_icon` y `clear_instance_icon` de `macos_icon.rs` invalidan solo el memo de bundles; los bytes
+  administrados los invalida el llamador (`instances/icons.rs`) justo después.
+
+## Errores
+
+- `AppError` (`error.rs`, sin dependencias) lleva el mensaje para la persona, en español y ya redactado, y su clase:
+  `LocalIo`, `DamagedData`, `Process`, `Network`, `Remote`, `InvalidInput`, `Unsupported`, `Internal` y `Other`.
+- `Display` y `From<AppError> for String` devuelven el mensaje tal cual: por IPC sigue cruzando `Result<T, String>` con
+  el mismo texto. `From<String> for AppError` entra como `Other` (sin clasificar).
+- Solo `Network` es reintentable (`is_retryable`): sin conexión, plazo, lectura cortada, 5xx o 429. Un 4xx, un
+  documento demasiado grande o un JSON inválido es `Remote`, definitivo. Ningún camino reintenta por la clase: la
+  comprobación de versión sigue cayendo a la caché y vuelve a consultar en el siguiente arranque o sondeo.
+- Usan `AppError`: `storage` (`ManagedPaths::resolve`/`root_for`, `load_registry`, `save_registry`,
+  `atomic_replace_file`), `processes` (`signal_instance_processes` y `signal_verified_processes` de `platform/`) y
+  `versions/feed.rs` (`fetch_official_json`, `fetch_official_feed`, `save_source_update_cache`, la comprobación del
+  feed y de APT). El resto sigue con `String` y convierte con `?` o `String::from`. Lo nuevo se escribe con
+  `AppError` en el dominio y `String` solo en `commands.rs` y en los `*_sync` que llaman los comandos.
 
 ## Configuración
 
