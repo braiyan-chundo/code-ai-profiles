@@ -1,0 +1,9 @@
+# Bitácora · HU-0024 · Detectar la versión nueva en la publicación oficial e instalarla
+
+Una línea por evento, en orden: fase, despacho, SHA, aprobación (con sus palabras), veredicto, decisión.
+Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log) y el orquestador.
+
+| Fecha | Quién | Qué |
+| --- | --- | --- |
+| 2026-10-29 19:58 | hu.mjs | creada: «Detectar la versión nueva en la publicación oficial e instalarla» · fase requisitos |
+| 2026-10-29 19:59 | orquestador | petición: «el sistema debe verificar si en la pagina oficial de antrophic hay una version nueva…» — Braiyan Rodriguez (mantenedor), 2026-10-29; elecciones: «Que la instale sola (Recomendado)», red «Sí, autorizo» |
