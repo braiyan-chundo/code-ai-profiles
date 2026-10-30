@@ -2,7 +2,7 @@
 
 Documento relacionado con [HU-0005](hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md), [HU-0006](hu/HU-0006-escaneo-automatico-silencioso-y-ciclo-manual-controlado.md) y [HU-0010](hu/HU-0010-publicar-fix-de-actualizacion-como-0-2-2.md).
 
-Code AI Profiles usa [Semantic Versioning](https://semver.org/lang/es/). La versión preparada en el repositorio es `0.3.0`.
+Code AI Profiles usa [Semantic Versioning](https://semver.org/lang/es/). La versión preparada en el repositorio es `0.4.0`.
 
 ## Política
 
@@ -20,7 +20,7 @@ Usa una de estas formas desde la raíz del repositorio:
 pnpm release:version patch
 pnpm release:version minor
 pnpm release:version major
-pnpm release:version 0.3.0
+pnpm release:version 0.4.0
 ```
 
 La versión exacta debe ser ascendente y tener forma SemVer canónica. La herramienta calcula la siguiente versión o valida la indicada antes de modificar archivos. Si detecta una versión inválida, igual, menor o fuentes que ya discrepan, termina sin dejar una actualización parcial.

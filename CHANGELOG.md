@@ -6,11 +6,14 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-30
+
+Pendiente de probar con una versión real: la instalación directa en macOS de una versión nueva de Claude (detección en la publicación oficial e «Instalar») se probó con pruebas automáticas y datos simulados, porque Anthropic no ha publicado versión desde la 4.4212.0. Si falla, la app lo dice y no toca la original. Windows y Linux solo se han comprobado en CI.
+
 ### Added
 
 - Página **Configuración** (⌘, / Ctrl+,) con Apariencia y Permisos. En macOS, una tarjeta por permiso opcional («Gestión de apps», «Archivos y carpetas» y «Cuenta de administrador») con su explicación, su estado cuando se puede saber sin avisos del sistema y un acceso directo al panel de Ajustes. Las direcciones de los paneles salen de `.env.example`.
 - **Proyectos**: ancla carpetas con la metodología agéntica v4 y muestra su resumen (fase, perfil, tecnologías, repos con rama y último commit, historias por estado, «Desde», «Tiempo en fases» y tokens de `metricas.json`), con una sección en el sidebar. Solo lectura: no ejecuta nada del proyecto, no escribe en él, no usa la red ni lee fuera de la carpeta. Añade `tauri-plugin-dialog` 2.7 (selector de carpetas, solo desde Rust) y los textos de los avisos de macOS en `Info.plist`.
-
 - En macOS, la versión nueva de Claude se detecta en la publicación oficial (`downloads.claude.ai`), también durante un despliegue escalonado, y el dashboard pregunta «Hay una nueva versión de Claude (X). ¿Deseas instalarla?». «Instalar» usa el flujo verificado de «Descargar e instalar» sin abrir la original. Las instancias por detrás muestran «Actualizar» y el botón «Actualizar instancias obsoletas». Nueva variable `CAP_UPDATE_RELEASES_URL`.
 - **Proyectos**: los datos incompletos ya no ocupan la página como avisos. Cada historia lleva «Sin tiempo» o «Sin métricas», y el chip «N historias con datos incompletos · Ver» abre un modal agrupado con la causa y, para las que no tienen métricas, el comando que las genera en el proyecto, listo para copiar.
 - **Lector de historias**: al pulsar una historia se abren sus `hu.md`, `arquitectura.md`, `verificacion.md` y `seguimiento.md` en pestañas, renderizados como Markdown. Sin HTML embebido ni imágenes; los enlaces `http`/`https` se abren en el navegador del sistema. Añade `react-markdown` 10.1.0 y `remark-gfm` 4.0.1, cargados solo al abrir el lector.
@@ -19,7 +22,6 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 ### Changed
 
 - Backend reorganizado sin cambios de comportamiento (ADR-0003): `lib.rs` se parte en módulos por dominio (`commands`, `contract`, `storage`, `processes`, `scan`, `instances`, `sessions`, `versions`) y por plataforma (`platform/`); estado compartido en `tauri::State`; errores tipados internos que distinguen los fallos de red reintentables; «Detener» y el arranque de una instancia enumeran menos veces los procesos del sistema.
-
 - Sistema armónico en toda la interfaz: escala de espaciado de 4 px, alturas fijas de controles por tamaño de texto, interlineados múltiplos de 4, radios 4/8/12/16/20/24 y anillo de foco de 2 px.
 - El botón principal lleva texto oscuro (contraste 6:1, antes 3:1) y el verde de éxito del tema claro es algo más oscuro (4,77:1).
 - «Configuración» sustituye al diálogo «Apariencia» en el pie del sidebar. El aviso de «Gestión de apps» del editor enlaza a Configuración › Permisos.

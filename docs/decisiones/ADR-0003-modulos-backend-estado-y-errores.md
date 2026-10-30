@@ -1,7 +1,7 @@
 # ADR-0003 · Módulos del backend, estado en `tauri::State` y errores tipados
 
 Fecha: 2026-10-30 · Historia: refactor de la rama `refactor-backend` (sin HU) · Propone: architect · Decide: Braiyan
-Rodriguez (mantenedor) · Estado: propuesto (lo acepta el mantenedor al fusionar la rama)
+Rodriguez (mantenedor) · Estado: aceptado (al fusionar la rama en `develop`, PR #18; registrado en la versión 0.4.0)
 
 ## Contexto
 
