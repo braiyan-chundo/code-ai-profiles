@@ -85,8 +85,8 @@
     "semantic_hash": ""
   },
   ".github/workflows/build-desktop.yml": {
-    "mtime": 1793395213.606024,
-    "ast_hash": "23d19dc6b52af8022bef4629eaf35ec9",
+    "mtime": 1793396113.9114745,
+    "ast_hash": "66f90309f87e66eb991a081eb85ae088",
     "semantic_hash": ""
   },
   ".github/workflows/pr-policy.yml": {
@@ -160,8 +160,8 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1793395276.9080064,
-    "ast_hash": "94203a0479e2c4387aeea7ebf370b777",
+    "mtime": 1793396169.1326735,
+    "ast_hash": "37a2b4d5f3b0e57d75b12afc375a1f97",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
