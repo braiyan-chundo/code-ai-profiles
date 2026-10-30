@@ -20,4 +20,4 @@
 | ◐ | [HU-0021](HU-0021-spike-relevo-del-retorno-de-inicio-de-se/hu.md) Spike: relevo del retorno de inicio de sesión a la instancia correcta | instancias | requisitos | code-ai-profiles | — |
 | ◼ | [HU-0022](HU-0022-configuracion-unificada-con-apariencia-y/hu.md) Configuración unificada con apariencia y permisos | interfaz | cierre | code-ai-profiles | — |
 | ◼ | [HU-0023](HU-0023-proyectos-resumen-de-proyectos-con-metod/hu.md) Proyectos: resumen de proyectos con metodología v4 | proyectos | cierre | code-ai-profiles | — |
-| ◐ | [HU-0024](HU-0024-detectar-la-version-nueva-en-la-publicac/hu.md) Detectar la versión nueva en la publicación oficial e instalarla | actualizaciones | arquitectura | code-ai-profiles | — |
+| ◐ | [HU-0024](HU-0024-detectar-la-version-nueva-en-la-publicac/hu.md) Detectar la versión nueva en la publicación oficial e instalarla | actualizaciones | implementacion | code-ai-profiles | — |

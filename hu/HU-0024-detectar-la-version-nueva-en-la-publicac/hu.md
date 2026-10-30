@@ -2,7 +2,7 @@
 id: HU-0024
 titulo: "Detectar la versión nueva en la publicación oficial e instalarla"
 estado: en-proceso
-fase: arquitectura
+fase: implementacion
 area: actualizaciones
 entrega: 1
 prioridad: alta
