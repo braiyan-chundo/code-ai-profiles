@@ -819,8 +819,42 @@ fn save_registry(paths: &ManagedPaths, registry: &Registry) -> Result<(), String
     }
     let contents = serde_json::to_vec_pretty(&persisted)
         .map_err(|error| format!("No se pudo serializar el registro: {error}"))?;
-    fs::write(&paths.registry, contents)
+    write_file_atomic(&paths.registry, &contents, ".instances")
         .map_err(|error| format!("No se pudo guardar el registro de instancias: {error}"))
+}
+
+/// Escritura atómica de un archivo propio de la app: temporal `<prefijo>-<uuid>.tmp` en la misma
+/// carpeta, `sync_all` y `rename` sobre el destino. Si algo falla, el temporal se borra y el
+/// destino anterior queda intacto. La carpeta del destino debe existir.
+///
+/// `fs::rename` reemplaza un destino existente en las tres plataformas (en Windows usa
+/// `MoveFileExW` con `MOVEFILE_REPLACE_EXISTING`). En Windows puede fallar con acceso denegado si
+/// otro proceso, p. ej. un antivirus, tiene el destino abierto sin compartir borrado: en ese caso
+/// se devuelve el error y el archivo anterior sigue intacto.
+pub(crate) fn write_file_atomic(
+    destination: &Path,
+    contents: &[u8],
+    temporary_prefix: &str,
+) -> std::io::Result<()> {
+    use std::io::Write;
+    let parent = destination.parent().ok_or_else(|| {
+        std::io::Error::new(
+            std::io::ErrorKind::InvalidInput,
+            "el destino no tiene carpeta",
+        )
+    })?;
+    let temporary = parent.join(format!("{temporary_prefix}-{}.tmp", Uuid::new_v4()));
+    let result = (|| -> std::io::Result<()> {
+        let mut file = File::create(&temporary)?;
+        file.write_all(contents)?;
+        file.sync_all()?;
+        drop(file);
+        fs::rename(&temporary, destination)
+    })();
+    if result.is_err() {
+        let _ = fs::remove_file(&temporary);
+    }
+    result
 }
 
 fn save_session_links(paths: &ManagedPaths, links: &SessionLinkRegistry) -> Result<(), String> {
@@ -6722,6 +6756,95 @@ int main(int argc, const char **argv) {
         assert_eq!(fs::read(&destination).unwrap(), br#"{"version":2}"#);
 
         fs::remove_dir_all(root).expect("temporary test directory should be removable");
+    }
+
+    fn temporaries_in(dir: &Path) -> Vec<String> {
+        fs::read_dir(dir)
+            .unwrap()
+            .filter_map(|entry| entry.ok())
+            .map(|entry| entry.file_name().to_string_lossy().to_string())
+            .filter(|name| name.ends_with(".tmp"))
+            .collect()
+    }
+
+    #[test]
+    fn write_file_atomic_replaces_whole_file_without_leaving_temporaries() {
+        let root = env::temp_dir().join(format!("code-ai-atomic-{}", Uuid::new_v4()));
+        fs::create_dir_all(&root).unwrap();
+        let destination = root.join("data.json");
+        fs::write(
+            &destination,
+            "contenido anterior mucho más largo que el nuevo",
+        )
+        .unwrap();
+
+        write_file_atomic(&destination, b"{}", ".data").expect("should replace");
+        assert_eq!(fs::read(&destination).unwrap(), b"{}");
+        assert!(temporaries_in(&root).is_empty());
+
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn write_file_atomic_failure_keeps_destination_and_removes_temporary() {
+        let root = env::temp_dir().join(format!("code-ai-atomic-{}", Uuid::new_v4()));
+        // Un directorio no vacío como destino: el rename no puede completarse en ninguna plataforma.
+        let destination = root.join("data.json");
+        fs::create_dir_all(&destination).unwrap();
+        fs::write(destination.join("keep.txt"), "x").unwrap();
+
+        let result = write_file_atomic(&destination, b"{}", ".data");
+        assert!(result.is_err());
+        assert!(destination.join("keep.txt").exists());
+        assert!(temporaries_in(&root).is_empty());
+
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn save_registry_replaces_existing_registry_without_temporaries() {
+        let root = env::temp_dir().join(format!("code-ai-registry-{}", Uuid::new_v4()));
+        let paths = test_managed_paths(&root);
+        let mut registry = Registry::default();
+        registry.instances.push(test_instance(&root));
+        registry.instances.push(test_instance(&root));
+        save_registry(&paths, &registry).unwrap();
+        assert_eq!(load_registry(&paths).unwrap().instances.len(), 2);
+
+        registry.instances.truncate(1);
+        save_registry(&paths, &registry).unwrap();
+        assert_eq!(load_registry(&paths).unwrap().instances.len(), 1);
+        assert!(temporaries_in(&root).is_empty());
+
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn save_registry_failure_keeps_previous_registry_readable() {
+        use std::os::unix::fs::PermissionsExt;
+        let root = env::temp_dir().join(format!("code-ai-registry-{}", Uuid::new_v4()));
+        let paths = test_managed_paths(&root);
+        let mut registry = Registry::default();
+        registry.instances.push(test_instance(&root));
+        save_registry(&paths, &registry).unwrap();
+
+        // Carpeta de solo lectura: el temporal no se puede crear.
+        fs::set_permissions(&root, fs::Permissions::from_mode(0o555)).unwrap();
+        let can_still_write = File::create(root.join(".probe")).is_ok();
+        registry.instances.clear();
+        let result = save_registry(&paths, &registry);
+        fs::set_permissions(&root, fs::Permissions::from_mode(0o755)).unwrap();
+        let _ = fs::remove_file(root.join(".probe"));
+
+        if !can_still_write {
+            let message = result.expect_err("saving should fail");
+            assert!(message.starts_with("No se pudo guardar el registro de instancias"));
+            assert_eq!(load_registry(&paths).unwrap().instances.len(), 1);
+            assert!(temporaries_in(&root).is_empty());
+        }
+
+        fs::remove_dir_all(root).unwrap();
     }
 
     #[test]

@@ -358,30 +358,15 @@ fn save_projects(app_data: &Path, file: &ProjectsFile) -> Result<(), String> {
     write_json_atomic(&app_data.join(PROJECTS_FILE), &bytes)
 }
 
-/// Temporal en la misma carpeta, `sync_all` y `rename` (reemplaza en las tres plataformas). Si algo
-/// falla, el temporal se borra y el archivo anterior queda intacto.
+/// Delega en `write_file_atomic`: si algo falla, el archivo anterior queda intacto.
 fn write_json_atomic(destination: &Path, contents: &[u8]) -> Result<(), String> {
     let parent = destination
         .parent()
         .ok_or_else(|| "No se pudo resolver la carpeta del registro de proyectos.".to_string())?;
     fs::create_dir_all(parent)
         .map_err(|error| format!("No se pudo crear la carpeta de datos: {error}"))?;
-    let temporary = parent.join(format!(".projects-{}.tmp", Uuid::new_v4()));
-    let result = (|| -> std::io::Result<()> {
-        use std::io::Write;
-        let mut file = File::create(&temporary)?;
-        file.write_all(contents)?;
-        file.sync_all()?;
-        drop(file);
-        fs::rename(&temporary, destination)
-    })();
-    if let Err(error) = result {
-        let _ = fs::remove_file(&temporary);
-        return Err(format!(
-            "No se pudo guardar el registro de proyectos: {error}"
-        ));
-    }
-    Ok(())
+    write_file_atomic(destination, contents, ".projects")
+        .map_err(|error| format!("No se pudo guardar el registro de proyectos: {error}"))
 }
 
 // ── Entorno de lectura ──────────────────────────────────────────────────────
