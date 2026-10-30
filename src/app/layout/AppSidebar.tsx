@@ -61,7 +61,7 @@ export function AppSidebar() {
   const { dashboard: state, loading, busy, iconPreviews } = useDashboard();
   const { requestManual: scanManually } = useScan();
   const { launch, stop } = useInstanceActions();
-  const { setEditor, editor, deleteTarget, transfer, unlinkTarget, updateTargets, originalUpdateOpen, pinCandidate } = useDialogs();
+  const { setEditor, editor, deleteTarget, transfer, unlinkTarget, updateTargets, originalUpdateOpen, pinCandidate, projectDialog } = useDialogs();
   const navigate = useNavigate();
   const onDashboard = useMatch({ path: "/", end: true });
   const onOriginal = useMatch("/original");
@@ -81,7 +81,7 @@ export function AppSidebar() {
   const canCreate = sourceFound && busy === null;
   const originalSessions = sourceFound ? state.system.originalCodeSessions.length : 0;
   // ⌘ , no navega detrás de un modal (HU-0022, A-2).
-  const dialogOpen = Boolean(editor || deleteTarget || transfer || unlinkTarget || updateTargets || originalUpdateOpen || pinCandidate);
+  const dialogOpen = Boolean(editor || deleteTarget || transfer || unlinkTarget || updateTargets || originalUpdateOpen || pinCandidate || projectDialog);
   const settingsShortcut = `${shortcutModifierLabel(navigator.platform)} ,`;
 
   useEffect(() => {

@@ -24,13 +24,20 @@ import {
   consumptionByRole,
   historyFilters,
   historyRows,
+  incompleteChip,
+  incompleteGroups,
+  incompleteHistories,
   limitWarnings,
+  metricsCommand,
+  metricsCommands,
   repoTechnologies,
   stateFractions,
   stateSummary,
   technologyGroups,
   technologySources,
+  timeHint,
 } from "../src/features/projects/projects-detail.ts";
+import { linkTarget, readerBody } from "../src/features/projects/history-reader.ts";
 import {
   findProject,
   inProgressCount,
@@ -44,6 +51,7 @@ import { initialProjectsStore, projectsReducer, type ProjectsAction, type Projec
 import type {
   ProjectCandidate,
   ProjectCounts,
+  ProjectDataGap,
   ProjectHistory,
   ProjectHistoryState,
   ProjectInfo,
@@ -63,7 +71,7 @@ const tokens = (input: number, output: number, cacheWrite: number, cacheRead: nu
 function history(folder: string, state: ProjectHistoryState, minutes: number | null, usage: TokenBreakdown | null, counts = state === "done"): ProjectHistory {
   return {
     id: folder.slice(0, 7), folder, title: `Título ${folder.slice(0, 7)}`, state, phase: "cierre", area: "interfaz",
-    priority: "media", created: "2026-10-28", minutes, tokens: usage, countsInTotals: counts && usage !== null,
+    priority: "media", created: "2026-10-28", minutes, tokens: usage, countsInTotals: counts && usage !== null, dataGaps: [],
   };
 }
 
@@ -87,7 +95,7 @@ function info(partial: Partial<ProjectInfo> = {}): ProjectInfo {
     counts: counts({ total: 14, inProgress: 4, waiting: 1, done: 7, discarded: 2 }),
     firstCreated: "2026-10-27", lastActivity: "2026-10-29T00:27", spanDays: 3,
     totals: {
-      histories: 7, minutes: 3383,
+      histories: 7, minutes: 3383, timedHistories: 7,
       tokens: { input: 5_000_000 - 2_256_135, output: 2_256_135, cacheWrite: 10_000_000, cacheRead: 559_000_000 - 0, total: 571_504_427 },
       byRole: [
         { role: "frontend", tokens: tokens(0, 0, 0, 143_497_899), approximate: false },
@@ -491,4 +499,122 @@ test("reducer: anclar (selector, en curso, éxito idempotente y fallo con su mot
   assert.equal(twice.projects.length, 1, "anclar la misma carpeta no la duplica");
   assert.equal(twice.projects[0].readAt, "otra");
   assert.equal(run([{ type: "action-error/changed", error: "x" }, { type: "action-error/changed", error: null }]).actionError, null);
+});
+
+
+// ---- HU-0025: datos incompletos y lector ------------------------------------------------------------------------------
+
+const gapped = (folder: string, gap: ProjectDataGap | null, minutes: number | null = null): ProjectHistory => ({
+  ...history(folder, "done", minutes, tokens(1, 1, 1, 1)),
+  dataGaps: gap ? [gap] : [],
+  countsInTotals: true,
+});
+const missing = (folder: string): ProjectHistory => ({ ...history(folder, "done", null, null), dataGaps: ["noMetrics"], countsInTotals: false });
+const warning = (message: string, scope: ProjectWarning["scope"] = "config", target: string | null = null): ProjectWarning => ({ scope, target, message });
+
+const incompleteInfo = () => info({
+  histories: [
+    gapped("HU-0023-reserva", null, 60),
+    gapped("HU-0020-avisos", "noTime"),
+    missing("HU-0017-menu"),
+    gapped("HU-0004-catalogo", "noTime"),
+    missing("HU-0001-alta"),
+    history("HU-0030-en-curso", "inProgress", null, null),
+  ],
+});
+
+test("chip: sin historias incompletas ni avisos no hay chip", () => {
+  assert.equal(incompleteChip(info(), []), null);
+});
+
+test("chip: historias incompletas, en singular y plural, con tono neutro", () => {
+  assert.deepEqual(incompleteChip(incompleteInfo(), []), { text: "4 historias con datos incompletos", tone: "neutral" });
+  const one = info({ histories: [missing("HU-0001-alta")] });
+  assert.deepEqual(incompleteChip(one, []), { text: "1 historia con datos incompletos", tone: "neutral" });
+});
+
+test("chip: solo avisos dice «al leer el proyecto» y es de aviso", () => {
+  assert.deepEqual(incompleteChip(info(), [warning("a"), warning("b")]), { text: "2 avisos al leer el proyecto", tone: "warning" });
+  assert.deepEqual(incompleteChip(info(), [warning("a")]), { text: "1 aviso al leer el proyecto", tone: "warning" });
+});
+
+test("chip: historias y avisos juntos suman «· M avisos» y toman el tono de aviso", () => {
+  assert.deepEqual(incompleteChip(incompleteInfo(), [warning("a"), warning("b")]), {
+    text: "4 historias con datos incompletos · 2 avisos",
+    tone: "warning",
+  });
+  const one = info({ histories: [missing("HU-0001-alta")] });
+  assert.equal(incompleteChip(one, [warning("a")])?.text, "1 historia con datos incompletos · 1 aviso");
+});
+
+test("incompletas: solo las que tienen hueco, de la más antigua a la más reciente", () => {
+  assert.deepEqual(incompleteHistories(incompleteInfo()).map((item) => item.folder), [
+    "HU-0001-alta", "HU-0004-catalogo", "HU-0017-menu", "HU-0020-avisos",
+  ]);
+});
+
+test("grupos del modal: avisos → sin métricas → sin tiempo, y un grupo vacío no sale", () => {
+  const groups = incompleteGroups(incompleteInfo(), [warning("x", "metrics", "HU-0023")]);
+  assert.deepEqual(groups.map((group) => group.kind), ["warnings", "noMetrics", "noTime"]);
+  const [, noMetrics, noTime] = groups;
+  assert.deepEqual(noMetrics?.kind === "noMetrics" && noMetrics.histories.map((item) => item.id), ["HU-0001", "HU-0017"]);
+  assert.deepEqual(noTime?.kind === "noTime" && noTime.histories.map((item) => item.id), ["HU-0004", "HU-0020"]);
+  assert.deepEqual(incompleteGroups(incompleteInfo(), []).map((group) => group.kind), ["noMetrics", "noTime"]);
+  assert.deepEqual(incompleteGroups(info(), []), []);
+  assert.deepEqual(incompleteGroups(info(), [warning("x")]).map((group) => group.kind), ["warnings"]);
+});
+
+test("grupos del modal: los avisos llevan el tope de 20 y cuántos quedaron fuera", () => {
+  const many = Array.from({ length: 23 }, (_, index) => warning(`aviso ${index}`));
+  const [group] = incompleteGroups(info(), many);
+  assert.equal(group?.kind === "warnings" && group.warnings.length, 20);
+  assert.equal(group?.kind === "warnings" && group.hidden, 3);
+});
+
+test("metricsCommand sale de folder y no del id, que puede traer cualquier cosa", () => {
+  assert.equal(metricsCommand("HU-0023-reserva-de-puestos"), "node .metodo/scripts/metricas.mjs hu HU-0023");
+  const odd = { ...missing("HU-0007-sala"), id: "HU-9999; rm -rf ~" };
+  assert.equal(metricsCommands([odd, missing("HU-0008-x")]), "node .metodo/scripts/metricas.mjs hu HU-0007\nnode .metodo/scripts/metricas.mjs hu HU-0008");
+  assert.equal(metricsCommands([]), "");
+});
+
+test("pista de «Tiempo en fases»: «de 23 de 41 terminadas» si faltan tiempos y el texto de siempre si no", () => {
+  assert.equal(timeHint({ histories: 36, timedHistories: 23 }, { done: 41 }), "de 23 de 41 terminadas");
+  assert.equal(timeHint({ histories: 7, timedHistories: 7 }, { done: 7 }), "de 7 historias cerradas");
+  assert.equal(timeHint({ histories: 1, timedHistories: 1 }, { done: 1 }), "de 1 historia cerrada");
+  assert.equal(timeHint({ histories: 0, timedHistories: 0 }, { done: 0 }), "Aún sin historias cerradas");
+  assert.equal(timeHint({ histories: 3, timedHistories: 0 }, { done: 3 }), "ninguna de 3 terminadas tiene tiempo");
+});
+
+test("lector: se quita el frontmatter inicial y solo el inicial", () => {
+  const withFront = "---\nid: HU-0001\ntitulo: \"Alta\"\n---\n\nTexto\n\n---\n\nOtro\n";
+  assert.equal(readerBody(withFront, "Alta"), "Texto\n\n---\n\nOtro\n");
+  assert.equal(readerBody("Texto\n---\nno es frontmatter\n---\n", "Alta"), "Texto\n---\nno es frontmatter\n---\n");
+  assert.equal(readerBody("---\nsin cierre\nTexto", "Alta"), "---\nsin cierre\nTexto");
+});
+
+test("lector: el primer h1 se quita solo si es igual al título de la historia", () => {
+  assert.equal(readerBody("# Alta de usuarios\n\nTexto", "Alta de usuarios"), "Texto");
+  assert.equal(readerBody("---\nid: x\n---\n# Alta de usuarios\nTexto", "Alta de usuarios"), "Texto");
+  assert.equal(readerBody("# Otro título\n\nTexto", "Alta de usuarios"), "# Otro título\n\nTexto");
+  assert.equal(readerBody("Intro\n\n# Alta de usuarios\n", "Alta de usuarios"), "Intro\n\n# Alta de usuarios\n");
+  assert.equal(readerBody("## Alta de usuarios\n", "Alta de usuarios"), "## Alta de usuarios\n");
+});
+
+test("lector: CRLF y BOM se normalizan", () => {
+  assert.equal(readerBody("\uFEFF---\r\nid: x\r\n---\r\n# Alta\r\n\r\nTexto\r\n", "Alta"), "Texto\n");
+  assert.equal(readerBody("", "Alta"), "");
+});
+
+test("enlaces: solo http y https con host son externos; el resto, texto", () => {
+  assert.equal(linkTarget("https://docs.example.test/a?b=1#c"), "external");
+  assert.equal(linkTarget("http://example.test"), "external");
+  assert.equal(linkTarget("HTTPS://EXAMPLE.TEST"), "external");
+  for (const href of [
+    "javascript:alert(1)", "JavaScript:alert(1)", "file:///etc/passwd", "mailto:a@b.test", "tel:123", "data:text/html,x",
+    "#seccion", "../a.md", "./arquitectura.md", "//host.test/a", "https:", "http://", "", "ftp://x.test", " javascript:x",
+  ]) {
+    assert.equal(linkTarget(href), "text", href);
+  }
+  assert.equal(linkTarget(undefined), "text");
 });

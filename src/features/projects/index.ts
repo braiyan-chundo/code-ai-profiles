@@ -6,6 +6,10 @@ import { lazy } from "react";
  */
 export const PinProjectDialog = lazy(() => import("./PinProjectDialog").then(({ PinProjectDialog: Dialog }) => ({ default: Dialog })));
 
+/** El modal de datos incompletos y el lector de historias (HU-0025) también se cargan al abrirlos; el lector trae `react-markdown`. */
+export const IncompleteDataDialog = lazy(() => import("./IncompleteDataDialog").then(({ IncompleteDataDialog: Dialog }) => ({ default: Dialog })));
+export const HistoryReader = lazy(() => import("./HistoryReaderDialog"));
+
 export { ProjectsProvider } from "./ProjectsProvider";
 export { useProjects } from "./useProjects";
 export { usePinProject } from "./usePinProject";

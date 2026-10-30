@@ -6,6 +6,7 @@ import type {
   ProjectInfo,
   ProjectStatus,
   ProjectTechnology,
+  ProjectTotals,
   ProjectWarning,
 } from "../../types";
 
@@ -312,4 +313,77 @@ export const MAX_WARNINGS_SHOWN = 20;
 /** Los primeros `max` avisos y cuántos quedaron fuera. No cambia el arreglo recibido. */
 export function limitWarnings(warnings: readonly ProjectWarning[], max = MAX_WARNINGS_SHOWN): { shown: ProjectWarning[]; hidden: number } {
   return { shown: warnings.slice(0, max), hidden: Math.max(0, warnings.length - max) };
+}
+
+// ---- Datos incompletos (HU-0025) ----------------------------------------------------------------------------------
+
+/** El chip de la cabecera (D-1): su texto sin el «· Ver» y su tono. */
+export interface IncompleteChip {
+  text: string;
+  /** `warning` si el proyecto trae avisos reales: icono triángulo y borde `--ui-warning`. */
+  tone: "neutral" | "warning";
+}
+
+/** Las historias con algún hueco (`dataGaps`), de la más antigua a la más reciente, como en el modal. */
+export function incompleteHistories(info: ProjectInfo): ProjectHistory[] {
+  return info.histories
+    .filter((history) => history.dataGaps.length > 0)
+    .sort((a, b) => a.folder.localeCompare(b.folder, "es", { numeric: true }));
+}
+
+/** «18 historias con datos incompletos · 2 avisos», «3 avisos al leer el proyecto» o `null` si no hay nada que decir. */
+export function incompleteChip(info: ProjectInfo, warnings: readonly ProjectWarning[]): IncompleteChip | null {
+  const incomplete = incompleteHistories(info).length;
+  const warned = warnings.length;
+  if (incomplete === 0 && warned === 0) return null;
+  const warningText = warned === 1 ? "1 aviso" : `${warned} avisos`;
+  if (incomplete === 0) return { text: `${warningText} al leer el proyecto`, tone: "warning" };
+  const incompleteText = `${incomplete} ${incomplete === 1 ? "historia con datos incompletos" : "historias con datos incompletos"}`;
+  return warned > 0
+    ? { text: `${incompleteText} · ${warningText}`, tone: "warning" }
+    : { text: incompleteText, tone: "neutral" };
+}
+
+export type IncompleteGroup =
+  | { kind: "warnings"; warnings: ProjectWarning[]; hidden: number }
+  | { kind: "noMetrics"; histories: ProjectHistory[] }
+  | { kind: "noTime"; histories: ProjectHistory[] };
+
+/** Los grupos del modal, de lo más accionable a lo menos: avisos → sin métricas → sin tiempo. Un grupo vacío no sale. */
+export function incompleteGroups(info: ProjectInfo, warnings: readonly ProjectWarning[]): IncompleteGroup[] {
+  const histories = incompleteHistories(info);
+  const noMetrics = histories.filter((history) => history.dataGaps.includes("noMetrics"));
+  const noTime = histories.filter((history) => history.dataGaps.includes("noTime"));
+  const groups: IncompleteGroup[] = [];
+  if (warnings.length > 0) {
+    const { shown, hidden } = limitWarnings(warnings);
+    groups.push({ kind: "warnings", warnings: shown, hidden });
+  }
+  if (noMetrics.length > 0) groups.push({ kind: "noMetrics", histories: noMetrics });
+  if (noTime.length > 0) groups.push({ kind: "noTime", histories: noTime });
+  return groups;
+}
+
+/**
+ * El comando que genera `metricas.json` de una historia. Sale de los 7 primeros caracteres de `folder` (`HU-0023`,
+ * garantizados por Rust), nunca del `id` del frontmatter: el texto se pega en una terminal.
+ */
+export function metricsCommand(folder: string): string {
+  return `node .metodo/scripts/metricas.mjs hu ${folder.slice(0, 7)}`;
+}
+
+/** Los comandos de varias historias, uno por línea, para «Copiar todos». */
+export function metricsCommands(histories: readonly Pick<ProjectHistory, "folder">[]): string {
+  return histories.map((history) => metricsCommand(history.folder)).join("\n");
+}
+
+/** La pista de «Tiempo en fases»: «de 23 de 41 terminadas» si faltan tiempos; si no, «de 5 historias cerradas». */
+export function timeHint(totals: Pick<ProjectTotals, "histories" | "timedHistories">, counts: Pick<ProjectCounts, "done">): string {
+  if (totals.timedHistories < counts.done) {
+    return totals.timedHistories === 0
+      ? `ninguna de ${counts.done} terminadas tiene tiempo`
+      : `de ${totals.timedHistories} de ${counts.done} terminadas`;
+  }
+  if (totals.histories === 0) return "Aún sin historias cerradas";
+  return `de ${totals.histories} ${totals.histories === 1 ? "historia cerrada" : "historias cerradas"}`;
 }

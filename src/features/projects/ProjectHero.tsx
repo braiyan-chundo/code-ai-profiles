@@ -1,4 +1,4 @@
-import { CheckIcon, CircleCheckIcon, FolderOpenIcon, HistoryIcon, PinOffIcon, RefreshCwIcon } from "lucide-react";
+import { CheckIcon, CircleCheckIcon, FileSearchIcon, FolderOpenIcon, HistoryIcon, PinOffIcon, RefreshCwIcon, TriangleAlertIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
@@ -6,6 +6,7 @@ import { Card, CardContent } from "../../components/ui/card";
 import { Spinner } from "../../components/ui/spinner";
 import { cn } from "../../lib/utils";
 import { ProjectInitial } from "./ProjectInitial";
+import { incompleteChip } from "./projects-detail";
 import { formatClock, formatPhase } from "./projects-format";
 import { BADGE_MONO, PATH_TEXT } from "./projects-styles";
 import { projectName, type ReadableProject } from "./projects-selectors";
@@ -15,7 +16,8 @@ const META = "inline-flex min-w-0 items-center gap-2";
 /**
  * La cabecera de la página (AC-03): la inicial de 64, el perfil, la fase y «Metodología v4», el resumen en dos líneas,
  * quién aprueba, la ruta y cuándo se leyó, y las acciones: «Actualizar», «Abrir carpeta» y «Desanclar». Desanclar no
- * pide confirmación: no toca la carpeta y se deshace anclando otra vez.
+ * pide confirmación: no toca la carpeta y se deshace anclando otra vez. Si hay historias con datos incompletos o avisos
+ * de lectura, un chip de 24 px en la fila de insignias abre el modal (HU-0025, D-1).
  */
 export function ProjectHero({
   project,
@@ -25,6 +27,7 @@ export function ProjectHero({
   onRefresh,
   onOpenFolder,
   onUnpin,
+  onOpenIncomplete,
 }: {
   project: ReadableProject;
   refreshing: boolean;
@@ -34,8 +37,10 @@ export function ProjectHero({
   onRefresh: () => void;
   onOpenFolder: () => void;
   onUnpin: () => void;
+  onOpenIncomplete: () => void;
 }) {
   const { info } = project;
+  const chip = incompleteChip(info, project.warnings);
   const name = projectName(project);
   // «Actualizado» se enseña un par de segundos al terminar una lectura buena, para que el clic tenga respuesta.
   const [justUpdated, setJustUpdated] = useState(false);
@@ -58,6 +63,16 @@ export function ProjectHero({
             {info.profile && <Badge variant="secondary" className={BADGE_MONO}>Perfil {info.profile}</Badge>}
             {info.phase && <Badge variant="secondary" className={BADGE_MONO}>{formatPhase(info.phase)}</Badge>}
             <Badge variant="outline" className={cn(BADGE_MONO, "border-primary/30 text-primary-text")}>Metodología v4</Badge>
+            {chip && (
+              <Badge asChild variant="outline" className={cn("cursor-pointer gap-2 px-2 hover:bg-muted", chip.tone === "warning" && "border-(--ui-warning) text-warning hover:text-warning")}>
+                <button type="button" onClick={onOpenIncomplete} aria-haspopup="dialog">
+                  {chip.tone === "warning" ? <TriangleAlertIcon aria-hidden="true" className="size-3.5!" /> : <FileSearchIcon aria-hidden="true" className="size-3.5!" />}
+                  {chip.text}
+                  <span aria-hidden="true" className="text-muted-foreground">· </span>
+                  <b className="font-semibold text-primary-text">Ver</b>
+                </button>
+              </Badge>
+            )}
           </div>
           {info.summary && (
             <p className="line-clamp-2 max-w-[760px] text-(length:--fs-body)/(--lh-body)" title={info.summary}>{info.summary}</p>

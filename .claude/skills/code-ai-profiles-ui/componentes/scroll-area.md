@@ -11,7 +11,7 @@ Zona desplazable con barras propias.
 
 **No**
 - El cuerpo de una página: `PageContent` ya hace scroll.
-- Hoy no lo usa ninguna pantalla de la app (sí el showcase). Si una lo adopta, se usa con el tema de `ui-theme.css`, sin CSS propio.
+- En la app (HU-0025): el cuerpo del modal «Datos incompletos» y del lector de historias, con `type="always"` y el viewport en `block` (`[&>[data-slot=scroll-area-viewport]>div]:block!`, porque Radix lo envuelve en un `display: table` que ensancha el contenido).
 
 ## Importación
 
@@ -56,7 +56,7 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 ## Diferencias con el registro
 
-Ninguna: es el código del registro `radix-vega` (2026-10-28) tal como se descargó.
+Ajuste 1 (HU-0025, escala armónica): al adoptarlo la app, `test:ui` (prueba 15) lo revisa. `p-px` pasa a `p-0` en la barra y el anillo de foco del área, de `ring-[3px] ring-ring/50` a `ring-2 ring-ring`.
 
 ## Qué no hacer
 

@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import { cn } from "../../lib/utils";
 import type { ProjectHistory, ProjectInfo } from "../../types";
+import { GapTag } from "./GapTag";
 import { StateDot } from "./StateBar";
 import { formatDay, formatMinutes, formatPhase, formatTokens } from "./projects-format";
 import { EYEBROW } from "./projects-styles";
@@ -22,17 +23,30 @@ function Figure({ text, struck }: { text: string | null; struck: boolean }) {
   );
 }
 
-function HistoryRow({ history }: { history: ProjectHistory }) {
+/**
+ * Una fila: la historia entera abre el lector. El clic va en la fila; el teclado y los lectores de pantalla entran por el
+ * botón de la primera celda, cuyo clic sube hasta la fila (un solo manejador, sin `role` en un `tr`).
+ */
+function HistoryRow({ history, onOpen }: { history: ProjectHistory; onOpen: (folder: string) => void }) {
   const struck = !history.countsInTotals;
+  const noMetrics = history.dataGaps.includes("noMetrics");
+  const noTime = history.dataGaps.includes("noTime");
   const title = [history.id, history.title, history.created ? `creada el ${formatDay(history.created)}` : null].filter(Boolean).join(" · ");
   return (
     <TableRow
-      className="h-(--ctl-lg)"
+      className="h-(--ctl-lg) cursor-pointer focus-within:bg-muted/50"
       title={history.state === "discarded" ? "Descartada: no suma en los totales" : undefined}
+      onClick={() => onOpen(history.folder)}
     >
-      <TableCell className="overflow-hidden px-3 py-0 text-ellipsis" title={title}>
-        <span className="mr-2 font-mono text-(length:--fs-small)/(--lh-small) text-muted-foreground">{history.id}</span>
-        <span className="text-(length:--fs-body)/(--lh-body)">{history.title}</span>
+      <TableCell className="overflow-hidden p-0 text-ellipsis" title={title}>
+        <button
+          type="button"
+          aria-haspopup="dialog"
+          className="block h-(--ctl-lg) w-full cursor-pointer truncate rounded-sm px-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+        >
+          <span className="mr-2 font-mono text-(length:--fs-small)/(--lh-small) text-muted-foreground">{history.id}</span>
+          <span className="text-(length:--fs-body)/(--lh-body)">{history.title}</span>
+        </button>
       </TableCell>
       <TableCell className="px-3 py-0">
         <span className={cn("inline-flex items-center gap-2 text-(length:--fs-small)/(--lh-small)", history.state === "discarded" && "text-muted-foreground")}>
@@ -42,8 +56,18 @@ function HistoryRow({ history }: { history: ProjectHistory }) {
       </TableCell>
       <TableCell className="px-3 py-0 text-(length:--fs-body)/(--lh-body)">{history.phase ? formatPhase(history.phase) : "—"}</TableCell>
       <TableCell className="overflow-hidden px-3 py-0 text-ellipsis text-(length:--fs-small)/(--lh-small) text-muted-foreground max-[1070px]:hidden">{history.area ?? "—"}</TableCell>
-      <Figure text={history.minutes === null ? null : formatMinutes(history.minutes)} struck={struck && history.minutes !== null} />
-      <Figure text={history.tokens === null ? null : formatTokens(history.tokens.total)} struck={struck && history.tokens !== null} />
+      {noMetrics ? (
+        <TableCell colSpan={2} className="px-3 py-0 text-right"><GapTag>Sin métricas</GapTag></TableCell>
+      ) : (
+        <>
+          {noTime ? (
+            <TableCell className="px-3 py-0 text-right"><GapTag>Sin tiempo</GapTag></TableCell>
+          ) : (
+            <Figure text={history.minutes === null ? null : formatMinutes(history.minutes)} struck={struck && history.minutes !== null} />
+          )}
+          <Figure text={history.tokens === null ? null : formatTokens(history.tokens.total)} struck={struck && history.tokens !== null} />
+        </>
+      )}
     </TableRow>
   );
 }
@@ -51,9 +75,10 @@ function HistoryRow({ history }: { history: ProjectHistory }) {
 /**
  * La tabla de historias con su filtro por estado (AC-03 y AC-04). Las columnas son 4/2/2/2/1/1 de la retícula de 12 (el
  * Área se oculta por debajo de 1071 px y las cifras pasan a 2/12). Las descartadas siguen en la tabla con su tiempo y sus
- * tokens tachados en gris: no suman. El título completo y la fecha de creación van en el título emergente de la fila.
+ * tokens tachados en gris: no suman. El título completo y la fecha de creación van en el título emergente de la fila. Una
+ * terminada sin tiempo o sin métricas lleva la etiqueta de lo que falta (HU-0025); pulsar una fila abre el lector.
  */
-export function ProjectHistories({ info, className }: { info: ProjectInfo; className?: string }) {
+export function ProjectHistories({ info, className, onOpenHistory }: { info: ProjectInfo; className?: string; onOpenHistory: (folder: string) => void }) {
   const [filter, setFilter] = useState<HistoryFilter>("all");
   const tabs = historyFilters(info.counts);
   // Si el estado filtrado dejó de existir al releer (p. ej. «Sin estado»), vuelve a «Todas».
@@ -69,7 +94,7 @@ export function ProjectHistories({ info, className }: { info: ProjectInfo; class
             <ListFilterIcon aria-hidden="true" className="size-5 text-muted-foreground" /> Historias
           </CardTitle>
           <CardDescription className="col-start-1 text-(length:--fs-small)/(--lh-small)">
-            De <code className="font-mono">hu/</code>. Tiempo y tokens aparecen al cerrar la historia.
+            De <code className="font-mono">hu/</code>. Tiempo y tokens aparecen al cerrar la historia. Pulsa una historia para leerla.
           </CardDescription>
           <TabsList
             aria-label="Filtrar historias por estado"
@@ -113,7 +138,7 @@ export function ProjectHistories({ info, className }: { info: ProjectInfo; class
                     </TableCell>
                   </TableRow>
                 ) : (
-                  rows.map((history) => <HistoryRow key={history.folder} history={history} />)
+                  rows.map((history) => <HistoryRow key={history.folder} history={history} onOpen={onOpenHistory} />)
                 )}
               </TableBody>
             </Table>

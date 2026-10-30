@@ -11,7 +11,7 @@ Código con cabecera, numeración y botón de copiar.
 
 **No**
 - No se usa `shiki` aquí salvo `useHighlightedCode` (en `hooks`).
-- Hoy no lo usa ninguna pantalla de la app (sí el showcase). Si una lo adopta, se usa con el tema de `ui-theme.css`, sin CSS propio.
+- En la app (HU-0025): el lector de historias (`HistoryMarkdown`) pinta cada bloque de código del Markdown con `CodeBlock size="sm"`, su cabecera con el lenguaje y `CopyButton` (icono, en español), y el modal «Datos incompletos» muestra con él el comando de cada historia.
 
 ## Importación
 
@@ -77,6 +77,8 @@ El botón de copiar trae `aria-label` en inglés ("Copy"): pásalo en español.
 Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 ## Diferencias con el registro
+
+Ajuste 6 (HU-0025, escala armónica): al adoptarlo la app, `test:ui` (prueba 15) lo revisa. `me-1.5`/`-me-1.5` pasan a `me-2`/`-me-2`, `pt-1.5` a `pt-2`, `leading-relaxed` a `leading-(--lh-body)`, y el anillo de foco de `ring-3 ring-ring/50` a `ring-2 ring-ring`. El botón de copiar del catálogo sigue con `aria-label` en inglés: la app usa `CopyButton` (`features/projects`), con sus textos en español.
 
 Ajuste 5 (A-7): `highlighter.tsx` pasó de `src/lib/` a `src/hooks/`, y `use-highlighted-code.ts` lo importa de `@/hooks/highlighter` (`lib/` no puede importar React).
 

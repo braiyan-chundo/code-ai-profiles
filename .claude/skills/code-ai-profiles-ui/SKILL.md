@@ -32,6 +32,7 @@ entra en `dist/`.
 | `UsageMeter`, `UsageBar` | `features/instances` | Uso de sesión y semanal (`Card`/`Progress`) |
 | `SessionItem`, `SessionList`, `SessionContextMeter` | `features/sessions` | Una sesión, la lista y su contexto (`Item`) |
 | `ProjectInitial`, `StateBar`, `StateLegend`, `StateDot` | `features/projects` | La inicial del proyecto (16, 40, 64) y la barra por estados con su leyenda; «en espera» lleva trama y marcador hueco (HU-0023) |
+| `CopyButton`, `GapTag` | `features/projects` | Copiar un texto con `navigator.clipboard` (112 px, «Copiado», en español; `iconOnly` para el bloque de código) y la etiqueta discontinua «Sin tiempo» / «Sin métricas» (HU-0025) |
 
 ## Cómo se usa
 
