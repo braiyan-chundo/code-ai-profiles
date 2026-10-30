@@ -81,7 +81,8 @@ un módulo hijo (`mod x;` en `lib.rs`, `use super::*`), con sus comandos como en
   Los dos lados de una transferencia salen de `resolve_transfer_profile`.
 - Los enlaces de sesión, la caché del feed y los índices de sesión se reemplazan con
   `atomic_replace_file`: escribe a un `.tmp`, aparta el anterior y lo restaura si falla. El registro
-  (`save_registry`) todavía usa `fs::write`: es deuda conocida. Lo nuevo usa `atomic_replace_file`.
+  (`save_registry`) y `projects.json` usan `write_file_atomic` (temporal en la misma carpeta, `sync_all` y
+  `rename`). Un archivo propio nuevo usa una de las dos; nunca `fs::write` sobre el destino.
 - `canonicalize` antes de comparar rutas o de decidir que algo está «dentro» de una raíz.
 - Al persistir el registro no se guardan las sesiones (`code_sessions.clear()`). Solo se guardan
   metadatos: nunca prompts, respuestas, transcripts, cookies ni tokens de un perfil.
