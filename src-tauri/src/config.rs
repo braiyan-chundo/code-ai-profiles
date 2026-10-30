@@ -6,6 +6,7 @@
 use reqwest::Url;
 
 const UPDATE_FEED_URL: &str = env!("CAP_UPDATE_FEED_URL");
+const RELEASES_URL: &str = env!("CAP_UPDATE_RELEASES_URL");
 const UPDATE_DOWNLOAD_HOSTS: &str = env!("CAP_UPDATE_DOWNLOAD_HOSTS");
 const WINDOWS_X64_DOWNLOAD_URL: &str = env!("CAP_WINDOWS_X64_DOWNLOAD_URL");
 const WINDOWS_ARM64_DOWNLOAD_URL: &str = env!("CAP_WINDOWS_ARM64_DOWNLOAD_URL");
@@ -18,6 +19,11 @@ pub(crate) fn feed_url(platform: &str, arch: &str) -> String {
     UPDATE_FEED_URL
         .replace("{platform}", platform)
         .replace("{arch}", arch)
+}
+
+/// URL de la publicación oficial de versiones (`RELEASES.json`) para una plataforma y arquitectura.
+pub(crate) fn releases_url(platform: &str, arch: &str) -> String {
+    feed_url_from(RELEASES_URL, platform, arch)
 }
 
 /// Hosts desde los que se acepta descargar el paquete oficial, en minúsculas.
@@ -55,6 +61,7 @@ pub(crate) fn user_agent() -> String {
 pub(crate) fn validate() -> Result<(), String> {
     validate_values(&ConfigValues {
         update_feed_url: UPDATE_FEED_URL,
+        update_releases_url: RELEASES_URL,
         update_download_hosts: UPDATE_DOWNLOAD_HOSTS,
         windows_x64_download_url: WINDOWS_X64_DOWNLOAD_URL,
         windows_arm64_download_url: WINDOWS_ARM64_DOWNLOAD_URL,
@@ -66,6 +73,7 @@ pub(crate) fn validate() -> Result<(), String> {
 
 struct ConfigValues<'a> {
     update_feed_url: &'a str,
+    update_releases_url: &'a str,
     update_download_hosts: &'a str,
     windows_x64_download_url: &'a str,
     windows_arm64_download_url: &'a str,
@@ -77,19 +85,16 @@ struct ConfigValues<'a> {
 fn validate_values(values: &ConfigValues<'_>) -> Result<(), String> {
     let invalid =
         |key: &str, reason: &str| format!("La configuración {key} no es válida: {reason}");
-    if !values.update_feed_url.contains("{platform}") || !values.update_feed_url.contains("{arch}")
-    {
-        return Err(invalid(
-            "CAP_UPDATE_FEED_URL",
-            "debe incluir {platform} y {arch}.",
-        ));
+    for (key, template) in [
+        ("CAP_UPDATE_FEED_URL", values.update_feed_url),
+        ("CAP_UPDATE_RELEASES_URL", values.update_releases_url),
+    ] {
+        if !template.contains("{platform}") || !template.contains("{arch}") {
+            return Err(invalid(key, "debe incluir {platform} y {arch}."));
+        }
+        validate_https_url(&feed_url_from(template, "darwin", "universal"))
+            .map_err(|reason| invalid(key, &reason))?;
     }
-    validate_https_url(&feed_url_from(
-        values.update_feed_url,
-        "darwin",
-        "universal",
-    ))
-    .map_err(|reason| invalid("CAP_UPDATE_FEED_URL", &reason))?;
     let hosts = parse_hosts(values.update_download_hosts);
     if hosts.is_empty() {
         return Err(invalid(
@@ -201,6 +206,8 @@ mod tests {
     fn sample() -> ConfigValues<'static> {
         ConfigValues {
             update_feed_url: "https://feed.example.test/{platform}/{arch}/update",
+            update_releases_url:
+                "https://downloads.example.test/releases/{platform}/{arch}/RELEASES.json",
             update_download_hosts: "downloads.example.test, Mirror.Example.Test",
             windows_x64_download_url: "https://example.test/win/x64",
             windows_arm64_download_url: "https://example.test/win/arm64",
@@ -219,6 +226,9 @@ mod tests {
         let feed = feed_url("darwin", "universal");
         assert!(feed.starts_with("https://"));
         assert!(!feed.contains('{'));
+        let releases = releases_url("darwin", "universal");
+        assert!(releases.starts_with("https://"));
+        assert!(!releases.contains('{'));
         assert_eq!(
             user_agent(),
             format!("Code-AI-Profiles/{}", env!("CARGO_PKG_VERSION"))
@@ -240,7 +250,7 @@ mod tests {
 
     #[test]
     fn validation_names_the_broken_key() {
-        let cases: [(ConfigValues<'static>, &str); 9] = [
+        let cases: [(ConfigValues<'static>, &str); 12] = [
             (
                 ConfigValues {
                     update_feed_url: "https://feed.example.test/update",
@@ -254,6 +264,28 @@ mod tests {
                     ..sample()
                 },
                 "CAP_UPDATE_FEED_URL",
+            ),
+            (
+                ConfigValues {
+                    update_releases_url: "https://downloads.example.test/releases/RELEASES.json",
+                    ..sample()
+                },
+                "CAP_UPDATE_RELEASES_URL",
+            ),
+            (
+                ConfigValues {
+                    update_releases_url: "https://downloads.example.test/{platform}/RELEASES.json",
+                    ..sample()
+                },
+                "CAP_UPDATE_RELEASES_URL",
+            ),
+            (
+                ConfigValues {
+                    update_releases_url:
+                        "http://downloads.example.test/{platform}/{arch}/RELEASES.json",
+                    ..sample()
+                },
+                "CAP_UPDATE_RELEASES_URL",
             ),
             (
                 ConfigValues {

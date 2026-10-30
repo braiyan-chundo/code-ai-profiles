@@ -8,8 +8,9 @@ use std::{
     path::{Path, PathBuf},
 };
 
-const KEYS: [&str; 7] = [
+const KEYS: [&str; 8] = [
     "CAP_UPDATE_FEED_URL",
+    "CAP_UPDATE_RELEASES_URL",
     "CAP_UPDATE_DOWNLOAD_HOSTS",
     "CAP_WINDOWS_X64_DOWNLOAD_URL",
     "CAP_WINDOWS_ARM64_DOWNLOAD_URL",
