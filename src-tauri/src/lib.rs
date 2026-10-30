@@ -13,7 +13,7 @@ use std::{
     thread,
     time::{Duration, Instant},
 };
-use sysinfo::{ProcessRefreshKind, RefreshKind, System, UpdateKind};
+use sysinfo::{Pid, ProcessRefreshKind, ProcessesToUpdate, RefreshKind, System, UpdateKind};
 use tauri::{AppHandle, Emitter, Manager, WebviewWindow};
 use uuid::Uuid;
 
@@ -3583,13 +3583,6 @@ impl ProcessInventory {
         Self { entries }
     }
 
-    fn start_time(&self, pid: u32) -> Option<u64> {
-        self.entries
-            .iter()
-            .find(|process| process.pid == pid)
-            .map(|process| process.start_time)
-    }
-
     /// Algún proceso cuyo ejecutable vive dentro del bundle (la app, sus *Helpers*, `ShipIt`…).
     fn any_executable_within(&self, bundle: &Path) -> bool {
         let root = fs::canonicalize(bundle).unwrap_or_else(|_| bundle.to_path_buf());
@@ -4711,7 +4704,13 @@ fn launch_instance_sync(app: &AppHandle, id: String) -> Result<(), String> {
     let launched_instance = instance.clone();
     if let Err(error) = save_registry(&paths, &registry) {
         if let Some(identity) = launched_instance.process_identity.as_ref() {
-            let _ = signal_instance_processes(&launched_instance, identity, true);
+            // Captura fresca a propósito: el proceso acaba de nacer y el inventario previo no lo tiene.
+            let _ = signal_instance_processes(
+                &launched_instance,
+                identity,
+                true,
+                &ProcessInventory::capture(),
+            );
         }
         let _ = child.kill();
         let _ = child.wait();
@@ -4732,8 +4731,17 @@ async fn stop_instance(app: AppHandle, id: String) -> Result<DashboardState, Str
     dashboard_from_scope_async(app, RefreshScope::LIGHT, "La actualización del panel").await
 }
 
+/// Hora de inicio de un solo proceso recién lanzado. Refresca solo ese PID (sin enumerar todos
+/// los procesos del sistema) y sin CPU, memoria, línea de comandos ni ejecutable.
 fn process_start_time(pid: u32) -> Option<u64> {
-    ProcessInventory::capture().start_time(pid)
+    let pid = Pid::from_u32(pid);
+    let mut system = System::new();
+    system.refresh_processes_specifics(
+        ProcessesToUpdate::Some(&[pid]),
+        true,
+        ProcessRefreshKind::nothing(),
+    );
+    system.process(pid).map(|process| process.start_time())
 }
 
 fn spawn_process_reaper(app: AppHandle, instance_id: String, generation: u64, mut child: Child) {
@@ -4752,6 +4760,7 @@ fn spawn_process_reaper(app: AppHandle, instance_id: String, generation: u64, mu
 fn wait_until_instance_stops(instance: &ManagedInstance, timeout: Duration) -> bool {
     let deadline = Instant::now() + timeout;
     loop {
+        // Recaptura a propósito: esperar a que el proceso termine exige el estado de cada instante.
         let inventory = ProcessInventory::capture();
         if process_snapshot(instance, &inventory).is_empty() {
             return true;
@@ -4767,9 +4776,9 @@ fn signal_instance_processes(
     instance: &ManagedInstance,
     identity: &ManagedProcessIdentity,
     force: bool,
+    inventory: &ProcessInventory,
 ) -> Result<(), String> {
-    let inventory = ProcessInventory::capture();
-    let processes = process_snapshot(instance, &inventory);
+    let processes = process_snapshot(instance, inventory);
     if processes.is_empty() {
         return Ok(());
     }
@@ -4859,7 +4868,7 @@ fn signal_instance_processes(
 
 fn stop_instance_sync(app: &AppHandle, id: &str) -> Result<(), String> {
     let paths = ManagedPaths::resolve(&app)?;
-    let instance = with_registry_operation(|| {
+    let running = with_registry_operation(|| {
         let mut registry = load_registry(&paths)?;
         let inventory = ProcessInventory::capture();
         refresh_instance_statuses(&mut registry, &inventory);
@@ -4875,17 +4884,20 @@ fn stop_instance_sync(app: &AppHandle, id: &str) -> Result<(), String> {
             save_registry(&paths, &registry)?;
             return Ok(None);
         }
-        Ok(Some(registry.instances[position].clone()))
+        Ok(Some((registry.instances[position].clone(), inventory)))
     })?;
-    let Some(instance) = instance else {
+    let Some((instance, stop_inventory)) = running else {
         return Ok(());
     };
     let identity = instance.process_identity.clone().ok_or_else(|| {
         "No se pudo verificar la identidad del proceso. Cierra esta instancia manualmente y vuelve a escanear.".to_string()
     })?;
-    signal_instance_processes(&instance, &identity, false)?;
+    // La señal ordenada reutiliza el inventario que acaba de confirmar que la instancia corre.
+    signal_instance_processes(&instance, &identity, false, &stop_inventory)?;
     if !wait_until_instance_stops(&instance, Duration::from_secs(5)) {
-        signal_instance_processes(&instance, &identity, true)?;
+        // Captura fresca a propósito: pasaron hasta 5 s y el cierre forzado no puede apoyarse en
+        // un inventario viejo (un PID pudo terminar o ser reutilizado).
+        signal_instance_processes(&instance, &identity, true, &ProcessInventory::capture())?;
         if !wait_until_instance_stops(&instance, Duration::from_secs(2)) {
             with_registry_operation(|| {
                 let mut registry = load_registry(&paths)?;
@@ -6778,6 +6790,44 @@ int main(int argc, const char **argv) {
         assert_eq!(leftovers.len(), 1);
 
         fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn process_start_time_matches_full_inventory_without_enumerating_processes() {
+        let own_pid = std::process::id();
+        let expected = ProcessInventory::capture()
+            .entries
+            .iter()
+            .find(|process| process.pid == own_pid)
+            .map(|process| process.start_time);
+        assert!(expected.is_some());
+
+        reset_refresh_work_counters();
+        assert_eq!(process_start_time(own_pid), expected);
+        assert_eq!(refresh_work_counters().process_inventories, 0);
+        assert_eq!(process_start_time(u32::MAX - 1), None);
+    }
+
+    #[test]
+    fn signaling_reuses_the_given_inventory_instead_of_capturing_again() {
+        let root = env::temp_dir().join(format!("code-ai-signal-{}", Uuid::new_v4()));
+        let instance = test_instance(&root);
+        let profile_argument = format!("--user-data-dir={}", instance.profile_path);
+        let identity = ManagedProcessIdentity {
+            root_pid: u32::MAX - 1,
+            process_group_id: None,
+            start_time: None,
+            fingerprint: process_fingerprint(Path::new(&instance.app_path), &profile_argument),
+            profile_argument,
+        };
+        let empty = ProcessInventory {
+            entries: Vec::new(),
+        };
+
+        reset_refresh_work_counters();
+        signal_instance_processes(&instance, &identity, false, &empty)
+            .expect("without matching processes there is nothing to signal");
+        assert_eq!(refresh_work_counters().process_inventories, 0);
     }
 
     fn temporaries_in(dir: &Path) -> Vec<String> {
