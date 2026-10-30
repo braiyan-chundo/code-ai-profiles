@@ -40,7 +40,18 @@ Hay tres salidas, y ninguna lleva cookies, credenciales ni identificadores (el `
 | --- | --- | --- |
 | Feed oficial (`CAP_UPDATE_FEED_URL`) | Comprobación de versión (caché de 6 h) y antes de instalar | 5 s, sin redirecciones, 256 KiB |
 | Publicación oficial (`CAP_UPDATE_RELEASES_URL`, solo macOS · HU-0024) | Comprobación de versión (misma caché) y antes de instalar | Igual que el feed; sin query. El feed se pregunta entonces también con la versión publicada para confirmar su paquete |
-| Host del paquete (`CAP_UPDATE_DOWNLOAD_HOSTS`) | Solo cuando la persona pulsa «Descargar e instalar» | `https_only`, host exacto, sin `Referer`, hasta 3 redirecciones a hosts permitidos, `size` del feed como tope (lee `size + 1` como mucho), 15 s de conexión, 60 s sin bytes, 30 min en total, cancelable |
+| Host del paquete (`CAP_UPDATE_DOWNLOAD_HOSTS`) | Solo cuando la persona pulsa «Instalar» (antes «Descargar e instalar») | `https_only`, host exacto, sin `Referer`, hasta 3 redirecciones a hosts permitidos, `size` del feed como tope (lee `size + 1` como mucho), 15 s de conexión, 60 s sin bytes, 30 min en total, cancelable |
+
+La versión objetivo en macOS (HU-0024) sale de `official_release::resolve_official_target`: si `RELEASES.json`
+anuncia una versión mayor que la instalada y que el feed, el feed se pregunta por ella y su paquete solo vale con la
+**misma versión y la misma URL** (comparadas ya parseadas). Si no se confirma, manda el feed con un aviso
+(`warning`). Como mucho 3 GET por comprobación y otros 3 al pulsar «Instalar», que vuelve a resolver y rechaza si la
+versión ya no es la mostrada. La URL de `RELEASES.json` sale de la configuración (https) y no se contrasta con
+`CAP_UPDATE_DOWNLOAD_HOSTS`; la del paquete, sí.
+
+`source-update-cache.json` lleva `schema: 2`; una caché con otro valor no se usa ni para pintar. Un resultado con
+`warning` solo cuenta como fresco 30 min para volver a consultar (6 h sin aviso); para pintar el panel vale como
+siempre. No hay reintentos automáticos: el siguiente arranque, el sondeo de 6 h o la vuelta del canal oficial.
 
 En `reqwest::blocking` 0.13, `ClientBuilder::timeout` se aplica a la espera de la respuesta y a **cada lectura**
 por separado (`blocking/response.rs`, `impl Read`). Por eso funciona como plazo «sin bytes». El plazo total lo

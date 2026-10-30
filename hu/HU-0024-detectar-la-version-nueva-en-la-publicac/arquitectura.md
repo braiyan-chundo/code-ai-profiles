@@ -221,4 +221,4 @@ toca `src-tauri/`, `.env.example` y nada de `src/`.
 
 ## Revisión técnica
 
-<!-- Se escribe tras implementar, antes de la prueba humana. -->
+**PASS** (2026-10-29, HEAD `40b13c5`). Detalle y hallazgos R-1..R-4 (deuda) en `revision-tecnica.md`.
