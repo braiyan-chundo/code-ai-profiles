@@ -2,7 +2,7 @@
 
 > Generado por `node .metodo/scripts/hu.mjs index`. **No se edita a mano.**
 
-15 historias · ◻ en-espera: 2 · ◐ en-proceso: 2 · ◼ terminada: 9 · ✕ descartada: 2
+17 historias · ◻ en-espera: 2 · ◐ en-proceso: 4 · ◼ terminada: 9 · ✕ descartada: 2
 
 | | Historia | Área | Fase | Repos | Reglas |
 | --- | --- | --- | --- | --- | --- |
@@ -21,3 +21,5 @@
 | ◼ | [HU-0022](HU-0022-configuracion-unificada-con-apariencia-y/hu.md) Configuración unificada con apariencia y permisos | interfaz | cierre | code-ai-profiles | — |
 | ◼ | [HU-0023](HU-0023-proyectos-resumen-de-proyectos-con-metod/hu.md) Proyectos: resumen de proyectos con metodología v4 | proyectos | cierre | code-ai-profiles | — |
 | ◻ | [HU-0024](HU-0024-detectar-la-version-nueva-en-la-publicac/hu.md) Detectar la versión nueva en la publicación oficial e instalarla | actualizaciones | verificacion | code-ai-profiles | — |
+| ◐ | [HU-0025](HU-0025-proyectos-datos-incompletos-y-lector-de-/hu.md) Proyectos: datos incompletos y lector de historias | proyectos | requisitos | code-ai-profiles | RN-02 |
+| ◐ | [HU-0026](HU-0026-arrancar-y-detener-instancias-desde-el-s/hu.md) Arrancar y detener instancias desde el sidebar y el dashboard | instancias | requisitos | code-ai-profiles | — |
