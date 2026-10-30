@@ -2,7 +2,7 @@
 id: HU-0026
 titulo: "Arrancar y detener instancias desde el sidebar y el dashboard"
 estado: en-proceso
-fase: implementacion
+fase: verificacion
 area: instancias
 entrega: 1
 prioridad: alta
