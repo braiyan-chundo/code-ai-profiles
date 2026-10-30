@@ -135,8 +135,8 @@
     "semantic_hash": ""
   },
   "docs/actualizaciones.document.md": {
-    "mtime": 1793248079.0271997,
-    "ast_hash": "1065b4267b69e930acb6e41a9b4cfe1f",
+    "mtime": 1793323631.3208735,
+    "ast_hash": "f2e769eb5acdd76c9c1eb0ac9661fc54",
     "semantic_hash": ""
   },
   "docs/sesiones.document.md": {
@@ -160,8 +160,8 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1793275919.1277544,
-    "ast_hash": "d974b85439ecda4a8fce401e3ee9fe5a",
+    "mtime": 1793323631.321141,
+    "ast_hash": "56dd8ae0716194d72d5eecf290b5fde1",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793322440.1309466,
-    "ast_hash": "846af492846203cf29f3f07a37ce8afc",
+    "mtime": 1793323640.562783,
+    "ast_hash": "d3172ed5621290df794ee1fbcd95738a",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -3205,13 +3205,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/hu.md": {
-    "mtime": 1793322440.1216278,
-    "ast_hash": "1df3b766c03ed2df89e990e5809a7d47",
+    "mtime": 1793323640.553259,
+    "ast_hash": "0bc2d2923392b512216154fc89fec982",
     "semantic_hash": ""
   },
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/seguimiento.md": {
-    "mtime": 1793322440.1296573,
-    "ast_hash": "7930068cb222bfb33828efac7a42a1da",
+    "mtime": 1793323640.5615485,
+    "ast_hash": "c668cfbe99025849dde37b79cc3e8062",
     "semantic_hash": ""
   },
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/evidencias/01-dashboard-oscuro.png": {
@@ -3247,6 +3247,11 @@
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/revision-tecnica.md": {
     "mtime": 1793323084.3432207,
     "ast_hash": "4cc7eae315e2f3741068436e7aef5a1d",
+    "semantic_hash": ""
+  },
+  "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/verificacion.md": {
+    "mtime": 1793323640.5215,
+    "ast_hash": "17610526b4a6246bd5addb68a5f34681",
     "semantic_hash": ""
   }
 }
