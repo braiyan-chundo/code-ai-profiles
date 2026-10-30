@@ -181,6 +181,7 @@ pub(crate) fn reapply_instance_icon_sync(app: &AppHandle, id: String) -> Result<
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[cfg(target_os = "macos")]
     use crate::test_support::*;
 
     #[cfg(target_os = "macos")]

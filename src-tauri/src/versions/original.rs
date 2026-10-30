@@ -132,6 +132,7 @@ pub(crate) fn update_original_application_sync(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[cfg(target_os = "macos")]
     use crate::test_support::*;
 
     #[test]

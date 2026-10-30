@@ -1,5 +1,6 @@
 //! Ciclo de vida de las instancias administradas: crear (copia de la aplicación y perfil propio),
-//! renombrar, eliminar y abrir la carpeta del perfil. Lanzar y detener están en `launch.rs`; el icono, en `icons.rs`.
+//! renombrar, eliminar y abrir la carpeta del perfil. Lanzar y detener están en `launch.rs`; el
+//! icono, en `icons.rs`.
 
 use super::*;
 
