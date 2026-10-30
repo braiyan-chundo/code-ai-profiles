@@ -1,13 +1,25 @@
 # Arquitectura del backend (Rust + Tauri)
 
 Las reglas generales están en la skill `code-ai-profiles-rust-tauri`. Este documento recoge lo que cambia desde la
-HU-0017 y manda sobre la skill hasta que esta se regenere.
+HU-0017 y manda sobre la skill si no coinciden. La estructura de módulos, el estado y los errores los fija el ADR-0003.
 
-## Módulos (ADR-0002)
+## Módulos (ADR-0003)
 
 | Archivo | Qué contiene |
 | --- | --- |
-| `src-tauri/src/lib.rs` | Tipos serde, comandos IPC, lógica general y `run()` |
+| `src-tauri/src/lib.rs` | Solo las declaraciones `mod`, los `use <módulo>::*` que reexportan cada dominio en la raíz (así los hijos que usan `super::*` ven todo) y `run()` con `generate_handler![commands::…]` |
+| `src-tauri/src/commands.rs` | Los 29 `#[tauri::command]`: envoltorios finos con `spawn_blocking`, `app_state(&app).with_registry_operation(…)` y el `RefreshScope` del panel. Sin lógica |
+| `src-tauri/src/contract.rs` | Tipos serde que cruzan el IPC y eventos de ventana (espejo de `src/types.ts`) y `ORIGINAL_INSTANCE_ID`. `ManagedInstance` es también el formato de `instances.json` |
+| `src-tauri/src/storage.rs` | `ManagedPaths`, registro (`load_registry`/`save_registry`), `write_file_atomic`, `atomic_replace_file`, el estado compartido (`AppState`: `RegistryLock` y `RuntimeCache`) y el memo de bundles (`application_cache`). Ver § Estado compartido |
+| `src-tauri/src/error.rs` | `AppError`: el error interno con su clase (`AppErrorKind`). Ver § Errores |
+| `src-tauri/src/processes.rs` | `ProcessInventory`, identidad verificada, estado de instancias y de la original, señales, esperas y el reaper |
+| `src-tauri/src/platform/` | Fachada por sistema: `macos.rs`, `windows.rs`, `linux.rs`, `unix.rs` (señales y grupos de procesos) y `unsupported.rs` definen las mismas funciones con la misma firma; `mod.rs` reexporta las del sistema que se compila y guarda lo portable (nombres legibles, parseo de Linux probado en todas, `open_in_file_manager`, Ajustes del Sistema) |
+| `src-tauri/src/instances/` | `mod.rs`: crear, renombrar, eliminar y abrir la carpeta; `launch.rs`: lanzar y detener; `icons.rs`: icono personalizado |
+| `src-tauri/src/sessions/` | `mod.rs`: lectura de sesiones y contexto estimado; `links.rs`: origen de las sesiones vinculadas (`session-links.json`); `transfer.rs`: copiar, mover, devolver y desvincular con respaldos y artefactos |
+| `src-tauri/src/scan.rs` | `RefreshScope`, refresco del registro, estado del sistema, uso, espacio administrado, panel y escaneo completo |
+| `src-tauri/src/versions/` | `mod.rs`: comparar versiones, huella de la instalación y validación de copias; `topology.rs`: topología de versiones; `synchronize.rs`: sincronizar copias; `feed.rs`: feed oficial, APT y `source-update-cache.json`; `original.rs`: «Actualizar original» |
+| `src-tauri/src/project_picker.rs` | El selector nativo de carpetas de `pick_project_folder` |
+| `src-tauri/src/test_support.rs` | `#[cfg(test)]`: ayudantes compartidos por las pruebas (`test_managed_paths`, `test_instance` y, en macOS, los bundles firmados ad hoc) |
 | `src-tauri/src/config.rs` | El único sitio con URLs y hosts. Se fija al compilar desde `.env.example` (A-8 de HU-0017) |
 | `src-tauri/src/original_update.rs` | Descargar, verificar e instalar la original en macOS. La capa `MacosTools` es inyectable en las pruebas |
 | `src-tauri/src/official_release.rs` | Versión objetivo de la original (HU-0024): lee `RELEASES.json`, confirma su paquete con el feed (misma versión y misma URL) y resuelve cuál de las dos fuentes manda. Funciones puras más un GET |
@@ -15,8 +27,48 @@ HU-0017 y manda sobre la skill hasta que esta se regenere.
 | `src-tauri/Info.plist` | Textos de los avisos de TCC (`NS*FolderUsageDescription`). Tauri lo fusiona al empaquetar en macOS. No pide permisos |
 | `src-tauri/build.rs` | Pasa las claves `CAP_*` (del entorno, `.env.local` o `.env.example`) a `cargo:rustc-env` |
 
-Un comando nuevo sigue yendo en `lib.rs` como envoltorio fino. Su lógica puede vivir en un módulo hijo si es un
-flujo autocontenido.
+Un comando nuevo va en `commands.rs` como envoltorio fino, con su lógica en el módulo de su dominio y su nombre en
+`generate_handler!`. Lo específico de un sistema va en `platform/<sistema>.rs`, con la misma firma en los cuatro
+archivos (o en `unix.rs` y `windows.rs`). En el dominio solo quedan `#[cfg(target_os = "macos")]` donde macOS añade
+pasos propios: el icono y la verificación de copias de `macos_icon.rs`, el nombre del bundle
+(`refresh_instance_bundle_names`) y el handoff de `versions/original.rs`. Cada módulo usa `super::*` y lleva sus
+pruebas en `#[cfg(test)] mod tests`.
+
+## Estado compartido
+
+- `AppState` se registra con `.manage(AppState::default())` en `run()`. Los comandos ya mueven el `AppHandle` a
+  `spawn_blocking`, así que lo leen dentro con `app_state(&app)` (`app.state::<AppState>()`), no como
+  `tauri::State<'_, _>` (no es `'static`).
+- Contiene `registry: RegistryLock`, el mutex que serializa leer, modificar y guardar `instances.json`
+  (`state.with_registry_operation(|| …)`), y `runtime: Mutex<RuntimeCache>`, con el último panel y los bytes del
+  espacio administrado (`previous_dashboard`, `remember_dashboard`, `invalidate_managed_bytes`).
+- Las funciones de dominio reciben la parte que necesitan: `system_info_scoped(&state.runtime, …)`,
+  `scan_system_sync(app, &state, …)` y `run_install(&state.registry, …)` en `original_update.rs`. Una prueba construye
+  su propio `AppState::default()` o `RegistryLock::default()`; dos estados no se bloquean ni comparten caché.
+- Sigue siendo estático del proceso, a propósito:
+  - `application_cache()` (versiones e identidades de bundles, por `ApplicationFingerprint`). Lo consultan e
+    invalidan cadenas sin estado a mano (la verificación de `macos_icon.rs`, la topología, la instalación de la
+    original) y su clave es la huella del bundle, así que no mezcla estados. Pasarlo por parámetro obligaría a
+    reescribir `macos_icon.rs`.
+  - `projects_mutex` en `projects.rs` (ver § Proyectos anclados), el vuelo de `original_update.rs` y los cerrojos de
+    `setIcon` en `macos_icon.rs`.
+- En macOS, `set_instance_icon` y `clear_instance_icon` de `macos_icon.rs` invalidan solo el memo de bundles; los bytes
+  administrados los invalida el llamador (`instances/icons.rs`) justo después.
+
+## Errores
+
+- `AppError` (`error.rs`, sin dependencias) lleva el mensaje para la persona, en español y ya redactado, y su clase:
+  `LocalIo`, `DamagedData`, `Process`, `Network`, `Remote`, `InvalidInput`, `Unsupported`, `Internal` y `Other`.
+- `Display` y `From<AppError> for String` devuelven el mensaje tal cual: por IPC sigue cruzando `Result<T, String>` con
+  el mismo texto. `From<String> for AppError` entra como `Other` (sin clasificar).
+- Solo `Network` es reintentable (`is_retryable`): sin conexión, plazo, lectura cortada, 5xx o 429. Un 4xx, un
+  documento demasiado grande o un JSON inválido es `Remote`, definitivo. Ningún camino reintenta por la clase: la
+  comprobación de versión sigue cayendo a la caché y vuelve a consultar en el siguiente arranque o sondeo.
+- Usan `AppError`: `storage` (`ManagedPaths::resolve`/`root_for`, `load_registry`, `save_registry`,
+  `atomic_replace_file`), `processes` (`signal_instance_processes` y `signal_verified_processes` de `platform/`) y
+  `versions/feed.rs` (`fetch_official_json`, `fetch_official_feed`, `save_source_update_cache`, la comprobación del
+  feed y de APT). El resto sigue con `String` y convierte con `?` o `String::from`. Lo nuevo se escribe con
+  `AppError` en el dominio y `String` solo en `commands.rs` y en los `*_sync` que llaman los comandos.
 
 ## Configuración
 
@@ -78,7 +130,7 @@ Es la única excepción a «la original no se toca», y solo por la acción expl
   limpieza ni la recuperación la tocan. El mensaje dice dónde está la anterior.
 - Nunca se pide privilegio. Una original de otro usuario o del sistema se rechaza.
 - Con un proceso cuyo ejecutable está dentro del bundle no se instala. Se comprueba de nuevo justo antes del
-  intercambio, dentro de `with_registry_operation`.
+  intercambio, dentro del cerrojo del registro (`run_install` recibe `&RegistryLock` y llama a `registry.run`).
 - Los temporales se borran siempre (`Drop`). `recover_original_update_leftovers` corre en `setup` y al empezar cada
   instalación. Solo toca directorios del usuario actual, que no sean symlinks, con el nombre exacto
   (`.code-ai-profiles-original-<uuid en minúsculas>` o `<uuid>` en las descargas) y cuyo cerrojo nadie tenga.
@@ -156,7 +208,7 @@ La raíz de confianza es la original instalada (`--strict`, con caché por finge
 Reglas de negocio: RN-02 a RN-04 (`docs/producto/reglas/proyectos.md`). El detalle está en
 `hu/HU-0023-…/arquitectura.md` (A-1 a A-6) y en su `revision-tecnica.md`.
 
-**Contrato IPC (aditivo, 0.x).** Los envoltorios están en `lib.rs`, con `spawn_blocking`. El espejo literal está en
+**Contrato IPC (aditivo, 0.x).** Los envoltorios están en `commands.rs`, con `spawn_blocking`. El espejo literal está en
 `src/types.ts` y `src/lib/bridge.ts`.
 
 | Comando | Argumentos | Devuelve |

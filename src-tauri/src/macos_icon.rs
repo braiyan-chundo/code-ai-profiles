@@ -1165,7 +1165,7 @@ pub(crate) fn set_instance_icon(
             system_message: outcome.system_message,
             system_issue: outcome.system_issue,
         });
-        save_registry(paths, registry)
+        save_registry(paths, registry).map_err(String::from)
     })();
     if let Err(error) = transaction {
         restore_optional_file(&icon_path, previous_png.as_deref());
@@ -1180,7 +1180,7 @@ pub(crate) fn set_instance_icon(
         return Err(with_rollback(error, rollback));
     }
     invalidate_application_cache();
-    invalidate_managed_bytes_cache();
+    // The caller invalidates the managed-bytes cache, which lives in `AppState`.
     Ok(())
 }
 
@@ -1225,7 +1225,7 @@ pub(crate) fn reapply_instance_icon(
         if let Some(icon) = target.custom_icon.as_mut() {
             outcome.write_to(icon);
         }
-        save_registry(paths, registry)
+        save_registry(paths, registry).map_err(String::from)
     })();
     if let Err(error) = transaction {
         registry.instances[position] = previous.clone();
@@ -1284,7 +1284,7 @@ pub(crate) fn clear_instance_icon(
         let target = &mut registry.instances[position];
         target.custom_icon = None;
         target.provider_provenance = None;
-        save_registry(paths, registry)
+        save_registry(paths, registry).map_err(String::from)
     })();
     if let Err(error) = transaction {
         restore_optional_file(&managed_icon, previous_png.as_deref());
@@ -1299,7 +1299,7 @@ pub(crate) fn clear_instance_icon(
         return Err(with_rollback(error, rollback));
     }
     invalidate_application_cache();
-    invalidate_managed_bytes_cache();
+    // The caller invalidates the managed-bytes cache, which lives in `AppState`.
     Ok(())
 }
 
@@ -1440,7 +1440,9 @@ pub(crate) fn launch_preflight(
 #[cfg(test)]
 pub(crate) mod tests {
     use super::*;
-    use crate::tests::{test_managed_paths, write_signed_fixture_bundle_with};
+    use crate::test_support::{
+        clone_directory, test_managed_paths, write_signed_fixture_bundle_with,
+    };
 
     /// FinderInfo with `kHasCustomIcon` set. An all-zero FinderInfo is treated by macOS as absent.
     const CUSTOM_ICON_FINDER_INFO: [u8; 32] = {
@@ -1583,7 +1585,7 @@ pub(crate) mod tests {
 
     /// A registry with one stopped instance whose bundle is the fixture's managed copy.
     fn registry_for(fixture: &IconFixture) -> Registry {
-        let mut instance = crate::tests::test_instance(&fixture.instance_root);
+        let mut instance = crate::test_support::test_instance(&fixture.instance_root);
         instance.id = fixture.instance_id.clone();
         instance.name = "Trabajo".to_string();
         instance.app_path = fixture.managed.to_string_lossy().to_string();
@@ -2261,7 +2263,7 @@ pub(crate) mod tests {
         );
 
         let without_icon = copy_of_donor("WithoutIcon");
-        let baseline = crate::tests::macos_signature_snapshot(&without_icon);
+        let baseline = crate::test_support::macos_signature_snapshot(&without_icon);
         assert_eq!(
             apply_branding_after_update(
                 &fixture.paths.instances,
@@ -2273,7 +2275,7 @@ pub(crate) mod tests {
             Ok(None)
         );
         assert_eq!(
-            crate::tests::macos_signature_snapshot(&without_icon),
+            crate::test_support::macos_signature_snapshot(&without_icon),
             baseline
         );
 
@@ -2307,7 +2309,7 @@ pub(crate) mod tests {
     #[test]
     fn rollback_without_an_applied_icon_restores_the_exact_signature_baseline() {
         let fixture = IconFixture::new("rollback", None);
-        let baseline = crate::tests::macos_signature_snapshot(&fixture.managed);
+        let baseline = crate::test_support::macos_signature_snapshot(&fixture.managed);
         put_icon(&fixture, &fixture.managed);
         let previous = CustomIcon {
             path: fixture.icon.to_string_lossy().to_string(),
@@ -2325,7 +2327,7 @@ pub(crate) mod tests {
         )
         .unwrap();
         assert_eq!(
-            crate::tests::macos_signature_snapshot(&fixture.managed),
+            crate::test_support::macos_signature_snapshot(&fixture.managed),
             baseline
         );
     }
@@ -2333,7 +2335,7 @@ pub(crate) mod tests {
     #[test]
     fn clearing_returns_the_copy_to_strict_and_forgets_icon_and_provenance() {
         let fixture = IconFixture::new("clear", Some(EXPLICIT_REQUIREMENT));
-        let baseline = crate::tests::macos_signature_snapshot(&fixture.managed);
+        let baseline = crate::test_support::macos_signature_snapshot(&fixture.managed);
         let mut registry = registry_for(&fixture);
         set_instance_icon(
             &fixture.paths,
@@ -2350,7 +2352,7 @@ pub(crate) mod tests {
 
         assert!(strict_passes(&fixture.managed));
         assert_eq!(
-            crate::tests::macos_signature_snapshot(&fixture.managed),
+            crate::test_support::macos_signature_snapshot(&fixture.managed),
             baseline
         );
         assert!(registry.instances[0].custom_icon.is_none());
@@ -2481,7 +2483,7 @@ pub(crate) mod tests {
     #[test]
     fn the_workspace_icon_is_refused_outside_the_managed_instances() {
         let fixture = IconFixture::new("guard", None);
-        let original_before = crate::tests::macos_signature_snapshot(&fixture.original);
+        let original_before = crate::test_support::macos_signature_snapshot(&fixture.original);
         for target in [
             fixture.original.clone(),
             fixture.paths.instances.clone(),
@@ -2499,7 +2501,7 @@ pub(crate) mod tests {
             Err(WorkspaceIconError::Refused(_))
         ));
         assert_eq!(
-            crate::tests::macos_signature_snapshot(&fixture.original),
+            crate::test_support::macos_signature_snapshot(&fixture.original),
             original_before,
             "the original never receives the icon"
         );
@@ -2752,13 +2754,13 @@ pub(crate) mod tests {
         assert!(registry.instances[0].provider_provenance.is_some());
 
         let other = IconFixture::new("leftovers-clear", Some(EXPLICIT_REQUIREMENT));
-        let baseline = crate::tests::macos_signature_snapshot(&other.managed);
+        let baseline = crate::test_support::macos_signature_snapshot(&other.managed);
         let mut registry = registry_for(&other);
         leftovers_instance(&other, &mut registry);
         clear_instance_icon(&other.paths, &mut registry, 0, &other.original).unwrap();
         assert!(strict_passes(&other.managed));
         assert_eq!(
-            crate::tests::macos_signature_snapshot(&other.managed),
+            crate::test_support::macos_signature_snapshot(&other.managed),
             baseline
         );
         assert!(registry.instances[0].custom_icon.is_none());

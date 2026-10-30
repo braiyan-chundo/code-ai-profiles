@@ -15,12 +15,16 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ### Changed
 
+- Backend reorganizado sin cambios de comportamiento (ADR-0003): `lib.rs` se parte en módulos por dominio (`commands`, `contract`, `storage`, `processes`, `scan`, `instances`, `sessions`, `versions`) y por plataforma (`platform/`); estado compartido en `tauri::State`; errores tipados internos que distinguen los fallos de red reintentables; «Detener» y el arranque de una instancia enumeran menos veces los procesos del sistema.
+
 - Sistema armónico en toda la interfaz: escala de espaciado de 4 px, alturas fijas de controles por tamaño de texto, interlineados múltiplos de 4, radios 4/8/12/16/20/24 y anillo de foco de 2 px.
 - El botón principal lleva texto oscuro (contraste 6:1, antes 3:1) y el verde de éxito del tema claro es algo más oscuro (4,77:1).
 - «Configuración» sustituye al diálogo «Apariencia» en el pie del sidebar. El aviso de «Gestión de apps» del editor enlaza a Configuración › Permisos.
 
 ### Fixed
 
+- El registro de instancias (`instances.json`) se guarda de forma atómica: un cierre o un fallo a mitad ya no lo deja a medias ni hace desaparecer las instancias de la app.
+- Los enlaces de sesión, la caché de versiones y los índices de sesión se reemplazan en un solo paso y forzados a disco, sin un momento en que el archivo falte.
 - Una instancia con icono personalizado que Claude actualizó por su cuenta ya no queda bloqueada como «cambió fuera de Code AI Profiles»: si sigue firmada por Anthropic y su versión es mayor que la registrada, se acepta, se vuelve a registrar y puede usarse como fuente para sincronizar las demás.
 - El diálogo «Transferir sesión de Code» es compacto: modos del mismo alto, un destino por fila y el pie siempre visible.
 

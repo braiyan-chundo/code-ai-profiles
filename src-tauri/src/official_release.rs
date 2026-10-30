@@ -190,6 +190,7 @@ pub(crate) fn fetch_published_releases(platform: &str, arch: &str) -> Result<Val
         &[],
         &PUBLISHED_RELEASES_LABEL,
     )
+    .map_err(String::from)
 }
 
 #[cfg(test)]

@@ -20,8 +20,8 @@
     "semantic_hash": "dca85abae9a1b384a67b37f98b2f05ea"
   },
   "src-tauri/src/lib.rs": {
-    "mtime": 1793331171.836628,
-    "ast_hash": "d2bb29904f616430fd04baa7ffa562cd",
+    "mtime": 1793336581.245551,
+    "ast_hash": "1ae542febaded41862f5ae453e5f351d",
     "semantic_hash": ""
   },
   "src-tauri/src/main.rs": {
@@ -160,8 +160,8 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1793330575.771298,
-    "ast_hash": "56dd8ae0716194d72d5eecf290b5fde1",
+    "mtime": 1793337436.1706693,
+    "ast_hash": "520f2c5a13f3a3dce29e9138a69fc7ed",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
@@ -1645,13 +1645,13 @@
     "semantic_hash": ""
   },
   "docs/arquitectura/backend.md": {
-    "mtime": 1793330575.7724845,
-    "ast_hash": "5245013644111620839bda822b30c158",
+    "mtime": 1793337247.5013008,
+    "ast_hash": "2b2183a6b1f0f9f8ed1a7ed9e16a0c5e",
     "semantic_hash": ""
   },
   "docs/decisiones/ADR-0002-modulos-rust-y-configuracion-en-compilacion.md": {
-    "mtime": 1793248079.027614,
-    "ast_hash": "ad488ea5feff4b5aef319bc45ef4e623",
+    "mtime": 1793337241.004642,
+    "ast_hash": "5a0bc8b622f13ee4680f60994b64ebd9",
     "semantic_hash": ""
   },
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/arquitectura.md": {
@@ -1675,8 +1675,8 @@
     "semantic_hash": ""
   },
   "src-tauri/src/original_update.rs": {
-    "mtime": 1793330575.9375,
-    "ast_hash": "c90956631592d876f13c0e24cdb5da20",
+    "mtime": 1793336506.5757997,
+    "ast_hash": "caa41454dc4296c2c9acf56c530ce500",
     "semantic_hash": ""
   },
   "src/features/updates/OriginalInstallPanel.tsx": {
@@ -2135,8 +2135,8 @@
     "semantic_hash": ""
   },
   "src-tauri/src/macos_icon.rs": {
-    "mtime": 1793330575.9363704,
-    "ast_hash": "648eb3344b9d4d223cbbd724607cca5e",
+    "mtime": 1793336186.528469,
+    "ast_hash": "f82fc2a620b893315e6c99e584f37418",
     "semantic_hash": ""
   },
   "src/features/instances/icon-status.ts": {
@@ -2465,7 +2465,7 @@
     "semantic_hash": ""
   },
   "src-tauri/src/projects.rs": {
-    "mtime": 1793331131.134676,
+    "mtime": 1793332428.733458,
     "ast_hash": "5448360c17ae16a4f8be043a28fa7370",
     "semantic_hash": ""
   },
@@ -3185,8 +3185,8 @@
     "semantic_hash": ""
   },
   "src-tauri/src/official_release.rs": {
-    "mtime": 1793330575.9367037,
-    "ast_hash": "1caa7b27ea0cd30e1f4451f9ed28cf4f",
+    "mtime": 1793336506.575301,
+    "ast_hash": "40f63ed0ac564e66b9436bcb0e7f4a15",
     "semantic_hash": ""
   },
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/arquitectura.md": {
@@ -3252,6 +3252,141 @@
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/verificacion.md": {
     "mtime": 1793330575.9318545,
     "ast_hash": "17610526b4a6246bd5addb68a5f34681",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/commands.rs": {
+    "mtime": 1793335875.024246,
+    "ast_hash": "051bafcabb4574f42b937fc55e511913",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/contract.rs": {
+    "mtime": 1793333885.740487,
+    "ast_hash": "5b2a966e817e6bf2af7771f3abb6c776",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/error.rs": {
+    "mtime": 1793336506.5744915,
+    "ast_hash": "484053188f67a2d4d30dced30944665c",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/instances/icons.rs": {
+    "mtime": 1793336297.2965875,
+    "ast_hash": "64f01d26e9250c9c6f79113c3baad3fc",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/instances/launch.rs": {
+    "mtime": 1793336181.7579365,
+    "ast_hash": "cd752c513bd6d887e161a89d2e522381",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/instances/mod.rs": {
+    "mtime": 1793336181.7580824,
+    "ast_hash": "9f7070eb99c935ad6198522b920d79ba",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/platform/linux.rs": {
+    "mtime": 1793336297.2989752,
+    "ast_hash": "5c7a10cb822499bbfed242c2d0779489",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/platform/macos.rs": {
+    "mtime": 1793334363.3634043,
+    "ast_hash": "b242d33de96561c92decd5acf6eae498",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/platform/mod.rs": {
+    "mtime": 1793334479.7979379,
+    "ast_hash": "dfcc89700d7861f3aaa388060dd8b984",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/platform/unix.rs": {
+    "mtime": 1793336398.194079,
+    "ast_hash": "64293f10b55b8a7dc47b1ce25c3e7a30",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/platform/unsupported.rs": {
+    "mtime": 1793336398.194294,
+    "ast_hash": "ab18826fd348f1e8dc1d6662fb95e824",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/platform/windows.rs": {
+    "mtime": 1793336398.1942012,
+    "ast_hash": "d89bd2a3ad441f7fd3e8d215a58ede6f",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/processes.rs": {
+    "mtime": 1793336398.1938965,
+    "ast_hash": "7fdcf81571092e29c4abfecef99b4d5e",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/project_picker.rs": {
+    "mtime": 1793334962.439912,
+    "ast_hash": "2eb1037155ef9882720810fed9efed1d",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/scan.rs": {
+    "mtime": 1793335927.0415497,
+    "ast_hash": "66e3f0e4125a67759f999f57cd1b3ad5",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/sessions/links.rs": {
+    "mtime": 1793334666.3780558,
+    "ast_hash": "bbec8b001a024758cc6eeb955d93be12",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/sessions/mod.rs": {
+    "mtime": 1793334666.0640635,
+    "ast_hash": "59f049e6d1907d44bb0702bc264b21fa",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/sessions/transfer.rs": {
+    "mtime": 1793334666.2255118,
+    "ast_hash": "ee73143144499c881f4090e30f5301ae",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/storage.rs": {
+    "mtime": 1793336235.356514,
+    "ast_hash": "8b327afe1356a5ac685a218cfa69cda1",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/test_support.rs": {
+    "mtime": 1793333790.6933215,
+    "ast_hash": "8cb87c7af6668ddac813458b83091f51",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/versions/feed.rs": {
+    "mtime": 1793336537.4903245,
+    "ast_hash": "efcfff73886128cbcda0875694ce944c",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/versions/mod.rs": {
+    "mtime": 1793335826.945403,
+    "ast_hash": "87fe4e06222c30d169b8ab6c365bd0d6",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/versions/original.rs": {
+    "mtime": 1793335188.8405018,
+    "ast_hash": "2ad00d4cadf04218bf7d39153d5285d8",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/versions/synchronize.rs": {
+    "mtime": 1793335857.6646848,
+    "ast_hash": "c1e7f937a809f5bf31b59256eea1c456",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/versions/topology.rs": {
+    "mtime": 1793334598.9664247,
+    "ast_hash": "b778a06d23aa7a6473dd6af191104966",
+    "semantic_hash": ""
+  },
+  "docs/arquitectura/revision-refactor-backend.md": {
+    "mtime": 1793337393.6517272,
+    "ast_hash": "ca976120f23ffb6141609ae7cab7f692",
+    "semantic_hash": ""
+  },
+  "docs/decisiones/ADR-0003-modulos-backend-estado-y-errores.md": {
+    "mtime": 1793337240.9439046,
+    "ast_hash": "5b9a7ef66811f4d8fd146eac9809b64f",
     "semantic_hash": ""
   }
 }
