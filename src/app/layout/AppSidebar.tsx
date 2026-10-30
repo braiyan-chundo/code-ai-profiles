@@ -1,9 +1,10 @@
-import { LayoutDashboardIcon, PlusIcon, RefreshCwIcon, SearchIcon, SettingsIcon, XIcon } from "lucide-react";
+import { LayoutDashboardIcon, PlayIcon, PlusIcon, RefreshCwIcon, SearchIcon, SettingsIcon, SquareIcon, XIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useMatch, useNavigate } from "react-router";
 import { BrandMark } from "../../components/BrandMark";
 import { Button } from "../../components/ui/button";
 import { Kbd } from "../../components/ui/kbd";
+import { Spinner } from "../../components/ui/spinner";
 import {
   Sidebar,
   SidebarContent,
@@ -14,6 +15,7 @@ import {
   SidebarHeader,
   SidebarInput,
   SidebarMenu,
+  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSkeleton,
@@ -26,7 +28,14 @@ import {
   originalAppName as selectOriginalAppName,
   useDashboard,
 } from "../../features/dashboard";
-import { InstanceAvatar, instanceStatusLabel, managedIconSource } from "../../features/instances";
+import {
+  InstanceAvatar,
+  instancePending,
+  instanceStatusLabel,
+  instanceToggle,
+  managedIconSource,
+  useInstanceActions,
+} from "../../features/instances";
 import { useScan } from "../../features/scan";
 import { shortcutModifierLabel } from "../../lib/platform";
 import { cn } from "../../lib/utils";
@@ -51,6 +60,7 @@ const NO_SOURCE_TITLE = "Instala una aplicación compatible o configura una ruta
 export function AppSidebar() {
   const { dashboard: state, loading, busy, iconPreviews } = useDashboard();
   const { requestManual: scanManually } = useScan();
+  const { launch, stop } = useInstanceActions();
   const { setEditor, editor, deleteTarget, transfer, unlinkTarget, updateTargets, originalUpdateOpen, pinCandidate } = useDialogs();
   const navigate = useNavigate();
   const onDashboard = useMatch({ path: "/", end: true });
@@ -188,13 +198,17 @@ export function AppSidebar() {
                 ))
               ) : (
                 instances.map((instance) => {
-                  const stopping = busy === `stop:${instance.id}`;
-                  const label = `${instance.name} · ${instanceStatusLabel(instance.status, stopping)}`;
+                  const pending = instancePending(busy, instance.id);
+                  const status = instanceStatusLabel(instance.status, pending);
+                  const label = `${instance.name} · ${status}`;
                   const active = activeInstanceId === instance.id;
                   const sessions = instance.codeSessions.length;
+                  // «Abrir»/«Detener» (HU-0026, A-3): hermano del enlace, en la caja del contador. Aparece con el ratón
+                  // o el foco dentro de la fila y, en curso, se queda a la vista. Plegado, el catálogo lo oculta.
+                  const toggle = instanceToggle(instance, busy);
                   return (
                     <SidebarMenuItem key={instance.id}>
-                      <SidebarMenuButton asChild isActive={active} tooltip={label} className={sessions > 0 ? "pr-8" : undefined}>
+                      <SidebarMenuButton asChild isActive={active} tooltip={label} className={sessions > 0 || toggle ? "pr-8" : undefined}>
                         <Link
                           to={`/instancias/${encodeURIComponent(instance.id)}`}
                           aria-current={active ? "page" : undefined}
@@ -202,14 +216,47 @@ export function AppSidebar() {
                           <InstanceAvatar
                             iconSrc={managedIconSource(instance, iconPreviews[instance.id] ?? null)}
                             status={instance.status}
-                            stopping={stopping}
+                            pending={pending}
                             className="size-4"
                           />
                           <span className="min-w-0 flex-1 truncate">{instance.name}</span>
-                          <span className="sr-only">{instanceStatusLabel(instance.status, stopping)}</span>
+                          <span className="sr-only">{status}</span>
                         </Link>
                       </SidebarMenuButton>
-                      {sessions > 0 && <MenuCount count={sessions} active={active} singular="sesión" plural="sesiones" />}
+                      {sessions > 0 && (
+                        <MenuCount
+                          count={sessions}
+                          active={active}
+                          singular="sesión"
+                          plural="sesiones"
+                          yieldToAction={toggle !== null}
+                          pending={toggle?.pending}
+                        />
+                      )}
+                      {toggle && (
+                        <SidebarMenuAction
+                          showOnHover
+                          onClick={() => (toggle.action === "launch" ? launch(instance) : stop(instance))}
+                          disabled={toggle.disabled}
+                          aria-label={toggle.label}
+                          title={toggle.label}
+                          aria-busy={toggle.pending || undefined}
+                          className={cn(
+                            "disabled:cursor-default",
+                            toggle.pending
+                              ? "opacity-100 md:opacity-100"
+                              : "group-focus-within/menu-item:disabled:opacity-50 group-hover/menu-item:disabled:opacity-50",
+                          )}
+                        >
+                          {toggle.pending ? (
+                            <Spinner aria-hidden="true" />
+                          ) : toggle.action === "launch" ? (
+                            <PlayIcon />
+                          ) : (
+                            <SquareIcon />
+                          )}
+                        </SidebarMenuAction>
+                      )}
                     </SidebarMenuItem>
                   );
                 })

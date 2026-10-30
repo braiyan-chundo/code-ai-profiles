@@ -8,6 +8,7 @@ import { SessionList } from "../sessions";
 import { iconBadgeLabel } from "./icon-status";
 import { managedIconSource } from "./instance-icon";
 import { InstanceAvatar } from "./InstanceAvatar";
+import { instancePending } from "./instance-status";
 import { InstanceStatusBadge } from "./InstanceStatusBadge";
 import { UsageMeter } from "./UsageMeter";
 
@@ -54,27 +55,28 @@ export function InstanceDetail({
   const isRunning = instance.status === "running";
   const isBusy = busy?.endsWith(instance.id) ?? false;
   const isStopping = busy === `stop:${instance.id}`;
+  const pending = instancePending(busy, instance.id);
   const iconSrc = managedIconSource(instance, iconPreviewUrl);
   const sessionCount = instance.codeSessions.length;
 
   return (
-    <div className="mx-auto grid w-full max-w-[1200px] gap-4" aria-busy={isStopping}>
+    <div className="mx-auto grid w-full max-w-[1200px] gap-4" aria-busy={pending !== null}>
       <Card
         size="sm"
-        data-status={isStopping ? "stopping" : instance.status}
+        data-status={pending ?? instance.status}
         className="data-[status=missing]:opacity-60 data-[status=running]:ring-primary/30"
       >
         <CardContent className="flex-row flex-wrap items-center gap-x-6 gap-y-4">
           <InstanceAvatar
             iconSrc={iconSrc}
             status={instance.status}
-            stopping={isStopping}
+            pending={pending}
             className="size-16 rounded-2xl border border-(--line-strong) bg-secondary [&>svg]:size-9"
             dotClassName="-right-1 -bottom-1 size-3.5"
           />
           <div className="grid min-w-0 flex-1 basis-60 gap-2">
             <div className="flex flex-wrap items-center gap-2">
-              <InstanceStatusBadge status={instance.status} stopping={isStopping} />
+              <InstanceStatusBadge status={instance.status} pending={pending} />
               {updateAvailable && (
                 <Badge variant="outline" className="border-primary/30 font-mono text-(length:--fs-micro)/(--lh-micro) tracking-[0.04em] text-primary-text uppercase">
                   Actualización disponible

@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useReducer, useRef, type ReactNode } from "react";
 import { friendlyError } from "../../lib/errors";
 import type { DashboardState, OriginalInstallProgress } from "../../types";
-import { DashboardContext, type DashboardContextValue } from "./dashboard-context";
+import { DashboardContext, type DashboardContextValue, type RunActionOptions } from "./dashboard-context";
 import { dashboardReducer, initialDashboardStore } from "./dashboard-store";
 
 export function DashboardProvider({ children }: { children: ReactNode }) {
@@ -19,7 +19,10 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     (update: (current: string | null) => string | null) => dispatch({ type: "busy/updated", update }),
     [],
   );
-  const setError = useCallback((error: string | null) => dispatch({ type: "error/changed", error }), []);
+  const setError = useCallback(
+    (error: string | null, title?: string) => dispatch({ type: "error/changed", error, title }),
+    [],
+  );
   const setNotice = useCallback((notice: string | null) => dispatch({ type: "notice/changed", notice }), []);
   const clearFeedback = useCallback(() => dispatch({ type: "feedback/cleared" }), []);
   const finishLoading = useCallback(() => dispatch({ type: "loading/finished" }), []);
@@ -43,13 +46,15 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     [],
   );
 
-  const runAction = useCallback(async (key: string, action: () => Promise<DashboardState>) => {
+  const runAction = useCallback(async (key: string, action: () => Promise<DashboardState>, options?: RunActionOptions) => {
+    // El ref se adelanta al render: un segundo clic en el mismo instante ya ve la operación en curso (HU-0026).
+    busyRef.current = key;
     setBusy(key);
     setError(null);
     try {
       replaceDashboard(await action());
     } catch (reason) {
-      setError(friendlyError(reason));
+      setError(friendlyError(reason), options?.errorTitle);
     } finally {
       setBusy(null);
     }
