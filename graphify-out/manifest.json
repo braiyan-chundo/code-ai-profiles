@@ -10,8 +10,8 @@
     "semantic_hash": ""
   },
   "src-tauri/build.rs": {
-    "mtime": 1793254494.0695837,
-    "ast_hash": "63478bfabaea68106103582ce1e25f78",
+    "mtime": 1793322471.2476506,
+    "ast_hash": "28174bc1046b5317a155a1f5b681257d",
     "semantic_hash": ""
   },
   "src-tauri/capabilities/default.json": {
@@ -20,8 +20,8 @@
     "semantic_hash": "dca85abae9a1b384a67b37f98b2f05ea"
   },
   "src-tauri/src/lib.rs": {
-    "mtime": 1793255603.5242627,
-    "ast_hash": "d2158a8bbcdb0d3527186c9c3327b2ed",
+    "mtime": 1793322783.457802,
+    "ast_hash": "ba2ffdc0927399e3d76b583ddc3febc4",
     "semantic_hash": ""
   },
   "src-tauri/src/main.rs": {
@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/lib/bridge.ts": {
-    "mtime": 1793254711.0466185,
-    "ast_hash": "14f4ed1cce5d566a1cefbe257b57fded",
+    "mtime": 1793322641.8101535,
+    "ast_hash": "6c1744591c74a20917ae3280d612c1d9",
     "semantic_hash": ""
   },
   "src/main.tsx": {
@@ -55,8 +55,8 @@
     "semantic_hash": ""
   },
   "src/types.ts": {
-    "mtime": 1793254633.259701,
-    "ast_hash": "373e4832118cea31746c682310fbbf4d",
+    "mtime": 1793322474.743945,
+    "ast_hash": "953f4712ab50671b58c204061705890b",
     "semantic_hash": ""
   },
   "src/vite-env.d.ts": {
@@ -195,14 +195,14 @@
     "semantic_hash": "9cf8a39e4da325aed33b9bfc8022a6af"
   },
   "src/lib/source-update-controller.ts": {
-    "mtime": 1792781908.1280866,
-    "ast_hash": "3606b035ae50158f86fb9d04ce8cf467",
-    "semantic_hash": "3606b035ae50158f86fb9d04ce8cf467"
+    "mtime": 1793323131.169555,
+    "ast_hash": "49a2e16e2040940e8f6d60c467e92230",
+    "semantic_hash": ""
   },
   "tests/source-update-controller.test.ts": {
-    "mtime": 1792781908.1725817,
-    "ast_hash": "4f03d43731e2e6c6fc745fb69322c2d1",
-    "semantic_hash": "4f03d43731e2e6c6fc745fb69322c2d1"
+    "mtime": 1793323131.1698804,
+    "ast_hash": "a8bd191a82fe966eff47f05f040002d5",
+    "semantic_hash": ""
   },
   "CLAUDE.md": {
     "mtime": 1793139609.3761172,
@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793275958.1501129,
-    "ast_hash": "9f6346a204435c32ac8739996e7b3aa0",
+    "mtime": 1793322440.1309466,
+    "ast_hash": "846af492846203cf29f3f07a37ce8afc",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -435,8 +435,8 @@
     "semantic_hash": ""
   },
   "src/features/dashboard/dashboard-store.ts": {
-    "mtime": 1793248079.0794728,
-    "ast_hash": "061f52ee28850b421e7189eeaf8928c3",
+    "mtime": 1793322483.6803162,
+    "ast_hash": "15b7fbca29ca870cae4d772e1edbad40",
     "semantic_hash": ""
   },
   "src/features/instances/icon-validation.ts": {
@@ -510,8 +510,8 @@
     "semantic_hash": ""
   },
   "tests/result-messages.test.ts": {
-    "mtime": 1793248079.0822089,
-    "ast_hash": "90b434f9a9e7c1d0d832772e81a6e602",
+    "mtime": 1793322483.680688,
+    "ast_hash": "16e1183ff5ed5c08969473a06aa74020",
     "semantic_hash": ""
   },
   "src/components/EmptyState.tsx": {
@@ -700,8 +700,8 @@
     "semantic_hash": ""
   },
   "src/features/updates/useUpdateActions.ts": {
-    "mtime": 1793248079.0814428,
-    "ast_hash": "7d185e69f059c2ad29c2515b3b1ccd9d",
+    "mtime": 1793322501.6588142,
+    "ast_hash": "f375d5eaa555115f49a9bbb7b01dea5e",
     "semantic_hash": ""
   },
   "src/app/RouteErrorBoundary.tsx": {
@@ -755,13 +755,13 @@
     "semantic_hash": ""
   },
   "src/features/updates/SourceUpdateBanner.tsx": {
-    "mtime": 1793248079.0809796,
-    "ast_hash": "01c890f3d9556c843ddaa034342d7765",
+    "mtime": 1793323131.169749,
+    "ast_hash": "f507917cdce44a282e8957ac918195ff",
     "semantic_hash": ""
   },
   "src/features/updates/SynchronizeBanner.tsx": {
-    "mtime": 1793248079.0810924,
-    "ast_hash": "4c5191e1cb30a5cd685ff5de26d76556",
+    "mtime": 1793322501.6587112,
+    "ast_hash": "93ddabac2ac7b5d0a9ac0f5d29462578",
     "semantic_hash": ""
   },
   "hu/HU-0015-frontend-escalable-componentes-features-/revision-tecnica.md": {
@@ -1525,8 +1525,8 @@
     "semantic_hash": ""
   },
   "src/app/routes/instance/InstanceRoute.tsx": {
-    "mtime": 1793248079.0782018,
-    "ast_hash": "6b95ffaba916a987d7677661da61826d",
+    "mtime": 1793322509.7644963,
+    "ast_hash": "55d77da7f3d151b3e310c43d3825b865",
     "semantic_hash": ""
   },
   "src/app/routes/original/OriginalRoute.tsx": {
@@ -1580,8 +1580,8 @@
     "semantic_hash": ""
   },
   "src/app/routes/dashboard/UsageRanking.tsx": {
-    "mtime": 1793255603.5254354,
-    "ast_hash": "48fbc320850f6395aca6e09db3b7316a",
+    "mtime": 1793322521.138979,
+    "ast_hash": "840854c7efbb05b8d5d32bef63f93f9e",
     "semantic_hash": ""
   },
   "src/components/NoticeAlert.tsx": {
@@ -1590,8 +1590,8 @@
     "semantic_hash": ""
   },
   "src/features/instances/InstanceDetail.tsx": {
-    "mtime": 1793255603.5286462,
-    "ast_hash": "d8e6b2b7dbbe7a411e6db6c44fa1ac0f",
+    "mtime": 1793322521.139129,
+    "ast_hash": "e903940d65fccd578dcc6a39af31761c",
     "semantic_hash": ""
   },
   "src/features/instances/InstanceStatusBadge.tsx": {
@@ -1645,8 +1645,8 @@
     "semantic_hash": ""
   },
   "docs/arquitectura/backend.md": {
-    "mtime": 1793321013.4454699,
-    "ast_hash": "9a339321416c8dbb2f3e610d8b9b2a43",
+    "mtime": 1793323047.8497188,
+    "ast_hash": "5245013644111620839bda822b30c158",
     "semantic_hash": ""
   },
   "docs/decisiones/ADR-0002-modulos-rust-y-configuracion-en-compilacion.md": {
@@ -1670,13 +1670,13 @@
     "semantic_hash": ""
   },
   "src-tauri/src/config.rs": {
-    "mtime": 1793254494.069741,
-    "ast_hash": "cfc167394bd02aa37593f07b7fe414f4",
+    "mtime": 1793322753.0331056,
+    "ast_hash": "edc9ed37f1460ae32726d41d43a2c59d",
     "semantic_hash": ""
   },
   "src-tauri/src/original_update.rs": {
-    "mtime": 1793248079.076762,
-    "ast_hash": "69c96f722971baff0054f807137d0e0c",
+    "mtime": 1793323190.9701786,
+    "ast_hash": "c90956631592d876f13c0e24cdb5da20",
     "semantic_hash": ""
   },
   "src/features/updates/OriginalInstallPanel.tsx": {
@@ -3182,6 +3182,71 @@
   "hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/verificacion.md": {
     "mtime": 1793275856.3724544,
     "ast_hash": "24e0192890e0b858b0db091b8eaed9a2",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/official_release.rs": {
+    "mtime": 1793323190.6997979,
+    "ast_hash": "1caa7b27ea0cd30e1f4451f9ed28cf4f",
+    "semantic_hash": ""
+  },
+  "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/arquitectura.md": {
+    "mtime": 1793323090.6332247,
+    "ast_hash": "984f94c28e1b65218df05d4b23fef3cf",
+    "semantic_hash": ""
+  },
+  "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/briefs/backend.md": {
+    "mtime": 1793322389.5793717,
+    "ast_hash": "6792814bf0e0a771049c5fcdaa92df0a",
+    "semantic_hash": ""
+  },
+  "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/briefs/frontend.md": {
+    "mtime": 1793322389.6322668,
+    "ast_hash": "389f4d07594aa6d27d4151b21eca43ee",
+    "semantic_hash": ""
+  },
+  "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/hu.md": {
+    "mtime": 1793322440.1216278,
+    "ast_hash": "1df3b766c03ed2df89e990e5809a7d47",
+    "semantic_hash": ""
+  },
+  "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/seguimiento.md": {
+    "mtime": 1793322440.1296573,
+    "ast_hash": "7930068cb222bfb33828efac7a42a1da",
+    "semantic_hash": ""
+  },
+  "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/evidencias/01-dashboard-oscuro.png": {
+    "mtime": 1793322593.4185686,
+    "ast_hash": "2dce34d2ae36a8e1571ffe54f1a254aa",
+    "semantic_hash": ""
+  },
+  "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/evidencias/02-dashboard-claro.png": {
+    "mtime": 1793322597.511734,
+    "ast_hash": "125c707af4eed3a50e77a0ede98fd17b",
+    "semantic_hash": ""
+  },
+  "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/evidencias/03-instancia-detenida-claro.png": {
+    "mtime": 1793322601.5899127,
+    "ast_hash": "fa4c97bd6a968a47afb38010b6422a24",
+    "semantic_hash": ""
+  },
+  "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/evidencias/04-instancia-en-marcha-oscuro.png": {
+    "mtime": 1793322605.6573534,
+    "ast_hash": "3b36f8a5d8a28dcc39ac7e4115b68de7",
+    "semantic_hash": ""
+  },
+  "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/evidencias/05-original-oscuro.png": {
+    "mtime": 1793322609.725215,
+    "ast_hash": "ee2481e78e3514f70279f30234981f51",
+    "semantic_hash": ""
+  },
+  "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/evidencias/06-aviso-con-warning-claro.png": {
+    "mtime": 1793322641.8021746,
+    "ast_hash": "526c30e7609de0383aacbb715531edee",
+    "semantic_hash": ""
+  },
+  "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/revision-tecnica.md": {
+    "mtime": 1793323084.3432207,
+    "ast_hash": "4cc7eae315e2f3741068436e7aef5a1d",
     "semantic_hash": ""
   }
 }
