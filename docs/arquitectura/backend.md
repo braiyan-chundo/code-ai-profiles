@@ -1,9 +1,9 @@
 # Arquitectura del backend (Rust + Tauri)
 
 Las reglas generales están en la skill `code-ai-profiles-rust-tauri`. Este documento recoge lo que cambia desde la
-HU-0017 y manda sobre la skill hasta que esta se regenere.
+HU-0017 y manda sobre la skill si no coinciden. La estructura de módulos, el estado y los errores los fija el ADR-0003.
 
-## Módulos (ADR-0002)
+## Módulos (ADR-0003)
 
 | Archivo | Qué contiene |
 | --- | --- |
@@ -130,7 +130,7 @@ Es la única excepción a «la original no se toca», y solo por la acción expl
   limpieza ni la recuperación la tocan. El mensaje dice dónde está la anterior.
 - Nunca se pide privilegio. Una original de otro usuario o del sistema se rechaza.
 - Con un proceso cuyo ejecutable está dentro del bundle no se instala. Se comprueba de nuevo justo antes del
-  intercambio, dentro de `with_registry_operation`.
+  intercambio, dentro del cerrojo del registro (`run_install` recibe `&RegistryLock` y llama a `registry.run`).
 - Los temporales se borran siempre (`Drop`). `recover_original_update_leftovers` corre en `setup` y al empezar cada
   instalación. Solo toca directorios del usuario actual, que no sean symlinks, con el nombre exacto
   (`.code-ai-profiles-original-<uuid en minúsculas>` o `<uuid>` en las descargas) y cuyo cerrojo nadie tenga.
