@@ -1,16 +1,16 @@
 # Graph Report - Code AI Profiles  (2026-10-29)
 
 ## Corpus Check
-- 438 files · ~1,825,253 words
+- 438 files · ~1,825,562 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3969 nodes · 9907 edges · 209 communities (180 shown, 29 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 150 edges (avg confidence: 0.79)
+- 3975 nodes · 9930 edges · 211 communities (182 shown, 29 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 151 edges (avg confidence: 0.79)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `1468f5e0`
+- Built from commit: `1bcfb861`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -73,22 +73,22 @@
 - sections/context-menu.tsx
 - Contrato de desarrollo asistido por IA
 - Observaciones
-- configuracion.document.md
+- INDEX.md
 - Stack de Code AI Profiles
 - Result
 - Análisis
 - Invariantes de Code AI Profiles
-- Proyectos
+- Reglas de negocio · proyectos
 - PULL_REQUEST_TEMPLATE.md
 - HU-0010-publicar-el-fix-de-actualizacion-como-ve/seguimiento.md
 - HU-0011-adopcion-v4/seguimiento.md
 - HU-0012-icono-distintivo-en-el-dock-de-macos/seguimiento.md
 - HU-0013-describir-lo-construido-reglas-arquitect/seguimiento.md
-- updates/index.ts
+- DashboardRuntime.tsx
 - Rediseño con sidebar, dashboard y página por instancia
 - Design system con shadcn y showcase local
 - Frontend escalable: componentes, features y router
-- utils.ts
+- instances/index.ts
 - HU-0014-design-system-con-shadcn-y-showcase-loca/seguimiento.md
 - HU-0015-frontend-escalable-componentes-features-/seguimiento.md
 - Solución
@@ -98,15 +98,15 @@
 - sections/hover-card.tsx
 - package.json
 - Verificación · HU-0015 · Frontend escalable: componentes, features y router
-- Path
+- ManagedPaths
 - Brief · HU-0014 · frontend
-- OperationDir
+- original_update.rs
 - ui/button.tsx
 - sections/dropdown-menu.tsx
-- projects-format.ts
-- original_update.rs
+- projects.test.ts
+- signed
 - ui/combobox.tsx
-- Registry
+- ManagedInstance
 - Header compacto, sidebar flotante y tipografía legible
 - sections/questionnaire.tsx
 - Descargar e instalar la original en macOS
@@ -114,7 +114,7 @@
 - ui/carousel.tsx
 - Descargar e instalar la original en Windows y Linux
 - sections/trace.tsx
-- ui/chart.tsx
+- react
 - result-messages.test.ts
 - projects/index.ts
 - check_source_update_sync
@@ -128,9 +128,9 @@
 - Solución
 - Revisión técnica · HU-0016 · Rediseño con sidebar, dashboard y página por instancia
 - UnlinkSessionDialog.tsx
-- InstanceDetail.tsx
+- ProjectCard.tsx
 - Solución
-- projects-store.ts
+- Option
 - Spike · HU-0021 · relevo del retorno del inicio de sesión
 - Revisión técnica · HU-0014 · Design system con shadcn y showcase local
 - Brief · HU-0016 · frontend
@@ -142,7 +142,7 @@
 - Solución
 - Proyectos: resumen de proyectos con metodología v4
 - Verificación · HU-0023 · Proyectos: resumen de proyectos con metodología v4
-- README.md
+- Code AI Profiles · cómo trabajamos
 - Detectar la versión nueva en la publicación oficial e instalarla
 - Icono personalizado de la instancia en el Dock de macOS
 - Revisión técnica · HU-0023 · Proyectos: resumen de proyectos con metodología v4
@@ -153,14 +153,14 @@
 - SessionList.tsx
 - HU-0016-rediseno-con-sidebar-dashboard-y-pagina-/seguimiento.md
 - Sesiones y estimación de contexto
-- ProjectHistories.tsx
+- Publicar el fix de actualización como versión 0.2.2
 - HU-0017-descargar-e-instalar-la-original-en-maco/seguimiento.md
-- FeedPackage
+- temp_root
 - Análisis · icono personalizado de la instancia en el Dock de macOS
 - Brief · HU-0017 · backend
 - Brief · HU-0017 · frontend
 - Arquitectura del backend (Rust + Tauri)
-- INDEX.md
+- Spike: relevo del retorno de inicio de sesión a la instancia correcta
 - ADR-0002 · Módulos Rust propios y configuración en compilación
 - HU-0021-spike-relevo-del-retorno-de-inicio-de-se/seguimiento.md
 - String
@@ -169,12 +169,12 @@
 - ui/sidebar.tsx
 - sections/drawer.tsx
 - Brief · HU-0019 · frontend
-- projects.test.ts
+- projects-detail.ts
 - HU-0018-descargar-e-instalar-la-original-en-wind/seguimiento.md
 - projects.rs
 - Revisión técnica · HU-0019 · Header compacto, sidebar flotante y tipografía legible
 - @fontsource/jetbrains-mono
-- ProjectsView.tsx
+- ui/command.tsx
 - Vista · HU-0019 · Header compacto, sidebar flotante y tipografía
 - method.rs
 - HU-0020-icono-personalizado-de-la-instancia-en-e/seguimiento.md
@@ -189,7 +189,7 @@
 - read_git
 - Auditoría UX
 - HU-0023-proyectos-resumen-de-proyectos-con-metod/briefs/frontend.md
-- instances/index.ts
+- source-update-controller.ts
 - Brief · HU-0022 · backend
 - Brief · HU-0022 · frontend
 - @shadcn/react
@@ -205,7 +205,7 @@
 - sections/code-block.tsx
 - Grafo de conocimiento con Graphify
 - sections/navigation-menu.tsx
-- sections/input-otp.tsx
+- AppShell.tsx
 - .read
 - Brief · HU-0024 · backend
 - Revisión técnica · HU-0024 · Detectar la versión nueva en la publicación oficial e instalarla
@@ -214,13 +214,15 @@
 - ProjectHistory
 - FakeEnv
 - component_eq
-- Sample
+- Block
 - sections/popover.tsx
 - parse_day
 - class-variance-authority
 - parse_minute
 - HU-0024-detectar-la-version-nueva-en-la-publicac/seguimiento.md
-- deserialize_collection_count
+- sections/accordion.tsx
+- ADR-0001 · Adopción de la metodología v4
+- Proyectos
 
 ## God Nodes (most connected - your core abstractions)
 1. `Block()` - 64 edges
@@ -235,49 +237,49 @@
 10. `DashboardState` - 26 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `run()` --indirect_call--> `projectsReducer()`  [INFERRED]
-  tests/projects.test.ts → src/features/projects/projects-store.ts
 - `CalendarDayButton()` --references--> `react`  [EXTRACTED]
   src/components/ui/calendar.tsx → package.json
+- `run()` --indirect_call--> `projectsReducer()`  [INFERRED]
+  tests/projects.test.ts → src/features/projects/projects-store.ts
 - `Carousel()` --references--> `react`  [EXTRACTED]
   src/components/ui/carousel.tsx → package.json
 - `useCarousel()` --references--> `react`  [EXTRACTED]
   src/components/ui/carousel.tsx → package.json
-- `ChartContainer()` --references--> `react`  [EXTRACTED]
-  src/components/ui/chart.tsx → package.json
+- `CodeBlockCopyButton()` --references--> `react`  [EXTRACTED]
+  src/components/ui/code-block.tsx → package.json
 
 ## Import Cycles
 - None detected.
 
-## Communities (209 total, 29 thin omitted)
+## Communities (211 total, 29 thin omitted)
 
 ### Community 0 - "String"
-Cohesion: 0.12
-Nodes (69): Channel, InstallOriginalUpdateRequest, OriginalInstallProgress, OriginalInstallResult, ProjectCandidate, ProjectsState, ProjectSummary, check_source_update() (+61 more)
+Cohesion: 0.11
+Nodes (59): Channel, Child, InstallOriginalUpdateRequest, OriginalInstallProgress, OriginalInstallResult, ProjectCandidate, ProjectsState, ProjectSummary (+51 more)
 
 ### Community 1 - "useDashboard"
-Cohesion: 0.21
-Nodes (22): DialogHost(), PageContent(), PageHeader(), PageSkeleton(), useDialogs(), DashboardRoute(), InstanceRoute(), OriginalRoute() (+14 more)
+Cohesion: 0.19
+Nodes (19): DialogHost(), PageContent(), PageHeader(), PageSkeleton(), Statusbar(), useDialogs(), DashboardRoute(), InstanceRoute() (+11 more)
 
 ### Community 2 - "scripts"
 Cohesion: 0.08
 Nodes (24): scripts, build, build:linux, build:macos, build:windows, dev, graph:build, graph:check (+16 more)
 
 ### Community 3 - "permission-cards.ts"
-Cohesion: 0.07
-Nodes (49): isSection(), Section, SECTIONS, SettingsRoute(), TITLES, Tabs(), TabsContent(), TabsList() (+41 more)
+Cohesion: 0.06
+Nodes (51): isSection(), Section, SECTIONS, SettingsRoute(), TITLES, DirectionProvider(), Tabs(), TabsContent() (+43 more)
 
 ### Community 4 - "lib.rs"
 Cohesion: 0.03
-Nodes (88): account_facts_sync(), AccountFacts, artifact_reference_count(), ArtifactMonitorEntry, ArtifactMonitorSummary, check_official_update_feed(), clean_monitor_state(), clears_context_after_compaction_until_the_next_response() (+80 more)
+Nodes (71): D, account_facts_sync(), AccountFacts, annotates_a_session_linked_inside_the_original_app(), apply_session_links(), apply_session_links_to_profile(), clean_session_text(), clears_context_after_compaction_until_the_next_response() (+63 more)
 
 ### Community 5 - "Solución"
 Cohesion: 0.06
 Nodes (31): Arquitectura del frontend, Añadir una feature, Añadir una pantalla, Design system (HU-0014), Dónde va cada cosa, Estado, Estilos, Estructura (+23 more)
 
 ### Community 6 - "types.ts"
-Cohesion: 0.05
-Nodes (51): call(), emptyMockTokens(), isTauri(), mockCandidates, mockCodeAiProfilesInfo(), mockHistory(), mockInstances, mockLatestVersion() (+43 more)
+Cohesion: 0.06
+Nodes (49): call(), emptyMockTokens(), isTauri(), mockCandidates, mockCodeAiProfilesInfo(), mockHistory(), mockInstances, mockLatestVersion() (+41 more)
 
 ### Community 7 - "bundle"
 Cohesion: 0.06
@@ -308,8 +310,8 @@ Cohesion: 0.50
 Nodes (3): Ajuste del orquestador (2026-10-28), Brief · HU-0015 · frontend, Verificación manual de AC-01
 
 ### Community 14 - "format.test.ts"
-Cohesion: 0.09
-Nodes (24): App(), AppShell(), AppProviders(), DialogsProvider(), RouteErrorBoundary(), router, HIDDEN, ICON_RETRY_RUNNING_HINT (+16 more)
+Cohesion: 0.14
+Nodes (13): App(), AppProviders(), DialogsProvider(), RouteErrorBoundary(), router, resolveRuntimePlatform(), RuntimePlatform, SystemPlatform (+5 more)
 
 ### Community 15 - ".new"
 Cohesion: 0.26
@@ -324,8 +326,8 @@ Cohesion: 0.17
 Nodes (11): core:default, core:window:allow-close, core:window:allow-minimize, core:window:allow-start-dragging, core:window:allow-toggle-maximize, main, description, identifier (+3 more)
 
 ### Community 18 - "HU-0010 — Publicar el fix de actualización como versión 0.2.2"
-Cohesion: 0.05
-Nodes (34): Alcance, Bitácora de implementación, Casos límite, privacidad y plataformas, Cierre de Graphify, Contexto y evidencia de Graphify, Criterios de aceptación, Diseño técnico y contratos, Documentación afectada (+26 more)
+Cohesion: 0.09
+Nodes (19): Alcance, Bitácora de implementación, Casos límite, privacidad y plataformas, Cierre de Graphify, Contexto y evidencia de Graphify, Criterios de aceptación, Diseño técnico y contratos, Documentación afectada (+11 more)
 
 ### Community 19 - "compilerOptions"
 Cohesion: 0.22
@@ -344,8 +346,8 @@ Cohesion: 0.13
 Nodes (23): Bubble(), BubbleContent(), BubbleGroup(), BubbleReactions(), bubbleReactionsVariants, bubbleVariants, Message(), MessageAvatar() (+15 more)
 
 ### Community 23 - "Vec"
-Cohesion: 0.10
-Nodes (35): ArtifactMonitorSummary, OsString, SessionTransferInfo, ApplicationFingerprint, applies_the_latest_model_context_and_clamps_percentage(), apply_session_context(), artifact_export_rejects_symlinks_and_depth_escapes(), artifact_export_roots() (+27 more)
+Cohesion: 0.09
+Nodes (41): ArtifactMonitorSummary, OsString, SessionTransferInfo, ApplicationFingerprint, applies_the_latest_model_context_and_clamps_percentage(), apply_session_context(), artifact_export_rejects_symlinks_and_depth_escapes(), artifact_export_roots() (+33 more)
 
 ### Community 24 - "macos_icon.rs"
 Cohesion: 0.08
@@ -377,11 +379,11 @@ Nodes (21): Alcance, Bitácora de implementación, Casos límite, privacidad y p
 
 ### Community 31 - "dashboard/index.ts"
 Cohesion: 0.13
-Nodes (24): AppSidebar(), Statusbar(), SummaryCards(), DashboardContext, DashboardContextValue, countCodeSessions(), countRunning(), filterInstances() (+16 more)
+Nodes (28): AppSidebar(), SummaryCards(), DashboardContext, DashboardContextValue, countCodeSessions(), countRunning(), filterInstances(), matchesOriginalApp() (+20 more)
 
 ### Community 32 - "prepare_and_verify"
-Cohesion: 0.12
-Nodes (28): Arc, MutexGuard, active_flight(), begin_flight(), cancel_original_update(), check_space(), digest_matches(), Flight (+20 more)
+Cohesion: 0.14
+Nodes (26): Arc, MutexGuard, active_flight(), begin_flight(), cancel_original_update(), digest_matches(), Flight, FlightGuard (+18 more)
 
 ### Community 36 - "HU-0009 — Estado oficial de actualización y refresco de versiones"
 Cohesion: 0.11
@@ -412,7 +414,7 @@ Cohesion: 0.12
 Nodes (15): Añadir un comando IPC, Errores, La estructura, La regla de oro, Lo que no se toma prestado, Lo que nunca, Procesos, Pruebas (+7 more)
 
 ### Community 43 - "Describir lo construido: reglas, arquitectura y componentes"
-Cohesion: 0.12
+Cohesion: 0.13
 Nodes (15): AC-01 · Reglas de negocio escritas, AC-02 · Arquitectura descrita, AC-03 · Componentes con skill, Alcance, Cierre, Criterios de aceptación, Decisiones por defecto (★), Definición de Preparado (+7 more)
 
 ### Community 44 - "Icono distintivo en el Dock de macOS"
@@ -432,8 +434,8 @@ Cohesion: 0.17
 Nodes (11): Actualizaciones de la aplicación original y las instancias, Comportamiento por plataforma, Descargar e instalar la original en macOS, Detección de versión disponible, Dos operaciones independientes, Errores y limitaciones, Flujo de actualización original, Límites de seguridad (+3 more)
 
 ### Community 48 - "copy_code_session_sync"
-Cohesion: 0.13
-Nodes (26): annotates_a_session_linked_inside_the_original_app(), apply_session_links(), apply_session_links_to_profile(), ArtifactTransferOutcome, atomic_replace_file(), atomically_creates_and_replaces_session_index(), canonical_code_session_id(), clean_session_text() (+18 more)
+Cohesion: 0.17
+Nodes (16): artifact_reference_count(), canonical_code_session_id(), copy_code_session_sync(), fetch_official_feed(), fetch_official_json(), find_file_named(), migrate_session_links(), migrates_existing_round_trip_as_a_link_to_the_original() (+8 more)
 
 ### Community 49 - "DESIGN.md"
 Cohesion: 0.18
@@ -475,9 +477,9 @@ Nodes (5): Contrato de desarrollo asistido por IA, Flujo obligatorio para featur
 Cohesion: 0.12
 Nodes (16): Los cinco puntos pedidos, Método, Observaciones, Prueba humana (después de la R-1 y de la suite), R-1 (O) · Texto redundante en la línea de estado · frontend y backend · antes de la prueba humana, R-2 (O) · Una copia con restos de icono y sin provenance queda sin salida · backend · antes de cerrar, R-3 (O) · Las copias heredadas ad hoc ya no se pueden sincronizar · backend · antes de cerrar, R-4 (O) · Los reintentos de `setIcon` pueden repetir el aviso de macOS · backend · opcional (+8 more)
 
-### Community 60 - "configuracion.document.md"
-Cohesion: 0.18
-Nodes (8): Apariencia, Configuración, Permisos, Sistema armónico, Ciclo de vida e identidad visual de instancias, Iconos por instancia, Inicio, detección y cierre, Privacidad y límites
+### Community 60 - "INDEX.md"
+Cohesion: 0.09
+Nodes (14): Apariencia, Configuración, Permisos, Sistema armónico, Ciclo de vida e identidad visual de instancias, Iconos por instancia, Inicio, detección y cierre, Privacidad y límites (+6 more)
 
 ### Community 61 - "Stack de Code AI Profiles"
 Cohesion: 0.40
@@ -485,7 +487,7 @@ Nodes (4): Las reglas que impone cada pieza, Módulo de configuración de cada a
 
 ### Community 62 - "Result"
 Cohesion: 0.12
-Nodes (29): OsStr, Output, RenameFn, available_space(), bundle_layout_valid(), copy_tree(), exchange_paths(), exchange_unsupported() (+21 more)
+Nodes (29): OsStr, Output, RenameFn, available_space(), bundle_layout_valid(), check_symlinks_within(), copy_tree(), exchange_paths() (+21 more)
 
 ### Community 63 - "Análisis"
 Cohesion: 0.40
@@ -495,17 +497,17 @@ Nodes (4): Análisis, Arquitectura · HU-0011 · Adopción v4, Decisiones, Impac
 Cohesion: 0.50
 Nodes (3): De producto (las aprueba Braiyan Rodriguez (mantenedor)), Invariantes de Code AI Profiles, Técnicas (las aprueba Braiyan Rodriguez (mantenedor))
 
-### Community 65 - "Proyectos"
-Cohesion: 0.10
-Nodes (15): Reglas de negocio · instancias, RN-01 · ~~El icono personalizado solo se ve dentro de Code AI Profiles en macOS~~ → En macOS el icono personalizado de una instancia se ve también en el Dock, Reglas de negocio · proyectos, RN-02 · Un proyecto anclado se lee sin escribir ni ejecutar nada, RN-03 · Los tokens de un proyecto salen solo de sus métricas, y las descartadas no suman, RN-04 · La app guarda la ruta y el último nombre leído de cada proyecto, Cómo se escribe una regla, Dominios (+7 more)
+### Community 65 - "Reglas de negocio · proyectos"
+Cohesion: 0.17
+Nodes (9): Reglas de negocio · instancias, RN-01 · ~~El icono personalizado solo se ve dentro de Code AI Profiles en macOS~~ → En macOS el icono personalizado de una instancia se ve también en el Dock, Reglas de negocio · proyectos, RN-02 · Un proyecto anclado se lee sin escribir ni ejecutar nada, RN-03 · Los tokens de un proyecto salen solo de sus métricas, y las descartadas no suman, RN-04 · La app guarda la ruta y el último nombre leído de cada proyecto, Cómo se escribe una regla, Dominios (+1 more)
 
 ### Community 66 - "PULL_REQUEST_TEMPLATE.md"
 Cohesion: 0.50
 Nodes (3): Autorización previa, Resumen, Verificación
 
-### Community 72 - "updates/index.ts"
-Cohesion: 0.08
-Nodes (49): DashboardRuntime(), useInitialLoad(), ScanContext, ScanContextValue, useBackgroundRefresh(), ScanProgressEvent, ScanRuntime, useScanLifecycle() (+41 more)
+### Community 72 - "DashboardRuntime.tsx"
+Cohesion: 0.12
+Nodes (27): FeedbackArea(), DashboardRuntime(), Progress(), useInitialLoad(), ScanContext, ScanContextValue, ScanProgressPanel(), useBackgroundRefresh() (+19 more)
 
 ### Community 73 - "Rediseño con sidebar, dashboard y página por instancia"
 Cohesion: 0.11
@@ -519,9 +521,9 @@ Nodes (17): AC-01 · El showcase se abre en local, AC-02 · Los componentes tien
 Cohesion: 0.11
 Nodes (17): AC-01 · La app se ve y funciona igual, AC-02 · Cada pieza en su sitio, AC-03 · Hay un router listo para pantallas nuevas, AC-04 · Lo que ya funcionaba sigue en verde, AC-05 · La arquitectura queda escrita, Alcance, Cierre, Criterios de aceptación (+9 more)
 
-### Community 76 - "utils.ts"
-Cohesion: 0.15
-Nodes (15): FeedbackArea(), NoticeAlert(), Progress(), FeedbackBanners(), usageTone(), UsageBar(), ScanProgressPanel(), installPhaseLabel() (+7 more)
+### Community 76 - "instances/index.ts"
+Cohesion: 0.16
+Nodes (18): UsageRanking(), HIDDEN, ICON_RETRY_RUNNING_HINT, iconBadgeLabel(), IconRetryInput, managedIconSource(), instanceStatusLabel(), InstanceAvatar() (+10 more)
 
 ### Community 79 - "Solución"
 Cohesion: 0.09
@@ -551,49 +553,49 @@ Nodes (5): name, packageManager, private, type, version
 Cohesion: 0.29
 Nodes (6): Comprobaciones, Decisiones tomadas por defecto (★, revisables al probar), Guía de prueba, Qué se entregó, Veredicto, Verificación · HU-0015 · Frontend escalable: componentes, features y router
 
-### Community 86 - "Path"
-Cohesion: 0.10
-Nodes (46): application_fingerprint(), application_fingerprint_changes_when_managed_bytes_change(), apply_external_icon_best_effort(), build_version_topology(), cached_source_version(), copy_provider_application(), fingerprint_label(), launch_macos_original_application_with() (+38 more)
+### Community 86 - "ManagedPaths"
+Cohesion: 0.12
+Nodes (47): apply_external_icon_best_effort(), build_version_topology(), cached_source_version(), clear_instance_icon_sync(), create_instance_sync(), delete_instance_sync(), detect_provider_source(), invalidate_application_cache() (+39 more)
 
 ### Community 87 - "Brief · HU-0014 · frontend"
 Cohesion: 0.25
 Nodes (7): Archivos, Brief · HU-0014 · frontend, Entrega, No toques, Pasos (los de § Secuencia; un commit por paso con el trailer `HU: HU-0014`), Pruebas, Si dudas
 
-### Community 88 - "OperationDir"
-Cohesion: 0.22
-Nodes (8): Cell, File, cleanup_operation_dir(), create_private_dir(), InstallFixture, OperationDir, Drop, Self
+### Community 88 - "original_update.rs"
+Cohesion: 0.08
+Nodes (33): check_expected_version(), check_https_host(), check_space(), cleanup_operation_dir(), e2e_url(), exchange_unsupported(), feed(), format_gigabytes() (+25 more)
 
 ### Community 89 - "ui/button.tsx"
-Cohesion: 0.17
-Nodes (19): Alert(), AlertAction(), AlertDescription(), AlertTitle(), alertVariants, Button(), Dialog(), DialogClose() (+11 more)
+Cohesion: 0.10
+Nodes (33): BrandMark(), BrandMarkProps, Alert(), AlertAction(), AlertDescription(), AlertTitle(), alertVariants, Button() (+25 more)
 
 ### Community 90 - "sections/dropdown-menu.tsx"
-Cohesion: 0.10
-Nodes (30): Breadcrumb(), BreadcrumbEllipsis(), BreadcrumbItem(), BreadcrumbLink(), BreadcrumbList(), BreadcrumbPage(), BreadcrumbSeparator(), ButtonGroup() (+22 more)
-
-### Community 91 - "projects-format.ts"
-Cohesion: 0.14
-Nodes (19): ProjectFigures(), repoHint(), cachePercent(), formatCacheShare(), formatHoursCompact(), formatSinceRange(), formatSpanDays(), formatTokensCompact() (+11 more)
-
-### Community 92 - "original_update.rs"
 Cohesion: 0.11
-Nodes (44): destination_must_be_a_plain_bundle_outside_the_instances(), e2e_url(), failed_final_check_restores_the_previous_version(), fake_tools_read_identity_from_the_fixture(), FakeBundle, fallback_swap_double_failure_tells_where_the_previous_version_is(), fallback_swap_keeps_previous_and_can_be_undone(), fallback_swap_that_cannot_activate_restores_and_says_unchanged() (+36 more)
+Nodes (28): Breadcrumb(), BreadcrumbEllipsis(), BreadcrumbItem(), BreadcrumbLink(), BreadcrumbList(), BreadcrumbPage(), BreadcrumbSeparator(), ButtonGroup() (+20 more)
+
+### Community 91 - "projects.test.ts"
+Cohesion: 0.11
+Nodes (28): ProjectFigures(), repoHint(), cachePercent(), formatCacheShare(), formatClock(), formatHoursCompact(), formatSinceRange(), formatSpanDays() (+20 more)
+
+### Community 92 - "signed"
+Cohesion: 0.25
+Nodes (22): destination_must_be_a_plain_bundle_outside_the_instances(), failed_final_check_restores_the_previous_version(), fake_tools_read_identity_from_the_fixture(), FakeBundle, fallback_swap_double_failure_tells_where_the_previous_version_is(), fallback_swap_keeps_previous_and_can_be_undone(), fallback_swap_that_cannot_activate_restores_and_says_unchanged(), install_fixture() (+14 more)
 
 ### Community 93 - "ui/combobox.tsx"
-Cohesion: 0.07
-Nodes (33): ComboboxChip(), ComboboxChips(), ComboboxChipsInput(), ComboboxContent(), ComboboxEmpty(), ComboboxInput(), ComboboxItem(), ComboboxList() (+25 more)
+Cohesion: 0.10
+Nodes (23): ComboboxChip(), ComboboxChips(), ComboboxChipsInput(), ComboboxContent(), ComboboxEmpty(), ComboboxInput(), ComboboxItem(), ComboboxList() (+15 more)
 
-### Community 94 - "Registry"
-Cohesion: 0.08
-Nodes (40): Child, CodeSession, Duration, InstanceStatus, ManagedProcessIdentity, AccountPlan, custom_icon_contract_does_not_modify_the_application_path(), detect_original_profile() (+32 more)
+### Community 94 - "ManagedInstance"
+Cohesion: 0.16
+Nodes (18): CodeSession, Duration, InstanceStatus, ManagedProcessIdentity, AccountPlan, identity_matches_instance(), ManagedInstance, ManagedProcessIdentity (+10 more)
 
 ### Community 95 - "Header compacto, sidebar flotante y tipografía legible"
-Cohesion: 0.12
+Cohesion: 0.11
 Nodes (17): AC-01 · Maqueta aprobada antes de construir, AC-02 · Cabecera compacta, AC-03 · Sidebar flotante y plegable, AC-04 · Textos legibles que crecen con «Grande», AC-05 · Nada se pierde, Alcance, Cierre, Criterios de aceptación (+9 more)
 
 ### Community 96 - "sections/questionnaire.tsx"
 Cohesion: 0.16
-Nodes (19): buttonVariants, Calendar(), Questionnaire(), QuestionnaireActions(), QuestionnaireChoice(), QuestionnaireChoiceDescription(), QuestionnaireChoices(), QuestionnaireDescription() (+11 more)
+Nodes (19): buttonVariants, Calendar(), CalendarDayButton(), Questionnaire(), QuestionnaireActions(), QuestionnaireChoice(), QuestionnaireChoiceDescription(), QuestionnaireChoices() (+11 more)
 
 ### Community 97 - "Descargar e instalar la original en macOS"
 Cohesion: 0.11
@@ -615,21 +617,21 @@ Nodes (18): AC-01 · Windows instala sin abrir la original, AC-02 · Windows dej
 Cohesion: 0.22
 Nodes (13): Collapsible(), CollapsibleContent(), CollapsibleTrigger(), Trace(), TraceCollapsible(), TraceCollapsibleContent(), TraceCollapsibleTrigger(), TraceDescription() (+5 more)
 
-### Community 102 - "ui/chart.tsx"
-Cohesion: 0.19
-Nodes (13): ChartConfig, ChartContainer(), ChartContext, ChartContextProps, ChartLegendContent(), ChartTooltipContent(), getPayloadConfigFromPayload(), INITIAL_DIMENSION (+5 more)
+### Community 102 - "react"
+Cohesion: 0.15
+Nodes (17): react, react, ChartConfig, ChartContainer(), ChartContext, ChartContextProps, ChartLegendContent(), ChartTooltipContent() (+9 more)
 
 ### Community 103 - "result-messages.test.ts"
 Cohesion: 0.10
-Nodes (16): ICON_ACCEPTED_TYPES, ICON_MAX_BYTES, ICON_MAX_SIZE, ICON_MIN_SIZE, iconDimensionsError(), iconFileError(), originalUpdateChannel, OriginalApplicationUpdateDialog() (+8 more)
+Nodes (34): NoticeAlert(), originalAppName(), ApplicationUpdateDialog(), installPhaseLabel(), installProgressPercent(), megabytes(), originalInstallAvailability, OriginalInstallSummary (+26 more)
 
 ### Community 104 - "projects/index.ts"
-Cohesion: 0.11
-Nodes (39): ProjectsSidebarGroup(), useStartPinProject(), ProjectRoute(), ProjectsRoute(), PinProjectDialog, ProjectBrokenPage(), BrokenProjectCard(), ProjectCard() (+31 more)
+Cohesion: 0.09
+Nodes (41): ProjectsSidebarGroup(), useStartPinProject(), ProjectRoute(), ProjectsRoute(), PinProjectDialog, ProjectPage(), PickResult, ProjectsContext (+33 more)
 
 ### Community 105 - "check_source_update_sync"
-Cohesion: 0.23
-Nodes (14): SourceUpdateStatus, check_apt_update(), check_source_update_sync(), parse_apt_policy(), read_fresh_source_update_cache(), read_source_update_cache(), Default, SourceUpdateSource (+6 more)
+Cohesion: 0.15
+Nodes (23): SourceUpdateStatus, check_apt_update(), check_official_update_feed(), check_source_update_sync(), macos_update_launcher_rejects_a_managed_application_without_launching(), maps_official_feed_document_to_source_update(), parse_apt_policy(), read_fresh_source_update_cache() (+15 more)
 
 ### Community 106 - "Solución"
 Cohesion: 0.09
@@ -668,20 +670,20 @@ Cohesion: 0.29
 Nodes (6): Documentos de arquitectura, Las desviaciones de E3, Los siete puntos pedidos, Método, Observaciones (nada bloquea), Revisión técnica · HU-0016 · Rediseño con sidebar, dashboard y página por instancia
 
 ### Community 115 - "UnlinkSessionDialog.tsx"
-Cohesion: 0.31
-Nodes (11): AlertDialog(), AlertDialogAction(), AlertDialogCancel(), AlertDialogContent(), AlertDialogDescription(), AlertDialogFooter(), AlertDialogHeader(), AlertDialogMedia() (+3 more)
+Cohesion: 0.26
+Nodes (13): AlertDialog(), AlertDialogAction(), AlertDialogCancel(), AlertDialogContent(), AlertDialogDescription(), AlertDialogFooter(), AlertDialogHeader(), AlertDialogMedia() (+5 more)
 
-### Community 116 - "InstanceDetail.tsx"
-Cohesion: 0.15
-Nodes (25): UsageRanking(), Badge(), badgeVariants, Card(), CardAction(), CardContent(), CardDescription(), CardFooter() (+17 more)
+### Community 116 - "ProjectCard.tsx"
+Cohesion: 0.14
+Nodes (29): Badge(), badgeVariants, Card(), CardAction(), CardContent(), CardDescription(), CardFooter(), CardHeader() (+21 more)
 
 ### Community 117 - "Solución"
 Cohesion: 0.11
 Nodes (18): A-1 · Contrato (TypeScript literal; Rust con `rename_all = "camelCase"`), A-2 · La comprobación con icono: `verify_managed_bundle(candidate, original, provenance)`, A-3 · Dónde se aplica, A-4 · Ciclo de vida del icono (macOS; siempre con la instancia detenida y dentro de `with_registry_operation`), A-5 · «Gestión de apps», Análisis, Arquitectura · HU-0020 · Icono personalizado de la instancia en el Dock de macOS, Briefs y orden (+10 more)
 
-### Community 118 - "projects-store.ts"
-Cohesion: 0.17
-Nodes (17): PickResult, ProjectsContext, ProjectsContextValue, useProjectsContext(), initialProjectsStore, ProjectsAction, projectsReducer(), ProjectsStatus (+9 more)
+### Community 118 - "Option"
+Cohesion: 0.07
+Nodes (52): application_fingerprint(), application_fingerprint_changes_when_managed_bytes_change(), ArtifactMonitorEntry, ArtifactMonitorSummary, atomic_replace_file(), atomically_creates_and_replaces_session_index(), clean_monitor_state(), CodeSessionDocument (+44 more)
 
 ### Community 119 - "Spike · HU-0021 · relevo del retorno del inicio de sesión"
 Cohesion: 0.17
@@ -708,12 +710,12 @@ Cohesion: 0.25
 Nodes (7): Choque con la HU-0023, Criterios, Lo comprobado (por lectura), Observaciones, Pendiente humano (macOS, `pnpm tauri dev`), Revisión técnica · HU-0022 · Configuración unificada con apariencia y permisos, Veredicto: **PASS**, con dos correcciones antes de entregar y una condición de proceso
 
 ### Community 125 - "catalog.ts"
-Cohesion: 0.05
-Nodes (53): Accordion(), AccordionContent(), AccordionItem(), AccordionTrigger(), AspectRatio(), DirectionProvider(), Kbd(), KbdGroup() (+45 more)
+Cohesion: 0.04
+Nodes (62): AspectRatio(), InputOTP(), InputOTPGroup(), InputOTPSeparator(), InputOTPSlot(), Kbd(), KbdGroup(), Marker() (+54 more)
 
 ### Community 126 - "appearance/index.ts"
-Cohesion: 0.21
-Nodes (18): AppearanceContext, AppearanceContextValue, useAppearance(), APPEARANCE_STORAGE_KEY, AppearancePreferences, AppTheme, DEFAULT_APPEARANCE, loadAppearancePreferences() (+10 more)
+Cohesion: 0.20
+Nodes (19): AppShell(), AppearanceContext, AppearanceContextValue, useAppearance(), APPEARANCE_STORAGE_KEY, AppearancePreferences, AppTheme, DEFAULT_APPEARANCE (+11 more)
 
 ### Community 127 - "Solución"
 Cohesion: 0.11
@@ -727,9 +729,9 @@ Nodes (19): AC-01 · Maqueta aprobada antes de construir, AC-02 · Anclar y desa
 Cohesion: 0.25
 Nodes (7): Aviso para decidir · avisos de macOS al abrir la app (R-6), Comprobaciones, Decisiones tomadas (★ y del mantenedor), Guía de prueba, Qué se entregó, Veredicto, Verificación · HU-0023 · Proyectos: resumen de proyectos con metodología v4
 
-### Community 130 - "README.md"
-Cohesion: 0.09
-Nodes (19): Code AI Profiles · cómo trabajamos, Cómo se trabaja, Las dos reglas fijas, Lo que no se edita a mano, Lo que sale de la máquina, Pruebas, Quién es quién, Reglas propias del proyecto (+11 more)
+### Community 130 - "Code AI Profiles · cómo trabajamos"
+Cohesion: 0.22
+Nodes (9): Code AI Profiles · cómo trabajamos, Cómo se trabaja, Las dos reglas fijas, Lo que no se edita a mano, Lo que sale de la máquina, Pruebas, Quién es quién, Reglas propias del proyecto (+1 more)
 
 ### Community 131 - "Detectar la versión nueva en la publicación oficial e instalarla"
 Cohesion: 0.11
@@ -756,20 +758,20 @@ Cohesion: 0.29
 Nodes (6): Comprobaciones, Decisiones tomadas por defecto (★, revisables al probar), Guía de prueba, Qué se entregó, Veredicto, Verificación · HU-0017 · Descargar e instalar la original en macOS
 
 ### Community 138 - "SessionList.tsx"
-Cohesion: 0.22
-Nodes (13): Item(), ItemActions(), ItemContent(), ItemDescription(), ItemFooter(), ItemGroup(), ItemHeader(), ItemMedia() (+5 more)
+Cohesion: 0.16
+Nodes (21): Empty(), EmptyContent(), EmptyDescription(), EmptyHeader(), EmptyMedia(), emptyMediaVariants, EmptyTitle(), Item() (+13 more)
 
 ### Community 140 - "Sesiones y estimación de contexto"
 Cohesion: 0.18
 Nodes (10): Compactación y ausencia de datos, Cálculo y señales visuales, Mantenimiento de modelos y aliases, Origen y alcance del dato, Privacidad, Referencias oficiales, Sesiones y estimación de contexto, Transferencia de sesiones, artefactos y monitores (+2 more)
 
-### Community 141 - "ProjectHistories.tsx"
-Cohesion: 0.17
-Nodes (19): Table(), TableBody(), TableCaption(), TableCell(), TableFooter(), TableHead(), TableHeader(), TableRow() (+11 more)
+### Community 141 - "Publicar el fix de actualización como versión 0.2.2"
+Cohesion: 0.13
+Nodes (15): AC-01 · Versión sincronizada, AC-02 · Documentación coherente, AC-03 · Pruebas y grafo en verde, AC-04 · Integración por PR, AC-05 · Bundle macOS verificable, Alcance, Cierre, Criterios de aceptación (+7 more)
 
-### Community 143 - "FeedPackage"
+### Community 143 - "temp_root"
 Cohesion: 0.16
-Nodes (20): AtomicBool, Read, check_expected_version(), check_https_host(), download_package(), FeedPackage, installed_update_info(), messages_name_the_real_source_of_the_version() (+12 more)
+Nodes (21): AtomicBool, Read, download_package(), far_deadline(), FeedPackage, installed_update_info(), long_download_is_cut_at_size_plus_one(), ProgressThrottle (+13 more)
 
 ### Community 144 - "Análisis · icono personalizado de la instancia en el Dock de macOS"
 Cohesion: 0.13
@@ -787,25 +789,25 @@ Nodes (7): Archivos, Brief · HU-0017 · frontend, No toques, Pasos, Pruebas, Si
 Cohesion: 0.20
 Nodes (9): Ajustes del Sistema y cuenta (macOS · HU-0022), Arquitectura del backend (Rust + Tauri), Configuración, Copias administradas con icono personalizado (macOS · HU-0020), Escribir sobre la aplicación original (macOS), Módulos (ADR-0002), Progreso hacia la interfaz, Proyectos anclados (HU-0023) (+1 more)
 
-### Community 148 - "INDEX.md"
-Cohesion: 0.12
-Nodes (12): AC-01 · Informe del spike, AC-02 · Nada real tocado, Cierre, Criterios de aceptación, Cómo se responde, Definición de Preparado, Definición de Terminado, Petición original (+4 more)
+### Community 148 - "Spike: relevo del retorno de inicio de sesión a la instancia correcta"
+Cohesion: 0.17
+Nodes (11): AC-01 · Informe del spike, AC-02 · Nada real tocado, Cierre, Criterios de aceptación, Cómo se responde, Definición de Preparado, Definición de Terminado, Petición original (+3 more)
 
 ### Community 149 - "ADR-0002 · Módulos Rust propios y configuración en compilación"
 Cohesion: 0.33
 Nodes (5): ADR-0002 · Módulos Rust propios y configuración en compilación, Alternativas, Consecuencias, Contexto, Decisión
 
 ### Community 151 - "String"
-Cohesion: 0.16
-Nodes (22): cancelled_outcome(), check_symlinks_within(), digest_of(), failed_items(), hex_digest(), hosts(), OriginalInstallOutcome, OriginalInstallResult (+14 more)
+Cohesion: 0.14
+Nodes (22): cancelled_outcome(), digest_of(), failed_items(), hex_digest(), hosts(), OriginalInstallOutcome, OriginalInstallResult, OriginalInstallStatus (+14 more)
 
 ### Community 152 - "Observaciones"
 Cohesion: 0.11
 Nodes (17): Anexo · Texto para `.claude/skills/code-ai-profiles-rust-tauri/SKILL.md`, Documentos de arquitectura alineados en esta revisión, Lo pedido, punto por punto, Método, Observaciones, R-10 (O, documentación) · Lo que contacta el sistema operativo, R-1 (O, conviene antes de la prueba humana) · Una pendiente se olvida si la original se abre antes de detenerla, R-2 (O) · El análisis previo del zip no ve entradas colgadas de un symlink (+9 more)
 
 ### Community 154 - "ui/sidebar.tsx"
-Cohesion: 0.08
-Nodes (38): react, react, SIDEBAR_STYLE, GROUP_LABEL, MenuCount(), Titlebar(), windowAction, CalendarDayButton() (+30 more)
+Cohesion: 0.13
+Nodes (23): GROUP_LABEL, MenuCount(), Sidebar(), SidebarContent(), SidebarContext, SidebarContextProps, SidebarFooter(), SidebarGroup() (+15 more)
 
 ### Community 155 - "sections/drawer.tsx"
 Cohesion: 0.23
@@ -815,9 +817,9 @@ Nodes (10): Drawer(), DrawerClose(), DrawerContent(), DrawerDescription(), Drawe
 Cohesion: 0.20
 Nodes (9): Archivos, Brief · HU-0019 · frontend, No toques, Pasos, Pruebas, Señales, Si dudas, Skills (+1 more)
 
-### Community 157 - "projects.test.ts"
-Cohesion: 0.06
-Nodes (52): PinProjectDialog(), ProjectConsumption(), RepoRow(), CandidateCheck, candidateChecks(), candidateProblemTitle(), capitalize(), consumptionByHistory() (+44 more)
+### Community 157 - "projects-detail.ts"
+Cohesion: 0.05
+Nodes (59): Table(), TableBody(), TableCaption(), TableCell(), TableFooter(), TableHead(), TableHeader(), TableRow() (+51 more)
 
 ### Community 159 - "projects.rs"
 Cohesion: 0.18
@@ -827,9 +829,9 @@ Nodes (41): environment(), find_entry(), inspect_candidate_at(), inspect_candida
 Cohesion: 0.25
 Nodes (7): Documentos de arquitectura, Las desviaciones declaradas, Los puntos pedidos, Método, Observaciones, Revisión técnica · HU-0019 · Header compacto, sidebar flotante y tipografía legible, Veredicto: **PASS**
 
-### Community 162 - "ProjectsView.tsx"
-Cohesion: 0.32
-Nodes (10): BrandMark(), BrandMarkProps, Empty(), EmptyContent(), EmptyDescription(), EmptyHeader(), EmptyMedia(), emptyMediaVariants (+2 more)
+### Community 162 - "ui/command.tsx"
+Cohesion: 0.27
+Nodes (10): Command(), CommandDialog(), CommandEmpty(), CommandGroup(), CommandInput(), CommandItem(), CommandList(), CommandSeparator() (+2 more)
 
 ### Community 163 - "Vista · HU-0019 · Header compacto, sidebar flotante y tipografía"
 Cohesion: 0.33
@@ -871,9 +873,9 @@ Nodes (18): FixedOffset, ProjectGit, ProjectGitStatus, git_result(), Head, is_sh
 Cohesion: 0.15
 Nodes (12): Auditoría UX, Cambios de producto que justifica la auditoría, Contraste (WCAG 2.2, AA), Decisiones (★ = la que propongo), Heurísticas de Nielsen, Lo que queda abierto, Medidas clave, antes → después (1440×920, oscuro, salvo indicación), Pantallas (+4 more)
 
-### Community 177 - "instances/index.ts"
-Cohesion: 0.38
-Nodes (4): DeleteInstanceDialog(), InstanceIconChange, applyLiveUsage(), useLiveUsage()
+### Community 177 - "source-update-controller.ts"
+Cohesion: 0.15
+Nodes (18): InstanceIconChange, useSourceUpdatePolling(), useSourceUpdateController(), bridge, createSourceUpdateController(), HandoffIntent, mergeSourceUpdateForInstallation(), sourceInstallationIdentity (+10 more)
 
 ### Community 178 - "Brief · HU-0022 · backend"
 Cohesion: 0.22
@@ -892,8 +894,8 @@ Cohesion: 0.29
 Nodes (6): Comprobaciones, Decisiones tomadas (★ y aprobadas), Guía de prueba, Qué se entregó, Veredicto, Verificación · HU-0022 · Configuración unificada con apariencia y permisos
 
 ### Community 187 - "sessions/index.ts"
-Cohesion: 0.14
-Nodes (26): DialogsContext, DialogsContextValue, Setter, InstanceDetailProps, formatModelName(), formatSessionTime(), formatTokenCount(), sessionContextLevel (+18 more)
+Cohesion: 0.15
+Nodes (25): DialogsContext, DialogsContextValue, Setter, InstanceDetailProps, formatModelName(), formatSessionTime(), formatTokenCount(), sessionContextLevel (+17 more)
 
 ### Community 188 - "sections/sheet.tsx"
 Cohesion: 0.23
@@ -915,9 +917,9 @@ Nodes (7): Artefactos versionados, Comandos, Grafo de conocimiento con Graphify,
 Cohesion: 0.30
 Nodes (8): NavigationMenu(), NavigationMenuContent(), NavigationMenuItem(), NavigationMenuLink(), NavigationMenuList(), NavigationMenuTrigger(), navigationMenuTriggerStyle, NavigationMenuSection()
 
-### Community 193 - "sections/input-otp.tsx"
-Cohesion: 0.22
-Nodes (10): InputOTP(), InputOTPGroup(), InputOTPSeparator(), InputOTPSlot(), Marker(), MarkerContent(), MarkerIcon(), markerVariants (+2 more)
+### Community 193 - "AppShell.tsx"
+Cohesion: 0.31
+Nodes (6): SIDEBAR_STYLE, Titlebar(), windowAction, SidebarRail(), SidebarTrigger(), useSidebar()
 
 ### Community 194 - ".read"
 Cohesion: 0.29
@@ -944,20 +946,28 @@ Cohesion: 0.40
 Nodes (5): ProjectHistory, ProjectHistoryState, ProjectRoleUsage, ProjectTotals, TokenBreakdown
 
 ### Community 200 - "FakeEnv"
-Cohesion: 0.12
-Nodes (16): Box, FakeEnv, feed(), good_update(), installation_candidates(), parse_feed_package(), parses_the_package_for_the_current_release(), Prepared (+8 more)
+Cohesion: 0.14
+Nodes (14): Box, Cell, File, create_private_dir(), FakeEnv, installation_candidates(), InstallFixture, OperationDir (+6 more)
 
-### Community 202 - "Sample"
+### Community 202 - "Block"
 Cohesion: 0.10
-Nodes (29): Checkbox(), Field(), FieldContent(), FieldDescription(), FieldError(), FieldGroup(), FieldLabel(), FieldLegend() (+21 more)
+Nodes (28): Checkbox(), Field(), FieldContent(), FieldDescription(), FieldError(), FieldGroup(), FieldLabel(), FieldLegend() (+20 more)
 
 ### Community 203 - "sections/popover.tsx"
 Cohesion: 0.33
 Nodes (7): Popover(), PopoverContent(), PopoverDescription(), PopoverHeader(), PopoverTitle(), PopoverTrigger(), PopoverSection()
 
-### Community 209 - "deserialize_collection_count"
-Cohesion: 0.67
-Nodes (3): D, deserialize_collection_count(), Error
+### Community 208 - "sections/accordion.tsx"
+Cohesion: 0.39
+Nodes (6): Accordion(), AccordionContent(), AccordionItem(), AccordionTrigger(), AccordionSection(), items
+
+### Community 209 - "ADR-0001 · Adopción de la metodología v4"
+Cohesion: 0.33
+Nodes (5): ADR-0001 · Adopción de la metodología v4, Alternativas, Consecuencias, Contexto, Decisión
+
+### Community 210 - "Proyectos"
+Cohesion: 0.33
+Nodes (6): Anclar y desanclar, Lo que se lee y lo que no, Permisos en macOS, Proyectos, Proyectos con problemas, Qué muestra
 
 ## Knowledge Gaps
 - **1306 isolated node(s):** `name`, `private`, `version`, `type`, `packageManager` (+1301 more)
@@ -967,17 +977,17 @@ Nodes (3): D, deserialize_collection_count(), Error
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `detect_original_profile()` connect `Registry` to `projects.rs`, `lib.rs`, `Vec`?**
-  _High betweenness centrality (0.022) - this node is a cross-community bridge._
-- **Why does `environment()` connect `projects.rs` to `Path`, `Registry`?**
-  _High betweenness centrality (0.022) - this node is a cross-community bridge._
-- **Why does `Button()` connect `ui/button.tsx` to `useDashboard`, `permission-cards.ts`, `SessionList.tsx`, `sections/message-scroller.tsx`, `ui/sidebar.tsx`, `sections/drawer.tsx`, `ProjectsView.tsx`, `sections/sheet.tsx`, `sections/code-block.tsx`, `Sample`, `sections/popover.tsx`, `utils.ts`, `sections/hover-card.tsx`, `sections/dropdown-menu.tsx`, `ui/combobox.tsx`, `sections/questionnaire.tsx`, `ui/carousel.tsx`, `sections/trace.tsx`, `projects/index.ts`, `sections/attachment.tsx`, `sections/pagination.tsx`, `UnlinkSessionDialog.tsx`, `InstanceDetail.tsx`, `catalog.ts`?**
+- **Why does `Button()` connect `ui/button.tsx` to `useDashboard`, `permission-cards.ts`, `SessionList.tsx`, `sections/message-scroller.tsx`, `ui/sidebar.tsx`, `sections/drawer.tsx`, `dashboard/index.ts`, `ui/command.tsx`, `sections/sheet.tsx`, `sections/code-block.tsx`, `DashboardRuntime.tsx`, `sections/popover.tsx`, `instances/index.ts`, `sections/hover-card.tsx`, `sections/dropdown-menu.tsx`, `ui/combobox.tsx`, `sections/questionnaire.tsx`, `ui/carousel.tsx`, `sections/trace.tsx`, `result-messages.test.ts`, `projects/index.ts`, `sections/attachment.tsx`, `sections/pagination.tsx`, `UnlinkSessionDialog.tsx`, `ProjectCard.tsx`, `catalog.ts`?**
   _High betweenness centrality (0.016) - this node is a cross-community bridge._
+- **Why does `detect_original_profile()` connect `Vec` to `lib.rs`, `Option`, `projects.rs`?**
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+- **Why does `environment()` connect `projects.rs` to `Path`, `Vec`?**
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
 - **What connects `name`, `private`, `version` to the rest of the system?**
   _1306 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `String` be split into smaller, more focused modules?**
-  _Cohesion score 0.11511387163561076 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.11338398597311514 - nodes in this community are weakly interconnected._
 - **Should `scripts` be split into smaller, more focused modules?**
   _Cohesion score 0.08333333333333333 - nodes in this community are weakly interconnected._
 - **Should `permission-cards.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.06557377049180328 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06013986013986014 - nodes in this community are weakly interconnected._
