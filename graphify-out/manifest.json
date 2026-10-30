@@ -85,8 +85,8 @@
     "semantic_hash": ""
   },
   ".github/workflows/build-desktop.yml": {
-    "mtime": 1793192634.4770398,
-    "ast_hash": "f29da9768bf8787f5fa720ceb330ff57",
+    "mtime": 1793395213.606024,
+    "ast_hash": "23d19dc6b52af8022bef4629eaf35ec9",
     "semantic_hash": ""
   },
   ".github/workflows/pr-policy.yml": {
@@ -115,8 +115,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1793393891.3046396,
-    "ast_hash": "984d1fd771be6aae230963786d27d509",
+    "mtime": 1793395257.4332943,
+    "ast_hash": "8a07ab3a03b6be4617d6ee5066583cb7",
     "semantic_hash": ""
   },
   "code.html": {
@@ -160,8 +160,8 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1793393891.3044388,
-    "ast_hash": "0c8d641e0c0c5f4c99371f6282d387e2",
+    "mtime": 1793395276.9080064,
+    "ast_hash": "94203a0479e2c4387aeea7ebf370b777",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
@@ -170,8 +170,8 @@
     "semantic_hash": ""
   },
   "docs/versionado.document.md": {
-    "mtime": 1793393891.3047931,
-    "ast_hash": "6ae2885e3eea5e45ef377553a0caad68",
+    "mtime": 1793395269.428186,
+    "ast_hash": "b4fdf18a14e3bf9fef356d0a0f80916d",
     "semantic_hash": ""
   },
   "src/lib/scan-controller.ts": {
