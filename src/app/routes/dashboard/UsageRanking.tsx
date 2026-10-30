@@ -37,7 +37,7 @@ export function UsageRanking() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <ItemGroup role="group" aria-label="Instancias por uso" className="gap-2">
+        <ItemGroup aria-label="Instancias por uso" className="gap-2">
           {ranking.map((instance) => {
             const pending = instancePending(busy, instance.id);
             const toggle = instanceToggle(instance, busy);
@@ -78,8 +78,8 @@ export function UsageRanking() {
                   </ItemTitle>
                   <ItemDescription className="truncate font-mono text-(length:--fs-small)/(--lh-small)">{formatCaptureTime(instance.usage?.capturedAt)}</ItemDescription>
                 </ItemContent>
-                <UsageBar label="Sesión" value={instance.usage?.sessionPercent ?? null} className="w-[26%] shrink-0 max-[1070px]:w-[24%]" />
-                <UsageBar label="Semanal" value={instance.usage?.weeklyPercent ?? null} className="w-[26%] shrink-0 max-[1070px]:w-[24%]" />
+                <UsageBar label="Sesión" value={instance.usage?.sessionPercent ?? null} className="pointer-events-none w-[26%] shrink-0 max-[1070px]:w-[24%]" />
+                <UsageBar label="Semanal" value={instance.usage?.weeklyPercent ?? null} className="pointer-events-none w-[26%] shrink-0 max-[1070px]:w-[24%]" />
                 <InstanceToggleButton
                   toggle={toggle}
                   onToggle={() => (toggle?.action === "stop" ? stop(instance) : launch(instance))}

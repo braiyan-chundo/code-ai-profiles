@@ -127,14 +127,14 @@ export function InstanceDetail({
               <Button
                 variant="outline"
                 size="lg"
-                disabled={isBusy}
+                disabled={busy !== null}
                 onClick={onStop}
                 className="min-w-28 border-primary/30 bg-primary/10 px-4 text-primary-text hover:bg-primary/15 hover:text-primary-text"
               >
                 <SquareIcon /> {isStopping ? "Deteniendo…" : "Detener"}
               </Button>
             ) : (
-              <Button size="lg" disabled={isBusy || instance.status === "missing"} onClick={onLaunch} className="min-w-28 px-4">
+              <Button size="lg" disabled={busy !== null || instance.status === "missing"} onClick={onLaunch} className="min-w-28 px-4">
                 <PlayIcon /> {isBusy ? "Abriendo…" : "Abrir"}
               </Button>
             )}
