@@ -23,12 +23,14 @@ mod contract;
 mod macos_icon;
 mod official_release;
 mod original_update;
+mod platform;
 mod projects;
 mod storage;
 #[cfg(test)]
 mod test_support;
 
 use contract::*;
+use platform::*;
 use storage::*;
 
 const UPDATE_CACHE_FRESH_MS: i64 = 6 * 60 * 60 * 1_000;
@@ -450,133 +452,6 @@ fn validate_name(value: &str) -> Result<String, String> {
     Ok(value.to_string())
 }
 
-fn platform_name() -> String {
-    if cfg!(target_os = "macos") {
-        "macos"
-    } else if cfg!(target_os = "windows") {
-        "windows"
-    } else if cfg!(target_os = "linux") {
-        "linux"
-    } else {
-        "unknown"
-    }
-    .to_string()
-}
-
-fn sanitize_source_name(value: &str) -> Option<String> {
-    let value = value.trim();
-    (!value.is_empty() && value.chars().count() <= 80 && !value.chars().any(char::is_control))
-        .then(|| value.to_string())
-}
-
-fn readable_source_stem(source: &Path) -> Option<String> {
-    let stem = source.file_stem()?.to_str()?;
-    let words = stem
-        .split(['-', '_'])
-        .filter(|word| !word.is_empty())
-        .map(|word| {
-            let mut characters = word.chars();
-            characters
-                .next()
-                .map(|first| first.to_uppercase().collect::<String>() + characters.as_str())
-                .unwrap_or_default()
-        })
-        .collect::<Vec<_>>()
-        .join(" ");
-    sanitize_source_name(&words)
-}
-
-fn source_name_from_metadata(
-    preferred: Option<&str>,
-    alternate: Option<&str>,
-    source: &Path,
-) -> Option<String> {
-    preferred
-        .and_then(sanitize_source_name)
-        .or_else(|| alternate.and_then(sanitize_source_name))
-        .or_else(|| readable_source_stem(source))
-}
-
-#[cfg(target_os = "macos")]
-fn macos_bundle_value(source: &Path, key: &str) -> Option<String> {
-    let output = Command::new("/usr/bin/plutil")
-        .args(["-extract", key, "raw", "-o", "-"])
-        .arg(source.join("Contents/Info.plist"))
-        .output()
-        .ok()?;
-    output
-        .status
-        .success()
-        .then(|| String::from_utf8_lossy(&output.stdout).into_owned())
-        .and_then(|value| sanitize_source_name(&value))
-}
-
-#[cfg(any(test, target_os = "linux"))]
-fn linux_desktop_name(contents: &str) -> Option<String> {
-    let mut in_desktop_entry = false;
-    for line in contents.lines() {
-        let line = line.trim();
-        if line.starts_with('[') {
-            in_desktop_entry = line == "[Desktop Entry]";
-            continue;
-        }
-        if in_desktop_entry {
-            if let Some(value) = line.strip_prefix("Name=") {
-                return sanitize_source_name(value);
-            }
-        }
-    }
-    None
-}
-
-fn source_display_name(source: &Path) -> Option<String> {
-    #[cfg(target_os = "macos")]
-    {
-        let display_name = macos_bundle_value(source, "CFBundleDisplayName");
-        let bundle_name = macos_bundle_value(source, "CFBundleName");
-        return source_name_from_metadata(display_name.as_deref(), bundle_name.as_deref(), source);
-    }
-
-    #[cfg(target_os = "windows")]
-    {
-        let product_name = Command::new("powershell.exe")
-            .args([
-                "-NoProfile",
-                "-NonInteractive",
-                "-Command",
-                "(Get-Item -LiteralPath $args[0]).VersionInfo.ProductName",
-            ])
-            .arg(source)
-            .output()
-            .ok()
-            .filter(|output| output.status.success())
-            .and_then(|output| sanitize_source_name(&String::from_utf8_lossy(&output.stdout)));
-        return source_name_from_metadata(product_name.as_deref(), None, source);
-    }
-
-    #[cfg(target_os = "linux")]
-    {
-        let mut desktop_files = vec![
-            PathBuf::from("/usr/share/applications/claude-desktop.desktop"),
-            PathBuf::from("/usr/local/share/applications/claude-desktop.desktop"),
-        ];
-        if let Some(home) = dirs::home_dir() {
-            desktop_files.push(home.join(".local/share/applications/claude-desktop.desktop"));
-        }
-        let desktop_name = desktop_files.into_iter().find_map(|path| {
-            fs::read_to_string(path)
-                .ok()
-                .and_then(|contents| linux_desktop_name(&contents))
-        });
-        return source_name_from_metadata(desktop_name.as_deref(), None, source);
-    }
-
-    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
-    {
-        source_name_from_metadata(None, None, source)
-    }
-}
-
 #[cfg_attr(target_os = "macos", allow(dead_code))]
 fn original_application_update_target(
     platform: &str,
@@ -596,117 +471,6 @@ fn original_application_update_target(
             url: config::linux_install_guide_url(),
         }),
         _ => None,
-    }
-}
-
-fn require_provider_source(source: Option<PathBuf>) -> Result<PathBuf, String> {
-    source.ok_or_else(|| {
-        "No se encontró la instalación original de la aplicación compatible.".to_string()
-    })
-}
-
-#[cfg(target_os = "macos")]
-fn macos_provider_candidates() -> Vec<PathBuf> {
-    let mut candidates = vec![PathBuf::from("/Applications/Claude.app")];
-    if let Some(home) = dirs::home_dir() {
-        candidates.push(home.join("Applications/Claude.app"));
-    }
-    candidates
-}
-
-fn detect_provider_source() -> Option<PathBuf> {
-    #[cfg(target_os = "macos")]
-    {
-        macos_provider_candidates()
-            .into_iter()
-            .find(|path| provider_executable(path).exists())
-    }
-
-    #[cfg(target_os = "windows")]
-    {
-        let local = env::var_os("LOCALAPPDATA").map(PathBuf::from)?;
-        let candidates = [
-            local.join("AnthropicClaude/Claude.exe"),
-            local.join("Programs/Claude/Claude.exe"),
-            local.join("Programs/claude/Claude.exe"),
-            local.join("Claude/Claude.exe"),
-        ];
-        if let Some(found) = candidates.into_iter().find(|path| path.is_file()) {
-            return Some(found);
-        }
-
-        let squirrel_root = local.join("AnthropicClaude");
-        let mut versioned: Vec<PathBuf> = fs::read_dir(squirrel_root)
-            .ok()?
-            .flatten()
-            .map(|entry| entry.path().join("Claude.exe"))
-            .filter(|path| path.is_file())
-            .collect();
-        versioned.sort();
-        versioned.pop()
-    }
-
-    #[cfg(target_os = "linux")]
-    {
-        let mut candidates = vec![
-            PathBuf::from("/usr/bin/claude-desktop"),
-            PathBuf::from("/usr/local/bin/claude-desktop"),
-            PathBuf::from("/usr/lib/claude-desktop/claude-desktop"),
-            PathBuf::from("/opt/claude-desktop/claude-desktop"),
-        ];
-        if let Some(home) = dirs::home_dir() {
-            candidates.push(home.join(".local/bin/claude-desktop"));
-        }
-        candidates
-            .into_iter()
-            .find(|path| linux_provider_installation(path).is_some())
-    }
-
-    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
-    {
-        None
-    }
-}
-
-fn detect_original_profile() -> Option<PathBuf> {
-    #[cfg(target_os = "macos")]
-    {
-        dirs::home_dir()
-            .map(|home| home.join("Library/Application Support/Claude"))
-            .filter(|path| path.is_dir())
-    }
-
-    #[cfg(target_os = "windows")]
-    {
-        let mut candidates = Vec::new();
-        if let Some(roaming) = env::var_os("APPDATA") {
-            let roaming = PathBuf::from(roaming);
-            candidates.push(roaming.join("Claude"));
-            candidates.push(roaming.join("Anthropic Claude"));
-        }
-        if let Some(local) = env::var_os("LOCALAPPDATA") {
-            candidates.push(PathBuf::from(local).join("Claude"));
-        }
-        candidates.into_iter().find(|path| path.is_dir())
-    }
-
-    #[cfg(target_os = "linux")]
-    {
-        let config_root = env::var_os("XDG_CONFIG_HOME")
-            .map(PathBuf::from)
-            .or_else(|| dirs::home_dir().map(|home| home.join(".config")))?;
-        [
-            config_root.join("Claude"),
-            config_root.join("claude-desktop"),
-            config_root.join("Anthropic Claude"),
-        ]
-        .into_iter()
-        .find(|path| path.is_dir())
-    }
-
-    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
-    {
-        None
     }
 }
 
@@ -754,167 +518,6 @@ fn resolve_transfer_profile(
         .ok_or_else(|| "El perfil ya no existe.".to_string())
 }
 
-fn provider_executable(app_path: &Path) -> PathBuf {
-    #[cfg(target_os = "macos")]
-    {
-        app_path.join("Contents/MacOS/Claude")
-    }
-    #[cfg(not(target_os = "macos"))]
-    {
-        app_path.to_path_buf()
-    }
-}
-
-#[cfg(any(test, target_os = "linux"))]
-fn linux_provider_installation(path: &Path) -> Option<(PathBuf, PathBuf)> {
-    let executable = fs::canonicalize(path).ok()?;
-    if !executable.is_file()
-        || executable.file_name().and_then(|value| value.to_str()) != Some("claude-desktop")
-    {
-        return None;
-    }
-    let installation_root = executable.parent()?.to_path_buf();
-    let has_electron_resources = installation_root.join("resources").is_dir()
-        || installation_root.join("chrome-sandbox").is_file()
-        || installation_root.join("locales").is_dir();
-    has_electron_resources.then_some((installation_root, executable))
-}
-
-#[cfg(any(test, target_os = "linux"))]
-fn normalize_linux_version(value: &str) -> Option<String> {
-    value
-        .split_whitespace()
-        .map(|part| {
-            part.trim_matches(|character: char| {
-                !character.is_ascii_alphanumeric()
-                    && character != '.'
-                    && character != '-'
-                    && character != '+'
-            })
-        })
-        .find(|part| {
-            part.chars()
-                .next()
-                .is_some_and(|character| character.is_ascii_digit())
-                && part.contains('.')
-        })
-        .map(str::to_string)
-}
-
-fn validate_source(path: &Path) -> Result<(), String> {
-    #[cfg(target_os = "macos")]
-    {
-        if path.extension().and_then(|value| value.to_str()) != Some("app")
-            || !provider_executable(path).is_file()
-        {
-            return Err(
-                "La ruta no corresponde a un bundle válido de la aplicación compatible."
-                    .to_string(),
-            );
-        }
-        return Ok(());
-    }
-
-    #[cfg(target_os = "windows")]
-    {
-        let is_compatible_executable = path
-            .file_name()
-            .and_then(|value| value.to_str())
-            .map(|name| name.eq_ignore_ascii_case("Claude.exe"))
-            .unwrap_or(false);
-        if !is_compatible_executable || !path.is_file() {
-            return Err(
-                "La ruta no corresponde a un ejecutable válido de la aplicación compatible."
-                    .to_string(),
-            );
-        }
-        return Ok(());
-    }
-
-    #[cfg(target_os = "linux")]
-    {
-        if linux_provider_installation(path).is_none() {
-            return Err(
-                "La ruta no corresponde a una instalación compatible para Linux.".to_string(),
-            );
-        }
-        return Ok(());
-    }
-
-    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
-    {
-        let _ = path;
-        Err("Esta plataforma todavía no está soportada.".to_string())
-    }
-}
-
-fn source_version(source: &Path) -> Option<String> {
-    #[cfg(target_os = "macos")]
-    {
-        let output = Command::new("/usr/bin/plutil")
-            .args(["-extract", "CFBundleShortVersionString", "raw", "-o", "-"])
-            .arg(source.join("Contents/Info.plist"))
-            .output()
-            .ok()?;
-        if output.status.success() {
-            let version = String::from_utf8_lossy(&output.stdout).trim().to_string();
-            return (!version.is_empty()).then_some(version);
-        }
-        None
-    }
-
-    #[cfg(target_os = "windows")]
-    {
-        let powershell = Command::new("powershell.exe")
-            .args([
-                "-NoProfile",
-                "-NonInteractive",
-                "-Command",
-                "(Get-Item -LiteralPath $args[0]).VersionInfo.ProductVersion",
-            ])
-            .arg(source)
-            .output()
-            .ok()
-            .filter(|output| output.status.success())
-            .map(|output| String::from_utf8_lossy(&output.stdout).trim().to_string())
-            .filter(|version| !version.is_empty());
-        powershell.or_else(|| {
-            source
-                .parent()?
-                .file_name()?
-                .to_str()?
-                .strip_prefix("app-")
-                .map(str::to_string)
-        })
-    }
-
-    #[cfg(target_os = "linux")]
-    {
-        let package_version = Command::new("dpkg-query")
-            .args(["-W", "-f=${Version}", "claude-desktop"])
-            .output()
-            .ok()
-            .filter(|output| output.status.success())
-            .and_then(|output| normalize_linux_version(&String::from_utf8_lossy(&output.stdout)));
-        package_version.or_else(|| {
-            Command::new(source)
-                .arg("--version")
-                .output()
-                .ok()
-                .filter(|output| output.status.success())
-                .and_then(|output| {
-                    normalize_linux_version(&String::from_utf8_lossy(&output.stdout))
-                })
-        })
-    }
-
-    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
-    {
-        let _ = source;
-        None
-    }
-}
-
 fn metadata_stamp(path: &Path) -> (u64, u128) {
     fs::metadata(path)
         .ok()
@@ -941,20 +544,7 @@ fn application_fingerprint(path: &Path) -> Option<ApplicationFingerprint> {
     // identity is still verified with the platform signature APIs before a bundle
     // can be copied. These files cover the executable, version metadata and the
     // Electron payload without recursively walking the complete application tree.
-    let metadata_paths = if cfg!(target_os = "macos") {
-        vec![
-            canonical_path.join("Contents/Info.plist"),
-            canonical_path.join("Contents/Resources/app.asar"),
-            canonical_path.join("Contents/_CodeSignature/CodeResources"),
-        ]
-    } else {
-        let parent = canonical_path.parent().unwrap_or(&canonical_path);
-        vec![
-            canonical_path.clone(),
-            parent.join("resources/app.asar"),
-            parent.join("resources/app-update.yml"),
-        ]
-    };
+    let metadata_paths = fingerprint_metadata_paths(&canonical_path);
     let mut hasher = DefaultHasher::new();
     let mut metadata_len = 0_u64;
     let mut metadata_modified_ns = 0_u128;
@@ -1018,104 +608,6 @@ fn versions_equal(left: &str, right: &str) -> bool {
     !version_is_newer(left, Some(right)) && !version_is_newer(right, Some(left))
 }
 
-#[cfg(target_os = "macos")]
-fn macos_team_identifier(path: &Path) -> Option<String> {
-    let output = Command::new("/usr/bin/codesign")
-        .args(["-dv", "--verbose=4"])
-        .arg(path)
-        .output()
-        .ok()?;
-    let details = String::from_utf8_lossy(&output.stderr);
-    details.lines().find_map(|line| {
-        line.strip_prefix("TeamIdentifier=")
-            .map(str::trim)
-            .filter(|value| !value.is_empty() && *value != "not set")
-            .map(str::to_string)
-    })
-}
-
-#[cfg(target_os = "macos")]
-fn macos_code_hash(path: &Path) -> Option<String> {
-    let output = Command::new("/usr/bin/codesign")
-        .args(["-dv", "--verbose=4"])
-        .arg(path)
-        .output()
-        .ok()?;
-    let details = String::from_utf8_lossy(&output.stderr);
-    details.lines().find_map(|line| {
-        line.strip_prefix("CDHash=")
-            .map(str::trim)
-            .filter(|value| !value.is_empty())
-            .map(str::to_string)
-    })
-}
-
-#[cfg(target_os = "macos")]
-fn validate_provider_identity_uncached(candidate: &Path, original: &Path) -> Result<(), String> {
-    for path in [candidate, original] {
-        let status = Command::new("/usr/bin/codesign")
-            .args(["--verify", "--deep", "--strict"])
-            .arg(path)
-            .status()
-            .map_err(|error| format!("No se pudo validar la firma de la aplicación: {error}"))?;
-        if !status.success() {
-            return Err("La firma de la aplicación compatible no es válida.".to_string());
-        }
-    }
-    let candidate_bundle = macos_bundle_value(candidate, "CFBundleIdentifier");
-    let original_bundle = macos_bundle_value(original, "CFBundleIdentifier");
-    if candidate_bundle.is_none() || candidate_bundle != original_bundle {
-        return Err("La identidad del bundle no coincide con la aplicación original.".to_string());
-    }
-    let candidate_team = macos_team_identifier(candidate);
-    let original_team = macos_team_identifier(original);
-    if original_team.is_some() && candidate_team != original_team {
-        return Err("El firmante de la aplicación no coincide con la original.".to_string());
-    }
-    Ok(())
-}
-
-#[cfg(target_os = "windows")]
-fn windows_signer_subject(path: &Path) -> Option<String> {
-    let output = Command::new("powershell.exe")
-        .args([
-            "-NoProfile",
-            "-NonInteractive",
-            "-Command",
-            "$s=Get-AuthenticodeSignature -LiteralPath $args[0]; if($s.Status -eq 'Valid' -and $s.SignerCertificate){$s.SignerCertificate.Subject}",
-        ])
-        .arg(path)
-        .output()
-        .ok()?;
-    output
-        .status
-        .success()
-        .then(|| String::from_utf8_lossy(&output.stdout).trim().to_string())
-        .filter(|value| !value.is_empty())
-}
-
-#[cfg(target_os = "windows")]
-fn validate_provider_identity_uncached(candidate: &Path, original: &Path) -> Result<(), String> {
-    let candidate = windows_signer_subject(candidate)
-        .ok_or_else(|| "La firma Authenticode de la instancia no es válida.".to_string())?;
-    let original = windows_signer_subject(original)
-        .ok_or_else(|| "La firma Authenticode de la original no es válida.".to_string())?;
-    if candidate != original {
-        return Err("El editor de la instancia no coincide con la original.".to_string());
-    }
-    Ok(())
-}
-
-#[cfg(target_os = "linux")]
-fn validate_provider_identity_uncached(_candidate: &Path, _original: &Path) -> Result<(), String> {
-    Err("Linux usa la instalación compartida y no sincroniza copias de aplicación.".to_string())
-}
-
-#[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
-fn validate_provider_identity_uncached(_candidate: &Path, _original: &Path) -> Result<(), String> {
-    Err("La sincronización no está soportada en esta plataforma.".to_string())
-}
-
 fn validate_provider_identity(candidate: &Path, original: &Path) -> Result<(), String> {
     let candidate_fingerprint = application_fingerprint(candidate)
         .ok_or_else(|| "No se pudo obtener el fingerprint de la instancia.".to_string())?;
@@ -1134,16 +626,6 @@ fn validate_provider_identity(candidate: &Path, original: &Path) -> Result<(), S
         cache.identities.insert(key, result.clone());
     }
     result
-}
-
-/// Stored as `managed_fingerprint` for compatibility; no longer a gate (HU-0020, ★ D-E). macOS only.
-#[cfg(target_os = "macos")]
-fn fingerprint_label(path: &Path) -> Result<String, String> {
-    let fingerprint = application_fingerprint(path)
-        .ok_or_else(|| "No se pudo calcular el fingerprint de la aplicación.".to_string())?;
-    let mut hasher = DefaultHasher::new();
-    fingerprint.hash(&mut hasher);
-    Ok(format!("{:016x}", hasher.finish()))
 }
 
 fn validate_managed_application_source(
@@ -1231,7 +713,7 @@ fn build_version_topology(
     let original_valid = original_instance_status_with_inventory(inventory)
         == InstanceStatus::Stopped
         && validate_source(&original).is_ok()
-        && (cfg!(target_os = "linux")
+        && (SHARED_INSTALLATION
             || validate_provider_identity_uncached(&original, &original).is_ok());
     let original_version = original_valid
         .then(|| cached_source_version(&original))
@@ -1251,7 +733,7 @@ fn build_version_topology(
     });
 
     let mut validated_versions = HashMap::new();
-    if !cfg!(target_os = "linux") {
+    if !SHARED_INSTALLATION {
         for instance in &registry.instances {
             let donor_version = validate_managed_application_source(paths, instance, &original);
             let validated_version = donor_version
@@ -1302,7 +784,7 @@ fn build_version_topology(
             .is_some_and(|version| version_is_newer(latest, Some(version)))
     });
     let can_synchronize_managed =
-        !cfg!(target_os = "linux") && latest.is_some() && !stale_instance_ids.is_empty();
+        !SHARED_INSTALLATION && latest.is_some() && !stale_instance_ids.is_empty();
     let has_latest = latest.is_some();
     VersionTopology {
         latest_installed_version: latest.as_ref().map(|(version, _)| version.clone()),
@@ -1310,7 +792,7 @@ fn build_version_topology(
         stale_instance_ids,
         original_behind,
         can_synchronize_managed,
-        reason: if cfg!(target_os = "linux") {
+        reason: if SHARED_INSTALLATION {
             Some(
                 "Linux usa el paquete compartido; no hay copias de bytes que sincronizar."
                     .to_string(),
@@ -1636,90 +1118,7 @@ fn copy_provider_application(source: &Path, instance_root: &Path) -> Result<Path
     fs::create_dir_all(&application_root)
         .map_err(|error| format!("No se pudo crear el directorio de la aplicación: {error}"))?;
 
-    #[cfg(target_os = "macos")]
-    {
-        let destination = application_root.join("Claude.app");
-        let cloned = Command::new("/bin/cp")
-            .args(["-cR"])
-            .arg(source)
-            .arg(&destination)
-            .status();
-
-        if matches!(cloned, Ok(status) if status.success()) {
-            return Ok(destination);
-        }
-
-        if destination.exists() {
-            fs::remove_dir_all(&destination).map_err(|error| {
-                format!("Falló la copia APFS y no se pudo limpiar el destino parcial: {error}")
-            })?;
-        }
-
-        let copied = Command::new("/usr/bin/ditto")
-            .args(["--rsrc", "--extattr", "--acl"])
-            .arg(source)
-            .arg(&destination)
-            .status()
-            .map_err(|error| format!("No se pudo iniciar la copia de la aplicación: {error}"))?;
-        if !copied.success() {
-            return Err("No se pudo copiar la aplicación al directorio administrado.".to_string());
-        }
-        Ok(destination)
-    }
-
-    #[cfg(target_os = "windows")]
-    {
-        let source_dir = source
-            .parent()
-            .ok_or_else(|| "El ejecutable no tiene un directorio de origen válido.".to_string())?;
-        let destination = application_root.join("Claude");
-        fs::create_dir_all(&destination)
-            .map_err(|error| format!("No se pudo crear el destino de la aplicación: {error}"))?;
-        let status = Command::new("robocopy")
-            .arg(source_dir)
-            .arg(&destination)
-            .args([
-                "/E",
-                "/COPY:DAT",
-                "/DCOPY:DAT",
-                "/R:2",
-                "/W:1",
-                "/NFL",
-                "/NDL",
-                "/NJH",
-                "/NJS",
-            ])
-            .status()
-            .map_err(|error| format!("No se pudo iniciar robocopy: {error}"))?;
-        let code = status.code().unwrap_or(16);
-        if code > 7 {
-            return Err(format!(
-                "No se pudo copiar la aplicación compatible (robocopy: {code})."
-            ));
-        }
-        let executable_name = source.file_name().unwrap_or_default();
-        Ok(destination.join(executable_name))
-    }
-
-    #[cfg(target_os = "linux")]
-    {
-        use std::os::unix::fs::symlink;
-
-        let (_, canonical_executable) = linux_provider_installation(source).ok_or_else(|| {
-            "No se pudo resolver la instalación compatible para Linux.".to_string()
-        })?;
-        let destination = application_root.join("claude-desktop");
-        symlink(&canonical_executable, &destination).map_err(|error| {
-            format!("No se pudo crear el lanzador administrado en Linux: {error}")
-        })?;
-        Ok(destination)
-    }
-
-    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
-    {
-        let _ = (source, instance_root, application_root);
-        Err("Esta plataforma todavía no está soportada.".to_string())
-    }
+    copy_provider_bundle(source, &application_root)
 }
 
 /// A fresh copy never keeps the Finder icon of its source (HU-0020, A-4.3). Only macOS has one.
@@ -1747,37 +1146,6 @@ fn instance_bundle_name(name: &str) -> String {
             safe_name
         }
     )
-}
-
-fn personalize_application_path(app_path: &Path, instance_name: &str) -> Result<PathBuf, String> {
-    #[cfg(target_os = "macos")]
-    {
-        let parent = app_path
-            .parent()
-            .ok_or_else(|| "La aplicación administrada no tiene una ruta válida.".to_string())?;
-        let destination = parent.join(instance_bundle_name(instance_name));
-        if destination == app_path {
-            return Ok(destination);
-        }
-        if destination.exists() {
-            return Err(format!(
-                "Ya existe una aplicación administrada llamada {}.",
-                destination
-                    .file_name()
-                    .and_then(|value| value.to_str())
-                    .unwrap_or("perfil.app")
-            ));
-        }
-        fs::rename(app_path, &destination)
-            .map_err(|error| format!("No se pudo aplicar el nombre de la instancia: {error}"))?;
-        Ok(destination)
-    }
-
-    #[cfg(not(target_os = "macos"))]
-    {
-        let _ = instance_name;
-        Ok(app_path.to_path_buf())
-    }
 }
 
 fn swap_application_directory(
@@ -2946,19 +2314,6 @@ fn unlink_code_session_sync(
     Ok(())
 }
 
-#[cfg(target_os = "windows")]
-fn process_is_alive(pid: u32) -> bool {
-    let filter = format!("PID eq {pid}");
-    Command::new("tasklist")
-        .args(["/FI", &filter, "/FO", "CSV", "/NH"])
-        .output()
-        .map(|output| {
-            output.status.success()
-                && String::from_utf8_lossy(&output.stdout).contains(&format!("\",\"{pid}\","))
-        })
-        .unwrap_or(false)
-}
-
 fn process_fingerprint(app_path: &Path, profile_argument: &str) -> String {
     let executable = provider_executable(app_path);
     let canonical = fs::canonicalize(&executable).unwrap_or(executable);
@@ -3763,7 +3118,7 @@ fn synchronize_managed_applications_sync(
     app: &AppHandle,
     request: SynchronizeManagedApplicationsRequest,
 ) -> Result<Vec<SynchronizationItemResult>, String> {
-    if cfg!(target_os = "linux") {
+    if SHARED_INSTALLATION {
         return Err(
             "Linux usa una instalación compartida y no requiere sincronización de copias."
                 .to_string(),
@@ -4100,11 +3455,7 @@ fn launch_instance_sync(app: &AppHandle, id: String) -> Result<(), String> {
             profile_path.to_string_lossy()
         ))
         .env("CODE_AI_PROFILES_INSTANCE_ID", &instance.id);
-    #[cfg(unix)]
-    {
-        use std::os::unix::process::CommandExt;
-        command.process_group(0);
-    }
+    isolate_process_group(&mut command);
     let mut child = command
         .spawn()
         .map_err(|error| format!("No se pudo iniciar la aplicación: {error}"))?;
@@ -4117,7 +3468,7 @@ fn launch_instance_sync(app: &AppHandle, id: String) -> Result<(), String> {
     instance.pid = Some(root_pid);
     instance.process_identity = Some(ManagedProcessIdentity {
         root_pid,
-        process_group_id: cfg!(unix).then_some(root_pid),
+        process_group_id: launched_process_group(root_pid),
         start_time,
         fingerprint: process_fingerprint(&app_path, &profile_argument),
         profile_argument,
@@ -4222,71 +3573,7 @@ fn signal_instance_processes(
         }
     }
 
-    #[cfg(unix)]
-    {
-        let signal = if force { libc::SIGKILL } else { libc::SIGTERM };
-        let mut signaled = HashSet::new();
-        if let Some(group_id) = identity.process_group_id.filter(|_| {
-            processes.iter().any(|(pid, start_time)| {
-                *pid == identity.root_pid
-                    && identity
-                        .start_time
-                        .map(|expected| expected == *start_time)
-                        .unwrap_or(true)
-            })
-        }) {
-            let result = unsafe { libc::kill(-(group_id as i32), signal) };
-            if result == 0 {
-                signaled.insert(identity.root_pid);
-            } else {
-                let error = std::io::Error::last_os_error();
-                if error.raw_os_error() != Some(libc::ESRCH) {
-                    return Err(format!("No se pudo señalizar el grupo verificado: {error}"));
-                }
-            }
-        }
-        for (pid, _start_time) in processes {
-            if signaled.contains(&pid) {
-                continue;
-            }
-            let result = unsafe { libc::kill(pid as i32, signal) };
-            if result != 0 {
-                let error = std::io::Error::last_os_error();
-                if error.raw_os_error() != Some(libc::ESRCH) {
-                    return Err(format!(
-                        "No se pudo señalizar el proceso verificado: {error}"
-                    ));
-                }
-            }
-        }
-        return Ok(());
-    }
-
-    #[cfg(target_os = "windows")]
-    {
-        for (pid, _start_time) in processes {
-            let mut command = Command::new("taskkill");
-            command.args(["/PID", &pid.to_string(), "/T"]);
-            if force {
-                command.arg("/F");
-            }
-            let status = command.status().map_err(|error| {
-                format!("No se pudo solicitar el cierre de la aplicación: {error}")
-            })?;
-            if !status.success() && process_is_alive(pid) {
-                return Err(format!(
-                    "Windows no pudo detener el proceso verificado {pid}."
-                ));
-            }
-        }
-        return Ok(());
-    }
-
-    #[cfg(not(any(unix, target_os = "windows")))]
-    {
-        let _ = (instance, identity, force);
-        Err("Detener procesos no está soportado en esta plataforma.".to_string())
-    }
+    signal_verified_processes(identity, processes, force)
 }
 
 fn stop_instance_sync(app: &AppHandle, id: &str) -> Result<(), String> {
@@ -4377,76 +3664,6 @@ fn normalized_icon_png(bytes: &[u8]) -> Result<Vec<u8>, String> {
         .write_to(&mut encoded, image::ImageFormat::Png)
         .map_err(|error| format!("No se pudo normalizar el icono: {error}"))?;
     Ok(encoded.into_inner())
-}
-
-#[cfg(target_os = "linux")]
-fn desktop_entry_value(value: &str) -> String {
-    value
-        .replace('\\', "\\\\")
-        .replace('\n', " ")
-        .replace('\r', " ")
-        .replace('"', "\\\"")
-}
-
-#[cfg(not(target_os = "macos"))]
-fn apply_external_icon_best_effort(
-    paths: &ManagedPaths,
-    instance: &ManagedInstance,
-    icon_path: &Path,
-) -> (bool, String) {
-    #[cfg(target_os = "linux")]
-    {
-        let Ok(root) = paths.root_for(&instance.id) else {
-            return (
-                false,
-                "No se pudo resolver el launcher administrado.".to_string(),
-            );
-        };
-        let executable = provider_executable(Path::new(&instance.app_path));
-        let profile_argument = format!("--user-data-dir={}", instance.profile_path);
-        let contents = format!(
-            "[Desktop Entry]\nType=Application\nName={}\nIcon={}\nExec=\"{}\" \"{}\"\nStartupWMClass=code-ai-profiles-{}\nTerminal=false\n",
-            desktop_entry_value(&instance.name),
-            desktop_entry_value(&icon_path.to_string_lossy()),
-            desktop_entry_value(&executable.to_string_lossy()),
-            desktop_entry_value(&profile_argument),
-            instance.id
-        );
-        return match atomic_replace_file(&root.join("launcher.desktop"), contents.as_bytes()) {
-            Ok(()) => (
-                false,
-                "Se creó un launcher opcional por instancia, pero solo se aplicará al sistema si se abre desde ese launcher; Wayland o el compositor pueden conservar el icono oficial."
-                    .to_string(),
-            ),
-            Err(error) => (false, error),
-        };
-    }
-    #[cfg(target_os = "windows")]
-    {
-        let _ = (paths, instance, icon_path);
-        return (
-            false,
-            "Windows conserva el icono del ejecutable firmado; el icono personalizado se muestra dentro de Code AI Profiles."
-                .to_string(),
-        );
-    }
-    #[cfg(target_os = "macos")]
-    {
-        let _ = (paths, instance, icon_path);
-        return (
-            false,
-            "macOS conserva el icono firmado en el Dock; el icono personalizado se muestra dentro de Code AI Profiles."
-                .to_string(),
-        );
-    }
-    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
-    {
-        let _ = (paths, instance, icon_path);
-        (
-            false,
-            "El icono de sistema no está soportado en esta plataforma.".to_string(),
-        )
-    }
 }
 
 #[tauri::command]
@@ -4636,23 +3853,6 @@ fn open_instance_folder(app: AppHandle, id: String) -> Result<(), String> {
     open_in_file_manager(&profile)
 }
 
-/// Abre una carpeta en el gestor de archivos del sistema. La ruta la decide Rust (registro de
-/// instancias o de proyectos), nunca el frontend.
-fn open_in_file_manager(path: &Path) -> Result<(), String> {
-    #[cfg(target_os = "macos")]
-    let mut command = Command::new("/usr/bin/open");
-    #[cfg(target_os = "windows")]
-    let mut command = Command::new("explorer.exe");
-    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
-    let mut command = Command::new("xdg-open");
-
-    command
-        .arg(path)
-        .spawn()
-        .map_err(|error| format!("No se pudo abrir la carpeta: {error}"))?;
-    Ok(())
-}
-
 // ── Proyectos anclados (HU-0023): envoltorios finos de projects.rs ──────────
 
 #[tauri::command]
@@ -4718,57 +3918,6 @@ async fn open_project_folder(app: AppHandle, id: String) -> Result<(), String> {
     .map_err(|error| format!("Abrir la carpeta del proyecto terminó inesperadamente: {error}"))?
 }
 
-/// Enlace fijado al compilar (`config.rs`). El frontend solo envía el panel, nunca una URL.
-#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
-fn system_settings_url(panel: SystemSettingsPanel) -> &'static str {
-    match panel {
-        SystemSettingsPanel::AppManagement => config::macos_app_management_settings_url(),
-        SystemSettingsPanel::FilesAndFolders => config::macos_files_and_folders_settings_url(),
-    }
-}
-
-/// `true` si `id -Gn` lista exactamente el grupo `admin`.
-#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
-fn groups_include_admin(groups: &str) -> bool {
-    groups.split_whitespace().any(|group| group == "admin")
-}
-
-#[cfg(target_os = "macos")]
-fn open_system_settings_sync(panel: SystemSettingsPanel) -> Result<(), String> {
-    let status = Command::new("/usr/bin/open")
-        .arg(system_settings_url(panel))
-        .status()
-        .map_err(|error| format!("No se pudo abrir Ajustes del Sistema: {error}"))?;
-    if status.success() {
-        Ok(())
-    } else {
-        Err(format!(
-            "No se pudo abrir Ajustes del Sistema: el sistema respondió {status}."
-        ))
-    }
-}
-
-#[cfg(not(target_os = "macos"))]
-fn open_system_settings_sync(_panel: SystemSettingsPanel) -> Result<(), String> {
-    Err("Esta plataforma no tiene ese panel de ajustes.".to_string())
-}
-
-#[cfg(target_os = "macos")]
-fn account_facts_sync() -> AccountFacts {
-    let admin = Command::new("/usr/bin/id")
-        .arg("-Gn")
-        .output()
-        .ok()
-        .filter(|output| output.status.success())
-        .map(|output| groups_include_admin(&String::from_utf8_lossy(&output.stdout)));
-    AccountFacts { admin }
-}
-
-#[cfg(not(target_os = "macos"))]
-fn account_facts_sync() -> AccountFacts {
-    AccountFacts { admin: None }
-}
-
 #[tauri::command]
 async fn open_system_settings(panel: SystemSettingsPanel) -> Result<(), String> {
     tauri::async_runtime::spawn_blocking(move || open_system_settings_sync(panel))
@@ -4822,14 +3971,7 @@ fn update_original_application(app: AppHandle) -> Result<OriginalApplicationUpda
                 "La actualización oficial no está soportada en esta plataforma.".to_string()
             })?;
 
-        #[cfg(target_os = "windows")]
-        let status = Command::new("rundll32.exe")
-            .args(["url.dll,FileProtocolHandler", target.url])
-            .status();
-        #[cfg(target_os = "linux")]
-        let status = Command::new("xdg-open").arg(target.url).status();
-        #[cfg(not(any(target_os = "windows", target_os = "linux")))]
-        let status: Result<std::process::ExitStatus, std::io::Error> = unreachable!();
+        let status = open_update_url(target.url);
 
         let status = status.map_err(|error| {
             format!("No se pudo abrir el canal oficial de actualización: {error}")
@@ -5295,37 +4437,6 @@ mod tests {
     }
 
     #[test]
-    fn sanitizes_source_names_and_uses_readable_fallbacks() {
-        let bundle = Path::new("/Applications/claude-desktop.app");
-        assert_eq!(
-            source_name_from_metadata(Some("  Claude Desktop  "), Some("Claude"), bundle)
-                .as_deref(),
-            Some("Claude Desktop")
-        );
-        assert_eq!(
-            source_name_from_metadata(Some("bad\nname"), Some("Claude"), bundle).as_deref(),
-            Some("Claude")
-        );
-        assert_eq!(
-            source_name_from_metadata(None, None, bundle).as_deref(),
-            Some("Claude Desktop")
-        );
-        assert!(sanitize_source_name(&"x".repeat(81)).is_none());
-    }
-
-    #[test]
-    fn parses_only_the_main_linux_desktop_name() {
-        assert_eq!(
-            linux_desktop_name(
-                "[Desktop Entry]\nName[es]=Claude Escritorio\nName=Claude Desktop\n"
-            )
-            .as_deref(),
-            Some("Claude Desktop")
-        );
-        assert_eq!(linux_desktop_name("[Other]\nName=Ignore\n"), None);
-    }
-
-    #[test]
     fn selects_official_update_targets_by_platform_and_architecture() {
         assert_eq!(original_application_update_target("macos", "aarch64"), None);
 
@@ -5525,16 +4636,6 @@ mod tests {
         let info = source_update_from_resolution(&warned, "4.29.0");
         assert_eq!(info.status, SourceUpdateStatus::Current);
         assert_eq!(info.warning.as_deref(), Some("Aviso."));
-    }
-
-    #[test]
-    fn requires_a_detected_source_before_updating_the_original_application() {
-        let source = PathBuf::from("/Applications/Claude.app");
-        assert_eq!(require_provider_source(Some(source.clone())), Ok(source));
-        assert_eq!(
-            require_provider_source(None),
-            Err("No se encontró la instalación original de la aplicación compatible.".to_string())
-        );
     }
 
     #[cfg(target_os = "macos")]
@@ -5794,41 +4895,6 @@ mod tests {
         assert_eq!(sessions[0].context_tokens, Some(1_200_000));
         assert_eq!(sessions[0].context_window_tokens, Some(1_000_000));
         assert_eq!(sessions[0].context_percent, Some(100.0));
-
-        fs::remove_dir_all(root).unwrap();
-    }
-
-    #[test]
-    fn normalizes_linux_package_and_binary_versions() {
-        assert_eq!(
-            normalize_linux_version("1.22209.0-1\n").as_deref(),
-            Some("1.22209.0-1")
-        );
-        assert_eq!(
-            normalize_linux_version("Claude Desktop 1.22300.4 (stable)").as_deref(),
-            Some("1.22300.4")
-        );
-        assert_eq!(normalize_linux_version("Claude Desktop"), None);
-    }
-
-    #[cfg(unix)]
-    #[test]
-    fn recognizes_the_official_linux_electron_layout_through_a_symlink() {
-        use std::os::unix::fs::symlink;
-
-        let root = env::temp_dir().join(format!("code-ai-linux-layout-{}", Uuid::new_v4()));
-        let installation = root.join("usr/lib/claude-desktop");
-        let executable = installation.join("claude-desktop");
-        let launcher = root.join("usr/bin/claude-desktop");
-        fs::create_dir_all(installation.join("resources")).unwrap();
-        fs::create_dir_all(launcher.parent().unwrap()).unwrap();
-        fs::write(&executable, b"electron").unwrap();
-        symlink(&executable, &launcher).unwrap();
-
-        let (detected_root, detected_executable) =
-            linux_provider_installation(&launcher).expect("Linux layout should be detected");
-        assert_eq!(detected_root, installation.canonicalize().unwrap());
-        assert_eq!(detected_executable, executable.canonicalize().unwrap());
 
         fs::remove_dir_all(root).unwrap();
     }
@@ -6278,30 +5344,5 @@ mod tests {
         );
 
         fs::remove_dir_all(root).unwrap();
-    }
-    #[test]
-    fn system_settings_url_matches_each_panel() {
-        assert_eq!(
-            system_settings_url(SystemSettingsPanel::AppManagement),
-            config::macos_app_management_settings_url()
-        );
-        assert_eq!(
-            system_settings_url(SystemSettingsPanel::FilesAndFolders),
-            config::macos_files_and_folders_settings_url()
-        );
-        assert!(
-            system_settings_url(SystemSettingsPanel::AppManagement).ends_with("Privacy_AppBundles")
-        );
-        assert!(system_settings_url(SystemSettingsPanel::FilesAndFolders)
-            .ends_with("Privacy_FilesAndFolders"));
-    }
-
-    #[test]
-    fn groups_include_admin_matches_the_exact_group() {
-        assert!(groups_include_admin("staff admin everyone"));
-        assert!(groups_include_admin("admin\n"));
-        assert!(!groups_include_admin("staff everyone"));
-        assert!(!groups_include_admin("administrators"));
-        assert!(!groups_include_admin(""));
     }
 }
