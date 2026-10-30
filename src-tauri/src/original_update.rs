@@ -170,11 +170,12 @@ pub(crate) fn validate_download_url(
     raw: &str,
     allowed_hosts: &[String],
 ) -> Result<reqwest::Url, String> {
-    let url = reqwest::Url::parse(raw)
-        .map_err(|_| "El feed oficial trae una dirección de descarga inválida.".to_string())?;
+    let url = reqwest::Url::parse(raw).map_err(|_| {
+        "La publicación oficial trae una dirección de descarga inválida.".to_string()
+    })?;
     check_https_host(&url, allowed_hosts)?;
     if !url.path().to_ascii_lowercase().ends_with(".zip") {
-        return Err("El paquete del feed oficial no es un .zip.".to_string());
+        return Err("El paquete de la publicación oficial no es un .zip.".to_string());
     }
     Ok(url)
 }
@@ -773,14 +774,14 @@ pub(crate) fn check_expected_version(
 ) -> Result<(), String> {
     if package.version != expected_version.trim() {
         return Err(format!(
-            "El feed oficial ya anuncia la versión {} y no la {} que se mostró. Vuelve a comprobar las actualizaciones.",
+            "La publicación oficial ya anuncia la versión {} y no la {} que se mostró. Vuelve a comprobar las actualizaciones.",
             package.version,
             expected_version.trim()
         ));
     }
     if !version_is_newer(&package.version, Some(installed_version)) {
         return Err(format!(
-            "La original ya tiene la versión {installed_version}, igual o posterior a la {} del feed.",
+            "La original ya tiene la versión {installed_version}, igual o posterior a la {} publicada.",
             package.version
         ));
     }
@@ -819,7 +820,7 @@ pub(crate) fn verify_staged_app(
         .unwrap_or_default();
     if version != package.version {
         return Err(format!(
-            "El paquete descargado declara la versión «{version}» y el feed oficial anunciaba la {}.",
+            "El paquete descargado declara la versión «{version}» y la publicación oficial anunciaba la {}.",
             package.version
         ));
     }
@@ -1463,14 +1464,19 @@ pub(crate) fn prepare_destination(
     Ok(canonical)
 }
 
-/// Lo que se guarda en la caché del feed tras instalar: la versión nueva es la actual.
-pub(crate) fn installed_update_info(version: &str, checked_at: i64) -> SourceUpdateInfo {
+/// Lo que se guarda en la caché tras instalar: la versión nueva es la actual, con la fuente de la que salió.
+pub(crate) fn installed_update_info(
+    version: &str,
+    checked_at: i64,
+    source: SourceUpdateSource,
+) -> SourceUpdateInfo {
     SourceUpdateInfo {
         status: SourceUpdateStatus::Current,
         latest_version: Some(version.to_string()),
         checked_at: Some(checked_at),
         stale: false,
-        source: Some(SourceUpdateSource::OfficialFeed),
+        source: Some(source),
+        warning: None,
     }
 }
 
@@ -1630,7 +1636,10 @@ pub(crate) trait InstallEnvironment {
     fn detect_installation(&self) -> Option<PathBuf>;
     fn app_name(&self, installation: &Path) -> Option<String>;
     fn installation_candidates(&self) -> Vec<PathBuf>;
-    fn fetch_feed(&self, installed_version: &str) -> Result<Value, String>;
+    /// El feed oficial preguntado por `version` (la instalada o la publicada).
+    fn fetch_feed(&self, version: &str) -> Result<Value, String>;
+    /// La publicación oficial de versiones (`RELEASES.json`).
+    fn fetch_releases(&self) -> Result<Value, String>;
     fn download_hosts(&self) -> Vec<String>;
     fn download(
         &self,
@@ -1661,8 +1670,12 @@ impl InstallEnvironment for SystemEnvironment<'_> {
         installation_candidates()
     }
 
-    fn fetch_feed(&self, installed_version: &str) -> Result<Value, String> {
-        fetch_official_feed("darwin", "universal", installed_version)
+    fn fetch_feed(&self, version: &str) -> Result<Value, String> {
+        fetch_official_feed("darwin", "universal", version)
+    }
+
+    fn fetch_releases(&self) -> Result<Value, String> {
+        official_release::fetch_published_releases("darwin", "universal")
     }
 
     fn download_hosts(&self) -> Vec<String> {
@@ -1693,6 +1706,7 @@ struct Prepared {
     app_name: String,
     installed: InstalledIdentity,
     package: FeedPackage,
+    source: SourceUpdateSource,
     checked_at: i64,
     staged_app: PathBuf,
     // Orden de limpieza: primero la operación junto a la original, luego la descarga.
@@ -1730,6 +1744,50 @@ fn progress_for(
     }
 }
 
+/// La versión que se instala, resuelta otra vez con las dos fuentes oficiales (A-4). Tiene que ser la que vio
+/// la persona y traer un paquete confirmado; si ya es otra (salió una nueva entre la detección y el clic),
+/// la caché pasa a anunciar la resuelta antes de devolver el error, para que el aviso no siga ofreciendo la
+/// anterior.
+fn resolve_install_target(
+    env: &dyn InstallEnvironment,
+    paths: &ManagedPaths,
+    installed_version: &str,
+    request: &InstallOriginalUpdateRequest,
+) -> Result<(FeedPackage, SourceUpdateSource), String> {
+    let expected_version = request.expected_version.trim();
+    let resolution = official_release::resolve_official_target(
+        installed_version,
+        env.fetch_feed(installed_version),
+        env.fetch_releases(),
+        &mut |version| env.fetch_feed(version),
+        &env.download_hosts(),
+    )?;
+    if resolution.latest_version != expected_version {
+        let _ = save_source_update_cache(
+            paths,
+            &platform_name(),
+            installed_version,
+            &source_update_from_resolution(&resolution, installed_version),
+        );
+        let moved = format!(
+            "La versión disponible ahora es la {} y no la {expected_version} que se mostró. Vuelve a comprobar las actualizaciones.",
+            resolution.latest_version
+        );
+        return Err(match resolution.warning {
+            Some(warning) => format!("{warning} {moved}"),
+            None => moved,
+        });
+    }
+    match resolution.package {
+        Some(package) => Ok((package, resolution.source)),
+        None => Err(resolution.package_error.unwrap_or_else(|| {
+            format!(
+                "La original ya tiene la versión {installed_version}, igual o posterior a la {expected_version} publicada."
+            )
+        })),
+    }
+}
+
 /// Pasos 1 a 3: nada de esto toca la original.
 fn prepare_and_verify(
     env: &dyn InstallEnvironment,
@@ -1759,8 +1817,7 @@ fn prepare_and_verify(
     }
 
     let checked_at = Utc::now().timestamp_millis();
-    let document = env.fetch_feed(&installed.version)?;
-    let package = parse_feed_package(&document, &env.download_hosts())?;
+    let (package, source) = resolve_install_target(env, paths, &installed.version, request)?;
     check_expected_version(&package, &request.expected_version, &installed.version)?;
     progress(progress_for(Preparing, Some(&package), 0, true));
     let operation = OperationDir::beside(&destination, &app_name)?;
@@ -1828,6 +1885,7 @@ fn prepare_and_verify(
         app_name,
         installed,
         package,
+        source,
         checked_at,
         staged_app,
         operation,
@@ -1867,7 +1925,11 @@ fn install_and_synchronize(
         paths,
         &platform_name(),
         &prepared.package.version,
-        &installed_update_info(&prepared.package.version, prepared.checked_at),
+        &installed_update_info(
+            &prepared.package.version,
+            prepared.checked_at,
+            prepared.source,
+        ),
     );
     progress(progress_for(
         OriginalInstallPhase::Synchronizing,
@@ -3200,7 +3262,7 @@ drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 App.app/\n";
             &paths,
             "macos",
             "1.5.0",
-            &installed_update_info("1.5.0", checked_at),
+            &installed_update_info("1.5.0", checked_at, SourceUpdateSource::OfficialRelease),
         )
         .unwrap();
         let cached =
@@ -3208,7 +3270,8 @@ drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 App.app/\n";
         assert_eq!(cached.status, SourceUpdateStatus::Current);
         assert_eq!(cached.latest_version.as_deref(), Some("1.5.0"));
         assert_eq!(cached.checked_at, Some(checked_at));
-        assert_eq!(cached.source, Some(SourceUpdateSource::OfficialFeed));
+        assert_eq!(cached.source, Some(SourceUpdateSource::OfficialRelease));
+        assert_eq!(cached.warning, None);
         assert!(
             read_source_update_cache(&paths, "macos", "1.0.0", UPDATE_CACHE_FRESH_MS).is_none()
         );
@@ -3341,7 +3404,10 @@ drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 App.app/\n";
 
     struct FakeEnv {
         installation: PathBuf,
-        feed: Value,
+        /// La respuesta del feed según la versión por la que se pregunta.
+        feeds: HashMap<String, Value>,
+        releases: Result<Value, String>,
+        asked_feed: std::cell::RefCell<Vec<String>>,
         package_bytes: Vec<u8>,
         running: bool,
         cancel_during_download: bool,
@@ -3362,9 +3428,16 @@ drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 App.app/\n";
             vec![self.installation.clone()]
         }
 
-        fn fetch_feed(&self, installed_version: &str) -> Result<Value, String> {
-            assert_eq!(installed_version, "1.0.0");
-            Ok(self.feed.clone())
+        fn fetch_feed(&self, version: &str) -> Result<Value, String> {
+            self.asked_feed.borrow_mut().push(version.to_string());
+            self.feeds
+                .get(version)
+                .cloned()
+                .ok_or_else(|| "No se pudo consultar el feed oficial: sin red".to_string())
+        }
+
+        fn fetch_releases(&self) -> Result<Value, String> {
+            self.releases.clone()
         }
 
         fn download_hosts(&self) -> Vec<String> {
@@ -3430,15 +3503,13 @@ drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 App.app/\n";
         let new_bundle = root.join("fixture/Claude.app");
         write_fake_bundle(&new_bundle, &signed("1.5.0"));
         let package_bytes: Vec<u8> = (0..4096_u32).map(|value| (value % 199) as u8).collect();
-        let feed = serde_json::json!({
-            "currentRelease": "1.5.0",
-            "releases": [{ "version": "1.5.0", "updateTo": {
-                "version": "1.5.0",
-                "url": format!("https://{HOST}/releases/1.5.0/Claude.zip"),
-                "sha256": digest_of(&package_bytes),
-                "size": package_bytes.len()
-            }}]
-        });
+        // Despliegue escalonado: el feed preguntado con la instalada sigue en 1.2.0; la publicación oficial
+        // ya anuncia 1.5.0 y el feed preguntado con 1.5.0 confirma su paquete con la misma URL.
+        let feeds = HashMap::from([
+            ("1.0.0".to_string(), e2e_feed("1.2.0", &package_bytes)),
+            ("1.5.0".to_string(), e2e_feed("1.5.0", &package_bytes)),
+        ]);
+        let releases = e2e_releases("1.5.0");
         let tools = FakeTools {
             listing: Some(listing(
                 &[
@@ -3456,7 +3527,9 @@ drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 App.app/\n";
             paths,
             env: FakeEnv {
                 installation,
-                feed,
+                feeds,
+                releases: Ok(releases),
+                asked_feed: std::cell::RefCell::new(Vec::new()),
                 package_bytes,
                 running: false,
                 cancel_during_download: false,
@@ -3465,6 +3538,33 @@ drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 App.app/\n";
             },
             tools,
         }
+    }
+
+    fn e2e_url(version: &str) -> String {
+        format!("https://{HOST}/releases/{version}/Claude.zip")
+    }
+
+    fn e2e_feed(version: &str, package_bytes: &[u8]) -> Value {
+        serde_json::json!({
+            "currentRelease": version,
+            "releases": [{ "version": version, "updateTo": {
+                "version": version,
+                "url": e2e_url(version),
+                "sha256": digest_of(package_bytes),
+                "size": package_bytes.len()
+            }}]
+        })
+    }
+
+    fn e2e_releases(version: &str) -> Value {
+        serde_json::json!({
+            "currentRelease": version,
+            "releases": [{ "version": version, "updateTo": {
+                "version": version,
+                "name": version,
+                "url": e2e_url(version)
+            }}]
+        })
     }
 
     impl EndToEnd {
@@ -3560,6 +3660,92 @@ drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 App.app/\n";
         )
         .unwrap();
         assert_eq!(cached.status, SourceUpdateStatus::Current);
+        assert_eq!(cached.source, Some(SourceUpdateSource::OfficialRelease));
+        assert_eq!(*case.env.asked_feed.borrow(), vec!["1.0.0", "1.5.0"]);
+        case.assert_no_leftovers();
+        fs::remove_dir_all(&case.root).unwrap();
+    }
+
+    #[test]
+    fn end_to_end_installs_from_the_feed_when_the_publication_agrees() {
+        let mut case = end_to_end("e2e-feed");
+        let bytes = case.env.package_bytes.clone();
+        case.env
+            .feeds
+            .insert("1.0.0".to_string(), e2e_feed("1.5.0", &bytes));
+        let (result, _) = case.run(&FlightGuard::detached());
+        assert_eq!(result.unwrap().installed_version.as_deref(), Some("1.5.0"));
+        assert_eq!(*case.env.asked_feed.borrow(), vec!["1.0.0"]);
+        let cached = read_source_update_cache(
+            &case.paths,
+            &platform_name(),
+            "1.5.0",
+            UPDATE_CACHE_FRESH_MS,
+        )
+        .unwrap();
+        assert_eq!(cached.source, Some(SourceUpdateSource::OfficialFeed));
+        case.assert_no_leftovers();
+        fs::remove_dir_all(&case.root).unwrap();
+    }
+
+    #[test]
+    fn end_to_end_newer_resolved_version_refuses_and_updates_the_cache() {
+        // TOCTOU: 1.6.0 came out between the detection (1.5.0) and the click.
+        let mut case = end_to_end("e2e-toctou");
+        let bytes = case.env.package_bytes.clone();
+        case.env
+            .feeds
+            .insert("1.6.0".to_string(), e2e_feed("1.6.0", &bytes));
+        case.env.releases = Ok(e2e_releases("1.6.0"));
+        let (result, progress) = case.run(&FlightGuard::detached());
+        let error = result.err().unwrap();
+        assert!(
+            error.contains("1.6.0") && error.ends_with("La original no cambió."),
+            "{error}"
+        );
+        assert_eq!(case.env.downloads.get(), 0);
+        assert!(progress
+            .iter()
+            .all(|item| item.phase != OriginalInstallPhase::Downloading));
+        assert_eq!(version_of(&case.env.installation), "1.0.0");
+        let cached = read_source_update_cache(
+            &case.paths,
+            &platform_name(),
+            "1.0.0",
+            UPDATE_CACHE_FRESH_MS,
+        )
+        .unwrap();
+        assert_eq!(cached.status, SourceUpdateStatus::Available);
+        assert_eq!(cached.latest_version.as_deref(), Some("1.6.0"));
+        assert_eq!(cached.source, Some(SourceUpdateSource::OfficialRelease));
+        case.assert_no_leftovers();
+        fs::remove_dir_all(&case.root).unwrap();
+    }
+
+    #[test]
+    fn end_to_end_unverifiable_publication_installs_nothing() {
+        // The feed asked with 1.5.0 echoes the version but with another package URL: not confirmed.
+        let mut case = end_to_end("e2e-echo");
+        case.env.feeds.get_mut("1.5.0").unwrap()["releases"][0]["updateTo"]["url"] =
+            Value::from(format!("https://{HOST}/releases/1.5.0/Other.zip"));
+        let (result, _) = case.run(&FlightGuard::detached());
+        let error = result.err().unwrap();
+        assert!(
+            error.contains("no se pudo verificar su paquete")
+                && error.ends_with("La original no cambió."),
+            "{error}"
+        );
+        assert_eq!(case.env.downloads.get(), 0);
+        assert_eq!(version_of(&case.env.installation), "1.0.0");
+        let cached = read_source_update_cache(
+            &case.paths,
+            &platform_name(),
+            "1.0.0",
+            UPDATE_CACHE_FRESH_MS,
+        )
+        .unwrap();
+        assert_eq!(cached.latest_version.as_deref(), Some("1.2.0"));
+        assert!(cached.warning.is_some());
         case.assert_no_leftovers();
         fs::remove_dir_all(&case.root).unwrap();
     }
@@ -3598,7 +3784,8 @@ drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 App.app/\n";
         fs::remove_dir_all(&running.root).unwrap();
 
         let mut tampered = end_to_end("e2e-sha");
-        tampered.env.feed["releases"][0]["updateTo"]["sha256"] = Value::from(SHA);
+        tampered.env.feeds.get_mut("1.5.0").unwrap()["releases"][0]["updateTo"]["sha256"] =
+            Value::from(SHA);
         let (result, progress) = tampered.run(&FlightGuard::detached());
         let error = result.err().unwrap();
         assert!(
@@ -3613,8 +3800,7 @@ drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 App.app/\n";
         fs::remove_dir_all(&tampered.root).unwrap();
 
         let mut moved_on = end_to_end("e2e-expected");
-        moved_on.env.feed["currentRelease"] = Value::from("1.6.0");
-        moved_on.env.feed["releases"][0]["updateTo"]["version"] = Value::from("1.6.0");
+        moved_on.env.releases = Err("sin red".to_string());
         let (result, _) = moved_on.run(&FlightGuard::detached());
         assert!(result.err().unwrap().ends_with("La original no cambió."));
         assert_eq!(moved_on.env.downloads.get(), 0);
