@@ -24,10 +24,11 @@ Aplicación de escritorio open source creada con Tauri, React y Rust para admini
 - Lista sesiones locales con título, modelo, turnos, actividad, estado archivado y contexto estimado.
 - Permite desplegar o contraer las sesiones de cada perfil.
 - Permite copiar, mover, devolver y desvincular sesiones entre perfiles detenidos; las copias locales de artefactos se exportan de forma segura cuando el schema de destino no está confirmado.
+- Abre y detiene cada instancia desde su página, desde el sidebar o desde el dashboard.
 - Cierra instancias mediante una identidad de proceso verificada, con espera y escalación controlada si no terminan.
 - Permite asignar un icono PNG o JPEG a cada instancia dentro de Code AI Profiles, sin alterar los binarios firmados del proveedor.
 - Reúne en Configuración (⌘, / Ctrl+,) los temas claro, oscuro y del sistema, tres tamaños de texto para toda la interfaz y los permisos opcionales del sistema, cada uno con su explicación y un acceso directo a su panel.
-- Ancla carpetas de proyectos con la metodología agéntica v4 y resume su estado, tecnologías, repos, historias, tiempo y tokens, solo leyendo sus archivos.
+- Ancla carpetas de proyectos con la metodología agéntica v4 y resume su estado, tecnologías, repos, historias, tiempo y tokens, solo leyendo sus archivos. Marca las historias con datos incompletos y abre cada historia en un lector de Markdown.
 - Usa controles de ventana apropiados para macOS y decoraciones compatibles en Windows y Linux.
 
 ## Plataformas
@@ -222,7 +223,7 @@ Puedes asignar un icono PNG o JPEG de hasta 5 MiB a cada instancia. El icono se 
 
 **Configuración** reúne la apariencia y los permisos. Los permisos son opcionales: la app funciona sin ellos, no los pide al abrirse y solo enlaza al panel de Ajustes del Sistema que corresponde. En Windows y Linux no hace falta ninguno. Consulta [la guía de Configuración](docs/configuracion.document.md).
 
-**Proyectos** muestra el resumen de las carpetas que ancles si siguen la metodología agéntica v4: fase, perfil, tecnologías, repos con su rama y último commit, historias por estado, «Tiempo en fases» y tokens de sus métricas. Es de solo lectura: no ejecuta nada del proyecto, no escribe en él, no usa la red y no lee nada fuera de su carpeta. En macOS, leer carpetas en Escritorio, Documentos o Descargas puede mostrar el aviso de «Archivos y carpetas». Consulta [la guía de Proyectos](docs/proyectos.document.md).
+**Proyectos** muestra el resumen de las carpetas que ancles si siguen la metodología agéntica v4: fase, perfil, tecnologías, repos con su rama y último commit, historias por estado, «Tiempo en fases» y tokens de sus métricas. Las historias sin tiempo o sin métricas llevan una etiqueta y un modal explica cómo completarlas; al pulsar una historia se leen sus `.md` en un lector de Markdown, con los enlaces abiertos en el navegador. Es de solo lectura: no ejecuta nada del proyecto, no escribe en él, no usa la red y no lee nada fuera de su carpeta. En macOS, leer carpetas en Escritorio, Documentos o Descargas puede mostrar el aviso de «Archivos y carpetas». Consulta [la guía de Proyectos](docs/proyectos.document.md).
 
 ## Privacidad y seguridad
 

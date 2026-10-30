@@ -1,8 +1,8 @@
 ---
 id: HU-0026
 titulo: "Arrancar y detener instancias desde el sidebar y el dashboard"
-estado: en-proceso
-fase: verificacion
+estado: terminada
+fase: cierre
 area: instancias
 entrega: 1
 prioridad: alta
@@ -86,7 +86,7 @@ roba el clic de la fila, que sigue navegando a la instancia.
 
 ## Para la persona usuaria
 
-**Pendiente humano:** aprobar la maqueta.
+**Pendiente humano:** aprobar la maqueta (aprobada el 2026-10-30).
 
 ## Definición de Preparado
 
@@ -96,11 +96,32 @@ roba el clic de la fila, que sigue navegando a la instancia.
 
 ## Definición de Terminado
 
-- [ ] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
-- [ ] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
-- [ ] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
-- [ ] Revisión técnica pasada, si la historia es riesgosa
-- [ ] La persona probó y aprobó; su veredicto está en `verificacion.md`
-- [ ] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
-- [ ] Commits en cada repo tocado con `HU: HU-0026`. **Sin push, sin publicar, sin desplegar**
-- [ ] Lo que solo comprueba una persona, declarado como pendiente humano
+- [x] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
+- [x] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
+- [x] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
+- [x] Revisión técnica pasada, si la historia es riesgosa
+- [x] La persona probó y aprobó; su veredicto está en `verificacion.md`
+- [x] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
+- [x] Commits en cada repo tocado con `HU: HU-0026`. **Sin push, sin publicar, sin desplegar**
+- [x] Lo que solo comprueba una persona, declarado como pendiente humano
+
+## Cierre
+
+2026-10-30, cerrada por el orquestador sobre el veredicto del mantenedor («Probadas y bien»), tras probar el `.dmg` de
+`75b6387`.
+
+SHA por repositorio (code-ai-profiles, rama `ajustes-proyectos-e-instancias`):
+- `dca8a1f`, `47ca535`: frontend (botón en sidebar y dashboard, estado en curso, errores con nombre) y capturas.
+- `16c35ea`: correcciones de la revisión (R-1 a R-3).
+- `c5935a6`, `3017068`, `d4dd758`, `36d6cbc`, `1e4b37a`, `75b6387`, `ee34018` y el de cierre: historia, maqueta,
+  arquitectura, brief, grafo, verificación y documentación (`docs/instancias.document.md`,
+  `docs/arquitectura/frontend.md`, README, CHANGELOG).
+
+★ aceptadas tal como estaban: D-1, D-2 y D-3.
+
+Reglas de negocio: ninguna.
+
+Pendientes humanos (nadie los vio; no se dan por hechos):
+- Windows y Linux reales (solo CI).
+
+Deuda declarada: ninguna.

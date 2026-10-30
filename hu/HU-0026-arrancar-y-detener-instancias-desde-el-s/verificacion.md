@@ -54,4 +54,6 @@ con instancias reales; Windows y Linux (solo CI).
 
 ## Veredicto
 
-Pendiente.
+**Aprobada.** 2026-10-30 · Braiyan Rodriguez (mantenedor), tras probar el `.dmg` de esta rama (`75b6387`):
+
+> «Probadas y bien»

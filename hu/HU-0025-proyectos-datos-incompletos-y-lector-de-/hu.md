@@ -1,8 +1,8 @@
 ---
 id: HU-0025
 titulo: "Proyectos: datos incompletos y lector de historias"
-estado: en-proceso
-fase: verificacion
+estado: terminada
+fase: cierre
 area: proyectos
 entrega: 1
 prioridad: alta
@@ -105,7 +105,7 @@ historia.
 
 ## Para la persona usuaria
 
-**Pendiente humano:** aprobar la maqueta.
+**Pendiente humano:** aprobar la maqueta (aprobada el 2026-10-30).
 
 ## Definición de Preparado
 
@@ -115,11 +115,37 @@ historia.
 
 ## Definición de Terminado
 
-- [ ] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
-- [ ] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
-- [ ] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
-- [ ] Revisión técnica pasada, si la historia es riesgosa
-- [ ] La persona probó y aprobó; su veredicto está en `verificacion.md`
-- [ ] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
-- [ ] Commits en cada repo tocado con `HU: HU-0025`. **Sin push, sin publicar, sin desplegar**
-- [ ] Lo que solo comprueba una persona, declarado como pendiente humano
+- [x] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
+- [x] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
+- [x] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
+- [x] Revisión técnica pasada, si la historia es riesgosa
+- [x] La persona probó y aprobó; su veredicto está en `verificacion.md`
+- [x] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
+- [x] Commits en cada repo tocado con `HU: HU-0025`. **Sin push, sin publicar, sin desplegar**
+- [x] Lo que solo comprueba una persona, declarado como pendiente humano
+
+## Cierre
+
+2026-10-30, cerrada por el orquestador sobre el veredicto del mantenedor («Probadas y bien»), tras probar el `.dmg` de
+`75b6387`.
+
+SHA por repositorio (code-ai-profiles, rama `ajustes-proyectos-e-instancias`):
+- `afd6fc7`: backend (`dataGaps`, `minutes` nulo, `timedHistories`, `read_project_history`, `open_external_link`).
+- `6a617c5`, `91c553b`: frontend (chip, etiquetas, modal, lector Markdown) y capturas.
+- `088a36c`, `5e62f11`: correcciones de la revisión (R-1 a R-3 y O-1).
+- `c5935a6`, `2c81cff`, `d4dd758`, `e55fd4d`, `1e4b37a`, `b9ae666`, `75b6387`, `ee34018` y el de cierre: historia,
+  maqueta, arquitectura, briefs, grafo, verificación, regla y documentación (`docs/proyectos.document.md`,
+  `docs/arquitectura/frontend.md`, README, CHANGELOG).
+
+En la misma rama, sin historia: `a41cdb9`, el fix de «Actualizar» con respuesta visible.
+
+★ aceptadas tal como estaban: D-1, D-2 y D-3. Desviación aceptada en la revisión: `code-block` y `scroll-area` del
+catálogo, ajustados a la escala armónica.
+
+Reglas de negocio: RN-02 cambia (lector de historias y enlaces externos) en `docs/producto/reglas/proyectos.md`.
+
+Pendientes humanos (nadie los vio; no se dan por hechos):
+- Windows y Linux reales (solo CI), en especial el menú contextual del webview y `open_external_link`.
+
+Deuda declarada:
+- Si `hu/` entero es un enlace simbólico dentro del proyecto, la lista muestra sus historias pero el lector no las abre.

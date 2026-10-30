@@ -11,3 +11,4 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-10-30 02:02 | hu.mjs | fase requisitos → arquitectura |
 | 2026-10-30 02:02 | hu.mjs | fase arquitectura → implementacion |
 | 2026-10-30 07:25 | hu.mjs | fase implementacion → verificacion |
+| 2026-10-30 09:35 | hu.mjs | estado en-proceso → terminada |
