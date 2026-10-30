@@ -103,16 +103,19 @@ pub(crate) fn save_source_update_cache(
     platform: &str,
     installed_version: &str,
     result: &SourceUpdateInfo,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     let cache = SourceUpdateCache {
         schema: SOURCE_UPDATE_CACHE_SCHEMA,
         platform: platform.to_string(),
         installed_version: installed_version.to_string(),
         result: result.clone(),
     };
-    let contents = serde_json::to_vec_pretty(&cache)
-        .map_err(|error| format!("No se pudo serializar la caché de actualización: {error}"))?;
-    atomic_replace_file(&paths.source_update_cache, &contents).map_err(String::from)
+    let contents = serde_json::to_vec_pretty(&cache).map_err(|error| {
+        AppError::internal(format!(
+            "No se pudo serializar la caché de actualización: {error}"
+        ))
+    })?;
+    atomic_replace_file(&paths.source_update_cache, &contents)
 }
 
 /// Cómo se nombra en los mensajes el documento oficial que se consulta.
@@ -128,39 +131,52 @@ const OFFICIAL_FEED_LABEL: OfficialDocumentLabel = OfficialDocumentLabel {
     object: "el feed oficial",
 };
 
+/// Un estado HTTP que no es de éxito: 5xx y 429 son de la red (se puede volver a consultar más
+/// tarde); el resto es la respuesta definitiva de la fuente.
+fn status_error(label: &OfficialDocumentLabel, status: reqwest::StatusCode) -> AppError {
+    let message = format!("{} respondió con estado {}.", label.subject, status);
+    if status.is_server_error() || status == reqwest::StatusCode::TOO_MANY_REQUESTS {
+        AppError::network(message)
+    } else {
+        AppError::remote(message)
+    }
+}
+
 /// GET de un documento JSON oficial de actualizaciones: 5 s, sin redirecciones, 256 KiB, sin cookies y con el
-/// `User-Agent` propio. Solo lleva los parámetros de `query` que se le pasen.
+/// `User-Agent` propio. Solo lleva los parámetros de `query` que se le pasen. Sin conexión, sin respuesta a
+/// tiempo o con la lectura cortada, el error es de red (reintentable); un documento que no se acepta es
+/// definitivo. Nadie reintenta aquí.
 pub(crate) fn fetch_official_json(
     url: String,
     query: &[(&str, &str)],
     label: &OfficialDocumentLabel,
-) -> Result<Value, String> {
+) -> Result<Value, AppError> {
     let client = reqwest::blocking::Client::builder()
         .timeout(std::time::Duration::from_secs(5))
         .redirect(reqwest::redirect::Policy::none())
         .build()
-        .map_err(|error| format!("No se pudo preparar la consulta de actualización: {error}"))?;
+        .map_err(|error| {
+            AppError::internal(format!(
+                "No se pudo preparar la consulta de actualización: {error}"
+            ))
+        })?;
     let mut request = client
         .get(url)
         .header(reqwest::header::USER_AGENT, config::user_agent());
     if !query.is_empty() {
         request = request.query(query);
     }
-    let response = request
-        .send()
-        .map_err(|error| format!("No se pudo consultar {}: {error}", label.object))?;
+    let response = request.send().map_err(|error| {
+        AppError::network(format!("No se pudo consultar {}: {error}", label.object))
+    })?;
     if !response.status().is_success() {
-        return Err(format!(
-            "{} respondió con estado {}.",
-            label.subject,
-            response.status()
-        ));
+        return Err(status_error(label, response.status()));
     }
     let too_large = || {
-        format!(
+        AppError::remote(format!(
             "La respuesta de {} excede el límite permitido.",
             label.object
-        )
+        ))
     };
     if response.content_length().unwrap_or(0) > UPDATE_FEED_MAX_BYTES {
         return Err(too_large());
@@ -169,12 +185,12 @@ pub(crate) fn fetch_official_json(
     response
         .take(UPDATE_FEED_MAX_BYTES + 1)
         .read_to_end(&mut body)
-        .map_err(|error| format!("No se pudo leer {}: {error}", label.object))?;
+        .map_err(|error| AppError::network(format!("No se pudo leer {}: {error}", label.object)))?;
     if body.len() as u64 > UPDATE_FEED_MAX_BYTES {
         return Err(too_large());
     }
     serde_json::from_slice(&body)
-        .map_err(|_| format!("{} devolvió metadata inválida.", label.subject))
+        .map_err(|_| AppError::remote(format!("{} devolvió metadata inválida.", label.subject)))
 }
 
 /// Consulta el feed oficial preguntando por `version` y devuelve su JSON, con `device_id` nulo.
@@ -182,7 +198,7 @@ pub(crate) fn fetch_official_feed(
     feed_platform: &str,
     feed_arch: &str,
     version: &str,
-) -> Result<Value, String> {
+) -> Result<Value, AppError> {
     fetch_official_json(
         config::feed_url(feed_platform, feed_arch),
         &[("version", version), ("device_id", NULL_DEVICE_ID)],
@@ -193,13 +209,13 @@ pub(crate) fn fetch_official_feed(
 fn source_update_from_feed(
     document: &Value,
     installed_version: &str,
-) -> Result<SourceUpdateInfo, String> {
+) -> Result<SourceUpdateInfo, AppError> {
     let latest_version = document
         .get("currentRelease")
         .and_then(Value::as_str)
         .filter(|version| valid_release_version(version))
         .map(str::to_string)
-        .ok_or_else(|| "El feed oficial no incluyó una versión válida.".to_string())?;
+        .ok_or_else(|| AppError::remote("El feed oficial no incluyó una versión válida."))?;
     Ok(SourceUpdateInfo {
         status: update_status(installed_version, &latest_version),
         latest_version: Some(latest_version),
@@ -231,17 +247,21 @@ fn check_official_update_feed(
     platform: &str,
     arch: &str,
     installed_version: &str,
-) -> Result<SourceUpdateInfo, String> {
+) -> Result<SourceUpdateInfo, AppError> {
     let (feed_platform, feed_arch) = update_feed_target(platform, arch)
-        .ok_or_else(|| "No existe un feed oficial para esta plataforma.".to_string())?;
+        .ok_or_else(|| AppError::unsupported("No existe un feed oficial para esta plataforma."))?;
     if platform == "macos" {
-        let feed_for_installed = fetch_official_feed(feed_platform, feed_arch, installed_version);
+        // `official_release` sigue con `String`: la clase se pierde al resolver la versión objetivo.
+        let feed_for_installed =
+            fetch_official_feed(feed_platform, feed_arch, installed_version).map_err(String::from);
         let published = official_release::fetch_published_releases(feed_platform, feed_arch);
         let resolution = official_release::resolve_official_target(
             installed_version,
             feed_for_installed,
             published,
-            &mut |version| fetch_official_feed(feed_platform, feed_arch, version),
+            &mut |version| {
+                fetch_official_feed(feed_platform, feed_arch, version).map_err(String::from)
+            },
             &config::download_hosts(),
         )?;
         return Ok(source_update_from_resolution(
@@ -265,21 +285,32 @@ fn parse_apt_policy(contents: &str) -> (Option<String>, Option<String>) {
     (value("Installed"), value("Candidate"))
 }
 
-fn check_apt_update(installed_version: &str) -> Result<SourceUpdateInfo, String> {
+fn check_apt_update(installed_version: &str) -> Result<SourceUpdateInfo, AppError> {
     let output = Command::new("apt-cache")
         .args(["policy", "claude-desktop"])
         .env("LC_ALL", "C")
         .output()
-        .map_err(|error| format!("No se pudo consultar la caché local de APT: {error}"))?;
+        .map_err(|error| {
+            AppError::process(format!(
+                "No se pudo consultar la caché local de APT: {error}"
+            ))
+        })?;
     if !output.status.success() {
-        return Err("APT no pudo consultar el paquete claude-desktop.".to_string());
+        return Err(AppError::process(
+            "APT no pudo consultar el paquete claude-desktop.",
+        ));
     }
     let (_, candidate) = parse_apt_policy(&String::from_utf8_lossy(&output.stdout));
-    let candidate = candidate.ok_or_else(|| "APT no tiene un candidato disponible.".to_string())?;
+    let candidate =
+        candidate.ok_or_else(|| AppError::remote("APT no tiene un candidato disponible."))?;
     let comparison = Command::new("dpkg")
         .args(["--compare-versions", &candidate, "gt", installed_version])
         .status()
-        .map_err(|error| format!("No se pudieron comparar las versiones de APT: {error}"))?;
+        .map_err(|error| {
+            AppError::process(format!(
+                "No se pudieron comparar las versiones de APT: {error}"
+            ))
+        })?;
     Ok(SourceUpdateInfo {
         status: if comparison.success() {
             SourceUpdateStatus::Available
@@ -309,7 +340,9 @@ pub(crate) fn check_source_update_sync(app: &AppHandle) -> Result<SourceUpdateIn
             check_official_update_feed(&platform, std::env::consts::ARCH, &installed_version)
         }
         "linux" => check_apt_update(&installed_version),
-        _ => Err("La comprobación de actualización no está soportada.".to_string()),
+        _ => Err(AppError::unsupported(
+            "La comprobación de actualización no está soportada.",
+        )),
     };
     match checked {
         Ok(result) => {
@@ -545,6 +578,113 @@ mod tests {
             "1.0.0"
         )
         .is_err());
+    }
+
+    /// Un servidor HTTP de un solo uso en el bucle local: responde una vez con `status` y cierra. Nada sale
+    /// de la máquina.
+    fn serve_once(status: &'static str, body: &'static str) -> String {
+        use std::io::Write;
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        thread::spawn(move || {
+            if let Ok((mut stream, _)) = listener.accept() {
+                let mut request = [0_u8; 4096];
+                let _ = stream.read(&mut request);
+                let _ = write!(
+                    stream,
+                    "HTTP/1.1 {status}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                    body.len()
+                );
+            }
+        });
+        format!("http://{address}/feed")
+    }
+
+    #[test]
+    fn a_feed_without_connection_is_a_retryable_network_error_with_the_same_text() {
+        // Un puerto local que se acaba de cerrar: la conexión se rechaza sin salir de la máquina.
+        let address = std::net::TcpListener::bind("127.0.0.1:0")
+            .unwrap()
+            .local_addr()
+            .unwrap();
+        let error =
+            fetch_official_json(format!("http://{address}/feed"), &[], &OFFICIAL_FEED_LABEL)
+                .unwrap_err();
+        assert_eq!(error.kind(), AppErrorKind::Network);
+        assert!(error.is_retryable());
+        assert!(
+            String::from(error).starts_with("No se pudo consultar el feed oficial: "),
+            "same text as before"
+        );
+    }
+
+    #[test]
+    fn feed_status_decides_between_retryable_and_definitive() {
+        let unavailable = fetch_official_json(
+            serve_once("503 Service Unavailable", ""),
+            &[],
+            &OFFICIAL_FEED_LABEL,
+        )
+        .unwrap_err();
+        assert!(unavailable.is_retryable());
+        assert_eq!(
+            unavailable.to_string(),
+            "El feed oficial respondió con estado 503 Service Unavailable."
+        );
+
+        let limited = fetch_official_json(
+            serve_once("429 Too Many Requests", ""),
+            &[],
+            &OFFICIAL_FEED_LABEL,
+        )
+        .unwrap_err();
+        assert!(limited.is_retryable());
+
+        let missing =
+            fetch_official_json(serve_once("404 Not Found", ""), &[], &OFFICIAL_FEED_LABEL)
+                .unwrap_err();
+        assert_eq!(missing.kind(), AppErrorKind::Remote);
+        assert!(!missing.is_retryable());
+        assert_eq!(
+            String::from(missing),
+            "El feed oficial respondió con estado 404 Not Found."
+        );
+
+        let invalid = fetch_official_json(
+            serve_once("200 OK", "no es json"),
+            &[],
+            &OFFICIAL_FEED_LABEL,
+        )
+        .unwrap_err();
+        assert_eq!(invalid.kind(), AppErrorKind::Remote);
+        assert_eq!(
+            invalid.to_string(),
+            "El feed oficial devolvió metadata inválida."
+        );
+
+        let document = fetch_official_json(
+            serve_once("200 OK", r#"{"currentRelease":"1.2.3"}"#),
+            &[],
+            &OFFICIAL_FEED_LABEL,
+        )
+        .unwrap();
+        assert_eq!(document["currentRelease"], "1.2.3");
+    }
+
+    #[test]
+    fn a_feed_without_a_version_is_a_definitive_remote_error() {
+        let error = source_update_from_feed(&serde_json::json!({}), "1.0.0").unwrap_err();
+        assert_eq!(error.kind(), AppErrorKind::Remote);
+        assert_eq!(
+            String::from(error),
+            "El feed oficial no incluyó una versión válida."
+        );
+        let unsupported = check_official_update_feed("linux", "x86_64", "1.0.0").unwrap_err();
+        assert_eq!(unsupported.kind(), AppErrorKind::Unsupported);
+        assert_eq!(
+            unsupported.to_string(),
+            "No existe un feed oficial para esta plataforma."
+        );
     }
 
     #[test]

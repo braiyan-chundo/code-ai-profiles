@@ -13,6 +13,10 @@ pub(crate) enum AppErrorKind {
     DamagedData,
     /// Procesos e identidad: señales, comandos del sistema, una identidad que no coincide.
     Process,
+    /// La red no dio una respuesta (sin conexión, plazo, lectura cortada, 5xx o 429): reintentable.
+    Network,
+    /// La fuente respondió, pero con algo que no se acepta (otro estado, tamaño, formato): definitivo.
+    Remote,
     /// Lo que llega no es válido: identificadores, nombres, rutas.
     InvalidInput,
     /// La operación no existe en esta plataforma.
@@ -49,11 +53,18 @@ impl AppError {
         Self::new(AppErrorKind::Process, message)
     }
 
+    pub(crate) fn network(message: impl Into<String>) -> Self {
+        Self::new(AppErrorKind::Network, message)
+    }
+
+    pub(crate) fn remote(message: impl Into<String>) -> Self {
+        Self::new(AppErrorKind::Remote, message)
+    }
+
     pub(crate) fn invalid_input(message: impl Into<String>) -> Self {
         Self::new(AppErrorKind::InvalidInput, message)
     }
 
-    #[cfg_attr(any(unix, target_os = "windows"), allow(dead_code))]
     pub(crate) fn unsupported(message: impl Into<String>) -> Self {
         Self::new(AppErrorKind::Unsupported, message)
     }
@@ -66,6 +77,13 @@ impl AppError {
     #[cfg_attr(not(test), allow(dead_code))]
     pub(crate) fn kind(&self) -> AppErrorKind {
         self.kind
+    }
+
+    /// Solo la red se puede volver a intentar más tarde. Lo decide la persona o el siguiente sondeo
+    /// (el arranque o las 6 h), nunca este tipo: no hay reintentos automáticos.
+    #[cfg_attr(not(test), allow(dead_code))]
+    pub(crate) fn is_retryable(&self) -> bool {
+        self.kind == AppErrorKind::Network
     }
 }
 
@@ -105,6 +123,23 @@ mod tests {
             "No se pudo leer el registro de instancias: denegado"
         );
         assert_eq!(error.kind(), AppErrorKind::LocalIo);
+    }
+
+    #[test]
+    fn only_network_errors_are_retryable() {
+        assert!(AppError::network("x").is_retryable());
+        for error in [
+            AppError::local_io("x"),
+            AppError::damaged_data("x"),
+            AppError::process("x"),
+            AppError::remote("x"),
+            AppError::invalid_input("x"),
+            AppError::unsupported("x"),
+            AppError::internal("x"),
+            AppError::from("x".to_string()),
+        ] {
+            assert!(!error.is_retryable(), "{:?}", error.kind());
+        }
     }
 
     #[test]

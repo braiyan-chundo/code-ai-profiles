@@ -1686,7 +1686,7 @@ impl InstallEnvironment for SystemEnvironment<'_> {
     }
 
     fn fetch_feed(&self, version: &str) -> Result<Value, String> {
-        fetch_official_feed("darwin", "universal", version)
+        fetch_official_feed("darwin", "universal", version).map_err(String::from)
     }
 
     fn fetch_releases(&self) -> Result<Value, String> {
