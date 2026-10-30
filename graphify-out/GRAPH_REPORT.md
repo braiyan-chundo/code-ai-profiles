@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f34cc5da`
+- Built from commit: `d8c5eba6`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -174,7 +174,7 @@
 - String
 - Revisión técnica · HU-0019 · Header compacto, sidebar flotante y tipografía legible
 - @fontsource/jetbrains-mono
-- AppearanceSettings.tsx
+- sections/tooltip.tsx
 - Vista · HU-0019 · Header compacto, sidebar flotante y tipografía
 - method.rs
 - HU-0020-icono-personalizado-de-la-instancia-en-e/seguimiento.md
@@ -210,14 +210,14 @@
 - Brief · HU-0024 · backend
 - Revisión técnica · HU-0024 · Detectar la versión nueva en la publicación oficial e instalarla
 - Brief · HU-0024 · frontend
-- class-variance-authority
+- AppearanceSettings.tsx
 - catalog.ts
 - FakeEnv
-- sections/tooltip.tsx
+- sections/resizable.tsx
 - Block
 - sections/popover.tsx
-- sections/resizable.tsx
 - Versionado de Code AI Profiles
+- class-variance-authority
 - Proyectos
 - HU-0024-detectar-la-version-nueva-en-la-publicac/seguimiento.md
 - ADR-0001 · Adopción de la metodología v4
@@ -828,9 +828,9 @@ Nodes (36): environment(), find_entry(), inspect_candidate_at(), inspect_candida
 Cohesion: 0.25
 Nodes (7): Documentos de arquitectura, Las desviaciones declaradas, Los puntos pedidos, Método, Observaciones, Revisión técnica · HU-0019 · Header compacto, sidebar flotante y tipografía legible, Veredicto: **PASS**
 
-### Community 162 - "AppearanceSettings.tsx"
-Cohesion: 0.22
-Nodes (5): useAppearance(), AppearanceSettings(), PREVIEW_SESSION, SIZES, THEMES
+### Community 162 - "sections/tooltip.tsx"
+Cohesion: 0.26
+Nodes (8): Kbd(), KbdGroup(), Tooltip(), TooltipContent(), TooltipProvider(), TooltipTrigger(), KbdSection(), TooltipSection()
 
 ### Community 163 - "Vista · HU-0019 · Header compacto, sidebar flotante y tipografía"
 Cohesion: 0.33
@@ -936,6 +936,10 @@ Nodes (6): Criterios, Documentación, Hallazgos, Lo que se comprobó, por foco, 
 Cohesion: 0.22
 Nodes (8): Archivos, Brief · HU-0024 · frontend, No toques, Pasos, Pruebas, Si dudas, Skills, Variables de entorno nuevas
 
+### Community 198 - "AppearanceSettings.tsx"
+Cohesion: 0.22
+Nodes (5): useAppearance(), AppearanceSettings(), PREVIEW_SESSION, SIZES, THEMES
+
 ### Community 199 - "catalog.ts"
 Cohesion: 0.07
 Nodes (30): AspectRatio(), InputOTP(), InputOTPGroup(), InputOTPSeparator(), InputOTPSlot(), Skeleton(), Slider(), CatalogEntry (+22 more)
@@ -944,9 +948,9 @@ Nodes (30): AspectRatio(), InputOTP(), InputOTPGroup(), InputOTPSeparator(), Inp
 Cohesion: 0.14
 Nodes (14): Box, Cell, File, create_private_dir(), FakeEnv, installation_candidates(), InstallFixture, OperationDir (+6 more)
 
-### Community 201 - "sections/tooltip.tsx"
-Cohesion: 0.26
-Nodes (8): Kbd(), KbdGroup(), Tooltip(), TooltipContent(), TooltipProvider(), TooltipTrigger(), KbdSection(), TooltipSection()
+### Community 201 - "sections/resizable.tsx"
+Cohesion: 0.43
+Nodes (4): ResizableHandle(), ResizablePanel(), ResizablePanelGroup(), ResizableSection()
 
 ### Community 202 - "Block"
 Cohesion: 0.13
@@ -956,11 +960,7 @@ Nodes (24): Checkbox(), Field(), FieldContent(), FieldDescription(), FieldError(
 Cohesion: 0.33
 Nodes (7): Popover(), PopoverContent(), PopoverDescription(), PopoverHeader(), PopoverTitle(), PopoverTrigger(), PopoverSection()
 
-### Community 204 - "sections/resizable.tsx"
-Cohesion: 0.43
-Nodes (4): ResizableHandle(), ResizablePanel(), ResizablePanelGroup(), ResizableSection()
-
-### Community 205 - "Versionado de Code AI Profiles"
+### Community 204 - "Versionado de Code AI Profiles"
 Cohesion: 0.33
 Nodes (5): Actualizar una versión, Política, Publicación, Verificar consistencia, Versionado de Code AI Profiles
 
@@ -988,7 +988,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.022) - this node is a cross-community bridge._
 - **Why does `environment()` connect `String` to `Registry`, `Path`, `projects.rs`?**
   _High betweenness centrality (0.022) - this node is a cross-community bridge._
-- **Why does `Button()` connect `ui/button.tsx` to `DashboardRoute.tsx`, `permission-cards.ts`, `SessionList.tsx`, `sections/message-scroller.tsx`, `ui/sidebar.tsx`, `sections/drawer.tsx`, `sections/sheet.tsx`, `sections/code-block.tsx`, `catalog.ts`, `sections/tooltip.tsx`, `sections/popover.tsx`, `SettingsRoute.tsx`, `sections/hover-card.tsx`, `InstanceEditor.tsx`, `sections/dropdown-menu.tsx`, `ui/combobox.tsx`, `sections/questionnaire.tsx`, `ui/carousel.tsx`, `sections/trace.tsx`, `result-messages.test.ts`, `projects/index.ts`, `sections/attachment.tsx`, `sections/pagination.tsx`, `instances/index.ts`?**
+- **Why does `Button()` connect `ui/button.tsx` to `DashboardRoute.tsx`, `permission-cards.ts`, `SessionList.tsx`, `sections/message-scroller.tsx`, `ui/sidebar.tsx`, `sections/drawer.tsx`, `sections/tooltip.tsx`, `sections/sheet.tsx`, `sections/code-block.tsx`, `catalog.ts`, `sections/popover.tsx`, `SettingsRoute.tsx`, `sections/hover-card.tsx`, `InstanceEditor.tsx`, `sections/dropdown-menu.tsx`, `ui/combobox.tsx`, `sections/questionnaire.tsx`, `ui/carousel.tsx`, `sections/trace.tsx`, `result-messages.test.ts`, `projects/index.ts`, `sections/attachment.tsx`, `sections/pagination.tsx`, `instances/index.ts`?**
   _High betweenness centrality (0.016) - this node is a cross-community bridge._
 - **What connects `name`, `private`, `version` to the rest of the system?**
   _1300 weakly-connected nodes found - possible documentation gaps or missing edges._
