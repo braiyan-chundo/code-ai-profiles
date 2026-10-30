@@ -2844,30 +2844,11 @@ fn atomic_replace_file(destination: &Path, contents: &[u8]) -> Result<(), String
         .ok_or_else(|| "El destino de la sesión no es válido.".to_string())?;
     fs::create_dir_all(parent)
         .map_err(|error| format!("No se pudo crear el índice de sesiones destino: {error}"))?;
-    let operation_id = Uuid::new_v4();
-    let temporary = parent.join(format!(".session-transfer-{operation_id}.tmp"));
-    fs::write(&temporary, contents)
-        .map_err(|error| format!("No se pudo preparar la copia de la sesión: {error}"))?;
-
-    if !destination.exists() {
-        return fs::rename(&temporary, destination).map_err(|error| {
-            let _ = fs::remove_file(&temporary);
-            format!("No se pudo activar la sesión copiada: {error}")
-        });
-    }
-
-    let previous = parent.join(format!(".session-transfer-{operation_id}.previous"));
-    fs::rename(destination, &previous)
-        .map_err(|error| format!("No se pudo preparar el reemplazo seguro: {error}"))?;
-    if let Err(error) = fs::rename(&temporary, destination) {
-        let _ = fs::rename(&previous, destination);
-        let _ = fs::remove_file(&temporary);
-        return Err(format!(
-            "No se pudo reemplazar el índice destino; se restauró la copia anterior: {error}"
-        ));
-    }
-    let _ = fs::remove_file(previous);
-    Ok(())
+    // Temporal en la misma carpeta, `sync_all` y `rename` que reemplaza en un solo paso: si algo
+    // falla o la app cae, el destino anterior sigue intacto (nunca queda sin archivo).
+    write_file_atomic(destination, contents, ".session-transfer").map_err(|error| {
+        format!("No se pudo reemplazar el archivo; se conservó el anterior: {error}")
+    })
 }
 
 fn restore_optional_file(path: &Path, contents: Option<&[u8]>) {
@@ -6756,6 +6737,47 @@ int main(int argc, const char **argv) {
         assert_eq!(fs::read(&destination).unwrap(), br#"{"version":2}"#);
 
         fs::remove_dir_all(root).expect("temporary test directory should be removable");
+    }
+
+    #[test]
+    fn atomic_replace_file_leaves_no_previous_or_temporary_files() {
+        let root = env::temp_dir().join(format!("code-ai-replace-{}", Uuid::new_v4()));
+        let destination = root.join("account/org/local_session.json");
+        let folder = destination.parent().unwrap().to_path_buf();
+
+        atomic_replace_file(&destination, br#"{"version":1}"#).unwrap();
+        atomic_replace_file(&destination, br#"{"version":2}"#).unwrap();
+
+        assert_eq!(fs::read(&destination).unwrap(), br#"{"version":2}"#);
+        let names: Vec<String> = fs::read_dir(&folder)
+            .unwrap()
+            .filter_map(|entry| entry.ok())
+            .map(|entry| entry.file_name().to_string_lossy().to_string())
+            .collect();
+        assert_eq!(names, vec!["local_session.json".to_string()]);
+
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn atomic_replace_file_failure_keeps_previous_destination() {
+        let root = env::temp_dir().join(format!("code-ai-replace-{}", Uuid::new_v4()));
+        // Un directorio no vacío como destino: el rename no puede completarse en ninguna plataforma.
+        let destination = root.join("index.json");
+        fs::create_dir_all(&destination).unwrap();
+        fs::write(destination.join("keep.txt"), "x").unwrap();
+
+        let error = atomic_replace_file(&destination, b"{}").unwrap_err();
+        assert!(error.starts_with("No se pudo reemplazar el archivo"));
+        assert!(destination.join("keep.txt").exists());
+        let leftovers: Vec<_> = fs::read_dir(&root)
+            .unwrap()
+            .filter_map(|entry| entry.ok())
+            .map(|entry| entry.file_name())
+            .collect();
+        assert_eq!(leftovers.len(), 1);
+
+        fs::remove_dir_all(root).unwrap();
     }
 
     fn temporaries_in(dir: &Path) -> Vec<String> {
