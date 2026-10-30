@@ -29,6 +29,7 @@ Pendiente de probar con una versión real: la instalación directa en macOS de u
 
 ### Fixed
 
+- El instalador de macOS se compila en el runner `macos-15` de GitHub Actions: `macos-14` se retira el 2 de noviembre de 2026 y ya cancelaba el job en sus apagados de prueba. La app sigue pidiendo macOS 13.3 o posterior.
 - En macOS, «Comprobar actualización» consulta la publicación oficial desde la app, con «Buscando…» y el resultado a la vista; ya no abre el diálogo que mandaba a actualizar desde la Claude original. Con una versión nueva, la única acción es «Instalar».
 - El aviso «No se pudo confirmar el estado de actualización · no es reciente» ya no aparece sin motivo: el estado oficial se pide cada 15 minutos (la caché sigue evitando la red durante 6 h) y en cuanto el resultado caduca. Antes el sondeo de 6 h llegaba justo antes de caducar la caché y el aviso se quedaba hasta el siguiente.
 - «Actualizar» en la página de un proyecto indica que está trabajando y termina en «✓ Actualizado» con la hora; antes no daba ninguna respuesta visible.
