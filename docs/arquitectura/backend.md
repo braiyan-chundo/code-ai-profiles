@@ -7,7 +7,18 @@ HU-0017 y manda sobre la skill hasta que esta se regenere.
 
 | Archivo | Qué contiene |
 | --- | --- |
-| `src-tauri/src/lib.rs` | Tipos serde, comandos IPC, lógica general y `run()` |
+| `src-tauri/src/lib.rs` | Solo las declaraciones `mod`, los `use <módulo>::*` que reexportan cada dominio en la raíz (así los hijos que usan `super::*` ven todo) y `run()` con `generate_handler![commands::…]` |
+| `src-tauri/src/commands.rs` | Los 29 `#[tauri::command]`: envoltorios finos con `spawn_blocking`, `with_registry_operation` y el `RefreshScope` del panel. Sin lógica |
+| `src-tauri/src/contract.rs` | Tipos serde que cruzan el IPC y eventos de ventana (espejo de `src/types.ts`) y `ORIGINAL_INSTANCE_ID`. `ManagedInstance` es también el formato de `instances.json` |
+| `src-tauri/src/storage.rs` | `ManagedPaths`, registro (`load_registry`/`save_registry`), `write_file_atomic`, `atomic_replace_file`, la caché del proceso (`runtime_cache`) y `with_registry_operation` |
+| `src-tauri/src/processes.rs` | `ProcessInventory`, identidad verificada, estado de instancias y de la original, señales, esperas y el reaper |
+| `src-tauri/src/platform/` | Fachada por sistema: `macos.rs`, `windows.rs`, `linux.rs`, `unix.rs` (señales y grupos de procesos) y `unsupported.rs` definen las mismas funciones con la misma firma; `mod.rs` reexporta las del sistema que se compila y guarda lo portable (nombres legibles, parseo de Linux probado en todas, `open_in_file_manager`, Ajustes del Sistema) |
+| `src-tauri/src/instances/` | `mod.rs`: crear, renombrar, eliminar y abrir la carpeta; `launch.rs`: lanzar y detener; `icons.rs`: icono personalizado |
+| `src-tauri/src/sessions/` | `mod.rs`: lectura de sesiones y contexto estimado; `links.rs`: origen de las sesiones vinculadas (`session-links.json`); `transfer.rs`: copiar, mover, devolver y desvincular con respaldos y artefactos |
+| `src-tauri/src/scan.rs` | `RefreshScope`, refresco del registro, estado del sistema, uso, espacio administrado, panel y escaneo completo |
+| `src-tauri/src/versions/` | `mod.rs`: comparar versiones, huella de la instalación y validación de copias; `topology.rs`: topología de versiones; `synchronize.rs`: sincronizar copias; `feed.rs`: feed oficial, APT y `source-update-cache.json`; `original.rs`: «Actualizar original» |
+| `src-tauri/src/project_picker.rs` | El selector nativo de carpetas de `pick_project_folder` |
+| `src-tauri/src/test_support.rs` | `#[cfg(test)]`: ayudantes compartidos por las pruebas (`test_managed_paths`, `test_instance` y, en macOS, los bundles firmados ad hoc) |
 | `src-tauri/src/config.rs` | El único sitio con URLs y hosts. Se fija al compilar desde `.env.example` (A-8 de HU-0017) |
 | `src-tauri/src/original_update.rs` | Descargar, verificar e instalar la original en macOS. La capa `MacosTools` es inyectable en las pruebas |
 | `src-tauri/src/official_release.rs` | Versión objetivo de la original (HU-0024): lee `RELEASES.json`, confirma su paquete con el feed (misma versión y misma URL) y resuelve cuál de las dos fuentes manda. Funciones puras más un GET |
@@ -15,8 +26,12 @@ HU-0017 y manda sobre la skill hasta que esta se regenere.
 | `src-tauri/Info.plist` | Textos de los avisos de TCC (`NS*FolderUsageDescription`). Tauri lo fusiona al empaquetar en macOS. No pide permisos |
 | `src-tauri/build.rs` | Pasa las claves `CAP_*` (del entorno, `.env.local` o `.env.example`) a `cargo:rustc-env` |
 
-Un comando nuevo sigue yendo en `lib.rs` como envoltorio fino. Su lógica puede vivir en un módulo hijo si es un
-flujo autocontenido.
+Un comando nuevo va en `commands.rs` como envoltorio fino, con su lógica en el módulo de su dominio y su nombre en
+`generate_handler!`. Lo específico de un sistema va en `platform/<sistema>.rs`, con la misma firma en los cuatro
+archivos (o en `unix.rs` y `windows.rs`). En el dominio solo quedan `#[cfg(target_os = "macos")]` donde macOS añade
+pasos propios: el icono y la verificación de copias de `macos_icon.rs`, el nombre del bundle
+(`refresh_instance_bundle_names`) y el handoff de `versions/original.rs`. Cada módulo usa `super::*` y lleva sus
+pruebas en `#[cfg(test)] mod tests`.
 
 ## Configuración
 
@@ -156,7 +171,7 @@ La raíz de confianza es la original instalada (`--strict`, con caché por finge
 Reglas de negocio: RN-02 a RN-04 (`docs/producto/reglas/proyectos.md`). El detalle está en
 `hu/HU-0023-…/arquitectura.md` (A-1 a A-6) y en su `revision-tecnica.md`.
 
-**Contrato IPC (aditivo, 0.x).** Los envoltorios están en `lib.rs`, con `spawn_blocking`. El espejo literal está en
+**Contrato IPC (aditivo, 0.x).** Los envoltorios están en `commands.rs`, con `spawn_blocking`. El espejo literal está en
 `src/types.ts` y `src/lib/bridge.ts`.
 
 | Comando | Argumentos | Devuelve |
