@@ -10,6 +10,7 @@ import { formatCaptureTime } from "../../../lib/format";
 export function UsageRanking() {
   const { dashboard: state, busy, iconPreviews } = useDashboard();
   const ranking = usageRanking(state.instances);
+  const staleIds = new Set(state.system.versionTopology.staleInstanceIds);
   return (
     <Card size="sm" role="region" aria-label="Uso por instancia">
       <CardHeader>
@@ -40,6 +41,15 @@ export function UsageRanking() {
                     <ItemTitle className="flex w-full flex-wrap items-center gap-x-2 gap-y-1">
                       <span className="max-w-full truncate">{instance.name}</span>
                       <InstanceStatusBadge status={instance.status} stopping={stopping} className="shrink-0" />
+                      {staleIds.has(instance.id) && (
+                        <Badge
+                          variant="outline"
+                          className="shrink-0 border-primary/30 font-mono text-(length:--fs-micro)/(--lh-micro) tracking-[0.04em] text-primary-text uppercase"
+                          title="Esta instancia usa una versión anterior. Entra en ella para actualizarla."
+                        >
+                          Actualizar
+                        </Badge>
+                      )}
                     </ItemTitle>
                     <ItemDescription className="truncate font-mono text-(length:--fs-small)/(--lh-small)">{formatCaptureTime(instance.usage?.capturedAt)}</ItemDescription>
                   </ItemContent>

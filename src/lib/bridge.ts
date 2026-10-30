@@ -130,7 +130,8 @@ const mockState = (): DashboardState => ({
       latestVersion: mockAvailableVersion,
       checkedAt: Date.now(),
       stale: false,
-      source: "officialFeed",
+      source: "officialRelease",
+      warning: null,
     },
     versionTopology: mockTopology(),
     originalProfilePath: "~/Library/Application Support/Claude",
@@ -639,7 +640,8 @@ export const bridge = {
       latestVersion: mockAvailableVersion,
       checkedAt: Date.now(),
       stale: false,
-      source: "officialFeed",
+      source: "officialRelease",
+      warning: null,
     };
   },
 

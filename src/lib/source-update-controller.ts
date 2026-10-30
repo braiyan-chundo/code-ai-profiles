@@ -31,29 +31,43 @@ export function sourceUpdatePresentation(
   sourceUpdate: SourceUpdateInfo,
   topology: VersionTopology,
   appName: string,
+  installedVersion: string | null = null,
 ): SourceUpdatePresentation | null {
   const fresh = !sourceUpdate.stale && sourceUpdate.checkedAt !== null && sourceUpdate.source !== null;
 
+  // `available` ignora `warning`: la versión nueva ya está confirmada por la publicación y el feed.
   if (fresh && sourceUpdate.status === "available" && sourceUpdate.latestVersion) {
+    const installed = installedVersion ? `Instalada ${installedVersion} · ` : "";
     return {
       kind: "available",
-      title: `Actualización oficial disponible para ${appName}`,
-      detail: `La comprobación oficial informa que la versión ${sourceUpdate.latestVersion} está disponible.`,
+      title: `Hay una nueva versión de ${appName} (${sourceUpdate.latestVersion}). ¿Deseas instalarla?`,
+      detail: `${installed}publicada ${sourceUpdate.latestVersion}.`,
       actionLabel: "Ver actualización",
     };
   }
 
   if (fresh && sourceUpdate.status === "current") {
-    if (!topology.originalBehind) return null;
-    const localVersion = topology.latestInstalledVersion
-      ? ` (${topology.latestInstalledVersion})`
-      : "";
-    return {
-      kind: "local-ahead",
-      title: "La original está al día según la comprobación oficial",
-      detail: `Una instancia usa una compilación local superior${localVersion}. Esto no confirma una actualización oficial adicional.`,
-      actionLabel: "Comprobar actualización",
-    };
+    if (topology.originalBehind) {
+      const localVersion = topology.latestInstalledVersion
+        ? ` (${topology.latestInstalledVersion})`
+        : "";
+      const warning = sourceUpdate.warning ? ` ${sourceUpdate.warning}` : "";
+      return {
+        kind: "local-ahead",
+        title: "La original está al día según la comprobación oficial",
+        detail: `Una instancia usa una compilación local superior${localVersion}. Esto no confirma una actualización oficial adicional.${warning}`,
+        actionLabel: "Comprobar actualización",
+      };
+    }
+    if (sourceUpdate.warning) {
+      return {
+        kind: "uncertain",
+        title: "No se pudo confirmar si hay una versión nueva",
+        detail: sourceUpdate.warning,
+        actionLabel: "Comprobar actualización",
+      };
+    }
+    return null;
   }
 
   return {

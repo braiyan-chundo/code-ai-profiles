@@ -1,4 +1,4 @@
-import { FolderOpenIcon, PencilIcon, PlayIcon, SquareIcon, TerminalSquareIcon, Trash2Icon } from "lucide-react";
+import { FolderOpenIcon, PencilIcon, PlayIcon, RefreshCwIcon, SquareIcon, TerminalSquareIcon, Trash2Icon } from "lucide-react";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
@@ -21,6 +21,8 @@ export interface InstanceDetailProps {
   iconPreviewUrl: string | null;
   onLaunch: () => void;
   onStop: () => void;
+  /** Abre el diálogo de sincronización con esta sola instancia (HU-0024, AC-03). */
+  onUpdate: () => void;
   onOpen: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -42,6 +44,7 @@ export function InstanceDetail({
   iconPreviewUrl,
   onLaunch,
   onStop,
+  onUpdate,
   onOpen,
   onEdit,
   onDelete,
@@ -109,6 +112,14 @@ export function InstanceDetail({
               <Button variant="destructive" size="icon-lg" disabled={isBusy} onClick={onDelete} title="Eliminar instancia" aria-label="Eliminar instancia">
                 <Trash2Icon />
               </Button>
+            )}
+            {updateAvailable && (
+              // El title va en el contenedor: un botón deshabilitado no recibe el puntero.
+              <span title={isRunning ? "Detén la instancia para actualizarla" : undefined}>
+                <Button variant="outline" size="lg" disabled={isRunning || busy !== null} onClick={onUpdate} className="px-4">
+                  <RefreshCwIcon /> Actualizar
+                </Button>
+              </span>
             )}
             {isRunning ? (
               <Button

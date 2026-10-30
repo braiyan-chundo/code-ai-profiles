@@ -280,7 +280,8 @@ const update = (overrides: Partial<SourceUpdateInfo> = {}): SourceUpdateInfo => 
   latestVersion: "3.1623.4",
   checkedAt: 1_000,
   stale: false,
-  source: "officialFeed",
+  source: "officialRelease",
+  warning: null,
   ...overrides,
 });
 
@@ -315,11 +316,60 @@ test("metadata oficial sólo se fusiona para la misma ruta y versión instaladas
   assert.equal(mergeSourceUpdateForInstallation(changedPath, expected, official), changedPath);
 });
 
-test("available fresco afirma únicamente la disponibilidad oficial", () => {
-  const presentation = sourceUpdatePresentation(update({ status: "available", latestVersion: "3.1700.0" }), topology(), "Claude");
+test("available fresco ofrece instalar con el título de la publicación oficial", () => {
+  const presentation = sourceUpdatePresentation(
+    update({ status: "available", latestVersion: "3.1700.0" }),
+    topology(),
+    "Claude",
+    "3.1623.4",
+  );
   assert.equal(presentation?.kind, "available");
-  assert.match(presentation?.title ?? "", /oficial disponible/);
-  assert.match(presentation?.detail ?? "", /3\.1700\.0/);
+  assert.equal(presentation?.title, "Hay una nueva versión de Claude (3.1700.0). ¿Deseas instalarla?");
+  assert.equal(presentation?.detail, "Instalada 3.1623.4 · publicada 3.1700.0.");
+});
+
+test("available sin versión instalada conocida omite la parte de la instalada", () => {
+  const presentation = sourceUpdatePresentation(update({ status: "available", latestVersion: "3.1700.0" }), topology(), "Claude");
+  assert.equal(presentation?.detail, "publicada 3.1700.0.");
+});
+
+test("available ignora el warning", () => {
+  const presentation = sourceUpdatePresentation(
+    update({ status: "available", latestVersion: "3.1700.0", warning: "La publicación y el feed no coinciden." }),
+    topology(),
+    "Claude",
+  );
+  assert.equal(presentation?.kind, "available");
+  assert.doesNotMatch(`${presentation?.title} ${presentation?.detail}`, /no coinciden/);
+});
+
+test("current con warning y sin discrepancia local es incierto y muestra el warning", () => {
+  const presentation = sourceUpdatePresentation(
+    update({ warning: "La publicación anuncia 3.1700.0 pero el feed no la confirma." }),
+    topology({ originalBehind: false }),
+    "Claude",
+  );
+  assert.equal(presentation?.kind, "uncertain");
+  assert.equal(presentation?.title, "No se pudo confirmar si hay una versión nueva");
+  assert.equal(presentation?.detail, "La publicación anuncia 3.1700.0 pero el feed no la confirma.");
+  assert.equal(presentation?.actionLabel, "Comprobar actualización");
+});
+
+test("current con warning y con instancia superior sigue siendo local-ahead y añade el warning", () => {
+  const presentation = sourceUpdatePresentation(update({ warning: "El feed no respondió." }), topology(), "Claude");
+  assert.equal(presentation?.kind, "local-ahead");
+  assert.match(presentation?.detail ?? "", /compilación local superior/);
+  assert.match(presentation?.detail ?? "", /El feed no respondió\.$/);
+});
+
+test("stale gana al warning y a available", () => {
+  const presentation = sourceUpdatePresentation(
+    update({ status: "available", stale: true, warning: "x" }),
+    topology(),
+    "Claude",
+  );
+  assert.equal(presentation?.kind, "uncertain");
+  assert.match(presentation?.detail ?? "", /no es reciente/);
 });
 
 test("current fresco con instancia superior comunica estado oficial y discrepancia local sin inferir rollout", () => {

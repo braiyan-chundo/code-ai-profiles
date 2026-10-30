@@ -53,7 +53,7 @@ export interface CodeSession {
 }
 
 export type SourceUpdateStatus = "current" | "available" | "unavailable" | "unknown" | "error";
-export type SourceUpdateSource = "officialFeed" | "aptCache";
+export type SourceUpdateSource = "officialFeed" | "officialRelease" | "aptCache";
 
 export interface SourceUpdateInfo {
   status: SourceUpdateStatus;
@@ -61,6 +61,8 @@ export interface SourceUpdateInfo {
   checkedAt: number | null;
   stale: boolean;
   source: SourceUpdateSource | null;
+  /** Motivo por el que no se pudo confirmar una versión nueva (p. ej. la publicación y el feed no coinciden). */
+  warning: string | null;
 }
 
 export interface ManagedInstance {
