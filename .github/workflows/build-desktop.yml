@@ -17,7 +17,7 @@ jobs:
       matrix:
         include:
           - name: macOS Apple Silicon
-            platform: macos-14
+            platform: macos-15
             rust_target: aarch64-apple-darwin
             tauri_args: --target aarch64-apple-darwin --bundles app,dmg
             artifact_name: code-ai-profiles-macos-arm64
