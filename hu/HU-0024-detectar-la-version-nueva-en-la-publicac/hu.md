@@ -2,7 +2,7 @@
 id: HU-0024
 titulo: "Detectar la versión nueva en la publicación oficial e instalarla"
 estado: en-proceso
-fase: requisitos
+fase: arquitectura
 area: actualizaciones
 entrega: 1
 prioridad: alta
@@ -40,7 +40,7 @@ le pedía abrir la original y elegir «Check for Updates».
 Elecciones, en la misma conversación (2026-10-29):
 
 - Instalación: «Que la instale sola (Recomendado)». Se usa el flujo de «Descargar e instalar» de la HU-0017 (zip
-  oficial, `sha256`, tamaño, firma de Anthropic, Gatekeeper, contraseña de administrador, sustitución con vuelta
+  oficial, `sha256`, tamaño, firma de Anthropic, Gatekeeper, cuenta de administrador, sustitución con vuelta
   atrás, temporales borrados), no el DMG con arrastre. El enlace del DMG de claude.com responde 403 a clientes que
   no son un navegador.
 - Red: «Sí, autorizo» consultar `downloads.claude.ai` (publicación oficial de versiones), sin identificador de
@@ -96,8 +96,8 @@ de Claude Desktop (X). ¿Deseas instalarla?», aunque el feed con identificador 
 
 ### AC-02 · Instalación sin abrir la original
 
-Al pulsar «Instalar», la app descarga, verifica e instala la versión X en la original sin abrir Claude, con la
-contraseña de administrador, y borra los temporales. Si algo falla, la original queda como estaba.
+Al pulsar «Instalar», la app descarga, verifica e instala la versión X en la original sin abrir Claude, con una
+cuenta de administrador (el flujo de la HU-0017 no pide contraseña), y borra los temporales. Si algo falla, la original queda como estaba.
 
 ### AC-03 · Instancias obsoletas
 
