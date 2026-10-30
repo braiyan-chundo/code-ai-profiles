@@ -31,6 +31,7 @@ entra en `dist/`.
 | `InstanceAvatar`, `InstanceStatusBadge` | `features/instances` | Icono con punto de estado; el estado con sus palabras |
 | `UsageMeter`, `UsageBar` | `features/instances` | Uso de sesión y semanal (`Card`/`Progress`) |
 | `SessionItem`, `SessionList`, `SessionContextMeter` | `features/sessions` | Una sesión, la lista y su contexto (`Item`) |
+| `ProjectInitial`, `StateBar`, `StateLegend`, `StateDot` | `features/projects` | La inicial del proyecto (16, 40, 64) y la barra por estados con su leyenda; «en espera» lleva trama y marcador hueco (HU-0023) |
 
 ## Cómo se usa
 

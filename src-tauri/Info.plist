@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSDesktopFolderUsageDescription</key>
+	<string>Code AI Profiles lee, sin cambiar nada, los archivos del método de los proyectos que anclas.</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>Code AI Profiles lee, sin cambiar nada, los archivos del método de los proyectos que anclas.</string>
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>Code AI Profiles lee, sin cambiar nada, los archivos del método de los proyectos que anclas.</string>
+	<key>NSRemovableVolumesUsageDescription</key>
+	<string>Code AI Profiles lee, sin cambiar nada, los archivos del método de los proyectos que anclas en un disco externo.</string>
+	<key>NSNetworkVolumesUsageDescription</key>
+	<string>Code AI Profiles lee, sin cambiar nada, los archivos del método de los proyectos que anclas en un volumen de red.</string>
+</dict>
+</plist>

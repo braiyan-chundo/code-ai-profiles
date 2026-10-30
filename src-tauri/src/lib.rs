@@ -20,12 +20,18 @@ use uuid::Uuid;
 mod config;
 #[cfg(target_os = "macos")]
 mod macos_icon;
+mod official_release;
 mod original_update;
+mod projects;
 
 const REGISTRY_VERSION: u32 = 1;
 const ORIGINAL_INSTANCE_ID: &str = "__claude_original__";
 const UPDATE_CACHE_FRESH_MS: i64 = 6 * 60 * 60 * 1_000;
 const UPDATE_CACHE_STALE_MS: i64 = 7 * 24 * 60 * 60 * 1_000;
+/// Un resultado con aviso (una fuente falló o no se pudo verificar) solo cuenta como fresco este tiempo.
+const UPDATE_CACHE_RETRY_MS: i64 = 30 * 60 * 1_000;
+/// Versión del formato de `source-update-cache.json`; una caché con otra no se usa (HU-0024).
+const SOURCE_UPDATE_CACHE_SCHEMA: u32 = 2;
 const UPDATE_FEED_MAX_BYTES: u64 = 256 * 1_024;
 const NULL_DEVICE_ID: &str = "00000000-0000-0000-0000-000000000000";
 const ICON_MAX_BYTES: usize = 5 * 1024 * 1024;
@@ -499,6 +505,10 @@ struct SourceUpdateInfo {
     checked_at: Option<i64>,
     stale: bool,
     source: Option<SourceUpdateSource>,
+    /// Frase para la persona cuando una fuente oficial falló o no se pudo verificar (AC-06). Sin URLs ni
+    /// cuerpos de respuesta.
+    #[serde(default)]
+    warning: Option<String>,
 }
 
 impl Default for SourceUpdateInfo {
@@ -509,6 +519,7 @@ impl Default for SourceUpdateInfo {
             checked_at: None,
             stale: false,
             source: None,
+            warning: None,
         }
     }
 }
@@ -526,11 +537,15 @@ enum SourceUpdateStatus {
 enum SourceUpdateSource {
     OfficialFeed,
     AptCache,
+    /// La versión salió de la publicación oficial (`RELEASES.json`) y el feed confirmó su paquete.
+    OfficialRelease,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct SourceUpdateCache {
+    #[serde(default)]
+    schema: u32,
     platform: String,
     installed_version: String,
     result: SourceUpdateInfo,
@@ -1854,7 +1869,10 @@ fn read_source_update_cache(
     }
     let cache: SourceUpdateCache =
         serde_json::from_slice(&fs::read(&paths.source_update_cache).ok()?).ok()?;
-    if cache.platform != platform || cache.installed_version != installed_version {
+    if cache.schema != SOURCE_UPDATE_CACHE_SCHEMA
+        || cache.platform != platform
+        || cache.installed_version != installed_version
+    {
         return None;
     }
     let checked_at = cache.result.checked_at?;
@@ -1870,6 +1888,26 @@ fn read_source_update_cache(
     Some(result)
 }
 
+/// La caché que `check_source_update_sync` da por buena sin volver a consultar: 6 h, o 30 min si el resultado
+/// llevaba un aviso, para que el siguiente arranque o sondeo reintente la fuente que falló (AC-06).
+fn read_fresh_source_update_cache(
+    paths: &ManagedPaths,
+    platform: &str,
+    installed_version: &str,
+) -> Option<SourceUpdateInfo> {
+    let cached =
+        read_source_update_cache(paths, platform, installed_version, UPDATE_CACHE_FRESH_MS)?;
+    if cached.warning.is_some() {
+        let age = Utc::now()
+            .timestamp_millis()
+            .saturating_sub(cached.checked_at?);
+        if age > UPDATE_CACHE_RETRY_MS {
+            return None;
+        }
+    }
+    Some(cached)
+}
+
 fn save_source_update_cache(
     paths: &ManagedPaths,
     platform: &str,
@@ -1877,6 +1915,7 @@ fn save_source_update_cache(
     result: &SourceUpdateInfo,
 ) -> Result<(), String> {
     let cache = SourceUpdateCache {
+        schema: SOURCE_UPDATE_CACHE_SCHEMA,
         platform: platform.to_string(),
         installed_version: installed_version.to_string(),
         result: result.clone(),
@@ -1886,46 +1925,79 @@ fn save_source_update_cache(
     atomic_replace_file(&paths.source_update_cache, &contents)
 }
 
-/// Consulta el feed oficial y devuelve su JSON. Sin redirecciones, 5 s, 256 KiB y `device_id` nulo.
-fn fetch_official_feed(
-    feed_platform: &str,
-    feed_arch: &str,
-    installed_version: &str,
+/// Cómo se nombra en los mensajes el documento oficial que se consulta.
+struct OfficialDocumentLabel {
+    /// Al empezar una frase: «El feed oficial».
+    subject: &'static str,
+    /// Dentro de una frase: «el feed oficial».
+    object: &'static str,
+}
+
+const OFFICIAL_FEED_LABEL: OfficialDocumentLabel = OfficialDocumentLabel {
+    subject: "El feed oficial",
+    object: "el feed oficial",
+};
+
+/// GET de un documento JSON oficial de actualizaciones: 5 s, sin redirecciones, 256 KiB, sin cookies y con el
+/// `User-Agent` propio. Solo lleva los parámetros de `query` que se le pasen.
+fn fetch_official_json(
+    url: String,
+    query: &[(&str, &str)],
+    label: &OfficialDocumentLabel,
 ) -> Result<Value, String> {
-    let url = config::feed_url(feed_platform, feed_arch);
     let client = reqwest::blocking::Client::builder()
         .timeout(std::time::Duration::from_secs(5))
         .redirect(reqwest::redirect::Policy::none())
         .build()
         .map_err(|error| format!("No se pudo preparar la consulta de actualización: {error}"))?;
-    let response = client
+    let mut request = client
         .get(url)
-        .query(&[
-            ("version", installed_version),
-            ("device_id", NULL_DEVICE_ID),
-        ])
-        .header(reqwest::header::USER_AGENT, config::user_agent())
+        .header(reqwest::header::USER_AGENT, config::user_agent());
+    if !query.is_empty() {
+        request = request.query(query);
+    }
+    let response = request
         .send()
-        .map_err(|error| format!("No se pudo consultar el feed oficial: {error}"))?;
+        .map_err(|error| format!("No se pudo consultar {}: {error}", label.object))?;
     if !response.status().is_success() {
         return Err(format!(
-            "El feed oficial respondió con estado {}.",
+            "{} respondió con estado {}.",
+            label.subject,
             response.status()
         ));
     }
+    let too_large = || {
+        format!(
+            "La respuesta de {} excede el límite permitido.",
+            label.object
+        )
+    };
     if response.content_length().unwrap_or(0) > UPDATE_FEED_MAX_BYTES {
-        return Err("La respuesta del feed oficial excede el límite permitido.".to_string());
+        return Err(too_large());
     }
     let mut body = Vec::new();
     response
         .take(UPDATE_FEED_MAX_BYTES + 1)
         .read_to_end(&mut body)
-        .map_err(|error| format!("No se pudo leer el feed oficial: {error}"))?;
+        .map_err(|error| format!("No se pudo leer {}: {error}", label.object))?;
     if body.len() as u64 > UPDATE_FEED_MAX_BYTES {
-        return Err("La respuesta del feed oficial excede el límite permitido.".to_string());
+        return Err(too_large());
     }
     serde_json::from_slice(&body)
-        .map_err(|_| "El feed oficial devolvió metadata inválida.".to_string())
+        .map_err(|_| format!("{} devolvió metadata inválida.", label.subject))
+}
+
+/// Consulta el feed oficial preguntando por `version` y devuelve su JSON, con `device_id` nulo.
+fn fetch_official_feed(
+    feed_platform: &str,
+    feed_arch: &str,
+    version: &str,
+) -> Result<Value, String> {
+    fetch_official_json(
+        config::feed_url(feed_platform, feed_arch),
+        &[("version", version), ("device_id", NULL_DEVICE_ID)],
+        &OFFICIAL_FEED_LABEL,
+    )
 }
 
 fn source_update_from_feed(
@@ -1944,9 +2016,27 @@ fn source_update_from_feed(
         checked_at: Some(Utc::now().timestamp_millis()),
         stale: false,
         source: Some(SourceUpdateSource::OfficialFeed),
+        warning: None,
     })
 }
 
+/// El resultado de la detección a partir de la versión objetivo resuelta (A-2, A-3).
+fn source_update_from_resolution(
+    resolution: &official_release::OfficialResolution,
+    installed_version: &str,
+) -> SourceUpdateInfo {
+    SourceUpdateInfo {
+        status: update_status(installed_version, &resolution.latest_version),
+        latest_version: Some(resolution.latest_version.clone()),
+        checked_at: Some(Utc::now().timestamp_millis()),
+        stale: false,
+        source: Some(resolution.source),
+        warning: resolution.warning.clone(),
+    }
+}
+
+/// En macOS la versión objetivo sale de la publicación oficial confirmada por el feed (HU-0024, A-3); en
+/// Windows, del feed preguntado con la versión instalada, como hasta ahora.
 fn check_official_update_feed(
     platform: &str,
     arch: &str,
@@ -1954,6 +2044,21 @@ fn check_official_update_feed(
 ) -> Result<SourceUpdateInfo, String> {
     let (feed_platform, feed_arch) = update_feed_target(platform, arch)
         .ok_or_else(|| "No existe un feed oficial para esta plataforma.".to_string())?;
+    if platform == "macos" {
+        let feed_for_installed = fetch_official_feed(feed_platform, feed_arch, installed_version);
+        let published = official_release::fetch_published_releases(feed_platform, feed_arch);
+        let resolution = official_release::resolve_official_target(
+            installed_version,
+            feed_for_installed,
+            published,
+            &mut |version| fetch_official_feed(feed_platform, feed_arch, version),
+            &config::download_hosts(),
+        )?;
+        return Ok(source_update_from_resolution(
+            &resolution,
+            installed_version,
+        ));
+    }
     let document = fetch_official_feed(feed_platform, feed_arch, installed_version)?;
     source_update_from_feed(&document, installed_version)
 }
@@ -1995,6 +2100,7 @@ fn check_apt_update(installed_version: &str) -> Result<SourceUpdateInfo, String>
         checked_at: Some(Utc::now().timestamp_millis()),
         stale: false,
         source: Some(SourceUpdateSource::AptCache),
+        warning: None,
     })
 }
 
@@ -2005,9 +2111,7 @@ fn check_source_update_sync(app: &AppHandle) -> Result<SourceUpdateInfo, String>
         .filter(|version| valid_release_version(version))
         .ok_or_else(|| "No se pudo identificar la versión instalada.".to_string())?;
     let platform = platform_name();
-    if let Some(cached) =
-        read_source_update_cache(&paths, &platform, &installed_version, UPDATE_CACHE_FRESH_MS)
-    {
+    if let Some(cached) = read_fresh_source_update_cache(&paths, &platform, &installed_version) {
         return Ok(cached);
     }
     let checked = match platform.as_str() {
@@ -5109,7 +5213,12 @@ fn open_instance_folder(app: AppHandle, id: String) -> Result<(), String> {
     if !profile.exists() {
         return Err("La carpeta del perfil ya no existe.".to_string());
     }
+    open_in_file_manager(&profile)
+}
 
+/// Abre una carpeta en el gestor de archivos del sistema. La ruta la decide Rust (registro de
+/// instancias o de proyectos), nunca el frontend.
+fn open_in_file_manager(path: &Path) -> Result<(), String> {
     #[cfg(target_os = "macos")]
     let mut command = Command::new("/usr/bin/open");
     #[cfg(target_os = "windows")]
@@ -5118,10 +5227,156 @@ fn open_instance_folder(app: AppHandle, id: String) -> Result<(), String> {
     let mut command = Command::new("xdg-open");
 
     command
-        .arg(profile)
+        .arg(path)
         .spawn()
         .map_err(|error| format!("No se pudo abrir la carpeta: {error}"))?;
     Ok(())
+}
+
+// ── Proyectos anclados (HU-0023): envoltorios finos de projects.rs ──────────
+
+#[tauri::command]
+async fn list_projects(app: AppHandle) -> Result<projects::ProjectsState, String> {
+    tauri::async_runtime::spawn_blocking(move || projects::list_projects_sync(&app))
+        .await
+        .map_err(|error| format!("La lectura de los proyectos terminó inesperadamente: {error}"))?
+}
+
+#[tauri::command]
+async fn read_project(app: AppHandle, id: String) -> Result<projects::ProjectSummary, String> {
+    tauri::async_runtime::spawn_blocking(move || projects::read_project_sync(&app, &id))
+        .await
+        .map_err(|error| format!("La lectura del proyecto terminó inesperadamente: {error}"))?
+}
+
+/// Abre el selector nativo de carpetas con la ventana `main` de padre e inspecciona la elegida sin
+/// anclarla. `None` si la persona cancela.
+#[tauri::command]
+async fn pick_project_folder(app: AppHandle) -> Result<Option<projects::ProjectCandidate>, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        use tauri_plugin_dialog::DialogExt;
+        let mut dialog = app
+            .dialog()
+            .file()
+            .set_title("Elige la carpeta del proyecto");
+        if let Some(window) = app.get_webview_window("main") {
+            dialog = dialog.set_parent(&window);
+        }
+        let Some(picked) = dialog.blocking_pick_folder() else {
+            return Ok(None);
+        };
+        let path = picked
+            .into_path()
+            .map_err(|error| format!("No se pudo leer la carpeta elegida: {error}"))?;
+        projects::inspect_candidate_sync(&app, &path).map(Some)
+    })
+    .await
+    .map_err(|error| format!("El selector de carpetas terminó inesperadamente: {error}"))?
+}
+
+#[tauri::command]
+async fn pin_project(app: AppHandle, path: String) -> Result<projects::ProjectSummary, String> {
+    tauri::async_runtime::spawn_blocking(move || projects::pin_project_sync(&app, &path))
+        .await
+        .map_err(|error| format!("Anclar el proyecto terminó inesperadamente: {error}"))?
+}
+
+#[tauri::command]
+async fn unpin_project(app: AppHandle, id: String) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || projects::unpin_project_sync(&app, &id))
+        .await
+        .map_err(|error| format!("Desanclar el proyecto terminó inesperadamente: {error}"))?
+}
+
+#[tauri::command]
+async fn open_project_folder(app: AppHandle, id: String) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let path = projects::project_folder_sync(&app, &id)?;
+        open_in_file_manager(&path)
+    })
+    .await
+    .map_err(|error| format!("Abrir la carpeta del proyecto terminó inesperadamente: {error}"))?
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "camelCase")]
+enum SystemSettingsPanel {
+    AppManagement,
+    FilesAndFolders,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct AccountFacts {
+    /// macOS: the user belongs to the `admin` group. None off macOS or when `id` fails.
+    admin: Option<bool>,
+}
+
+/// Enlace fijado al compilar (`config.rs`). El frontend solo envía el panel, nunca una URL.
+#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+fn system_settings_url(panel: SystemSettingsPanel) -> &'static str {
+    match panel {
+        SystemSettingsPanel::AppManagement => config::macos_app_management_settings_url(),
+        SystemSettingsPanel::FilesAndFolders => config::macos_files_and_folders_settings_url(),
+    }
+}
+
+/// `true` si `id -Gn` lista exactamente el grupo `admin`.
+#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+fn groups_include_admin(groups: &str) -> bool {
+    groups.split_whitespace().any(|group| group == "admin")
+}
+
+#[cfg(target_os = "macos")]
+fn open_system_settings_sync(panel: SystemSettingsPanel) -> Result<(), String> {
+    let status = Command::new("/usr/bin/open")
+        .arg(system_settings_url(panel))
+        .status()
+        .map_err(|error| format!("No se pudo abrir Ajustes del Sistema: {error}"))?;
+    if status.success() {
+        Ok(())
+    } else {
+        Err(format!(
+            "No se pudo abrir Ajustes del Sistema: el sistema respondió {status}."
+        ))
+    }
+}
+
+#[cfg(not(target_os = "macos"))]
+fn open_system_settings_sync(_panel: SystemSettingsPanel) -> Result<(), String> {
+    Err("Esta plataforma no tiene ese panel de ajustes.".to_string())
+}
+
+#[cfg(target_os = "macos")]
+fn account_facts_sync() -> AccountFacts {
+    let admin = Command::new("/usr/bin/id")
+        .arg("-Gn")
+        .output()
+        .ok()
+        .filter(|output| output.status.success())
+        .map(|output| groups_include_admin(&String::from_utf8_lossy(&output.stdout)));
+    AccountFacts { admin }
+}
+
+#[cfg(not(target_os = "macos"))]
+fn account_facts_sync() -> AccountFacts {
+    AccountFacts { admin: None }
+}
+
+#[tauri::command]
+async fn open_system_settings(panel: SystemSettingsPanel) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || open_system_settings_sync(panel))
+        .await
+        .map_err(|error| {
+            format!("La apertura de Ajustes del Sistema terminó inesperadamente: {error}")
+        })?
+}
+
+#[tauri::command]
+async fn get_account_facts() -> Result<AccountFacts, String> {
+    Ok(tauri::async_runtime::spawn_blocking(account_facts_sync)
+        .await
+        .unwrap_or(AccountFacts { admin: None }))
 }
 
 #[tauri::command]
@@ -5297,6 +5552,7 @@ fn delete_instance_sync(app: &AppHandle, id: String) -> Result<(), String> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
             config::validate().map_err(std::io::Error::other)?;
             let handle = app.handle().clone();
@@ -5322,10 +5578,18 @@ pub fn run() {
             clear_instance_icon,
             reapply_instance_icon,
             open_instance_folder,
+            open_system_settings,
+            get_account_facts,
             update_original_application,
             install_original_update,
             cancel_original_update,
-            delete_instance
+            delete_instance,
+            list_projects,
+            read_project,
+            pick_project_folder,
+            pin_project,
+            unpin_project,
+            open_project_folder
         ])
         .run(tauri::generate_context!())
         .expect("error while running Code AI Profiles");
@@ -5950,6 +6214,7 @@ int main(int argc, const char **argv) {
             checked_at: Some(Utc::now().timestamp_millis()),
             stale: false,
             source: Some(SourceUpdateSource::OfficialFeed),
+            warning: None,
         };
         save_source_update_cache(&paths, "macos", "2.0.0", &fresh).unwrap();
 
@@ -5973,6 +6238,7 @@ int main(int argc, const char **argv) {
             ),
             stale: false,
             source: Some(SourceUpdateSource::OfficialFeed),
+            warning: None,
         };
         save_source_update_cache(&paths, "macos", "2.0.0", &stale).unwrap();
         let cached =
@@ -5980,6 +6246,132 @@ int main(int argc, const char **argv) {
         assert!(cached.stale);
         assert_eq!(cached.status, SourceUpdateStatus::Unavailable);
         fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn source_update_cache_ignores_other_schemas_even_for_painting() {
+        let root = env::temp_dir().join(format!("code-ai-update-schema-{}", Uuid::new_v4()));
+        fs::create_dir_all(&root).unwrap();
+        let paths = test_managed_paths(&root);
+        let result = serde_json::json!({
+            "status": "current",
+            "latestVersion": "2.0.0",
+            "checkedAt": Utc::now().timestamp_millis(),
+            "stale": false,
+            "source": "officialFeed"
+        });
+        for schema in [None, Some(1), Some(3)] {
+            let mut cache = serde_json::json!({
+                "platform": "macos",
+                "installedVersion": "2.0.0",
+                "result": result
+            });
+            if let Some(schema) = schema {
+                cache["schema"] = Value::from(schema);
+            }
+            fs::write(
+                &paths.source_update_cache,
+                serde_json::to_vec(&cache).unwrap(),
+            )
+            .unwrap();
+            assert!(
+                read_source_update_cache(&paths, "macos", "2.0.0", UPDATE_CACHE_STALE_MS).is_none(),
+                "{schema:?}"
+            );
+            assert!(read_fresh_source_update_cache(&paths, "macos", "2.0.0").is_none());
+        }
+        // The same document with the current schema is used, and a missing warning reads as none.
+        let cache = serde_json::json!({
+            "schema": SOURCE_UPDATE_CACHE_SCHEMA,
+            "platform": "macos",
+            "installedVersion": "2.0.0",
+            "result": result
+        });
+        fs::write(
+            &paths.source_update_cache,
+            serde_json::to_vec(&cache).unwrap(),
+        )
+        .unwrap();
+        let cached = read_fresh_source_update_cache(&paths, "macos", "2.0.0").unwrap();
+        assert_eq!(cached.warning, None);
+        let saved = SourceUpdateInfo {
+            warning: None,
+            ..cached
+        };
+        save_source_update_cache(&paths, "macos", "2.0.0", &saved).unwrap();
+        let written: Value =
+            serde_json::from_slice(&fs::read(&paths.source_update_cache).unwrap()).unwrap();
+        assert_eq!(written["schema"], Value::from(2));
+        assert_eq!(written["result"]["warning"], Value::Null);
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn source_update_with_a_warning_is_fresh_for_thirty_minutes_only() {
+        let root = env::temp_dir().join(format!("code-ai-update-retry-{}", Uuid::new_v4()));
+        fs::create_dir_all(&root).unwrap();
+        let paths = test_managed_paths(&root);
+        let at_age = |age_ms: i64, warning: Option<&str>| SourceUpdateInfo {
+            status: SourceUpdateStatus::Current,
+            latest_version: Some("2.0.0".to_string()),
+            checked_at: Some(Utc::now().timestamp_millis().saturating_sub(age_ms)),
+            stale: false,
+            source: Some(SourceUpdateSource::OfficialFeed),
+            warning: warning.map(str::to_string),
+        };
+        let warning =
+            Some("No se pudo leer la publicación oficial de versiones; se reintentará más tarde.");
+
+        save_source_update_cache(&paths, "macos", "2.0.0", &at_age(29 * 60 * 1_000, warning))
+            .unwrap();
+        assert!(read_fresh_source_update_cache(&paths, "macos", "2.0.0").is_some());
+
+        save_source_update_cache(&paths, "macos", "2.0.0", &at_age(31 * 60 * 1_000, warning))
+            .unwrap();
+        assert!(read_fresh_source_update_cache(&paths, "macos", "2.0.0").is_none());
+        // Still good to paint the panel (system_info_scoped), with its warning.
+        let painted =
+            read_source_update_cache(&paths, "macos", "2.0.0", UPDATE_CACHE_STALE_MS).unwrap();
+        assert_eq!(painted.status, SourceUpdateStatus::Current);
+        assert_eq!(painted.warning.as_deref(), warning);
+
+        save_source_update_cache(&paths, "macos", "2.0.0", &at_age(5 * 60 * 60 * 1_000, None))
+            .unwrap();
+        assert!(read_fresh_source_update_cache(&paths, "macos", "2.0.0").is_some());
+        save_source_update_cache(&paths, "macos", "2.0.0", &at_age(7 * 60 * 60 * 1_000, None))
+            .unwrap();
+        assert!(read_fresh_source_update_cache(&paths, "macos", "2.0.0").is_none());
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn source_update_from_resolution_carries_source_and_warning() {
+        let resolution = official_release::OfficialResolution {
+            latest_version: "4.4212.0".to_string(),
+            package: None,
+            package_error: None,
+            source: SourceUpdateSource::OfficialRelease,
+            warning: None,
+        };
+        let info = source_update_from_resolution(&resolution, "4.29.0");
+        assert_eq!(info.status, SourceUpdateStatus::Available);
+        assert_eq!(info.latest_version.as_deref(), Some("4.4212.0"));
+        assert_eq!(info.source, Some(SourceUpdateSource::OfficialRelease));
+        assert!(info.checked_at.is_some());
+        assert_eq!(
+            serde_json::to_value(&info).unwrap()["source"],
+            Value::from("officialRelease")
+        );
+        assert_eq!(serde_json::to_value(&info).unwrap()["warning"], Value::Null);
+        let warned = official_release::OfficialResolution {
+            latest_version: "4.29.0".to_string(),
+            source: SourceUpdateSource::OfficialFeed,
+            warning: Some("Aviso.".to_string()),
+            ..resolution
+        };
+        let info = source_update_from_resolution(&warned, "4.29.0");
+        assert_eq!(info.status, SourceUpdateStatus::Current);
+        assert_eq!(info.warning.as_deref(), Some("Aviso."));
     }
 
     #[test]
@@ -6709,5 +7101,58 @@ int main(int argc, const char **argv) {
         );
 
         fs::remove_dir_all(root).unwrap();
+    }
+    #[test]
+    fn system_settings_url_matches_each_panel() {
+        assert_eq!(
+            system_settings_url(SystemSettingsPanel::AppManagement),
+            config::macos_app_management_settings_url()
+        );
+        assert_eq!(
+            system_settings_url(SystemSettingsPanel::FilesAndFolders),
+            config::macos_files_and_folders_settings_url()
+        );
+        assert!(
+            system_settings_url(SystemSettingsPanel::AppManagement).ends_with("Privacy_AppBundles")
+        );
+        assert!(system_settings_url(SystemSettingsPanel::FilesAndFolders)
+            .ends_with("Privacy_FilesAndFolders"));
+    }
+
+    #[test]
+    fn system_settings_panel_accepts_only_known_values() {
+        assert_eq!(
+            serde_json::from_str::<SystemSettingsPanel>("\"appManagement\"").unwrap(),
+            SystemSettingsPanel::AppManagement
+        );
+        assert_eq!(
+            serde_json::from_str::<SystemSettingsPanel>("\"filesAndFolders\"").unwrap(),
+            SystemSettingsPanel::FilesAndFolders
+        );
+        assert!(serde_json::from_str::<SystemSettingsPanel>("\"fullDisk\"").is_err());
+        assert!(
+            serde_json::from_str::<SystemSettingsPanel>("\"x-apple.systempreferences:a\"").is_err()
+        );
+    }
+
+    #[test]
+    fn account_facts_serializes_admin_as_nullable() {
+        assert_eq!(
+            serde_json::to_string(&AccountFacts { admin: None }).unwrap(),
+            "{\"admin\":null}"
+        );
+        assert_eq!(
+            serde_json::to_string(&AccountFacts { admin: Some(true) }).unwrap(),
+            "{\"admin\":true}"
+        );
+    }
+
+    #[test]
+    fn groups_include_admin_matches_the_exact_group() {
+        assert!(groups_include_admin("staff admin everyone"));
+        assert!(groups_include_admin("admin\n"));
+        assert!(!groups_include_admin("staff everyone"));
+        assert!(!groups_include_admin("administrators"));
+        assert!(!groups_include_admin(""));
     }
 }

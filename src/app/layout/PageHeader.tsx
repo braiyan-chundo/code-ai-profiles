@@ -23,12 +23,12 @@ export function PageHeader({ eyebrow, title, children }: { eyebrow: string; titl
         platform === "macos" && state === "collapsed" && "pl-[68px] max-[1070px]:pl-[68px]",
       )}
     >
-      <div data-tauri-drag-region className="flex min-w-0 items-center gap-1.5">
-        <span data-tauri-drag-region className="text-(length:--fs-body) font-medium whitespace-nowrap text-muted-foreground">
+      <div data-tauri-drag-region className="flex min-w-0 items-center gap-2">
+        <span data-tauri-drag-region className="text-(length:--fs-body)/(--lh-body) font-medium whitespace-nowrap text-muted-foreground">
           {eyebrow}
         </span>
-        <ChevronRightIcon aria-hidden="true" className="pointer-events-none size-3.5 shrink-0 text-muted-foreground" />
-        <h1 data-tauri-drag-region className="m-0 truncate text-(length:--fs-title) leading-tight font-semibold tracking-[-0.025em] text-foreground">
+        <ChevronRightIcon aria-hidden="true" className="pointer-events-none size-4 shrink-0 text-muted-foreground" />
+        <h1 data-tauri-drag-region className="m-0 truncate text-(length:--fs-title)/(--lh-heading) font-semibold tracking-[-0.025em] text-foreground">
           {title}
         </h1>
       </div>

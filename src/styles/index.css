@@ -15,9 +15,9 @@
 @source "../hooks";
 
 @layer base {
-  * { @apply border-border outline-ring/50; }
+  * { @apply border-border outline-ring; }
   /* Sin fondo (A-3): body sigue transparente y el fondo lo pinta el marco del shell (ventana de Windows). */
-  body { @apply text-foreground; }
+  body { @apply text-foreground; font-size: var(--fs-body); line-height: var(--lh-body); }
   .theme-dark { color-scheme: dark; }
   .theme-light { color-scheme: light; }
 

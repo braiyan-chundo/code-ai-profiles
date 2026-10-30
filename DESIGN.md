@@ -168,25 +168,49 @@ hay CSS propio. Esta guía describe la identidad; los valores reales que la app 
   tooltips los heredan.
 - **Tipografía**: Inter para la interfaz y JetBrains Mono para datos técnicos (versiones, rutas, modelos, contexto,
   etiquetas en mayúsculas con tracking). Ambas locales (`@fontsource`). Geist no se usa.
-- **Escala tipográfica** (HU-0019): siete tamaños, `--fs-micro` a `--fs-dialog`, y un factor `--esc` para el alto de
-  los controles, en `tokens.css`. El ajuste de Apariencia (compacto, cómodo, grande) los cambia en `<html
-  data-text-size>`, así que escala toda la interfaz, también diálogos y menús. Ningún texto baja de 11 px.
+- **Escala tipográfica** (HU-0019, HU-0022): siete tamaños, `--fs-micro` a `--fs-dialog`, ocho interlineados `--lh-*` y
+  cinco alturas de control `--ctl*`, todos en px enteros y declarados por tamaño en `tokens.css`. No hay factor
+  proporcional (`--esc` desapareció): con él un botón de 36 px daba 33,5 y 41,1 px en Compacto y Grande, fuera de la
+  retícula de 4 px. El ajuste de Apariencia (compacto, cómodo, grande) los cambia en `<html data-text-size>`, así que
+  escala toda la interfaz, también diálogos y menús. Ningún texto baja de 11 px. En la app un texto se escribe
+  `text-(length:--fs-<x>)/(--lh-<y>)`.
 
   | Token | Compacto | Normal | Grande | Uso |
   | --- | --- | --- | --- | --- |
-  | `--fs-micro` | 11 | 11 | 12 | mayúsculas, chips, kbd, barra de estado, contexto de sesión |
-  | `--fs-small` | 11 | 12 | 14 | metadatos, rutas, versiones, pistas, descripciones |
-  | `--fs-body` | 13 | 14 | 16 | sidebar, botones, avisos, título de sesión |
-  | `--fs-heading` | 14 | 15 | 17 | títulos de tarjeta |
-  | `--fs-title` | 15 | 17 | 19 | título de la página, marca del panel |
-  | `--fs-figure` | 20 | 22 | 26 | cifras y porcentajes |
-  | `--fs-dialog` | 20 | 22 | 25 | título de diálogo |
-  | `--esc` | 0,93 | 1 | 1,143 | alto de botón (36), entrada (32), chip (20) |
+  | `--fs-micro` / `--lh-micro` | 11 / 16 | 11 / 16 | 12 / 16 | mayúsculas, chips, kbd, barra de estado, contexto de sesión |
+  | `--fs-small` / `--lh-small` | 11 / 16 | 12 / 16 | 14 / 20 | metadatos, rutas, versiones, pistas |
+  | `--lh-prose` (sobre `--fs-small`) | 20 | 20 | 24 | descripciones y párrafos de varias líneas |
+  | `--fs-body` / `--lh-body` | 13 / 20 | 14 / 20 | 16 / 24 | sidebar, botones, avisos, título de sesión |
+  | `--fs-heading` / `--lh-heading` | 14 / 20 | 15 / 20 | 17 / 24 | títulos de tarjeta |
+  | `--fs-title` / `--lh-title` | 15 / 20 | 17 / 24 | 19 / 24 | título de la página, marca del panel |
+  | `--fs-figure` / `--lh-figure` | 20 / 24 | 22 / 28 | 26 / 32 | cifras y porcentajes |
+  | `--fs-dialog` / `--lh-dialog` | 20 / 24 | 22 / 28 | 25 / 32 | título de diálogo |
+  | `--ctl` | 32 | 36 | 40 | botón, pestaña |
+  | `--ctl-sm` | 28 | 32 | 36 | botón sm, ítem del sidebar, buscador |
+  | `--ctl-lg` | 36 | 40 | 44 | entrada, botón lg, tile de permiso |
+  | `--ctl-xs` | 24 | 24 | 28 | botón xs, info |
+  | `--ctl-badge` | 24 | 24 | 28 | chips, kbd, contador, BETA |
 
   El texto gris de lectura es `--muted` (`text-muted-foreground`); `--quiet` queda para puntos, rayas y separadores,
-  porque su contraste (3,4:1 en oscuro, 2,9:1 en claro) no basta para texto.
-- **Radios**: 9 px (chips), 12 px (controles), 14 px (botones y tarjetas de opción), 16 px (tarjetas), 20 px (la
-  ventana en Windows) y 26 px (diálogos): `rounded-sm` a `rounded-3xl` en `ui-theme.css`.
+  porque su contraste (3,4:1 en oscuro, 2,9:1 en claro) no basta para texto. En un control de una línea, el
+  interlineado es el alto menos 16 (menos 8 en los de 24), de modo que el texto cae en la retícula.
+- **Espaciado** (HU-0022): retícula de 4 px. Márgenes, rellenos y huecos solo usan 0, 4, 8, 12, 16, 24, 32 y 48 px
+  (`0, 1, 2, 3, 4, 6, 8, 12` de Tailwind); no hay `0.5`, `1.5`, `2.5`, `3.5`, `5`, `7`, `9`, `10`, `11`, `14` ni `px`. Las
+  únicas medidas en px son los huecos de posición de los controles nativos (84 px a la izquierda de la barra en macOS,
+  160 px a la derecha en Windows y 68 px con el sidebar plegado). Las alturas y anchos arbitrarios son múltiplos de 4.
+  Ritmo vertical: dentro de un componente 4 a 12; entre componentes 16; entre bloques de la página y dentro de un
+  diálogo 24. La página usa 12 columnas de 68 px con 24 de separación (1080 px); Configuración ocupa 10 (896 px) y los
+  diálogos 6 (576 px) u 8 (760 px) más 24 de margen por lado.
+- **Radios** (HU-0022): 4 px (kbd, BETA y lo decorativo), 8 (chips y controles de 24 a 32 px), 12 (controles de 36 a
+  44), 16 (tarjetas, panel del sidebar, popover), 20 (la ventana en Windows) y 24 (diálogos): `rounded-xs` a
+  `rounded-3xl` en `ui-theme.css`. Regla de anidado: un hijo de todo el ancho dentro de un contenedor con relleno
+  *p* y radio *R* lleva `max(8, R − p)`; por eso las opciones de una tarjeta, las sesiones y los ítems del sidebar
+  llevan 8. Los bordes de 1 px que mueven la retícula (opciones, sesión, alerta, buscador, sidebar, barra de estado y
+  ventana de Windows) son anillos (`ring-1 ring-inset`, o `shadow-[inset_…]`), no `border`.
+- **Foco y primario** (HU-0022): el anillo de foco es de 2 px en `--ui-primary-text` (7,1:1 en oscuro, 5,3:1 en claro,
+  3:1 como mínimo exigido), sin transparencia. El botón primario lleva texto oscuro `#151615` sobre `#ff5f35`
+  (6,0:1; el blanco daba 3,03:1) en los dos temas; su hover aclara hacia blanco en lugar de transparentar, para no
+  bajar de 4,5:1. Chips, kbd y contadores miden 24 px (28 en Grande).
 - **Disposición** (HU-0019): una sola barra de 52 px (la zona de la ventana sobre el sidebar y, a su derecha, las
   migas «Sección › Página» con las acciones), de modo que el contenido empieza a 60 px del borde. El sidebar es un
   panel flotante de 240 px con 8 px de margen (columna de 256 px; plegado, 50 px de panel y 64 de columna), con la marca

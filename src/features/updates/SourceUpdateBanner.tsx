@@ -8,17 +8,23 @@ import { useUpdateActions } from "./useUpdateActions";
 
 /**
  * Aviso de la actualización oficial de la aplicación original (disponible o incierta). En macOS, con una versión
- * disponible, la acción principal es «Descargar e instalar» (sin diálogo de confirmación) y «Abrir {app}» pasa a ser la
+ * disponible, la acción principal es «Instalar» (sin diálogo de confirmación) y «Abrir {app}» pasa a ser la
  * secundaria, con el handoff de siempre; en el resto, una sola acción como antes (HU-0017, A-10).
  */
 export function SourceUpdateBanner({ onUpdate }: { onUpdate: () => void }) {
   const { dashboard: state, loading, busy } = useDashboard();
   const { installOriginal } = useUpdateActions();
   const appName = selectOriginalAppName(state.system);
-  const officialUpdate = sourceUpdatePresentation(state.system.sourceUpdate, state.system.versionTopology, appName);
+  const install = originalInstallAvailability(state.system, busy);
+  const officialUpdate = sourceUpdatePresentation(
+    state.system.sourceUpdate,
+    state.system.versionTopology,
+    appName,
+    state.system.sourceVersion,
+    install.visible,
+  );
   if (loading || !state.system.sourcePath || !officialUpdate) return null;
-  const install = officialUpdate.kind === "available" ? originalInstallAvailability(state.system, busy) : null;
-  const canInstall = install?.visible === true;
+  const canInstall = officialUpdate.kind === "available" && install.visible;
   return (
     <NoticeAlert
       role="status"
@@ -38,7 +44,7 @@ export function SourceUpdateBanner({ onUpdate }: { onUpdate: () => void }) {
               Abrir {appName}
             </Button>
             <Button size="sm" onClick={() => void installOriginal()} disabled={install.disabled}>
-              <DownloadIcon /> Descargar e instalar
+              <DownloadIcon /> Instalar
             </Button>
           </>
         ) : (
@@ -48,10 +54,8 @@ export function SourceUpdateBanner({ onUpdate }: { onUpdate: () => void }) {
         )
       }
     >
-      {canInstall
-        ? `Instalada ${state.system.sourceVersion ?? "—"} · disponible ${state.system.sourceUpdate.latestVersion}.${
-            install.disabledReason ? ` ${install.disabledReason}` : ""
-          }`
+      {canInstall && install.disabledReason
+        ? `${officialUpdate.detail} ${install.disabledReason}`
         : officialUpdate.detail}
     </NoticeAlert>
   );

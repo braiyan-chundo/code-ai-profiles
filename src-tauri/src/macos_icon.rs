@@ -34,12 +34,16 @@ pub(crate) enum BundleShape {
     Iconized,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum ManagedBundleState {
     /// Passed `--strict`. `code_hash_matches` is false when no CDHash is registered or it changed (D-3).
     Clean { code_hash_matches: bool },
     /// Passed the six steps of A-2 with the Finder icon in place.
     Iconized,
+    /// Passed A-2 with the Finder icon in place, but the CDHash is not the registered one: the provider's own
+    /// updater replaced `Contents/` inside the copy with a strictly newer, still correctly signed version. Whoever
+    /// launches the copy re-registers it (`refresh_provenance_after_self_update`); nothing is written here.
+    IconizedSelfUpdated { version: String },
 }
 
 /// Why a managed copy failed. Internal only (tests and logs); the person sees `bundle_changed_message`.
@@ -313,10 +317,19 @@ fn check_iconized(
     if !codesign_satisfies(candidate, &requirement, "--strict=symlinks")? {
         return Err(BundleCheckFailure::DesignatedRequirement);
     }
-    // 4. The exact registered binary, bundle id and Team ID.
-    if macos_code_hash(candidate).as_deref() != Some(expected_code_hash) {
-        return Err(BundleCheckFailure::CodeHash);
-    }
+    // 4. The exact registered binary, bundle id and Team ID. The one exception is the provider updating itself
+    // inside the copy (ShipIt swaps `Contents/` and leaves the Finder icon behind): the seal and the original's
+    // requirement already passed in 3, so only a strictly newer version may have another CDHash. The same
+    // version with another CDHash, or an older one, is a substitution or a downgrade.
+    let self_updated_version = if macos_code_hash(candidate).as_deref() == Some(expected_code_hash)
+    {
+        None
+    } else {
+        Some(newer_release_version(
+            candidate,
+            &provenance.provider_version,
+        )?)
+    };
     let candidate_bundle = macos_bundle_value(candidate, "CFBundleIdentifier");
     let original_bundle = macos_bundle_value(original, "CFBundleIdentifier");
     if candidate_bundle.is_none()
@@ -331,7 +344,52 @@ fn check_iconized(
     {
         return Err(BundleCheckFailure::TeamIdentity);
     }
-    Ok(ManagedBundleState::Iconized)
+    Ok(match self_updated_version {
+        Some(version) => ManagedBundleState::IconizedSelfUpdated { version },
+        None => ManagedBundleState::Iconized,
+    })
+}
+
+/// The candidate's version when it is a plain dotted number strictly greater than `registered`; the CDHash gate
+/// fails otherwise (also when the candidate exposes no CDHash).
+fn newer_release_version(candidate: &Path, registered: &str) -> Result<String, BundleCheckFailure> {
+    let plain_numeric = |version: &str| {
+        !version.is_empty()
+            && version
+                .split('.')
+                .all(|part| !part.is_empty() && part.bytes().all(|byte| byte.is_ascii_digit()))
+    };
+    let version = source_version(candidate)
+        .filter(|version| valid_release_version(version) && plain_numeric(version))
+        .ok_or(BundleCheckFailure::CodeHash)?;
+    if macos_code_hash(candidate).is_none()
+        || !plain_numeric(registered)
+        || !version_is_newer(&version, Some(registered))
+    {
+        return Err(BundleCheckFailure::CodeHash);
+    }
+    Ok(version)
+}
+
+/// The provenance of an iconized copy that updated itself (`IconizedSelfUpdated`): same identity, the new
+/// version, CDHash and fingerprints. The icon stays as it is. Only call it right after `check_iconized` accepted
+/// that exact bundle.
+pub(crate) fn refresh_provenance_after_self_update(
+    bundle: &Path,
+    original: &Path,
+    previous: &ProviderProvenance,
+    version: &str,
+) -> Result<ProviderProvenance, BundleCheckFailure> {
+    Ok(ProviderProvenance {
+        provider_version: version.to_string(),
+        provider_source_fingerprint: fingerprint_label(original)
+            .map_err(|_| BundleCheckFailure::Unreadable)?,
+        managed_fingerprint: fingerprint_label(bundle)
+            .map_err(|_| BundleCheckFailure::Unreadable)?,
+        managed_code_hash: Some(macos_code_hash(bundle).ok_or(BundleCheckFailure::CodeHash)?),
+        provider_signature_preserved: true,
+        ..previous.clone()
+    })
 }
 
 fn check_clean(
@@ -933,10 +991,18 @@ pub(crate) fn provenance_for_icon(
         )
         .map_err(changed),
         BundleShape::Iconized => {
-            check_iconized(bundle, original, provenance).map_err(changed)?;
-            provenance
+            let state = check_iconized(bundle, original, provenance).map_err(changed)?;
+            let registered = provenance
                 .cloned()
-                .ok_or_else(|| bundle_changed_message(name))
+                .ok_or_else(|| bundle_changed_message(name))?;
+            match state {
+                // The provider updated itself inside the copy: the icon is applied over the new registration.
+                ManagedBundleState::IconizedSelfUpdated { version } => {
+                    refresh_provenance_after_self_update(bundle, original, &registered, &version)
+                        .map_err(changed)
+                }
+                _ => Ok(registered),
+            }
         }
     }
 }
@@ -955,12 +1021,14 @@ pub(crate) fn apply_icon_to_registered(
 ) -> Result<IconOutcome, String> {
     match set_workspace_icon(instances_root, bundle, Some(icon_path)) {
         Ok(()) => match check_managed_bundle(bundle, original, Some(&registered)) {
-            Ok(ManagedBundleState::Iconized) => Ok(IconOutcome {
-                provenance: registered,
-                system_applied: true,
-                system_issue: None,
-                system_message: applied_message.to_string(),
-            }),
+            Ok(ManagedBundleState::Iconized | ManagedBundleState::IconizedSelfUpdated { .. }) => {
+                Ok(IconOutcome {
+                    provenance: registered,
+                    system_applied: true,
+                    system_issue: None,
+                    system_message: applied_message.to_string(),
+                })
+            }
             Ok(ManagedBundleState::Clean { .. }) => Ok(IconOutcome {
                 provenance: registered,
                 system_applied: false,
@@ -1302,7 +1370,19 @@ pub(crate) fn launch_preflight(
     };
     let previous = signed_provenance(instance.provider_provenance.as_ref()).cloned();
     if shape == BundleShape::Iconized && previous.is_some() {
-        verify_managed_bundle(&bundle, original, previous.as_ref(), &name)?;
+        let state = verify_managed_bundle(&bundle, original, previous.as_ref(), &name)?;
+        // The provider updated itself inside the copy (strictly newer version, same signer): register what it is
+        // now so the next check and the sync topology follow it. The Finder icon is still in place.
+        if let (ManagedBundleState::IconizedSelfUpdated { version }, Some(previous)) =
+            (state, previous.as_ref())
+        {
+            let refreshed =
+                refresh_provenance_after_self_update(&bundle, original, previous, &version)
+                    .map_err(|_| bundle_changed_message(&name))?;
+            instance.provider_provenance = Some(refreshed);
+            invalidate_application_cache();
+            return Ok(true);
+        }
         return Ok(false);
     }
     let had_leftovers = shape == BundleShape::Iconized;
@@ -1773,6 +1853,206 @@ pub(crate) mod tests {
                 Err(expected)
             );
         }
+    }
+
+    /// What ShipIt does: a build signed by the same signer replaces `Contents/` inside the iconized copy and the
+    /// Finder icon at the root stays behind. `version` goes into the new Info.plist; `payload` makes another
+    /// CDHash even when the version does not change.
+    fn replace_contents_with_signed_build(
+        fixture: &IconFixture,
+        bundle: &Path,
+        version: &str,
+        payload: &[u8],
+    ) {
+        let build = fixture.another_copy();
+        set_version(&build, version);
+        fs::write(build.join("Contents/Resources/payload"), payload).unwrap();
+        fixture.resign(&build);
+        fs::remove_dir_all(bundle.join("Contents")).unwrap();
+        fs::rename(build.join("Contents"), bundle.join("Contents")).unwrap();
+    }
+
+    #[test]
+    fn a_provider_self_update_inside_an_iconized_copy_is_accepted_only_when_the_version_is_newer() {
+        let fixture = IconFixture::new("self-update", Some(EXPLICIT_REQUIREMENT));
+        let provenance = provenance_for(&fixture, &fixture.managed);
+        assert_eq!(provenance.provider_version, "1.0.0");
+        for (label, version, payload, expected) in [
+            (
+                "newer",
+                "2.0.0",
+                &b"newer"[..],
+                Ok(ManagedBundleState::IconizedSelfUpdated {
+                    version: "2.0.0".to_string(),
+                }),
+            ),
+            (
+                "same version, other CDHash",
+                "1.0.0",
+                &b"same"[..],
+                Err(BundleCheckFailure::CodeHash),
+            ),
+            (
+                "older",
+                "0.9.0",
+                &b"older"[..],
+                Err(BundleCheckFailure::CodeHash),
+            ),
+            (
+                "non numeric version",
+                "9.0.0-evil",
+                &b"evil"[..],
+                Err(BundleCheckFailure::CodeHash),
+            ),
+        ] {
+            let copy = fixture.another_copy();
+            put_icon(&fixture, &copy);
+            replace_contents_with_signed_build(&fixture, &copy, version, payload);
+            assert_eq!(
+                bundle_shape(&copy).unwrap(),
+                BundleShape::Iconized,
+                "{label}"
+            );
+            assert_eq!(
+                check(&fixture, &copy, Some(&provenance)),
+                expected,
+                "{label}"
+            );
+        }
+        // A newer build whose seal was broken after the update is still refused.
+        let tampered = fixture.another_copy();
+        put_icon(&fixture, &tampered);
+        replace_contents_with_signed_build(&fixture, &tampered, "2.0.0", b"newer");
+        fs::write(tampered.join("Contents/Resources/extra"), b"x").unwrap();
+        assert_eq!(
+            check(&fixture, &tampered, Some(&provenance)),
+            Err(BundleCheckFailure::DesignatedRequirement)
+        );
+    }
+
+    #[test]
+    fn launch_preflight_registers_a_self_updated_iconized_copy_and_opens_it() {
+        let fixture = IconFixture::new("preflight-self-update", Some(EXPLICIT_REQUIREMENT));
+        let mut registry = registry_for(&fixture);
+        set_instance_icon(
+            &fixture.paths,
+            &mut registry,
+            0,
+            &fixture.original,
+            &icon_png(&fixture),
+        )
+        .unwrap();
+        let mut instance = registry.instances[0].clone();
+        let before = instance.provider_provenance.clone().unwrap();
+        let icon_before = instance.custom_icon.clone();
+
+        // Same version with another CDHash and an older one are refused and register nothing.
+        for (version, payload) in [("1.0.0", &b"same"[..]), ("0.9.0", &b"older"[..])] {
+            let copy = fixture.another_copy();
+            put_icon(&fixture, &copy);
+            let mut refused = instance.clone();
+            refused.app_path = copy.to_string_lossy().to_string();
+            refused.id = copy
+                .parent()
+                .and_then(Path::parent)
+                .and_then(Path::file_name)
+                .unwrap()
+                .to_string_lossy()
+                .to_string();
+            refused.provider_provenance = Some(before.clone());
+            replace_contents_with_signed_build(&fixture, &copy, version, payload);
+            assert_eq!(
+                launch_preflight(&fixture.paths, &mut refused, Some(&fixture.original)),
+                Err(bundle_changed_message("Trabajo")),
+                "{version}"
+            );
+            assert_eq!(refused.provider_provenance, Some(before.clone()));
+        }
+
+        replace_contents_with_signed_build(&fixture, &fixture.managed, "2.0.0", b"newer");
+        assert_eq!(
+            launch_preflight(&fixture.paths, &mut instance, Some(&fixture.original)),
+            Ok(true),
+            "the registry is saved"
+        );
+        let refreshed = instance.provider_provenance.clone().unwrap();
+        assert_eq!(refreshed.provider_version, "2.0.0");
+        assert_eq!(
+            refreshed.managed_code_hash,
+            macos_code_hash(&fixture.managed)
+        );
+        assert_ne!(refreshed.managed_code_hash, before.managed_code_hash);
+        assert_eq!(refreshed.bundle_identifier, before.bundle_identifier);
+        assert_eq!(
+            refreshed.provider_team_identifier,
+            before.provider_team_identifier
+        );
+        assert!(refreshed.provider_signature_preserved);
+        assert_eq!(refreshed.original_icon_file, before.original_icon_file);
+        assert_eq!(
+            instance.custom_icon, icon_before,
+            "the icon is not reapplied"
+        );
+        assert_eq!(
+            bundle_shape(&fixture.managed).unwrap(),
+            BundleShape::Iconized
+        );
+        // Registered now: the next check is the plain one, and the copy is a donor at its new version.
+        assert_eq!(
+            check(&fixture, &fixture.managed, Some(&refreshed)),
+            Ok(ManagedBundleState::Iconized)
+        );
+        assert_eq!(
+            launch_preflight(&fixture.paths, &mut instance, Some(&fixture.original)),
+            Ok(false)
+        );
+        assert_eq!(
+            validate_managed_application_source(&fixture.paths, &instance, &fixture.original),
+            Ok("2.0.0".to_string())
+        );
+    }
+
+    #[test]
+    fn a_self_updated_iconized_copy_is_a_donor_before_it_is_registered() {
+        let fixture = IconFixture::new("donor-self-update", Some(EXPLICIT_REQUIREMENT));
+        let mut registry = registry_for(&fixture);
+        set_instance_icon(
+            &fixture.paths,
+            &mut registry,
+            0,
+            &fixture.original,
+            &icon_png(&fixture),
+        )
+        .unwrap();
+        replace_contents_with_signed_build(&fixture, &fixture.managed, "2.0.0", b"newer");
+        let instance = &registry.instances[0];
+        assert_eq!(
+            validate_managed_application_source(&fixture.paths, instance, &fixture.original),
+            Ok("2.0.0".to_string()),
+            "reading the topology writes nothing"
+        );
+        assert_eq!(
+            instance
+                .provider_provenance
+                .as_ref()
+                .unwrap()
+                .provider_version,
+            "1.0.0"
+        );
+        // The staging copy of a sync from this donor drops the Finder icon and passes `--strict`.
+        let staging = fixture
+            .paths
+            .instances
+            .join(Uuid::new_v4().to_string())
+            .join("application/Staging.app");
+        clone_directory(&fixture.managed, &staging).unwrap();
+        strip_inherited_icon(&staging).unwrap();
+        assert_eq!(bundle_shape(&staging).unwrap(), BundleShape::Clean);
+        assert!(strict_passes(&staging));
+        assert_eq!(
+            check_clean_against_original(&staging, &fixture.original),
+            Ok(())
+        );
     }
 
     #[test]

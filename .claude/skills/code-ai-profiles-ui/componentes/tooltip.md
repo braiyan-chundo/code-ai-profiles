@@ -65,7 +65,7 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 ## Diferencias con el registro
 
-Ninguna: es el código del registro `radix-vega` (2026-10-28) tal como se descargó.
+Ajuste HU-0022 (A-1.1 y A-1.3): `gap-2 px-3 py-2` (antes `gap-1.5 py-1.5`), `rounded-sm` (8) y la flecha `rounded-xs`.
 
 ## Qué no hacer
 

@@ -8,7 +8,7 @@ Elige una opción entre varias.
 
 **Sí**
 - Elegir una opción entre pocas, todas visibles.
-- En la app (HU-0016): tema y tamaño del texto en `AppearanceDialog`; modo y destino en `SessionTransferDialog`, como tarjetas de opción (`FieldLabel` > `Field` > `RadioGroupItem`).
+- En la app (HU-0016): tema y tamaño del texto en `AppearanceSettings` (Configuración › Apariencia); modo y destino en `SessionTransferDialog`, como tarjetas de opción (`FieldLabel` > `Field` > `RadioGroupItem`).
 
 **No**
 - Más de cinco opciones: `Select`. Opciones cortas y compactas: `ToggleGroup`.
@@ -64,7 +64,7 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 ## Diferencias con el registro
 
-Ninguna: es el código del registro `radix-vega` (2026-10-28) tal como se descargó.
+Ajuste HU-0022 (A-1.4 y auditoría UX): el círculo sin elegir usa `border-muted-foreground` (6,35:1 en oscuro y 5,17:1 en claro; con `--input` daba 1,56:1 y 1,37:1) y el foco, `ring-2 ring-ring`.
 
 ## Qué no hacer
 

@@ -1,5 +1,6 @@
 import { bridge } from "../../lib/bridge";
 import { friendlyError } from "../../lib/errors";
+import { mergeSourceUpdateForInstallation, sourceInstallationIdentity } from "../../lib/source-update-controller";
 import type { ManagedInstance, VersionSource } from "../../types";
 import { originalAppName, useDashboard } from "../dashboard";
 import { originalInstallAvailability, summarizeOriginalInstall } from "./original-install";
@@ -17,6 +18,7 @@ export function useUpdateActions() {
     setBusy,
     clearFeedback,
     replaceDashboard,
+    updateDashboard,
     setNotice,
     setError,
     setOriginalInstall,
@@ -83,6 +85,14 @@ export function useUpdateActions() {
       if (summary.error) setError(summary.error);
     } catch (reason) {
       setError(friendlyError(reason));
+      // Si salió otra versión entre la detección y el clic, el aviso se corrige sin esperar al sondeo (A-5).
+      const expected = sourceInstallationIdentity(system);
+      try {
+        const sourceUpdate = await bridge.checkSourceUpdate();
+        updateDashboard((current) => mergeSourceUpdateForInstallation(current, expected, sourceUpdate));
+      } catch {
+        // La comprobación es un extra: el error de la instalación ya está a la vista.
+      }
     } finally {
       live = false;
       finishOriginalInstall();

@@ -68,7 +68,7 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 ## Diferencias con el registro
 
-Ninguna: es el código del registro `radix-vega` (2026-10-28) tal como se descargó.
+Ajuste HU-0022 (A-1.2): `CardTitle` pierde `leading-normal`; el interlineado lo da `text-base` por el puente `--text-base--line-height`.
 
 ## Qué no hacer
 

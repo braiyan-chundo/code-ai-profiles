@@ -32,8 +32,8 @@ export function Titlebar() {
       {platform === "windows" && (
         <div className="absolute top-0 right-2.5 z-20 flex" aria-label="Controles de ventana">
           <WindowButton label="Minimizar" onClick={() => void windowAction("minimize")}><MinusIcon /></WindowButton>
-          <WindowButton label="Maximizar" onClick={() => void windowAction("maximize")}><SquareIcon className="size-3.5!" /></WindowButton>
-          <WindowButton label="Cerrar" close onClick={() => void windowAction("close")}><XIcon className="size-[18px]!" /></WindowButton>
+          <WindowButton label="Maximizar" onClick={() => void windowAction("maximize")}><SquareIcon /></WindowButton>
+          <WindowButton label="Cerrar" close onClick={() => void windowAction("close")}><XIcon /></WindowButton>
         </div>
       )}
     </>
@@ -57,7 +57,7 @@ function WindowButton({
       aria-label={label}
       onClick={onClick}
       className={cn(
-        "grid h-9 w-[46px] place-items-center rounded-b-[7px] text-muted-foreground transition-colors [&_svg]:size-4 [&_svg]:stroke-[1.5]",
+        "grid h-9 w-12 place-items-center rounded-b-sm text-muted-foreground transition-colors [&_svg]:size-4 [&_svg]:stroke-[1.5]",
         "hover:bg-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring",
         close && "hover:bg-(--ui-window-close) hover:text-primary-foreground",
       )}

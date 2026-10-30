@@ -1,7 +1,7 @@
 ---
 id: HU-0013
 titulo: "Describir lo construido: reglas, arquitectura y componentes"
-estado: en-espera
+estado: descartada
 fase: requisitos
 area: metodo
 entrega: 1

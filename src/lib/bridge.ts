@@ -1,6 +1,7 @@
 import { Channel, invoke } from "@tauri-apps/api/core";
 import packageMetadata from "../../package.json";
 import type {
+  AccountFacts,
   CodeSession,
   ManagedInstance,
   CopyCodeSessionRequest,
@@ -11,11 +12,21 @@ import type {
   OriginalApplicationUpdateResult,
   OriginalInstallProgress,
   OriginalInstallResult,
+  ProjectCandidate,
+  ProjectCounts,
+  ProjectHistory,
+  ProjectHistoryState,
+  ProjectInfo,
+  ProjectRoleUsage,
+  ProjectsState,
+  ProjectSummary,
   SynchronizationItemResult,
   SessionTransferResult,
   SourceUpdateInfo,
   SynchronizeManagedApplicationsRequest,
   SynchronizeManagedApplicationsResult,
+  SystemSettingsPanel,
+  TokenBreakdown,
   UnlinkCodeSessionRequest,
   UpdateInstanceRequest,
   UsageSnapshot,
@@ -119,7 +130,8 @@ const mockState = (): DashboardState => ({
       latestVersion: mockAvailableVersion,
       checkedAt: Date.now(),
       stale: false,
-      source: "officialFeed",
+      source: "officialRelease",
+      warning: null,
     },
     versionTopology: mockTopology(),
     originalProfilePath: "~/Library/Application Support/Claude",
@@ -155,6 +167,289 @@ function updateMockProfileSessions(
     instance.id === id ? { ...instance, codeSessions: update(instance.codeSessions) } : instance,
   );
 }
+
+// ── Proyectos anclados (HU-0023): mocks para el modo navegador ───────────────
+// Code AI Profiles usa las cifras reales de este repo (vista.md); Vetcare y Panel Finanzas son inventados.
+
+type MockTokenTuple = [input: number, output: number, cacheWrite: number, cacheRead: number, total: number];
+
+const mockTokens = ([input, output, cacheWrite, cacheRead, total]: MockTokenTuple): TokenBreakdown => ({
+  input, output, cacheWrite, cacheRead, total,
+});
+
+const emptyMockTokens = (): TokenBreakdown => ({ input: 0, output: 0, cacheWrite: 0, cacheRead: 0, total: 0 });
+
+function mockHistory(
+  folder: string,
+  title: string,
+  state: ProjectHistoryState,
+  phase: string,
+  area: string | null,
+  priority: string | null,
+  created: string,
+  minutes: number | null,
+  tokens: MockTokenTuple | null,
+): ProjectHistory {
+  return {
+    id: folder.slice(0, 7),
+    folder,
+    title,
+    state,
+    phase,
+    area,
+    priority,
+    created,
+    minutes,
+    tokens: tokens ? mockTokens(tokens) : null,
+    countsInTotals: state === "done" && tokens !== null,
+  };
+}
+
+function mockProjectInfo(base: Omit<ProjectInfo, "counts" | "totals">, byRole: ProjectRoleUsage[]): ProjectInfo {
+  const counts: ProjectCounts = { total: 0, waiting: 0, inProgress: 0, done: 0, discarded: 0, unknown: 0 };
+  const tokens = emptyMockTokens();
+  let minutes = 0;
+  let histories = 0;
+  for (const history of base.histories) {
+    counts.total += 1;
+    counts[history.state] += 1;
+    if (!history.countsInTotals || !history.tokens) continue;
+    histories += 1;
+    minutes += history.minutes ?? 0;
+    tokens.input += history.tokens.input;
+    tokens.output += history.tokens.output;
+    tokens.cacheWrite += history.tokens.cacheWrite;
+    tokens.cacheRead += history.tokens.cacheRead;
+    tokens.total += history.tokens.total;
+  }
+  return { ...base, counts, totals: { histories, minutes, tokens, byRole } };
+}
+
+const mockCodeAiProfilesInfo = (): ProjectInfo => mockProjectInfo(
+  {
+    name: "Code AI Profiles",
+    slug: "code-ai-profiles",
+    summary: "Aplicación de escritorio open source (Apache-2.0) hecha con Tauri 2, React 19 + Vite y Rust para administrar perfiles aislados de una aplicación de IA compatible instalada en el equipo.",
+    profile: "S",
+    phase: "desarrollo",
+    approver: "Braiyan Rodriguez (mantenedor)",
+    packageManager: "pnpm",
+    packs: ["frontend-react-vite"],
+    repos: [
+      {
+        name: "code-ai-profiles",
+        path: ".",
+        kind: "otro",
+        status: "ok",
+        manifests: ["package.json", "src-tauri/Cargo.toml"],
+        git: { status: "ok", branch: "hu-0022-configuracion-unificada", detached: false, shortSha: "6421f84", movedAt: "2026-10-29T00:27:00-05:00" },
+      },
+    ],
+    technologies: [
+      { name: "pnpm", version: "12", source: "packageManager", repo: null },
+      { name: "frontend-react-vite", version: null, source: "pack", repo: null },
+      { name: "React", version: "19", source: "manifest", repo: "code-ai-profiles" },
+      { name: "Vite", version: "6", source: "manifest", repo: "code-ai-profiles" },
+      { name: "Tailwind CSS", version: "4", source: "manifest", repo: "code-ai-profiles" },
+      { name: "React Router", version: "7", source: "manifest", repo: "code-ai-profiles" },
+      { name: "TypeScript", version: "5", source: "manifest", repo: "code-ai-profiles" },
+      { name: "Tauri", version: "2", source: "manifest", repo: "code-ai-profiles" },
+      { name: "Rust", version: null, source: "manifest", repo: "code-ai-profiles" },
+    ],
+    histories: [
+      mockHistory("HU-0010-publicar-el-fix-de-actualizacion-como-ve", "Publicar el fix de actualización como versión 0.2.2", "done", "cierre", "versionado", "media", "2026-10-27", 1864, [1568, 481471, 1720987, 171555142, 173759168]),
+      mockHistory("HU-0011-adopcion-v4", "Adopción v4", "done", "cierre", "metodo", "media", "2026-10-27", 194, [276, 118746, 461985, 17920179, 18501186]),
+      mockHistory("HU-0012-icono-distintivo-en-el-dock-de-macos", "Icono distintivo en el Dock de macOS", "discarded", "requisitos", "instancias", "baja", "2026-10-27", 1793, [1328, 412484, 1535388, 157104813, 159054013]),
+      mockHistory("HU-0013-describir-lo-construido-reglas-arquitect", "Describir lo construido: reglas, arquitectura y componentes", "discarded", "requisitos", "metodo", "media", "2026-10-27", 1677, [1396, 416386, 1403589, 159810869, 161632240]),
+      mockHistory("HU-0014-design-system-con-shadcn-y-showcase-loca", "Design system con shadcn y showcase local", "done", "cierre", "interfaz", "media", "2026-10-28", 560, [956, 514654, 1434375, 67629867, 69579852]),
+      mockHistory("HU-0015-frontend-escalable-componentes-features-", "Frontend escalable: componentes, features y router", "done", "cierre", "interfaz", "media", "2026-10-28", 408, [560, 347230, 1012763, 46621354, 47981907]),
+      mockHistory("HU-0016-rediseno-con-sidebar-dashboard-y-pagina-", "Rediseño con sidebar, dashboard y página por instancia", "done", "cierre", "interfaz", "media", "2026-10-28", 132, [908, 514089, 1799690, 93268893, 95583580]),
+      mockHistory("HU-0017-descargar-e-instalar-la-original-en-maco", "Descargar e instalar la original en macOS", "inProgress", "verificacion", "actualizaciones", "media", "2026-10-28", null, null),
+      mockHistory("HU-0018-descargar-e-instalar-la-original-en-wind", "Descargar e instalar la original en Windows y Linux", "waiting", "requisitos", "actualizaciones", "media", "2026-10-28", null, null),
+      mockHistory("HU-0019-header-compacto-sidebar-flotante-y-tipog", "Header compacto, sidebar flotante y tipografía legible", "done", "cierre", "interfaz", "media", "2026-10-28", 86, [654, 353191, 1576487, 73149403, 75079735]),
+      mockHistory("HU-0020-icono-personalizado-de-la-instancia-en-e", "Icono personalizado de la instancia en el Dock de macOS", "done", "cierre", "instancias", "media", "2026-10-28", 139, [712, 408850, 1785334, 88824103, 91018999]),
+      mockHistory("HU-0021-spike-relevo-del-retorno-de-inicio-de-se", "Spike: relevo del retorno de inicio de sesión a la instancia correcta", "inProgress", "requisitos", "instancias", "media", "2026-10-28", null, null),
+      mockHistory("HU-0022-configuracion-unificada-con-apariencia-y", "Configuración unificada con apariencia y permisos", "inProgress", "implementacion", "interfaz", "alta", "2026-10-29", null, null),
+      mockHistory("HU-0023-proyectos-resumen-de-proyectos-con-metod", "Proyectos: resumen de proyectos con metodología v4", "inProgress", "implementacion", "proyectos", "alta", "2026-10-29", null, null),
+    ],
+    firstCreated: "2026-10-27",
+    lastActivity: "2026-10-29T00:27",
+    spanDays: 3,
+  },
+  [
+    { role: "orquestador", tokens: mockTokens([2822, 903599, 2863616, 323185777, 326955814]), approximate: true },
+    { role: "frontend", tokens: mockTokens([1520, 855223, 2875146, 139766010, 143497899]), approximate: false },
+    { role: "architect", tokens: mockTokens([946, 683915, 2716693, 62165209, 65566763]), approximate: false },
+    { role: "backend", tokens: mockTokens([226, 196871, 927020, 24428286, 25552403]), approximate: false },
+    { role: "general-purpose", tokens: mockTokens([120, 98623, 409146, 9423659, 9931548]), approximate: false },
+  ],
+);
+
+const mockVetcareInfo = (): ProjectInfo => mockProjectInfo(
+  {
+    name: "Vetcare",
+    slug: "vetcare",
+    summary: "Gestión de citas, historias clínicas y facturación para clínicas veterinarias, con portal para clientes y app móvil.",
+    profile: "M",
+    phase: "desarrollo",
+    approver: "Laura Méndez (producto)",
+    packageManager: "pnpm",
+    packs: ["frontend-react-vite", "backend-nestjs", "mobile-expo"],
+    repos: [
+      { name: "vetcare-web", path: "apps/web", kind: "web", status: "ok", manifests: ["package.json"], git: { status: "ok", branch: "develop", detached: false, shortSha: "a91c3e2", movedAt: "2026-10-28T18:42:10-05:00" } },
+      { name: "vetcare-api", path: "apps/api", kind: "api", status: "ok", manifests: ["package.json"], git: { status: "ok", branch: "develop", detached: false, shortSha: "4be07d1", movedAt: "2026-10-28T16:05:33-05:00" } },
+      { name: "vetcare-movil", path: "apps/movil", kind: "movil", status: "ok", manifests: ["package.json"], git: { status: "none", branch: null, detached: false, shortSha: null, movedAt: null } },
+    ],
+    technologies: [
+      { name: "pnpm", version: "9", source: "packageManager", repo: null },
+      { name: "frontend-react-vite", version: null, source: "pack", repo: null },
+      { name: "backend-nestjs", version: null, source: "pack", repo: null },
+      { name: "mobile-expo", version: null, source: "pack", repo: null },
+      { name: "React", version: "19", source: "manifest", repo: "vetcare-web" },
+      { name: "Vite", version: "6", source: "manifest", repo: "vetcare-web" },
+      { name: "NestJS", version: "11", source: "manifest", repo: "vetcare-api" },
+      { name: "Prisma", version: "6", source: "manifest", repo: "vetcare-api" },
+      { name: "Expo", version: "52", source: "manifest", repo: "vetcare-movil" },
+      { name: "React Native", version: null, source: "manifest", repo: "vetcare-movil" },
+    ],
+    histories: [
+      mockHistory("HU-0001-registro-de-clinicas", "Registro de clínicas y sedes", "done", "cierre", "cuentas", "alta", "2026-09-02", 2210, [3120, 612400, 2104300, 96200400, 98920220]),
+      mockHistory("HU-0002-agenda-de-citas", "Agenda de citas por veterinario", "done", "cierre", "citas", "alta", "2026-09-05", 3045, [4410, 801220, 2950110, 131880400, 135636140]),
+      mockHistory("HU-0003-historia-clinica", "Historia clínica de la mascota", "inProgress", "implementacion", "clinica", "alta", "2026-09-20", null, null),
+      mockHistory("HU-0004-recordatorios-por-correo", "Recordatorios de vacunas por correo", "waiting", "requisitos", "notificaciones", "media", "2026-10-01", null, null),
+      mockHistory("HU-0005-facturacion-electronica", "Facturación electrónica", "waiting", "requisitos", "facturacion", "media", "2026-10-03", null, null),
+      mockHistory("HU-0006-portal-de-clientes", "Portal de clientes", "discarded", "arquitectura", "portal", "baja", "2026-10-06", 410, [520, 98200, 310400, 14200800, 14609920]),
+    ],
+    firstCreated: "2026-09-02",
+    lastActivity: "2026-10-28T18:40",
+    spanDays: 57,
+  },
+  [
+    { role: "orquestador", tokens: mockTokens([4200, 812000, 2900000, 128000000, 131716200]), approximate: true },
+    { role: "backend", tokens: mockTokens([2100, 401620, 1414410, 64080800, 65898930]), approximate: false },
+    { role: "frontend", tokens: mockTokens([1230, 200000, 740000, 36000000, 36941230]), approximate: false },
+  ],
+);
+
+const mockProjectsAt = () => new Date().toISOString();
+
+let mockProjects: ProjectSummary[] = [
+  {
+    id: "5b7f2c1e-8a4d-4c3b-9f6e-1d2a3b4c5d6e",
+    path: "/Users/demo/Proyectos/code-ai-profiles",
+    displayPath: "~/Proyectos/code-ai-profiles",
+    lastName: "Code AI Profiles",
+    pinnedAt: "2026-10-29T05:10:00Z",
+    lastReadAt: now,
+    readAt: now,
+    status: "v4",
+    message: null,
+    protectedLocation: null,
+    info: mockCodeAiProfilesInfo(),
+    warnings: [],
+  },
+  {
+    id: "0e9d8c7b-6a5f-4e3d-8c2b-1a0f9e8d7c6b",
+    path: "/Users/demo/Documents/clientes/vetcare",
+    displayPath: "~/Documents/clientes/vetcare",
+    lastName: "Vetcare",
+    pinnedAt: "2026-10-29T05:12:00Z",
+    lastReadAt: now,
+    readAt: now,
+    status: "v4",
+    message: null,
+    protectedLocation: "documents",
+    info: mockVetcareInfo(),
+    warnings: [
+      { scope: "repo", target: "vetcare-movil", message: "El repo no tiene carpeta .git: no se muestra rama ni commit." },
+    ],
+  },
+  {
+    id: "3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f",
+    path: "/Users/demo/Proyectos/panel-finanzas",
+    displayPath: "~/Proyectos/panel-finanzas",
+    lastName: "Panel Finanzas",
+    pinnedAt: "2026-10-01T15:00:00Z",
+    lastReadAt: "2026-10-17T14:20:00Z",
+    readAt: now,
+    status: "notFound",
+    message: "No se encontró la carpeta. Puede que se haya movido, renombrado o borrado. Desánclala o vuelve a anclarla desde su nueva ubicación.",
+    protectedLocation: null,
+    info: null,
+    warnings: [],
+  },
+];
+
+const mockCandidates: ProjectCandidate[] = [
+  {
+    path: "/Users/demo/Proyectos/lumen-tienda",
+    displayPath: "~/Proyectos/lumen-tienda",
+    status: "v4",
+    message: null,
+    configVersion: 4,
+    name: "Lumen Tienda",
+    profile: "S",
+    phase: "desarrollo",
+    historyCount: 9,
+    repoCount: 1,
+    alreadyPinnedId: null,
+  },
+  {
+    path: "/Users/demo/Proyectos/landing-2024",
+    displayPath: "~/Proyectos/landing-2024",
+    status: "notV4",
+    message: "La carpeta usa la metodología versión 3. Solo se pueden anclar proyectos con la versión 4.",
+    configVersion: 3,
+    name: "landing-2024",
+    profile: null,
+    phase: null,
+    historyCount: null,
+    repoCount: null,
+    alreadyPinnedId: null,
+  },
+];
+let mockPickCount = 0;
+
+const mockLumenInfo = (): ProjectInfo => mockProjectInfo(
+  {
+    name: "Lumen Tienda",
+    slug: "lumen-tienda",
+    summary: "Tienda en línea de lámparas de diseño con catálogo, carrito y pagos.",
+    profile: "S",
+    phase: "desarrollo",
+    approver: "Braiyan Rodriguez (mantenedor)",
+    packageManager: "pnpm",
+    packs: ["frontend-react-vite"],
+    repos: [
+      { name: "lumen-tienda", path: ".", kind: "web", status: "ok", manifests: ["package.json"], git: { status: "ok", branch: "main", detached: false, shortSha: "c0ffee1", movedAt: "2026-10-27T11:02:00-05:00" } },
+    ],
+    technologies: [
+      { name: "pnpm", version: "10", source: "packageManager", repo: null },
+      { name: "frontend-react-vite", version: null, source: "pack", repo: null },
+      { name: "React", version: "19", source: "manifest", repo: "lumen-tienda" },
+      { name: "Vite", version: "6", source: "manifest", repo: "lumen-tienda" },
+    ],
+    histories: [
+      mockHistory("HU-0001-catalogo", "Catálogo de productos", "done", "cierre", "catalogo", "alta", "2026-10-10", 540, [610, 120400, 480200, 22100300, 22701510]),
+      mockHistory("HU-0002-carrito", "Carrito de compra", "inProgress", "implementacion", "compra", "alta", "2026-10-20", null, null),
+    ],
+    firstCreated: "2026-10-10",
+    lastActivity: "2026-10-27T11:00",
+    spanDays: 18,
+  },
+  [{ role: "orquestador", tokens: mockTokens([610, 120400, 480200, 22100300, 22701510]), approximate: true }],
+);
+
+const findMockProject = (id: string): ProjectSummary => {
+  const project = mockProjects.find((item) => item.id === id);
+  if (!project) throw new Error("El proyecto ya no está anclado.");
+  return project;
+};
+
+const mockReadProject = (project: ProjectSummary): ProjectSummary => {
+  const readAt = mockProjectsAt();
+  return project.status === "v4" ? { ...project, readAt, lastReadAt: readAt } : { ...project, readAt };
+};
 
 async function call<T>(command: string, args?: Record<string, unknown>): Promise<T> {
   if (!isTauri()) throw new Error("Tauri bridge unavailable");
@@ -345,7 +640,8 @@ export const bridge = {
       latestVersion: mockAvailableVersion,
       checkedAt: Date.now(),
       stale: false,
-      source: "officialFeed",
+      source: "officialRelease",
+      warning: null,
     };
   },
 
@@ -501,5 +797,83 @@ export const bridge = {
 
   async openFolder(id: string): Promise<void> {
     if (isTauri()) await call("open_instance_folder", { id });
+  },
+
+  async openSystemSettings(panel: SystemSettingsPanel): Promise<void> {
+    if (isTauri()) await call("open_system_settings", { panel });
+  },
+
+  async accountFacts(): Promise<AccountFacts> {
+    if (isTauri()) return call("get_account_facts");
+    return { admin: true };
+  },
+
+  async listProjects(): Promise<ProjectsState> {
+    if (isTauri()) return call("list_projects");
+    await mockWait(160);
+    mockProjects = mockProjects.map(mockReadProject);
+    return { projects: mockProjects, readAt: mockProjectsAt() };
+  },
+
+  async readProject(id: string): Promise<ProjectSummary> {
+    if (isTauri()) return call("read_project", { id });
+    await mockWait(120);
+    const project = mockReadProject(findMockProject(id));
+    mockProjects = mockProjects.map((item) => (item.id === id ? project : item));
+    return project;
+  },
+
+  async pickProjectFolder(): Promise<ProjectCandidate | null> {
+    if (isTauri()) return call("pick_project_folder");
+    await mockWait(200);
+    const candidate = mockCandidates[mockPickCount % mockCandidates.length];
+    mockPickCount += 1;
+    const alreadyPinnedId = mockProjects.find((item) => item.path === candidate.path)?.id ?? null;
+    return { ...candidate, alreadyPinnedId };
+  },
+
+  async pinProject(path: string): Promise<ProjectSummary> {
+    if (isTauri()) return call("pin_project", { path });
+    await mockWait(160);
+    const existing = mockProjects.find((item) => item.path === path);
+    if (existing) return existing;
+    const candidate = mockCandidates.find((item) => item.path === path);
+    if (!candidate) throw new Error("No se encontró la carpeta. Elige otra carpeta.");
+    if (candidate.status !== "v4") throw new Error(candidate.message ?? "No es un proyecto v4. No se ancló nada.");
+    const readAt = mockProjectsAt();
+    const project: ProjectSummary = {
+      id: crypto.randomUUID(),
+      path: candidate.path,
+      displayPath: candidate.displayPath,
+      lastName: candidate.name,
+      pinnedAt: readAt,
+      lastReadAt: readAt,
+      readAt,
+      status: "v4",
+      message: null,
+      protectedLocation: null,
+      info: mockLumenInfo(),
+      warnings: [],
+    };
+    mockProjects = [...mockProjects, project];
+    return project;
+  },
+
+  async unpinProject(id: string): Promise<void> {
+    if (isTauri()) {
+      await call("unpin_project", { id });
+      return;
+    }
+    findMockProject(id);
+    mockProjects = mockProjects.filter((item) => item.id !== id);
+  },
+
+  async openProjectFolder(id: string): Promise<void> {
+    if (isTauri()) {
+      await call("open_project_folder", { id });
+      return;
+    }
+    const project = findMockProject(id);
+    if (project.status === "notFound") throw new Error("No se encontró la carpeta del proyecto.");
   },
 };

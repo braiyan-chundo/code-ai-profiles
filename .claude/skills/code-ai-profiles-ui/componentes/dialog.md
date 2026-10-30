@@ -8,7 +8,7 @@ Ventana modal para una tarea corta.
 
 **Sí**
 - Una tarea corta que bloquea el resto: renombrar, editar un campo.
-- En la app (HU-0016): `AppearanceDialog`, `InstanceEditor`, `SessionTransferDialog`, `ApplicationUpdateDialog` y `OriginalApplicationUpdateDialog`, montados por `DialogHost`.
+- En la app (HU-0016): `InstanceEditor`, `SessionTransferDialog`, `ApplicationUpdateDialog` y `OriginalApplicationUpdateDialog`, montados por `DialogHost`.
 
 **No**
 - Para confirmar una acción: `AlertDialog`.
@@ -104,6 +104,8 @@ Ajuste 3 (HU-0016, A-12): el aspecto del modal de la app. `DialogContent` pasa d
 `max-h-[calc(100%-2rem)] overflow-y-auto`, para que un diálogo largo quepa en 980×680. Prop nueva `closeDisabled`, que
 deshabilita la X. `DialogTitle` pasa de `leading-none font-medium` a `text-(length:--fs-dialog) leading-tight font-semibold
 tracking-[-0.035em]` (HU-0019: antes `text-[22px]`, ahora crece con el tamaño del texto: 20, 22 o 25 px) y `DialogDescription`, de `text-sm` a `text-xs` (los del antiguo `.modal-header`).
+
+Ajuste HU-0022 (A-1.1 y A-1.3): `DialogContent` pasa a `p-6` (24) y `sm:max-w-[576px]` (6 columnas de 68 px con 24 de separación más 2 × 24 de relleno); el radio `rounded-3xl` vale ahora 24 (antes 26). `DialogTitle` usa `text-(length:--fs-dialog)/(--lh-dialog)` en lugar de `leading-tight`.
 
 ## Qué no hacer
 

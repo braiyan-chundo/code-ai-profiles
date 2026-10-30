@@ -13,7 +13,7 @@ export function FeedbackArea() {
   return (
     <div
       aria-live="polite"
-      className="row-start-2 grid min-w-0 gap-2.5 px-8 max-[1070px]:px-6 not-empty:pt-2 not-empty:pb-1"
+      className="row-start-2 grid min-w-0 gap-3 px-8 max-[1070px]:px-6 not-empty:pt-2 not-empty:pb-1"
     >
       {scanProgress && <ScanProgressPanel {...scanProgress} onDismiss={() => dismissScan(scanProgress.generation)} />}
       <OriginalInstallPanel />

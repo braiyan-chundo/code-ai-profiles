@@ -18,3 +18,4 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-10-28 12:37 | orquestador | verificación preparada; suite una vez sobre el commit de verificación; entregada al mantenedor con pnpm tauri dev — pendiente su veredicto |
 | 2026-10-28 13:03 | orquestador | veredicto: «Aprobado, cierra» — Braiyan Rodriguez, 2026-10-28, tras recorrer la app con pnpm tauri dev en macOS |
 | 2026-10-28 13:03 | hu.mjs | estado en-proceso → terminada |
+| 2026-10-29 00:25 | orquestador | pendientes humanos descartados por el mantenedor, que prioriza otras historias: «necesito que ya no revisemos esas tareas… marcalas quizas como deprecadas o ignoradas» (2026-10-29). No se dan por comprobados; no se vuelven a listar |

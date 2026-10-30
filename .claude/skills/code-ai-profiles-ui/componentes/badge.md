@@ -56,8 +56,10 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 Ajuste 3: `text-primary` (sin `-foreground`) pasa a `text-primary-text`, el naranja legible en claro (#9c5947).
 
-Ajuste 4 (HU-0019, A-3): `h-5` → `h-(--ctl-badge)` (20 px por `--esc`). El texto usa `text-xs` (`--fs-small`) o, en la app,
+Ajuste 4 (HU-0019, A-3): `h-5` → `h-(--ctl-badge)` (24 px desde HU-0022). El texto usa `text-xs` (`--fs-small`) o, en la app,
 `text-(length:--fs-micro)`. Un chip con una altura fija propia (`h-4`) recortaría el texto: no se le pone.
+
+Ajuste HU-0022 (A-1.3): pasa de `rounded-4xl` a `rounded-sm` (8), alto `--ctl-badge` (ahora 24, 28 en Grande), `px-2` sin `py-0.5` y `leading-(--lh-small)`; el foco, a `ring-2 ring-ring`.
 
 ## Qué no hacer
 

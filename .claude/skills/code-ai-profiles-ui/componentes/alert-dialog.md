@@ -100,6 +100,8 @@ Ajuste 2 (HU-0016, A-12): el aspecto del modal de la app. `AlertDialogContent` p
 `rounded-3xl p-7`, y `AlertDialogTitle`, de `text-lg font-medium` a `text-(length:--fs-dialog) leading-tight font-semibold
 tracking-[-0.035em]`, como `DialogTitle` (HU-0019: antes `text-[22px]`).
 
+Ajuste HU-0022 (A-1.1 y A-1.3): `AlertDialogContent` pasa a `p-6` y su radio `rounded-3xl` vale 24; `AlertDialogHeader` usa `gap-1` y `AlertDialogTitle`, `text-(length:--fs-dialog)/(--lh-dialog)` en lugar de `leading-tight`.
+
 ## Qué no hacer
 
 - No usarlo para información que no pide decisión: es `Alert` o `Dialog`.

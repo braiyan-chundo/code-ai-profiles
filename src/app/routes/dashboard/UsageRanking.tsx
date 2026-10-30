@@ -10,13 +10,14 @@ import { formatCaptureTime } from "../../../lib/format";
 export function UsageRanking() {
   const { dashboard: state, busy, iconPreviews } = useDashboard();
   const ranking = usageRanking(state.instances);
+  const staleIds = new Set(state.system.versionTopology.staleInstanceIds);
   return (
     <Card size="sm" role="region" aria-label="Uso por instancia">
       <CardHeader>
-        <CardTitle className="text-(length:--fs-heading) font-semibold">Uso por instancia</CardTitle>
+        <CardTitle className="text-(length:--fs-heading)/(--lh-heading) font-semibold">Uso por instancia</CardTitle>
         <CardDescription className="text-xs">De más a menos uso; el mayor de los dos porcentajes manda.</CardDescription>
         <CardAction>
-          <Badge variant="secondary" className="font-mono text-(length:--fs-micro) tracking-[0.06em] uppercase">
+          <Badge variant="secondary" className="font-mono text-(length:--fs-micro)/(--lh-micro) tracking-[0.06em] uppercase">
             {ranking.length} {ranking.length === 1 ? "perfil" : "perfiles"}
           </Badge>
         </CardAction>
@@ -26,22 +27,31 @@ export function UsageRanking() {
           {ranking.map((instance) => {
             const stopping = busy === `stop:${instance.id}`;
             return (
-              <Item key={instance.id} asChild variant="outline" size="sm" className="flex-nowrap bg-(--surface-soft)">
+              <Item key={instance.id} asChild variant="outline" size="sm" className="flex-nowrap rounded-sm bg-(--surface-soft)">
                 <Link to={`/instancias/${encodeURIComponent(instance.id)}`}>
                   <ItemMedia>
                     <InstanceAvatar
                       iconSrc={managedIconSource(instance, iconPreviews[instance.id] ?? null)}
                       status={instance.status}
                       stopping={stopping}
-                      className="size-8 rounded-lg border border-(--line-strong) bg-secondary [&>svg]:size-5"
+                      className="size-8 rounded-sm bg-secondary ring-1 ring-(--line-strong) ring-inset [&>svg]:size-5"
                     />
                   </ItemMedia>
                   <ItemContent className="min-w-0 basis-0 gap-1">
                     <ItemTitle className="flex w-full flex-wrap items-center gap-x-2 gap-y-1">
                       <span className="max-w-full truncate">{instance.name}</span>
                       <InstanceStatusBadge status={instance.status} stopping={stopping} className="shrink-0" />
+                      {staleIds.has(instance.id) && (
+                        <Badge
+                          variant="outline"
+                          className="shrink-0 border-primary/30 font-mono text-(length:--fs-micro)/(--lh-micro) tracking-[0.04em] text-primary-text uppercase"
+                          title="Esta instancia usa una versión anterior. Entra en ella para actualizarla."
+                        >
+                          Actualizar
+                        </Badge>
+                      )}
                     </ItemTitle>
-                    <ItemDescription className="truncate font-mono text-(length:--fs-small)">{formatCaptureTime(instance.usage?.capturedAt)}</ItemDescription>
+                    <ItemDescription className="truncate font-mono text-(length:--fs-small)/(--lh-small)">{formatCaptureTime(instance.usage?.capturedAt)}</ItemDescription>
                   </ItemContent>
                   <UsageBar label="Sesión" value={instance.usage?.sessionPercent ?? null} className="w-[34%] shrink-0 max-[1070px]:w-[30%]" />
                   <UsageBar label="Semanal" value={instance.usage?.weeklyPercent ?? null} className="w-[34%] shrink-0 max-[1070px]:w-[30%]" />

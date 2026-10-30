@@ -57,7 +57,9 @@ Los valores salen de `src/styles/ui-theme.css`; consulta `../tema.md`.
 
 ## Diferencias con el registro
 
-Ajuste 1 (HU-0019, A-3): `h-5` y `min-w-5` → `h-(--ctl-badge)` y `min-w-(--ctl-badge)` (20 px por `--esc`).
+Ajuste 1 (HU-0019, A-3): `h-5` y `min-w-5` → `h-(--ctl-badge)` y `min-w-(--ctl-badge)` (24 px desde HU-0022).
+
+Ajuste HU-0022 (A-1.3 y A-1.6): `rounded-xs` (4), sin relleno (`bg-transparent`) y con un anillo `ring-1 ring-inset ring-(--line-strong)`, porque el relleno `--line` daba 4,28:1 en oscuro y 3,84:1 en claro; dentro de un tooltip no lleva anillo. `--ctl-badge` ahora vale 24 (28 en Grande) y el texto lleva `leading-(--lh-small)`.
 
 ## Qué no hacer
 

@@ -20,19 +20,19 @@ Lo que `SKILL.md` resume. Cambió en HU-0019 (barra única, sidebar flotante, es
 
 ## La escala
 
-- Siete tamaños `--fs-micro…--fs-dialog` y el factor `--esc` en `tokens.css`; la tabla, en `DESIGN.md`. El ajuste de
+- Siete tamaños `--fs-micro…--fs-dialog`, ocho interlineados `--lh-*` y cinco alturas `--ctl*` en `tokens.css`, en px enteros y sin factor `--esc` (HU-0022); la tabla, en `DESIGN.md`. El ajuste de
   Apariencia los cambia con `:root[data-text-size="compact|large"]`. El campo guardado se sigue llamando
   `sessionTextSize`: son datos de usuario.
-- El catálogo se engancha en `ui-theme.css` (`--text-xs` = `--fs-small`, `--text-sm` = `--fs-body`, `--text-base`…`--text-2xl` por
-  `--esc`), así que `text-xs` y `text-sm` ya escalan. Los altos de `button`, `input`, `badge`, `kbd` y del sidebar usan
+- El catálogo se engancha en `ui-theme.css` (`--text-xs`…`--text-2xl` = `--fs-small`…`--fs-dialog`, cada uno con su `--text-<n>--line-height` en `--lh-*`), así que `text-xs` y `text-sm` ya escalan y ya traen su interlineado. Los altos de `button`, `input`, `badge`, `kbd` y del sidebar usan
   `--ctl`, `--ctl-sm`, `--ctl-lg`, `--ctl-xs` y `--ctl-badge`. Los iconos y avatares **no** crecen.
 - **Por qué `text-(length:--fs-x)`**: `cn` es tailwind-merge. `cn("text-micro", "text-muted-foreground")` devuelve solo el color:
   toma `text-micro` por un color y lo borra. `text-(length:--fs-micro)` se reconoce como tamaño y gana a `text-xs`. El
-  interlineado va aparte (`leading-none`).
+  interlineado se escribe en la misma clase, `text-(length:--fs-x)/(--lh-y)` (con `/` obligatorio), nunca `leading-none|tight|snug|normal|relaxed|loose|[n]`.
+- **Espaciado de 4 px, radios 4/8/12/16/20/24 y foco de 2 px** (HU-0022): prueba 15 (ver `code-ai-profiles-ui`, `tema.md`).
 - Mínimo 11 px: prueba 12 de `test:ui` (los tokens) y, con la app abierta, el guion de consola:
   `[...document.querySelectorAll("body *")].filter(e => [...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim()) && e.getClientRects().length).map(e => [parseFloat(getComputedStyle(e).fontSize), e]).filter(([s]) => s < 11)` debe devolver `[]`.
-- Las únicas excepciones a «sin `text-[Npx]`» son las tres muestras «Aa» de `AppearanceDialog` (prueba 13).
-- Lo que vigilan las pruebas: la 12, los siete `--fs-*` y `--esc` (solo `tokens.css` los declara, en `:root` y en los dos `data-text-size`), el puente `--text-xs…--text-2xl` y los `--fs-x` usados; la 13, `text-[9px]`, `text-[length:9px]`, `text-(length:9px)`, `[font-size:9px]` y las utilidades con nombre propio (`text-micro`); la 14, `text-(--quiet)`.
+- Las únicas excepciones a «sin `text-[Npx]`» son las tres muestras «Aa» de `AppearanceSettings` (prueba 13).
+- Lo que vigilan las pruebas: la 12, los siete `--fs-*`, ocho `--lh-*` y cinco `--ctl*` (solo `tokens.css` los declara, en `:root` y en los dos `data-text-size`; múltiplos de 4; sin `--esc`), el puente `--text-xs…--text-2xl` y los `--fs-x` y `--lh-x` usados; la 13, `text-[9px]`, `text-[length:9px]`, `text-(length:9px)`, `[font-size:9px]` y las utilidades con nombre propio (`text-micro`); la 14, `text-(--quiet)`; la 15, la escala armónica; la 16, el contraste de los pares sólidos.
 - Las alturas fijas menores que el texto se quitan (un chip `h-4` con `overflow-hidden` lo recorta).
 
 ## Aspecto común y temas

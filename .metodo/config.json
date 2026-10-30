@@ -103,8 +103,8 @@
       "code-ai-profiles": {
         "tipos": "pnpm exec tsc --noEmit -p tsconfig.json",
         "build": "pnpm build",
-        "relacionadas": "pnpm test:scan && pnpm test:update && pnpm test:format && pnpm test:appearance && pnpm test:dashboard && pnpm test:messages && pnpm test:ui && pnpm test:release && pnpm test:graph && cargo test --manifest-path src-tauri/Cargo.toml -q",
-        "suite": "pnpm test:scan && pnpm test:update && pnpm test:format && pnpm test:appearance && pnpm test:dashboard && pnpm test:messages && pnpm test:ui && pnpm test:release && pnpm test:graph && cargo test --manifest-path src-tauri/Cargo.toml"
+        "relacionadas": "pnpm test:scan && pnpm test:update && pnpm test:format && pnpm test:appearance && pnpm test:dashboard && pnpm test:messages && pnpm test:permissions && pnpm test:projects && pnpm test:ui && pnpm test:release && pnpm test:graph && cargo test --manifest-path src-tauri/Cargo.toml -q",
+        "suite": "pnpm test:scan && pnpm test:update && pnpm test:format && pnpm test:appearance && pnpm test:dashboard && pnpm test:messages && pnpm test:permissions && pnpm test:projects && pnpm test:ui && pnpm test:release && pnpm test:graph && cargo test --manifest-path src-tauri/Cargo.toml"
       }
     }
   },

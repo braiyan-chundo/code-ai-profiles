@@ -1,0 +1,212 @@
+{
+ "dashboard-dark-comodo-1440": {
+  "texts": 80,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "space": 1,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radius": 0,
+  "radiusTop": [],
+  "lh": 0,
+  "lhTop": []
+ },
+ "dashboard-light-comodo-1440": {
+  "texts": 80,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "space": 1,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radius": 0,
+  "radiusTop": [],
+  "lh": 0,
+  "lhTop": []
+ },
+ "original-dark-comodo-1440": {
+  "texts": 77,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "space": 1,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radius": 0,
+  "radiusTop": [],
+  "lh": 0,
+  "lhTop": []
+ },
+ "original-light-comodo-1440": {
+  "texts": 77,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "space": 1,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radius": 0,
+  "radiusTop": [],
+  "lh": 0,
+  "lhTop": []
+ },
+ "instancia-dark-comodo-1440": {
+  "texts": 67,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "space": 1,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radius": 0,
+  "radiusTop": [],
+  "lh": 0,
+  "lhTop": []
+ },
+ "instancia-light-comodo-1440": {
+  "texts": 67,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "space": 1,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radius": 0,
+  "radiusTop": [],
+  "lh": 0,
+  "lhTop": []
+ },
+ "editor-nueva-dark-comodo-1440": {
+  "texts": 93,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "space": 1,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radius": 0,
+  "radiusTop": [],
+  "lh": 0,
+  "lhTop": []
+ },
+ "editor-nueva-light-comodo-1440": {
+  "texts": 93,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "space": 1,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radius": 0,
+  "radiusTop": [],
+  "lh": 0,
+  "lhTop": []
+ },
+ "apariencia-dark-comodo-1440": {
+  "texts": 107,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "space": 1,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radius": 0,
+  "radiusTop": [],
+  "lh": 0,
+  "lhTop": []
+ },
+ "apariencia-light-comodo-1440": {
+  "texts": 107,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "space": 1,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radius": 0,
+  "radiusTop": [],
+  "lh": 0,
+  "lhTop": []
+ },
+ "transferir-dark-comodo-1440": {
+  "texts": 96,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "space": 1,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radius": 0,
+  "radiusTop": [],
+  "lh": 0,
+  "lhTop": []
+ },
+ "transferir-light-comodo-1440": {
+  "texts": 96,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "space": 1,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radius": 0,
+  "radiusTop": [],
+  "lh": 0,
+  "lhTop": []
+ },
+ "sincronizar-dark-comodo-1440": {
+  "texts": 98,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "space": 1,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radius": 0,
+  "radiusTop": [],
+  "lh": 0,
+  "lhTop": []
+ },
+ "sincronizar-light-comodo-1440": {
+  "texts": 98,
+  "small": 0,
+  "spaceN": 1,
+  "radiusN": 0,
+  "lhN": 0,
+  "space": 1,
+  "spaceTop": [
+   "div paddingLeft=84 x1"
+  ],
+  "radius": 0,
+  "radiusTop": [],
+  "lh": 0,
+  "lhTop": []
+ }
+}

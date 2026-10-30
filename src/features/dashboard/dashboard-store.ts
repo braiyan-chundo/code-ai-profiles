@@ -14,6 +14,7 @@ export const EMPTY_DASHBOARD: DashboardState = {
       checkedAt: null,
       stale: false,
       source: null,
+      warning: null,
     },
     versionTopology: {
       latestInstalledVersion: null,

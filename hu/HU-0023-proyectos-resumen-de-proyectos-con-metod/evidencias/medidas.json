@@ -1,0 +1,1468 @@
+{
+ "lista-oscuro-1440": {
+  "audit": {
+   "total": 260,
+   "bad": {
+    "paddingLeft:84px": {
+     "n": 1,
+     "ex": "div.absolute.top-0.left-0"
+    },
+    "marginTop:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginRight:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginBottom:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginLeft:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    }
+   }
+  },
+  "boxes": {
+   "cards": [
+    [
+     288,
+     92,
+     548,
+     229
+    ],
+    [
+     860,
+     92,
+     548,
+     229
+    ],
+    [
+     288,
+     345,
+     548,
+     201
+    ]
+   ],
+   "kpis": [],
+   "dos": [
+    null,
+    null
+   ],
+   "thead": [],
+   "row": [],
+   "consumo": [
+    0,
+    0,
+    1440,
+    920
+   ]
+  }
+ },
+ "pagina-oscuro-1440": {
+  "audit": {
+   "total": 554,
+   "bad": {
+    "paddingLeft:84px": {
+     "n": 1,
+     "ex": "div.absolute.top-0.left-0"
+    },
+    "marginTop:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginRight:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginBottom:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginLeft:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    }
+   }
+  },
+  "boxes": {
+   "cards": [],
+   "kpis": [
+    [
+     288,
+     268,
+     357.3,
+     148
+    ],
+    [
+     669.3,
+     268,
+     166.7,
+     148
+    ],
+    [
+     860,
+     268,
+     166.7,
+     148
+    ],
+    [
+     1050.7,
+     268,
+     166.7,
+     148
+    ],
+    [
+     1241.3,
+     268,
+     166.7,
+     148
+    ]
+   ],
+   "dos": [
+    [
+     288,
+     448,
+     452.7,
+     296
+    ],
+    [
+     764.7,
+     448,
+     643.3,
+     296
+    ]
+   ],
+   "thead": [
+    [
+     300,
+     856,
+     365.3,
+     24.5
+    ],
+    [
+     665.3,
+     856,
+     182.7,
+     24.5
+    ],
+    [
+     848,
+     856,
+     182.7,
+     24.5
+    ],
+    [
+     1030.7,
+     856,
+     182.7,
+     24.5
+    ],
+    [
+     1213.3,
+     856,
+     91.3,
+     24.5
+    ],
+    [
+     1304.6,
+     856,
+     91.4,
+     24.5
+    ]
+   ],
+   "row": [
+    [
+     300,
+     880.5,
+     1096,
+     40
+    ]
+   ],
+   "consumo": [
+    288,
+    1528.5,
+    1120,
+    292
+   ]
+  }
+ },
+ "pagina-vetcare-oscuro-1440": {
+  "audit": {
+   "total": 457,
+   "bad": {
+    "paddingLeft:84px": {
+     "n": 1,
+     "ex": "div.absolute.top-0.left-0"
+    },
+    "marginTop:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginRight:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginBottom:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginLeft:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    }
+   }
+  },
+  "boxes": {
+   "cards": [],
+   "kpis": [
+    [
+     288,
+     364,
+     357.3,
+     148
+    ],
+    [
+     669.3,
+     364,
+     166.7,
+     148
+    ],
+    [
+     860,
+     364,
+     166.7,
+     148
+    ],
+    [
+     1050.7,
+     364,
+     166.7,
+     148
+    ],
+    [
+     1241.3,
+     364,
+     166.7,
+     148
+    ]
+   ],
+   "dos": [
+    [
+     288,
+     544,
+     452.7,
+     342
+    ],
+    [
+     764.7,
+     544,
+     643.3,
+     342
+    ]
+   ],
+   "thead": [
+    [
+     300,
+     998,
+     365.3,
+     24.5
+    ],
+    [
+     665.3,
+     998,
+     182.7,
+     24.5
+    ],
+    [
+     848,
+     998,
+     182.7,
+     24.5
+    ],
+    [
+     1030.7,
+     998,
+     182.7,
+     24.5
+    ],
+    [
+     1213.3,
+     998,
+     91.3,
+     24.5
+    ],
+    [
+     1304.6,
+     998,
+     91.4,
+     24.5
+    ]
+   ],
+   "row": [
+    [
+     300,
+     1022.5,
+     1096,
+     40
+    ]
+   ],
+   "consumo": [
+    288,
+    1350.5,
+    1120,
+    240
+   ]
+  }
+ },
+ "pagina-rota-oscuro-1440": {
+  "audit": {
+   "total": 154,
+   "bad": {
+    "paddingLeft:84px": {
+     "n": 1,
+     "ex": "div.absolute.top-0.left-0"
+    },
+    "marginTop:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginRight:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginBottom:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginLeft:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    }
+   }
+  },
+  "boxes": {
+   "cards": [],
+   "kpis": [],
+   "dos": [
+    null,
+    null
+   ],
+   "thead": [],
+   "row": [],
+   "consumo": [
+    0,
+    0,
+    1440,
+    920
+   ]
+  }
+ },
+ "anclar-valido-oscuro": {
+  "audit": {
+   "total": 298,
+   "bad": {
+    "paddingLeft:84px": {
+     "n": 1,
+     "ex": "div.absolute.top-0.left-0"
+    },
+    "marginTop:-1px": {
+     "n": 15,
+     "ex": "span.sr-only"
+    },
+    "marginRight:-1px": {
+     "n": 15,
+     "ex": "span.sr-only"
+    },
+    "marginBottom:-1px": {
+     "n": 15,
+     "ex": "span.sr-only"
+    },
+    "marginLeft:-1px": {
+     "n": 15,
+     "ex": "span.sr-only"
+    }
+   }
+  },
+  "boxes": {
+   "cards": [
+    [
+     288,
+     92,
+     548,
+     229
+    ],
+    [
+     860,
+     92,
+     548,
+     229
+    ],
+    [
+     288,
+     345,
+     548,
+     201
+    ]
+   ],
+   "kpis": [],
+   "dos": [
+    null,
+    null
+   ],
+   "thead": [],
+   "row": [],
+   "consumo": [
+    0,
+    0,
+    1440,
+    920
+   ]
+  }
+ },
+ "anclar-no-v4-oscuro": {
+  "audit": {
+   "total": 291,
+   "bad": {
+    "paddingLeft:84px": {
+     "n": 1,
+     "ex": "div.absolute.top-0.left-0"
+    },
+    "marginTop:-1px": {
+     "n": 13,
+     "ex": "span.sr-only"
+    },
+    "marginRight:-1px": {
+     "n": 13,
+     "ex": "span.sr-only"
+    },
+    "marginBottom:-1px": {
+     "n": 13,
+     "ex": "span.sr-only"
+    },
+    "marginLeft:-1px": {
+     "n": 13,
+     "ex": "span.sr-only"
+    }
+   }
+  },
+  "boxes": {
+   "cards": [
+    [
+     288,
+     92,
+     548,
+     229
+    ],
+    [
+     860,
+     92,
+     548,
+     229
+    ],
+    [
+     288,
+     345,
+     548,
+     201
+    ]
+   ],
+   "kpis": [],
+   "dos": [
+    null,
+    null
+   ],
+   "thead": [],
+   "row": [],
+   "consumo": [
+    0,
+    0,
+    1440,
+    920
+   ]
+  }
+ },
+ "escape-cierra-oscuro": true,
+ "lista-oscuro-980": {
+  "audit": {
+   "total": 257,
+   "bad": {
+    "paddingLeft:84px": {
+     "n": 1,
+     "ex": "div.absolute.top-0.left-0"
+    },
+    "marginTop:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginRight:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginBottom:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginLeft:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    }
+   }
+  },
+  "boxes": {
+   "cards": [
+    [
+     280,
+     92,
+     326,
+     301
+    ],
+    [
+     630,
+     92,
+     326,
+     301
+    ],
+    [
+     280,
+     417,
+     326,
+     217
+    ]
+   ],
+   "kpis": [],
+   "dos": [
+    null,
+    null
+   ],
+   "thead": [],
+   "row": [],
+   "consumo": [
+    0,
+    0,
+    980,
+    680
+   ]
+  }
+ },
+ "pagina-oscuro-980": {
+  "audit": {
+   "total": 536,
+   "bad": {
+    "paddingLeft:84px": {
+     "n": 1,
+     "ex": "div.absolute.top-0.left-0"
+    },
+    "marginTop:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginRight:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginBottom:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginLeft:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    }
+   }
+  },
+  "boxes": {
+   "cards": [],
+   "kpis": [
+    [
+     280,
+     328,
+     676,
+     124
+    ],
+    [
+     280,
+     476,
+     151,
+     148
+    ],
+    [
+     455,
+     476,
+     151,
+     148
+    ],
+    [
+     630,
+     476,
+     151,
+     148
+    ],
+    [
+     805,
+     476,
+     151,
+     148
+    ]
+   ],
+   "dos": [
+    [
+     280,
+     656,
+     676,
+     248
+    ],
+    [
+     280,
+     928,
+     676,
+     210
+    ]
+   ],
+   "thead": [
+    [
+     292,
+     1290,
+     217.3,
+     24.5
+    ],
+    [
+     509.3,
+     1290,
+     108.7,
+     24.5
+    ],
+    [
+     618,
+     1290,
+     108.7,
+     24.5
+    ],
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     726.7,
+     1290,
+     108.7,
+     24.5
+    ],
+    [
+     835.3,
+     1290,
+     108.7,
+     24.5
+    ]
+   ],
+   "row": [
+    [
+     292,
+     1314.5,
+     652,
+     40
+    ]
+   ],
+   "consumo": [
+    280,
+    1982.5,
+    676,
+    500
+   ]
+  }
+ },
+ "lista-vacia-oscuro": {
+  "audit": {
+   "total": 132,
+   "bad": {
+    "paddingLeft:84px": {
+     "n": 1,
+     "ex": "div.absolute.top-0.left-0"
+    },
+    "marginTop:-1px": {
+     "n": 8,
+     "ex": "span.sr-only"
+    },
+    "marginRight:-1px": {
+     "n": 8,
+     "ex": "span.sr-only"
+    },
+    "marginBottom:-1px": {
+     "n": 8,
+     "ex": "span.sr-only"
+    },
+    "marginLeft:-1px": {
+     "n": 8,
+     "ex": "span.sr-only"
+    }
+   }
+  },
+  "boxes": {
+   "cards": [],
+   "kpis": [],
+   "dos": [
+    null,
+    null
+   ],
+   "thead": [],
+   "row": [],
+   "consumo": [
+    0,
+    0,
+    1440,
+    920
+   ]
+  }
+ },
+ "lista-claro-1440": {
+  "audit": {
+   "total": 260,
+   "bad": {
+    "paddingLeft:84px": {
+     "n": 1,
+     "ex": "div.absolute.top-0.left-0"
+    },
+    "marginTop:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginRight:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginBottom:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginLeft:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    }
+   }
+  },
+  "boxes": {
+   "cards": [
+    [
+     288,
+     92,
+     548,
+     229
+    ],
+    [
+     860,
+     92,
+     548,
+     229
+    ],
+    [
+     288,
+     345,
+     548,
+     201
+    ]
+   ],
+   "kpis": [],
+   "dos": [
+    null,
+    null
+   ],
+   "thead": [],
+   "row": [],
+   "consumo": [
+    0,
+    0,
+    1440,
+    920
+   ]
+  }
+ },
+ "pagina-claro-1440": {
+  "audit": {
+   "total": 554,
+   "bad": {
+    "paddingLeft:84px": {
+     "n": 1,
+     "ex": "div.absolute.top-0.left-0"
+    },
+    "marginTop:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginRight:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginBottom:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginLeft:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    }
+   }
+  },
+  "boxes": {
+   "cards": [],
+   "kpis": [
+    [
+     288,
+     268,
+     357.3,
+     148
+    ],
+    [
+     669.3,
+     268,
+     166.7,
+     148
+    ],
+    [
+     860,
+     268,
+     166.7,
+     148
+    ],
+    [
+     1050.7,
+     268,
+     166.7,
+     148
+    ],
+    [
+     1241.3,
+     268,
+     166.7,
+     148
+    ]
+   ],
+   "dos": [
+    [
+     288,
+     448,
+     452.7,
+     296
+    ],
+    [
+     764.7,
+     448,
+     643.3,
+     296
+    ]
+   ],
+   "thead": [
+    [
+     300,
+     856,
+     365.3,
+     24.5
+    ],
+    [
+     665.3,
+     856,
+     182.7,
+     24.5
+    ],
+    [
+     848,
+     856,
+     182.7,
+     24.5
+    ],
+    [
+     1030.7,
+     856,
+     182.7,
+     24.5
+    ],
+    [
+     1213.3,
+     856,
+     91.3,
+     24.5
+    ],
+    [
+     1304.6,
+     856,
+     91.4,
+     24.5
+    ]
+   ],
+   "row": [
+    [
+     300,
+     880.5,
+     1096,
+     40
+    ]
+   ],
+   "consumo": [
+    288,
+    1528.5,
+    1120,
+    292
+   ]
+  }
+ },
+ "pagina-vetcare-claro-1440": {
+  "audit": {
+   "total": 457,
+   "bad": {
+    "paddingLeft:84px": {
+     "n": 1,
+     "ex": "div.absolute.top-0.left-0"
+    },
+    "marginTop:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginRight:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginBottom:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginLeft:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    }
+   }
+  },
+  "boxes": {
+   "cards": [],
+   "kpis": [
+    [
+     288,
+     364,
+     357.3,
+     148
+    ],
+    [
+     669.3,
+     364,
+     166.7,
+     148
+    ],
+    [
+     860,
+     364,
+     166.7,
+     148
+    ],
+    [
+     1050.7,
+     364,
+     166.7,
+     148
+    ],
+    [
+     1241.3,
+     364,
+     166.7,
+     148
+    ]
+   ],
+   "dos": [
+    [
+     288,
+     544,
+     452.7,
+     342
+    ],
+    [
+     764.7,
+     544,
+     643.3,
+     342
+    ]
+   ],
+   "thead": [
+    [
+     300,
+     998,
+     365.3,
+     24.5
+    ],
+    [
+     665.3,
+     998,
+     182.7,
+     24.5
+    ],
+    [
+     848,
+     998,
+     182.7,
+     24.5
+    ],
+    [
+     1030.7,
+     998,
+     182.7,
+     24.5
+    ],
+    [
+     1213.3,
+     998,
+     91.3,
+     24.5
+    ],
+    [
+     1304.6,
+     998,
+     91.4,
+     24.5
+    ]
+   ],
+   "row": [
+    [
+     300,
+     1022.5,
+     1096,
+     40
+    ]
+   ],
+   "consumo": [
+    288,
+    1350.5,
+    1120,
+    240
+   ]
+  }
+ },
+ "pagina-rota-claro-1440": {
+  "audit": {
+   "total": 154,
+   "bad": {
+    "paddingLeft:84px": {
+     "n": 1,
+     "ex": "div.absolute.top-0.left-0"
+    },
+    "marginTop:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginRight:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginBottom:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    },
+    "marginLeft:-1px": {
+     "n": 11,
+     "ex": "span.sr-only"
+    }
+   }
+  },
+  "boxes": {
+   "cards": [],
+   "kpis": [],
+   "dos": [
+    null,
+    null
+   ],
+   "thead": [],
+   "row": [],
+   "consumo": [
+    0,
+    0,
+    1440,
+    920
+   ]
+  }
+ },
+ "anclar-valido-claro": {
+  "audit": {
+   "total": 298,
+   "bad": {
+    "paddingLeft:84px": {
+     "n": 1,
+     "ex": "div.absolute.top-0.left-0"
+    },
+    "marginTop:-1px": {
+     "n": 15,
+     "ex": "span.sr-only"
+    },
+    "marginRight:-1px": {
+     "n": 15,
+     "ex": "span.sr-only"
+    },
+    "marginBottom:-1px": {
+     "n": 15,
+     "ex": "span.sr-only"
+    },
+    "marginLeft:-1px": {
+     "n": 15,
+     "ex": "span.sr-only"
+    }
+   }
+  },
+  "boxes": {
+   "cards": [
+    [
+     288,
+     92,
+     548,
+     229
+    ],
+    [
+     860,
+     92,
+     548,
+     229
+    ],
+    [
+     288,
+     345,
+     548,
+     201
+    ]
+   ],
+   "kpis": [],
+   "dos": [
+    null,
+    null
+   ],
+   "thead": [],
+   "row": [],
+   "consumo": [
+    0,
+    0,
+    1440,
+    920
+   ]
+  }
+ },
+ "anclar-no-v4-claro": {
+  "audit": {
+   "total": 291,
+   "bad": {
+    "paddingLeft:84px": {
+     "n": 1,
+     "ex": "div.absolute.top-0.left-0"
+    },
+    "marginTop:-1px": {
+     "n": 13,
+     "ex": "span.sr-only"
+    },
+    "marginRight:-1px": {
+     "n": 13,
+     "ex": "span.sr-only"
+    },
+    "marginBottom:-1px": {
+     "n": 13,
+     "ex": "span.sr-only"
+    },
+    "marginLeft:-1px": {
+     "n": 13,
+     "ex": "span.sr-only"
+    }
+   }
+  },
+  "boxes": {
+   "cards": [
+    [
+     288,
+     92,
+     548,
+     229
+    ],
+    [
+     860,
+     92,
+     548,
+     229
+    ],
+    [
+     288,
+     345,
+     548,
+     201
+    ]
+   ],
+   "kpis": [],
+   "dos": [
+    null,
+    null
+   ],
+   "thead": [],
+   "row": [],
+   "consumo": [
+    0,
+    0,
+    1440,
+    920
+   ]
+  }
+ },
+ "escape-cierra-claro": true,
+ "lista-claro-980": {
+  "audit": {
+   "total": 239,
+   "bad": {
+    "paddingLeft:84px": {
+     "n": 1,
+     "ex": "div.absolute.top-0.left-0"
+    },
+    "marginTop:-1px": {
+     "n": 6,
+     "ex": "span.sr-only"
+    },
+    "marginRight:-1px": {
+     "n": 6,
+     "ex": "span.sr-only"
+    },
+    "marginBottom:-1px": {
+     "n": 6,
+     "ex": "span.sr-only"
+    },
+    "marginLeft:-1px": {
+     "n": 6,
+     "ex": "span.sr-only"
+    },
+    "marginRight:15px": {
+     "n": 2,
+     "ex": "div.shrink-0.data-horizontal:h-px.data-horizontal:w-full"
+    },
+    "marginLeft:15px": {
+     "n": 2,
+     "ex": "div.shrink-0.data-horizontal:h-px.data-horizontal:w-full"
+    },
+    "paddingLeft:68px": {
+     "n": 1,
+     "ex": "header.row-start-1.flex.h-(--titlebar-height)"
+    }
+   }
+  },
+  "boxes": {
+   "cards": [
+    [
+     88,
+     92,
+     422,
+     301
+    ],
+    [
+     534,
+     92,
+     422,
+     301
+    ],
+    [
+     88,
+     417,
+     422,
+     217
+    ]
+   ],
+   "kpis": [],
+   "dos": [
+    null,
+    null
+   ],
+   "thead": [],
+   "row": [],
+   "consumo": [
+    0,
+    0,
+    980,
+    680
+   ]
+  }
+ },
+ "pagina-claro-980": {
+  "audit": {
+   "total": 518,
+   "bad": {
+    "paddingLeft:84px": {
+     "n": 1,
+     "ex": "div.absolute.top-0.left-0"
+    },
+    "marginTop:-1px": {
+     "n": 6,
+     "ex": "span.sr-only"
+    },
+    "marginRight:-1px": {
+     "n": 6,
+     "ex": "span.sr-only"
+    },
+    "marginBottom:-1px": {
+     "n": 6,
+     "ex": "span.sr-only"
+    },
+    "marginLeft:-1px": {
+     "n": 6,
+     "ex": "span.sr-only"
+    },
+    "marginRight:15px": {
+     "n": 2,
+     "ex": "div.shrink-0.data-horizontal:h-px.data-horizontal:w-full"
+    },
+    "marginLeft:15px": {
+     "n": 2,
+     "ex": "div.shrink-0.data-horizontal:h-px.data-horizontal:w-full"
+    },
+    "paddingLeft:68px": {
+     "n": 1,
+     "ex": "header.row-start-1.flex.h-(--titlebar-height)"
+    }
+   }
+  },
+  "boxes": {
+   "cards": [],
+   "kpis": [
+    [
+     88,
+     304,
+     868,
+     124
+    ],
+    [
+     88,
+     452,
+     199,
+     148
+    ],
+    [
+     311,
+     452,
+     199,
+     148
+    ],
+    [
+     534,
+     452,
+     199,
+     148
+    ],
+    [
+     757,
+     452,
+     199,
+     148
+    ]
+   ],
+   "dos": [
+    [
+     88,
+     632,
+     868,
+     248
+    ],
+    [
+     88,
+     904,
+     868,
+     210
+    ]
+   ],
+   "thead": [
+    [
+     100,
+     1266,
+     281.3,
+     24.5
+    ],
+    [
+     381.3,
+     1266,
+     140.7,
+     24.5
+    ],
+    [
+     522,
+     1266,
+     140.7,
+     24.5
+    ],
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     662.7,
+     1266,
+     140.7,
+     24.5
+    ],
+    [
+     803.3,
+     1266,
+     140.7,
+     24.5
+    ]
+   ],
+   "row": [
+    [
+     100,
+     1290.5,
+     844,
+     40
+    ]
+   ],
+   "consumo": [
+    88,
+    1938.5,
+    868,
+    484
+   ]
+  }
+ },
+ "lista-vacia-claro": {
+  "audit": {
+   "total": 132,
+   "bad": {
+    "paddingLeft:84px": {
+     "n": 1,
+     "ex": "div.absolute.top-0.left-0"
+    },
+    "marginTop:-1px": {
+     "n": 8,
+     "ex": "span.sr-only"
+    },
+    "marginRight:-1px": {
+     "n": 8,
+     "ex": "span.sr-only"
+    },
+    "marginBottom:-1px": {
+     "n": 8,
+     "ex": "span.sr-only"
+    },
+    "marginLeft:-1px": {
+     "n": 8,
+     "ex": "span.sr-only"
+    }
+   }
+  },
+  "boxes": {
+   "cards": [],
+   "kpis": [],
+   "dos": [
+    null,
+    null
+   ],
+   "thead": [],
+   "row": [],
+   "consumo": [
+    0,
+    0,
+    1440,
+    920
+   ]
+  }
+ },
+ "sidebar680": {
+  "scrollHeight": 508,
+  "clientHeight": 448
+ }
+}

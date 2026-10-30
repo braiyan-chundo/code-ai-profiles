@@ -60,8 +60,10 @@ Ajuste 3: `text-primary` (sin `-foreground`) pasa a `text-primary-text`, el nara
 
 Ajuste 4 (HU-0019, A-3): las alturas siguen el tamaño del texto. `h-9`/`size-9` → `h-(--ctl)`/`size-(--ctl)`, `h-8`/`size-8`
 (`sm`, `icon-sm`) → `--ctl-sm`, `h-10`/`size-10` (`lg`, `icon-lg`) → `--ctl-lg` y `h-6`/`size-6` (`xs`, `icon-xs`) →
-`--ctl-xs`. Cada `--ctl*` es su alto en px por `--esc` (0,93, 1 o 1,143): en «Normal» no cambia nada. El texto usa `text-sm`, que
+`--ctl-xs`. Cada `--ctl*` es su alto en px por tamaño de texto (HU-0022: ya no hay `--esc`). El texto usa `text-sm`, que
 ya vale `--fs-body`. Los iconos (16 px) no crecen.
+
+Ajuste HU-0022 (A-1.1 a A-1.5): el espaciado y los radios entran en la retícula de 4 px. `default`, `sm` y `lg` pasan a `gap-2 px-3` (antes `gap-1.5 px-2.5`); `xs`, `sm`, `icon-xs` e `icon-sm` toman `rounded-sm` (8) en lugar de `rounded-[min(var(--radius-md),8|10px)]`, y los demás siguen en `rounded-md` (12). Cada tamaño lleva su interlineado (`leading-(--lh-body|small|title)`) para que el texto caiga en la retícula. Foco: `focus-visible:ring-2 focus-visible:ring-ring` (antes `ring-3 ring-ring/50`). `default` hace hover aclarando hacia blanco (`hover:bg-[color-mix(in_oklch,var(--color-primary),white_12%)]`) en lugar de `hover:bg-primary/80`, que sobre la ventana oscura daba 4,2:1 con el texto oscuro del primario.
 
 ## Qué no hacer
 

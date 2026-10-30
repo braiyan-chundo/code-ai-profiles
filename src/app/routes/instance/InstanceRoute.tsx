@@ -19,7 +19,7 @@ import { PageSkeleton } from "../../layout/PageSkeleton";
 export function InstanceRoute() {
   const { instanceId } = useParams();
   const { dashboard: state, loading, busy, iconPreviews, pendingSyncIds, clearFeedback } = useDashboard();
-  const { setEditor, setDeleteTarget, setTransfer, setUnlinkTarget } = useDialogs();
+  const { setEditor, setUpdateTargets, setDeleteTarget, setTransfer, setUnlinkTarget } = useDialogs();
   const runtimePlatform = useRuntimePlatform();
   const instanceActions = useInstanceActions();
   const instance = findInstance(state.instances, instanceId);
@@ -53,6 +53,10 @@ export function InstanceRoute() {
           iconPreviewUrl={iconPreviews[instance.id] ?? null}
           onLaunch={() => instanceActions.launch(instance)}
           onStop={() => instanceActions.stop(instance)}
+          onUpdate={() => {
+            clearFeedback();
+            setUpdateTargets([instance]);
+          }}
           onOpen={() => instanceActions.openFolder(instance)}
           onEdit={() => setEditor(instance)}
           onDelete={() => setDeleteTarget(instance)}
