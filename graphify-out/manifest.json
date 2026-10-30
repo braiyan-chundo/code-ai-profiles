@@ -115,8 +115,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1793330575.7717917,
-    "ast_hash": "918d6d0fa7616902cb3f1b8e49d8418d",
+    "mtime": 1793370940.2835748,
+    "ast_hash": "5dc4d506852f8b89298ff8eef45923c1",
     "semantic_hash": ""
   },
   "code.html": {
@@ -145,8 +145,8 @@
     "semantic_hash": ""
   },
   "docs/instancias.document.md": {
-    "mtime": 1793330575.7737725,
-    "ast_hash": "62d797d613f8ecedb27cff2cf6dce973",
+    "mtime": 1793370931.6663709,
+    "ast_hash": "221d2cbbadde83b91abe46f610757a43",
     "semantic_hash": ""
   },
   "scripts/release-version.mjs": {
@@ -160,8 +160,8 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1793338478.5495245,
-    "ast_hash": "520f2c5a13f3a3dce29e9138a69fc7ed",
+    "mtime": 1793370931.6668062,
+    "ast_hash": "92e1141f37f41d68cf401c945a305fd5",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793343847.4955366,
-    "ast_hash": "60b22d5f159edbae79fbd4c87d0a56cf",
+    "mtime": 1793370958.3305788,
+    "ast_hash": "ec0532dbdb05062da7d1c7b6e9d18e8e",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -390,8 +390,8 @@
     "semantic_hash": ""
   },
   "docs/arquitectura/frontend.md": {
-    "mtime": 1793330575.7730012,
-    "ast_hash": "3d3d3fe29488cbced2a343791d559cbd",
+    "mtime": 1793370956.8046107,
+    "ast_hash": "0c5752cb4a45ef28feb3b01e92b22522",
     "semantic_hash": ""
   },
   "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md": {
@@ -3165,13 +3165,13 @@
     "semantic_hash": ""
   },
   "docs/producto/reglas/proyectos.md": {
-    "mtime": 1793330575.774324,
-    "ast_hash": "2226197379372f66e2c0bf23c31e54fa",
+    "mtime": 1793370968.3099103,
+    "ast_hash": "9a280909d93d42d7558aaedffcd55de2",
     "semantic_hash": ""
   },
   "docs/proyectos.document.md": {
-    "mtime": 1793330575.7745574,
-    "ast_hash": "4d4bf89bfae2a318eb90496cc1cfeb8e",
+    "mtime": 1793370915.4230745,
+    "ast_hash": "9986cba1bb67040766aa80d12d9f76c2",
     "semantic_hash": ""
   },
   "hu/HU-0022-configuracion-unificada-con-apariencia-y/verificacion.md": {
@@ -3415,13 +3415,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0025-proyectos-datos-incompletos-y-lector-de-/hu.md": {
-    "mtime": 1793343847.485845,
-    "ast_hash": "917a3da9847095b314daf282e5e937ef",
+    "mtime": 1793370956.857893,
+    "ast_hash": "3019777a6609745eeb92e13a16e3eef8",
     "semantic_hash": ""
   },
   "hu/HU-0025-proyectos-datos-incompletos-y-lector-de-/seguimiento.md": {
-    "mtime": 1793343847.4942782,
-    "ast_hash": "32359bf60a4f16a044a588f5f3d3022c",
+    "mtime": 1793370956.866468,
+    "ast_hash": "d9ae2803a7570c053d532cc06d78564a",
     "semantic_hash": ""
   },
   "hu/HU-0026-arrancar-y-detener-instancias-desde-el-s/arquitectura.md": {
@@ -3445,13 +3445,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0026-arrancar-y-detener-instancias-desde-el-s/hu.md": {
-    "mtime": 1793343737.7692277,
-    "ast_hash": "a50a19f357d9e220c09316432d9c0fce",
+    "mtime": 1793370957.6921244,
+    "ast_hash": "2d92a24bc9a40ccfed6d9484d765cb72",
     "semantic_hash": ""
   },
   "hu/HU-0026-arrancar-y-detener-instancias-desde-el-s/seguimiento.md": {
-    "mtime": 1793343737.777505,
-    "ast_hash": "b604c5e1be7564d23cb5c3c27b82d8b0",
+    "mtime": 1793370957.7007706,
+    "ast_hash": "e9b137f5577e4e6f2ef5e3487b2ec743",
     "semantic_hash": ""
   },
   "hu/HU-0025-proyectos-datos-incompletos-y-lector-de-/diseno/capturas/01-proyecto-chip-1440-oscuro.png": {
@@ -3622,6 +3622,26 @@
   "hu/HU-0026-arrancar-y-detener-instancias-desde-el-s/revision.md": {
     "mtime": 1793363016.5290124,
     "ast_hash": "68d44a780d10a465819a6a4321b7c8c7",
+    "semantic_hash": ""
+  },
+  "hu/HU-0025-proyectos-datos-incompletos-y-lector-de-/metricas.json": {
+    "mtime": 1793370957.6346533,
+    "ast_hash": "0b5e6b1d573b633c680195c751f2a50f",
+    "semantic_hash": ""
+  },
+  "hu/HU-0026-arrancar-y-detener-instancias-desde-el-s/metricas.json": {
+    "mtime": 1793370958.3116333,
+    "ast_hash": "cd56da61a386004b6c26c6ef08cb79c2",
+    "semantic_hash": ""
+  },
+  "hu/HU-0025-proyectos-datos-incompletos-y-lector-de-/verificacion.md": {
+    "mtime": 1793370915.4219823,
+    "ast_hash": "419d3ce90a81615d2bb4145abf48b4f3",
+    "semantic_hash": ""
+  },
+  "hu/HU-0026-arrancar-y-detener-instancias-desde-el-s/verificacion.md": {
+    "mtime": 1793370915.4224806,
+    "ast_hash": "7bf16a522d280fa26221d539cba9c2d5",
     "semantic_hash": ""
   }
 }
