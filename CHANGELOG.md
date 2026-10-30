@@ -11,11 +11,18 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 - Página **Configuración** (⌘, / Ctrl+,) con Apariencia y Permisos. En macOS, una tarjeta por permiso opcional («Gestión de apps», «Archivos y carpetas» y «Cuenta de administrador») con su explicación, su estado cuando se puede saber sin avisos del sistema y un acceso directo al panel de Ajustes. Las direcciones de los paneles salen de `.env.example`.
 - **Proyectos**: ancla carpetas con la metodología agéntica v4 y muestra su resumen (fase, perfil, tecnologías, repos con rama y último commit, historias por estado, «Desde», «Tiempo en fases» y tokens de `metricas.json`), con una sección en el sidebar. Solo lectura: no ejecuta nada del proyecto, no escribe en él, no usa la red ni lee fuera de la carpeta. Añade `tauri-plugin-dialog` 2.7 (selector de carpetas, solo desde Rust) y los textos de los avisos de macOS en `Info.plist`.
 
+- En macOS, la versión nueva de Claude se detecta en la publicación oficial (`downloads.claude.ai`), también durante un despliegue escalonado, y el dashboard pregunta «Hay una nueva versión de Claude (X). ¿Deseas instalarla?». «Instalar» usa el flujo verificado de «Descargar e instalar» sin abrir la original. Las instancias por detrás muestran «Actualizar» y el botón «Actualizar instancias obsoletas». Nueva variable `CAP_UPDATE_RELEASES_URL`.
+
 ### Changed
 
 - Sistema armónico en toda la interfaz: escala de espaciado de 4 px, alturas fijas de controles por tamaño de texto, interlineados múltiplos de 4, radios 4/8/12/16/20/24 y anillo de foco de 2 px.
 - El botón principal lleva texto oscuro (contraste 6:1, antes 3:1) y el verde de éxito del tema claro es algo más oscuro (4,77:1).
 - «Configuración» sustituye al diálogo «Apariencia» en el pie del sidebar. El aviso de «Gestión de apps» del editor enlaza a Configuración › Permisos.
+
+### Fixed
+
+- Una instancia con icono personalizado que Claude actualizó por su cuenta ya no queda bloqueada como «cambió fuera de Code AI Profiles»: si sigue firmada por Anthropic y su versión es mayor que la registrada, se acepta, se vuelve a registrar y puede usarse como fuente para sincronizar las demás.
+- El diálogo «Transferir sesión de Code» es compacto: modos del mismo alto, un destino por fila y el pie siempre visible.
 
 ## [0.3.0] - 2026-10-28
 

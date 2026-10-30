@@ -52,4 +52,11 @@ CI).
 
 ## Veredicto
 
-Pendiente.
+Pendiente. 2026-10-29 · Braiyan Rodriguez (mantenedor), al instalar el `.dmg`:
+
+> «no me sale, porque la version de claude original ya esta en la 4.4212.0 quizas hay que esperar que salga una
+> actualizacion, pero hagamos algo llevemos todo lo que se arreglo a develop»
+
+La original ya estaba en la versión publicada, así que no había nada que ofrecer (es el comportamiento esperado). La
+prueba real queda para la próxima versión de Claude; el código entra en `develop` antes del veredicto, por decisión
+del mantenedor.
