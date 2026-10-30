@@ -32,6 +32,8 @@ export function sourceUpdatePresentation(
   topology: VersionTopology,
   appName: string,
   installedVersion: string | null = null,
+  /** Hay un botón «Instalar»: solo entonces el título hace la pregunta (HU-0024, R-2). */
+  canInstall = false,
 ): SourceUpdatePresentation | null {
   const fresh = !sourceUpdate.stale && sourceUpdate.checkedAt !== null && sourceUpdate.source !== null;
 
@@ -40,7 +42,7 @@ export function sourceUpdatePresentation(
     const installed = installedVersion ? `Instalada ${installedVersion} · ` : "";
     return {
       kind: "available",
-      title: `Hay una nueva versión de ${appName} (${sourceUpdate.latestVersion}). ¿Deseas instalarla?`,
+      title: `Hay una nueva versión de ${appName} (${sourceUpdate.latestVersion}).${canInstall ? " ¿Deseas instalarla?" : ""}`,
       detail: `${installed}publicada ${sourceUpdate.latestVersion}.`,
       actionLabel: "Ver actualización",
     };

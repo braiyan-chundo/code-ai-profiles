@@ -322,10 +322,25 @@ test("available fresco ofrece instalar con el título de la publicación oficial
     topology(),
     "Claude",
     "3.1623.4",
+    true,
   );
   assert.equal(presentation?.kind, "available");
   assert.equal(presentation?.title, "Hay una nueva versión de Claude (3.1700.0). ¿Deseas instalarla?");
   assert.equal(presentation?.detail, "Instalada 3.1623.4 · publicada 3.1700.0.");
+});
+
+test("available sin botón «Instalar» no hace la pregunta", () => {
+  const presentation = sourceUpdatePresentation(
+    update({ status: "available", latestVersion: "3.1700.0" }),
+    topology(),
+    "Claude",
+    "3.1623.4",
+    false,
+  );
+  assert.equal(presentation?.kind, "available");
+  assert.equal(presentation?.title, "Hay una nueva versión de Claude (3.1700.0).");
+  assert.doesNotMatch(presentation?.title ?? "", /¿Deseas/);
+  assert.equal(presentation?.actionLabel, "Ver actualización");
 });
 
 test("available sin versión instalada conocida omite la parte de la instalada", () => {

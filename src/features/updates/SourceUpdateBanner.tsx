@@ -15,15 +15,16 @@ export function SourceUpdateBanner({ onUpdate }: { onUpdate: () => void }) {
   const { dashboard: state, loading, busy } = useDashboard();
   const { installOriginal } = useUpdateActions();
   const appName = selectOriginalAppName(state.system);
+  const install = originalInstallAvailability(state.system, busy);
   const officialUpdate = sourceUpdatePresentation(
     state.system.sourceUpdate,
     state.system.versionTopology,
     appName,
     state.system.sourceVersion,
+    install.visible,
   );
   if (loading || !state.system.sourcePath || !officialUpdate) return null;
-  const install = officialUpdate.kind === "available" ? originalInstallAvailability(state.system, busy) : null;
-  const canInstall = install?.visible === true;
+  const canInstall = officialUpdate.kind === "available" && install.visible;
   return (
     <NoticeAlert
       role="status"
