@@ -84,7 +84,10 @@ pub(crate) fn confirm_published_package(
             published.version
         ));
     }
-    Ok(package)
+    Ok(FeedPackage {
+        source: SourceUpdateSource::OfficialRelease,
+        ..package
+    })
 }
 
 fn unverified_warning(version: &str) -> String {
@@ -304,6 +307,7 @@ mod tests {
         assert_eq!(package.url, release.url);
         assert_eq!(package.sha256, SHA);
         assert_eq!(package.size, 378_758_916);
+        assert_eq!(package.source, SourceUpdateSource::OfficialRelease);
         // Same URL once normalized (explicit default port, uppercase host).
         let normalized = format!(
             "https://{}:443/releases/darwin/universal/{PUBLISHED}/Claude-cbfe3c56d49c49332ad5a9588303c9dbc70a5e7f.zip",
