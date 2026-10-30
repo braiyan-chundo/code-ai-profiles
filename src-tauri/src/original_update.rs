@@ -3312,7 +3312,7 @@ drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 App.app/\n";
     #[test]
     fn source_update_cache_reports_current_after_installing() {
         let root = temp_root("installed-cache");
-        let paths = crate::tests::test_managed_paths(&root);
+        let paths = crate::test_support::test_managed_paths(&root);
         let checked_at = Utc::now().timestamp_millis();
         save_source_update_cache(
             &paths,
@@ -3382,13 +3382,13 @@ drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 App.app/\n";
     #[test]
     fn stale_instances_split_into_stopped_targets_and_running_pending() {
         let root = temp_root("split-stale");
-        let mut stopped = crate::tests::test_instance(&root);
+        let mut stopped = crate::test_support::test_instance(&root);
         stopped.status = InstanceStatus::Stopped;
-        let mut running = crate::tests::test_instance(&root);
+        let mut running = crate::test_support::test_instance(&root);
         running.status = InstanceStatus::Running;
-        let mut missing = crate::tests::test_instance(&root);
+        let mut missing = crate::test_support::test_instance(&root);
         missing.status = InstanceStatus::Missing;
-        let current = crate::tests::test_instance(&root);
+        let current = crate::test_support::test_instance(&root);
         let registry = Registry {
             version: REGISTRY_VERSION,
             instances: vec![stopped.clone(), running.clone(), missing.clone(), current],
@@ -3557,7 +3557,7 @@ drwxr-xr-x  2.1 unx        0 bx stor 26-Oct-28 14:07 App.app/\n";
 
     fn end_to_end(case: &str) -> EndToEnd {
         let root = temp_root(case);
-        let paths = crate::tests::test_managed_paths(&root.join("data"));
+        let paths = crate::test_support::test_managed_paths(&root.join("data"));
         fs::create_dir_all(&paths.instances).unwrap();
         let installation = root.join("Applications/Claude.app");
         write_fake_bundle(&installation, &signed("1.0.0"));
