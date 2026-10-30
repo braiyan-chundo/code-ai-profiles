@@ -115,8 +115,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1793370940.2835748,
-    "ast_hash": "5dc4d506852f8b89298ff8eef45923c1",
+    "mtime": 1793391946.8977005,
+    "ast_hash": "070f920c9ecb8cbd1f0b0268cdddc8f8",
     "semantic_hash": ""
   },
   "code.html": {
@@ -135,8 +135,8 @@
     "semantic_hash": ""
   },
   "docs/actualizaciones.document.md": {
-    "mtime": 1793330575.7721033,
-    "ast_hash": "f2e769eb5acdd76c9c1eb0ac9661fc54",
+    "mtime": 1793391946.8973525,
+    "ast_hash": "abcb3285a882ce8d404a03d27a6c603e",
     "semantic_hash": ""
   },
   "docs/sesiones.document.md": {
@@ -160,8 +160,8 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1793370931.6668062,
-    "ast_hash": "92e1141f37f41d68cf401c945a305fd5",
+    "mtime": 1793391946.898162,
+    "ast_hash": "e25a12989e4539ac2b685094fe0657c4",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
@@ -195,13 +195,13 @@
     "semantic_hash": "9cf8a39e4da325aed33b9bfc8022a6af"
   },
   "src/lib/source-update-controller.ts": {
-    "mtime": 1793330575.9522998,
-    "ast_hash": "49a2e16e2040940e8f6d60c467e92230",
+    "mtime": 1793391817.546317,
+    "ast_hash": "d54627fc7c58b23fd2499c08d07f2e71",
     "semantic_hash": ""
   },
   "tests/source-update-controller.test.ts": {
-    "mtime": 1793330575.9542994,
-    "ast_hash": "a8bd191a82fe966eff47f05f040002d5",
+    "mtime": 1793391830.4264994,
+    "ast_hash": "a42324b6e270ee716f69c5891877140a",
     "semantic_hash": ""
   },
   "CLAUDE.md": {
@@ -645,8 +645,8 @@
     "semantic_hash": ""
   },
   "src/features/updates/useSourceUpdatePolling.ts": {
-    "mtime": 1793192634.4924943,
-    "ast_hash": "525a5542f424a97fe0aa0ebeff0b0e6b",
+    "mtime": 1793391838.9216275,
+    "ast_hash": "7cda7580a8ec665c7301d23f97cc9112",
     "semantic_hash": ""
   },
   "src/features/updates/useSourceUpdateRuntime.ts": {
@@ -700,8 +700,8 @@
     "semantic_hash": ""
   },
   "src/features/updates/useUpdateActions.ts": {
-    "mtime": 1793330575.9517004,
-    "ast_hash": "f375d5eaa555115f49a9bbb7b01dea5e",
+    "mtime": 1793391851.480083,
+    "ast_hash": "19d8b8696e294047d999c272494d4156",
     "semantic_hash": ""
   },
   "src/app/RouteErrorBoundary.tsx": {
@@ -755,8 +755,8 @@
     "semantic_hash": ""
   },
   "src/features/updates/SourceUpdateBanner.tsx": {
-    "mtime": 1793330575.9512308,
-    "ast_hash": "f507917cdce44a282e8957ac918195ff",
+    "mtime": 1793391861.4232879,
+    "ast_hash": "a9680f822a89ac6c8dc3e66030aeaf61",
     "semantic_hash": ""
   },
   "src/features/updates/SynchronizeBanner.tsx": {
@@ -1530,8 +1530,8 @@
     "semantic_hash": ""
   },
   "src/app/routes/original/OriginalRoute.tsx": {
-    "mtime": 1793248079.0782983,
-    "ast_hash": "201da754859d19aa334a65166c424f0b",
+    "mtime": 1793391875.8578246,
+    "ast_hash": "fbcb41062e49bf00e10ca00a60699c1c",
     "semantic_hash": ""
   },
   "src/components/BrandMark.tsx": {
@@ -1610,8 +1610,8 @@
     "semantic_hash": ""
   },
   "src/features/original-app/OriginalDetail.tsx": {
-    "mtime": 1793330575.9461894,
-    "ast_hash": "7c0b767015d0cfd705f9b24435b917f1",
+    "mtime": 1793391875.856994,
+    "ast_hash": "08e9545aea1ead5c036911358cf75fbd",
     "semantic_hash": ""
   },
   "src/features/sessions/SessionList.tsx": {

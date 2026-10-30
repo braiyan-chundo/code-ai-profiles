@@ -1,6 +1,7 @@
 import { DownloadIcon, RefreshCwIcon, TerminalSquareIcon } from "lucide-react";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
+import { Spinner } from "../../components/ui/spinner";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import type { CodeSession, DashboardState, SessionProfile } from "../../types";
 import { InstanceAvatar, InstanceStatusBadge } from "../instances";
@@ -11,8 +12,9 @@ import type { OriginalInstallAvailability } from "../updates";
  * El cuerpo de `#/original` (HU-0016, AC-04): la aplicación original con su ruta, versión, estado, perfil local y
  * sesiones de Code, y sus acciones: actualizar por el canal oficial y, por sesión, transferir y desvincular o devolver.
  * Sustituye a la `OriginalAppSection`. Sus botones de sesión **no** se deshabilitan con `busy`, como antes; solo
- * «Actualizar original». Con una versión disponible en macOS (HU-0017, A-10) «Descargar e instalar» es el botón
- * principal y «Actualizar original» queda como secundario, con el motivo de bloqueo a la vista.
+ * los de actualizar. En macOS no se abre la original para actualizarla: «Comprobar actualización» consulta la
+ * publicación oficial desde la app y, con una versión disponible (HU-0017, A-10), «Descargar e instalar» es el botón
+ * principal, con el motivo de bloqueo a la vista. En Windows y Linux, «Actualizar original» abre su canal oficial.
  */
 export function OriginalDetail({
   appName,
@@ -26,6 +28,8 @@ export function OriginalDetail({
   install,
   onInstall,
   onUpdate,
+  checking,
+  onCheck,
   onTransfer,
   onUnlink,
 }: {
@@ -40,6 +44,9 @@ export function OriginalDetail({
   install: OriginalInstallAvailability;
   onInstall: () => void;
   onUpdate: () => void;
+  /** La comprobación oficial está en curso. */
+  checking: boolean;
+  onCheck: () => void;
   onTransfer: (session: CodeSession) => void;
   onUnlink: (session: CodeSession) => void;
 }) {
@@ -73,18 +80,33 @@ export function OriginalDetail({
             <Metric label="Sesiones Code" value={`${sessions.length}`} />
             <div className="grid justify-items-end gap-2">
               <div className="flex flex-wrap items-center justify-end gap-3">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="lg"
-                  onClick={onUpdate}
-                  disabled={busy}
-                  aria-label={`Actualizar ${appName} mediante su canal oficial`}
-                  title={`Abrir confirmación para el canal oficial de ${channel}`}
-                  className="px-4"
-                >
-                  <RefreshCwIcon /> Actualizar original
-                </Button>
+                {platform === "macos" ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="lg"
+                    onClick={onCheck}
+                    disabled={busy}
+                    aria-busy={checking}
+                    title={`Consultar la publicación oficial de ${appName}`}
+                    className="min-w-56 px-4"
+                  >
+                    {checking ? <><Spinner aria-hidden="true" /> Buscando…</> : <><RefreshCwIcon /> Comprobar actualización</>}
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="lg"
+                    onClick={onUpdate}
+                    disabled={busy}
+                    aria-label={`Actualizar ${appName} mediante su canal oficial`}
+                    title={`Abrir confirmación para el canal oficial de ${channel}`}
+                    className="px-4"
+                  >
+                    <RefreshCwIcon /> Actualizar original
+                  </Button>
+                )}
                 {install.visible && (
                   <Button type="button" size="lg" onClick={onInstall} disabled={install.disabled} className="px-4">
                     <DownloadIcon /> Descargar e instalar

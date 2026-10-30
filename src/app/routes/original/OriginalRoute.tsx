@@ -19,7 +19,7 @@ export function OriginalRoute() {
   const { setTransfer, setUnlinkTarget, setOriginalUpdateOpen } = useDialogs();
   const runtimePlatform = useRuntimePlatform();
   const transferProfiles = useTransferProfiles();
-  const { installOriginal } = useUpdateActions();
+  const { installOriginal, checkOriginalUpdate } = useUpdateActions();
   const appName = selectOriginalAppName(state.system);
   const sourcePath = state.system.sourcePath;
   const openOriginalUpdate = () => {
@@ -46,6 +46,8 @@ export function OriginalRoute() {
               install={originalInstallAvailability(state.system, busy)}
               onInstall={() => void installOriginal()}
               onUpdate={openOriginalUpdate}
+              checking={busy === "check-original-update"}
+              onCheck={() => void checkOriginalUpdate()}
               onTransfer={(session) => {
                 clearFeedback();
                 setTransfer({ source: transferProfiles[0], session });

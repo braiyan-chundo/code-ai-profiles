@@ -3,8 +3,10 @@ import test from "node:test";
 import {
   createSourceUpdateController,
   mergeSourceUpdateForInstallation,
+  SOURCE_UPDATE_POLL_MS,
   sourceInstallationIdentity,
   sourceUpdatePresentation,
+  summarizeSourceUpdateCheck,
 } from "../src/lib/source-update-controller.ts";
 import type { DashboardState, SourceUpdateInfo, VersionTopology } from "../src/types.ts";
 
@@ -384,7 +386,8 @@ test("stale gana al warning y a available", () => {
     "Claude",
   );
   assert.equal(presentation?.kind, "uncertain");
-  assert.match(presentation?.detail ?? "", /no es reciente/);
+  assert.match(presentation?.detail ?? "", /más de 6 horas/);
+  assert.doesNotMatch(presentation?.detail ?? "", /flujo oficial/);
 });
 
 test("current fresco con instancia superior comunica estado oficial y discrepancia local sin inferir rollout", () => {
@@ -416,3 +419,23 @@ for (const sourceUpdate of [
     assert.doesNotMatch(copy, /al día según|versión .* disponible/);
   });
 }
+
+test("el sondeo es más corto que el reintento de 30 min: la caducidad de la caché no espera otras 6 h", () => {
+  // La caché de Rust es fresca 6 h (30 min con aviso). Un sondeo de 6 h desde el arranque llegaba justo antes de
+  // caducar, devolvía la caché y dejaba el aviso «no es reciente» hasta el sondeo siguiente.
+  assert.ok(SOURCE_UPDATE_POLL_MS <= 30 * 60 * 1_000);
+  assert.ok(SOURCE_UPDATE_POLL_MS >= 60 * 1_000);
+});
+
+test("comprobar actualización: al día, disponible y sin respuesta", () => {
+  assert.deepEqual(summarizeSourceUpdateCheck(update({ status: "current", latestVersion: "4.4212.0" }), "Claude"), {
+    notice: "Claude está al día: 4.4212.0 es la última versión publicada.",
+    error: null,
+  });
+  assert.deepEqual(summarizeSourceUpdateCheck(update({ status: "available" }), "Claude"), { notice: null, error: null });
+  for (const failed of [update({ status: "unavailable" }), update({ status: "current", stale: true }), update({ checkedAt: null })]) {
+    const summary = summarizeSourceUpdateCheck(failed, "Claude");
+    assert.equal(summary.notice, null);
+    assert.match(summary.error ?? "", /No se pudo consultar la publicación oficial de Claude/);
+  }
+});
