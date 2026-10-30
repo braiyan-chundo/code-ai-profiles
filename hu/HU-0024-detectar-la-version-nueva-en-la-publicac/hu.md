@@ -9,7 +9,7 @@ prioridad: alta
 creada: 2026-10-29
 requiere: { arquitectura: true, diseno: false }
 repos: [code-ai-profiles]
-riesgo: [red, permisos]
+riesgo: [permisos, contrato]
 reglas: []
 depende: []
 ---
