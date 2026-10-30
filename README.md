@@ -8,6 +8,8 @@ Aplicación de escritorio open source creada con Tauri, React y Rust para admini
 
 > Estado: beta técnica. No uses perfiles ni sesiones irremplazables sin conservar un respaldo.
 
+**Descarga:** [última versión en Releases](https://github.com/braiyan-chundo/code-ai-profiles/releases/latest) · [cómo instalarla](#descargar-e-instalar).
+
 ![Dashboard oscuro de Code AI Profiles](docs/screenshots/dashboard-dark.png)
 
 ![Sesiones desplegadas en el tema claro](docs/screenshots/sessions-light.png)
@@ -42,6 +44,77 @@ Aplicación de escritorio open source creada con Tauri, React y Rust para admini
 La interfaz necesita un motor web de nivel Safari 16.4. En Ubuntu 22.04 eso es el WebKitGTK de `jammy-updates` (`libwebkit2gtk-4.1-0`): el 2.36 con que salió no basta. El `.deb` usa el WebKitGTK del sistema y el `.AppImage` lleva el del runner. Si el motor no basta, la app lo avisa al abrirse.
 
 Los instaladores de cada plataforma se compilan en runners nativos mediante [`.github/workflows/build-desktop.yml`](.github/workflows/build-desktop.yml). Los paquetes generados aún no están firmados ni notarizados.
+
+## Descargar e instalar
+
+Los instaladores están en la página [Releases](https://github.com/braiyan-chundo/code-ai-profiles/releases/latest) del
+repositorio, en la sección **Assets** de cada versión. No hay que compilar nada.
+
+**Antes de instalar:** Code AI Profiles administra copias de la aplicación de escritorio de Claude, así que esta debe
+estar instalada con su instalador oficial. La app la busca en:
+
+| Plataforma | Dónde debe estar Claude |
+| --- | --- |
+| macOS | `/Applications/Claude.app` (o `~/Applications/Claude.app`) |
+| Windows | `%LOCALAPPDATA%\AnthropicClaude\Claude.exe`, la ruta del instalador oficial |
+| Linux | El paquete `claude-desktop` del repositorio apt oficial |
+
+| Tu equipo | Descarga | Archivo |
+| --- | --- | --- |
+| Mac con Apple Silicon (M1 o posterior) | `.dmg` | `Code.AI.Profiles_<versión>_aarch64.dmg` |
+| Windows x64 | `.exe` (recomendado) o `.msi` | `Code.AI.Profiles_<versión>_x64-setup.exe` · `Code.AI.Profiles_<versión>_x64_en-US.msi` |
+| Linux x64 (Ubuntu, Debian) | `.deb` o `.AppImage` | `…_amd64.deb` · `…_amd64.AppImage` |
+| Linux ARM64 | `.deb` o `.AppImage` | `…_arm64.deb` · `…_aarch64.AppImage` |
+
+Los instaladores **no están firmados ni notarizados** (el proyecto no tiene certificados de Apple ni de Microsoft), así
+que el sistema avisa la primera vez. Abajo está cómo continuar en cada uno.
+
+### macOS
+
+1. Abre el `.dmg` y arrastra **Code AI Profiles** a **Aplicaciones**.
+2. La primera vez, macOS dice que no puede verificar al desarrollador:
+   - macOS 13 y 14: clic derecho sobre la app › **Abrir** › **Abrir**.
+   - macOS 15 o posterior: intenta abrirla, cierra el aviso y ve a **Ajustes del Sistema › Privacidad y seguridad**;
+     abajo aparece «Se bloqueó Code AI Profiles», con **Abrir igualmente**.
+3. Si macOS dice que la app «está dañada», es la cuarentena de la descarga. Quítala y ábrela de nuevo:
+
+   ```bash
+   xattr -dr com.apple.quarantine "/Applications/Code AI Profiles.app"
+   ```
+
+Los permisos de macOS son opcionales y se explican en **Configuración › Permisos**.
+
+### Windows
+
+1. Descarga el `.exe` y ábrelo. El `.msi` hace lo mismo y es para instalar con herramientas de empresa.
+2. Windows muestra «Windows protegió su PC»: pulsa **Más información** y después **Ejecutar de todas formas**.
+3. Sigue el asistente. La app necesita WebView2, que Windows 11 ya trae; si falta, el `.exe` lo descarga.
+
+### Linux
+
+- **`.deb`** (Ubuntu, Debian y derivados):
+
+  ```bash
+  sudo apt install ./Code.AI.Profiles_<versión>_amd64.deb
+  ```
+
+- **`.AppImage`** (cualquier distribución): dale permiso de ejecución y ábrelo.
+
+  ```bash
+  chmod +x Code.AI.Profiles_<versión>_amd64.AppImage
+  ./Code.AI.Profiles_<versión>_amd64.AppImage
+  ```
+
+Necesita WebKitGTK 2.40 o posterior (ver la tabla de plataformas); si no lo tiene, la app lo avisa al abrirse.
+
+### Actualizar Code AI Profiles
+
+La app no se actualiza sola. Descarga la versión nueva de [Releases](https://github.com/braiyan-chundo/code-ai-profiles/releases/latest)
+e instálala encima de la anterior: las instancias, sus perfiles y los proyectos anclados se conservan. Los cambios de
+cada versión están en el [CHANGELOG](CHANGELOG.md).
+
+> Windows y Linux se compilan y prueban en CI, pero todavía no se han probado en equipos reales. Si algo falla,
+> [abre un issue](https://github.com/braiyan-chundo/code-ai-profiles/issues) con tu sistema y lo que viste.
 
 ## Desarrollo local
 
@@ -127,7 +200,7 @@ src-tauri/target/release/bundle/macos/Code AI Profiles.app
 src-tauri/target/release/bundle/dmg/*.dmg
 ```
 
-Como referencia histórica, la entrega local de Apple Silicon `0.2.1` fue verificada. La generación de `0.4.0` se realiza únicamente después de que el merge protegido llegue a `main`; la ruta esperada del DMG y la `.app`, su hash y su verificación se reportan junto con ese artefacto. Un paquete local puede estar firmado ad-hoc y no estar notarizado, por lo que macOS puede requerir clic derecho → **Abrir**. Un artefacto local no implica una publicación o GitHub Release.
+Un paquete local está firmado ad hoc y no está notarizado, así que macOS puede pedir la confirmación descrita en [Descargar e instalar](#macos). Compilarlo no publica nada.
 
 ### Windows x64
 
@@ -169,6 +242,22 @@ src-tauri/target/release/bundle/appimage/*.AppImage
 ```
 
 Para obtener todas las variantes desde GitHub, ejecuta manualmente el workflow **Build desktop installers** y descarga sus artifacts.
+
+### Publicar una versión
+
+1. Prepara la versión con `pnpm release:version <patch|minor|major>` y su sección en el [CHANGELOG](CHANGELOG.md), y
+   llévala a `main` por PR desde `develop`.
+2. Crea y empuja el tag desde `main`:
+
+   ```bash
+   git tag v<versión>
+   git push origin v<versión>
+   ```
+
+3. **Build desktop installers** compila las cuatro variantes y crea una Release **en borrador** con los 7 instaladores
+   y las notas de esa versión del CHANGELOG. Falla si el tag no coincide con la versión de la app o si falta su sección
+   en el CHANGELOG.
+4. Revisa el borrador en Releases y publícalo. Hasta entonces nadie lo ve.
 
 ## Cómo funciona el aislamiento
 
