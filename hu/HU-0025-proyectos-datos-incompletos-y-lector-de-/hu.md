@@ -2,7 +2,7 @@
 id: HU-0025
 titulo: "Proyectos: datos incompletos y lector de historias"
 estado: en-proceso
-fase: arquitectura
+fase: implementacion
 area: proyectos
 entrega: 1
 prioridad: alta
