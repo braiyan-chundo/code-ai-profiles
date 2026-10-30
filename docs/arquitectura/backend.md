@@ -10,6 +10,7 @@ HU-0017 y manda sobre la skill hasta que esta se regenere.
 | `src-tauri/src/lib.rs` | Tipos serde, comandos IPC, lógica general y `run()` |
 | `src-tauri/src/config.rs` | El único sitio con URLs y hosts. Se fija al compilar desde `.env.example` (A-8 de HU-0017) |
 | `src-tauri/src/original_update.rs` | Descargar, verificar e instalar la original en macOS. La capa `MacosTools` es inyectable en las pruebas |
+| `src-tauri/src/official_release.rs` | Versión objetivo de la original (HU-0024): lee `RELEASES.json`, confirma su paquete con el feed (misma versión y misma URL) y resuelve cuál de las dos fuentes manda. Funciones puras más un GET |
 | `src-tauri/src/projects.rs` (+ `projects/{method,tech,git,tests}.rs`) | Proyectos anclados con la metodología v4 (HU-0023): registro `projects.json`, `ReadContext`, lectura del método, manifiestos y `.git`. Ver § Proyectos anclados |
 | `src-tauri/Info.plist` | Textos de los avisos de TCC (`NS*FolderUsageDescription`). Tauri lo fusiona al empaquetar en macOS. No pide permisos |
 | `src-tauri/build.rs` | Pasa las claves `CAP_*` (del entorno, `.env.local` o `.env.example`) a `cargo:rustc-env` |
@@ -33,11 +34,12 @@ flujo autocontenido.
 
 ## Red
 
-Hay dos salidas, y ninguna lleva cookies, credenciales ni identificadores (el `device_id` es el UUID nulo):
+Hay tres salidas, y ninguna lleva cookies, credenciales ni identificadores (el `device_id` es el UUID nulo):
 
 | Destino | Cuándo | Límites |
 | --- | --- | --- |
 | Feed oficial (`CAP_UPDATE_FEED_URL`) | Comprobación de versión (caché de 6 h) y antes de instalar | 5 s, sin redirecciones, 256 KiB |
+| Publicación oficial (`CAP_UPDATE_RELEASES_URL`, solo macOS · HU-0024) | Comprobación de versión (misma caché) y antes de instalar | Igual que el feed; sin query. El feed se pregunta entonces también con la versión publicada para confirmar su paquete |
 | Host del paquete (`CAP_UPDATE_DOWNLOAD_HOSTS`) | Solo cuando la persona pulsa «Descargar e instalar» | `https_only`, host exacto, sin `Referer`, hasta 3 redirecciones a hosts permitidos, `size` del feed como tope (lee `size + 1` como mucho), 15 s de conexión, 60 s sin bytes, 30 min en total, cancelable |
 
 En `reqwest::blocking` 0.13, `ClientBuilder::timeout` se aplica a la espera de la respuesta y a **cada lectura**
