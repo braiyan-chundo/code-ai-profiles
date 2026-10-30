@@ -8,7 +8,7 @@ pub(crate) fn signal_verified_processes(
     identity: &ManagedProcessIdentity,
     processes: Vec<(u32, u64)>,
     force: bool,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     let signal = if force { libc::SIGKILL } else { libc::SIGTERM };
     let mut signaled = HashSet::new();
     if let Some(group_id) = identity.process_group_id.filter(|_| {
@@ -26,7 +26,9 @@ pub(crate) fn signal_verified_processes(
         } else {
             let error = std::io::Error::last_os_error();
             if error.raw_os_error() != Some(libc::ESRCH) {
-                return Err(format!("No se pudo señalizar el grupo verificado: {error}"));
+                return Err(AppError::process(format!(
+                    "No se pudo señalizar el grupo verificado: {error}"
+                )));
             }
         }
     }
@@ -38,9 +40,9 @@ pub(crate) fn signal_verified_processes(
         if result != 0 {
             let error = std::io::Error::last_os_error();
             if error.raw_os_error() != Some(libc::ESRCH) {
-                return Err(format!(
+                return Err(AppError::process(format!(
                     "No se pudo señalizar el proceso verificado: {error}"
-                ));
+                )));
             }
         }
     }

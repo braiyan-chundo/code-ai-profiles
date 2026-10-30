@@ -74,9 +74,11 @@ pub(crate) fn signal_verified_processes(
     identity: &ManagedProcessIdentity,
     processes: Vec<(u32, u64)>,
     force: bool,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     let _ = (identity, processes, force);
-    Err("Detener procesos no está soportado en esta plataforma.".to_string())
+    Err(AppError::unsupported(
+        "Detener procesos no está soportado en esta plataforma.",
+    ))
 }
 
 /// En unix la instancia nace en su propio grupo de procesos, para señalizarla entera.

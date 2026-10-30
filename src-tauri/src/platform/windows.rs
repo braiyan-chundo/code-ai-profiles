@@ -207,20 +207,22 @@ pub(crate) fn signal_verified_processes(
     _identity: &ManagedProcessIdentity,
     processes: Vec<(u32, u64)>,
     force: bool,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     for (pid, _start_time) in processes {
         let mut command = Command::new("taskkill");
         command.args(["/PID", &pid.to_string(), "/T"]);
         if force {
             command.arg("/F");
         }
-        let status = command
-            .status()
-            .map_err(|error| format!("No se pudo solicitar el cierre de la aplicación: {error}"))?;
+        let status = command.status().map_err(|error| {
+            AppError::process(format!(
+                "No se pudo solicitar el cierre de la aplicación: {error}"
+            ))
+        })?;
         if !status.success() && process_is_alive(pid) {
-            return Err(format!(
+            return Err(AppError::process(format!(
                 "Windows no pudo detener el proceso verificado {pid}."
-            ));
+            )));
         }
     }
     Ok(())

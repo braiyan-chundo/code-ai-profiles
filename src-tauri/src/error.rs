@@ -11,8 +11,12 @@ pub(crate) enum AppErrorKind {
     LocalIo,
     /// Un archivo propio (p. ej. el registro de instancias) existe, pero no se puede interpretar.
     DamagedData,
+    /// Procesos e identidad: señales, comandos del sistema, una identidad que no coincide.
+    Process,
     /// Lo que llega no es válido: identificadores, nombres, rutas.
     InvalidInput,
+    /// La operación no existe en esta plataforma.
+    Unsupported,
     /// Un fallo propio: el coordinador quedó bloqueado o no se pudo serializar.
     Internal,
     /// Sin clasificar todavía: viene de un `String` de un módulo que aún no usa `AppError`.
@@ -41,8 +45,17 @@ impl AppError {
         Self::new(AppErrorKind::DamagedData, message)
     }
 
+    pub(crate) fn process(message: impl Into<String>) -> Self {
+        Self::new(AppErrorKind::Process, message)
+    }
+
     pub(crate) fn invalid_input(message: impl Into<String>) -> Self {
         Self::new(AppErrorKind::InvalidInput, message)
+    }
+
+    #[cfg_attr(any(unix, target_os = "windows"), allow(dead_code))]
+    pub(crate) fn unsupported(message: impl Into<String>) -> Self {
+        Self::new(AppErrorKind::Unsupported, message)
     }
 
     pub(crate) fn internal(message: impl Into<String>) -> Self {

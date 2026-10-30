@@ -224,7 +224,7 @@ pub(crate) fn signal_instance_processes(
     identity: &ManagedProcessIdentity,
     force: bool,
     inventory: &ProcessInventory,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     let processes = process_snapshot(instance, inventory);
     if processes.is_empty() {
         return Ok(());
@@ -234,7 +234,9 @@ pub(crate) fn signal_instance_processes(
         || identity.fingerprint
             != process_fingerprint(Path::new(&instance.app_path), &expected_argument)
     {
-        return Err("La identidad del proceso cambió; no se envió ninguna señal.".to_string());
+        return Err(AppError::process(
+            "La identidad del proceso cambió; no se envió ninguna señal.",
+        ));
     }
     if let Some((_, root_start_time)) = processes.iter().find(|(pid, _)| *pid == identity.root_pid)
     {
@@ -242,7 +244,9 @@ pub(crate) fn signal_instance_processes(
             .start_time
             .is_some_and(|expected| expected != *root_start_time)
         {
-            return Err("El PID raíz fue reutilizado; no se envió ninguna señal.".to_string());
+            return Err(AppError::process(
+                "El PID raíz fue reutilizado; no se envió ninguna señal.",
+            ));
         }
     }
 
@@ -304,6 +308,47 @@ mod tests {
         signal_instance_processes(&instance, &identity, false, &empty)
             .expect("without matching processes there is nothing to signal");
         assert_eq!(refresh_work_counters().process_inventories, 0);
+    }
+
+    #[test]
+    fn a_changed_identity_is_a_process_error_with_the_same_text() {
+        let root = env::temp_dir().join(format!("code-ai-identity-{}", Uuid::new_v4()));
+        let instance = test_instance(&root);
+        let profile_argument = format!("--user-data-dir={}", instance.profile_path);
+        let executable = provider_executable(Path::new(&instance.app_path));
+        let inventory = ProcessInventory {
+            entries: vec![ProcessInventoryEntry {
+                pid: u32::MAX - 1,
+                start_time: 42,
+                executable: Some(fs::canonicalize(&executable).unwrap_or(executable)),
+                command: vec![profile_argument.clone().into()],
+            }],
+        };
+        let verified = ManagedProcessIdentity {
+            root_pid: u32::MAX - 1,
+            process_group_id: None,
+            start_time: Some(41),
+            fingerprint: process_fingerprint(Path::new(&instance.app_path), &profile_argument),
+            profile_argument: profile_argument.clone(),
+        };
+        let changed = ManagedProcessIdentity {
+            fingerprint: "otra huella".to_string(),
+            ..verified.clone()
+        };
+
+        // Las dos comprobaciones fallan antes de enviar ninguna señal.
+        let error = signal_instance_processes(&instance, &changed, false, &inventory).unwrap_err();
+        assert_eq!(error.kind(), AppErrorKind::Process);
+        assert_eq!(
+            String::from(error),
+            "La identidad del proceso cambió; no se envió ninguna señal."
+        );
+        let error = signal_instance_processes(&instance, &verified, false, &inventory).unwrap_err();
+        assert_eq!(error.kind(), AppErrorKind::Process);
+        assert_eq!(
+            error.to_string(),
+            "El PID raíz fue reutilizado; no se envió ninguna señal."
+        );
     }
 
     #[test]
