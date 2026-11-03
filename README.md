@@ -143,13 +143,13 @@ cargo test --manifest-path src-tauri/Cargo.toml
 
 ## Versionado
 
-El repositorio usa Semantic Versioning y actualmente está en `0.4.0`. Para preparar una versión compatible, una funcionalidad o un cambio incompatible, ejecuta:
+El repositorio usa Semantic Versioning y actualmente está en `0.5.0`. Para preparar una versión compatible, una funcionalidad o un cambio incompatible, ejecuta:
 
 ```bash
 pnpm release:version patch
 pnpm release:version minor
 pnpm release:version major
-pnpm release:version 0.4.0
+pnpm release:version 0.5.0
 pnpm release:check
 ```
 
