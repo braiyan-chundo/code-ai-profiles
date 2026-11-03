@@ -120,6 +120,9 @@ const mockTopology = (): DashboardState["system"]["versionTopology"] => {
   };
 };
 
+// Distintivo de ejemplo (HU-0028): PNG de 16 px de un color de la paleta, nunca la marca de nadie.
+const mockProviderBadge = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAFklEQVR42mM4e2wnSYhhVMOohuGrAQCrzEwfxYWIZQAAAABJRU5ErkJggg==";
+
 const mockState = (): DashboardState => ({
   instances: mockInstances,
   system: {
@@ -127,6 +130,7 @@ const mockState = (): DashboardState => ({
     platform: "macos",
     sourcePath: "/Applications/Claude.app",
     sourceName: mockSourceName,
+    providerBadge: { path: mockProviderBadge },
     sourceVersion: mockSourceVersion,
     sourceUpdate: {
       status: mockOriginalInstalled() ? "current" : "available",
