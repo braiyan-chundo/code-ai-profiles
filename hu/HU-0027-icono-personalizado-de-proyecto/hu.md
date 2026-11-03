@@ -2,7 +2,7 @@
 id: HU-0027
 titulo: "Icono personalizado de proyecto"
 estado: en-proceso
-fase: arquitectura
+fase: implementacion
 area: proyectos
 entrega: 1
 prioridad: media

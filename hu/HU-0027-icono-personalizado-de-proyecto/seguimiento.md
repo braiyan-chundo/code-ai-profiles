@@ -10,3 +10,5 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-11-03 01:23 | orquestador | maqueta: diseno/maqueta.html, vista.md y 18 capturas; pendiente de aprobación |
 | 2026-11-03 01:31 | orquestador | maqueta aprobada: «Aprobada» — Braiyan, 2026-11-03, con las ★ de vista.md (velo con lápiz centrado, aro fino, texto de error de las instancias, sin pista en reposo) |
 | 2026-11-03 01:31 | hu.mjs | fase requisitos → arquitectura |
+| 2026-11-03 01:39 | hu.mjs | fase arquitectura → implementacion |
+| 2026-11-03 01:53 | orquestador | implementación: backend 3b3092a, adf610e; frontend 66a318d |
