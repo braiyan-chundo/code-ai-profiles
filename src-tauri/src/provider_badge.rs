@@ -25,6 +25,9 @@ const PE_RESOURCES_MAX_BYTES: u64 = 64 * 1024 * 1024;
 const PE_HEADER_MAX_OFFSET: u64 = 1024 * 1024;
 const PE_MAX_SECTIONS: usize = 96;
 const PE_MAX_DIRECTORY_ENTRIES: usize = 4096;
+/// Distinct icons of the group that are tried, from the widest down: a tampered group cannot make the extraction
+/// (done with `BADGE_LOCK` held) walk thousands of entries.
+const PE_MAX_GROUP_ICONS: usize = 64;
 const RT_ICON: u32 = 3;
 const RT_GROUP_ICON: u32 = 14;
 /// Lado máximo de una imagen que se decodifica.
@@ -56,16 +59,16 @@ fn read_u32_be(bytes: &[u8], offset: usize) -> Option<u32> {
         .map(|value| u32::from_be_bytes([value[0], value[1], value[2], value[3]]))
 }
 
-/// Ancho que declara la cabecera `IHDR` de un PNG.
-fn png_width(bytes: &[u8]) -> Option<u32> {
+/// Ancho y alto que declara la cabecera `IHDR` de un PNG.
+fn png_dimensions(bytes: &[u8]) -> Option<(u32, u32)> {
     if bytes.get(..8)? != PNG_SIGNATURE || bytes.get(12..16)? != b"IHDR" {
         return None;
     }
-    read_u32_be(bytes, 16)
+    Some((read_u32_be(bytes, 16)?, read_u32_be(bytes, 20)?))
 }
 
-/// El trozo PNG de mayor ancho de un `icns` (`ic07`..`ic14` lo traen así). Ignora los trozos que no son PNG; una
-/// longitud rota da `None`.
+/// El trozo PNG de mayor ancho de un `icns` (`ic07`..`ic14` lo traen así) que se puede decodificar (≤ 2048 por
+/// lado). Ignora los trozos que no son PNG y los que pasan del tope; una longitud rota da `None`.
 pub(crate) fn icns_largest_png(bytes: &[u8]) -> Option<Vec<u8>> {
     if bytes.get(..4)? != b"icns" {
         return None;
@@ -83,8 +86,10 @@ pub(crate) fn icns_largest_png(bytes: &[u8]) -> Option<Vec<u8>> {
             return None;
         }
         let data = bytes.get(offset.checked_add(8)?..end)?;
-        if let Some(width) = png_width(data) {
-            if best.is_none_or(|(best_width, _)| width > best_width) {
+        if let Some((width, height)) = png_dimensions(data) {
+            let decodable =
+                (1..=DECODE_MAX_SIDE).contains(&width) && (1..=DECODE_MAX_SIDE).contains(&height);
+            if decodable && best.is_none_or(|(best_width, _)| width > best_width) {
                 best = Some((width, data));
             }
         }
@@ -116,6 +121,15 @@ impl ResourceSection {
     /// Entries of the resource directory at `directory_offset` (relative to the resource root):
     /// `(name or id, is_named, offset_to_data, is_subdirectory)`.
     fn entries(&self, directory_offset: u32) -> Option<Vec<(u32, bool, u32, bool)>> {
+        self.entries_up_to(directory_offset, PE_MAX_DIRECTORY_ENTRIES)
+    }
+
+    /// Like `entries`, reading at most `limit` of them (a directory over 4096 entries is still refused).
+    fn entries_up_to(
+        &self,
+        directory_offset: u32,
+        limit: usize,
+    ) -> Option<Vec<(u32, bool, u32, bool)>> {
         let root = self.offset_of(self.directory_rva)?;
         let start = root.checked_add(usize::try_from(directory_offset).ok()?)?;
         let named = usize::from(read_u16_le(&self.bytes, start.checked_add(12)?)?);
@@ -124,6 +138,7 @@ impl ResourceSection {
         if count > PE_MAX_DIRECTORY_ENTRIES {
             return None;
         }
+        let count = count.min(limit);
         let mut entries = Vec::with_capacity(count);
         for index in 0..count {
             let entry = start.checked_add(16)?.checked_add(index.checked_mul(8)?)?;
@@ -139,23 +154,19 @@ impl ResourceSection {
         Some(entries)
     }
 
-    /// Follows type → name/id → first language down to the data. `id = None` takes the first entry of level 2.
-    fn resource(&self, kind: u32, id: Option<u32>) -> Option<&[u8]> {
+    /// Level 2 (names/ids) of the resource type `kind`.
+    fn type_directory(&self, kind: u32) -> Option<u32> {
         let (_, _, names, is_directory) = self
             .entries(0)?
             .into_iter()
             .find(|(name, named, _, _)| !named && *name == kind)?;
-        if !is_directory {
-            return None;
-        }
-        let (_, _, languages, is_directory) = self
-            .entries(names)?
-            .into_iter()
-            .find(|(name, named, _, _)| id.is_none_or(|id| !named && *name == id))?;
-        if !is_directory {
-            return None;
-        }
-        let (_, _, data_entry, is_directory) = self.entries(languages)?.into_iter().next()?;
+        is_directory.then_some(names)
+    }
+
+    /// The data of the first language of a level-3 directory (only that entry is read).
+    fn language_data(&self, languages: u32) -> Option<&[u8]> {
+        let (_, _, data_entry, is_directory) =
+            self.entries_up_to(languages, 1)?.into_iter().next()?;
         if is_directory {
             return None;
         }
@@ -287,7 +298,20 @@ fn encode_png(image: &image::RgbaImage) -> Option<Vec<u8>> {
 /// widest down (`0` = 256), the `RT_ICON` with that id: PNG as is, or a 32-bit DIB turned into PNG.
 pub(crate) fn pe_icon_image(file: &mut (impl Read + Seek)) -> Option<Vec<u8>> {
     let section = pe_resource_section(file)?;
-    let group = section.resource(RT_GROUP_ICON, None)?;
+    let group_names = section.type_directory(RT_GROUP_ICON)?;
+    let (_, _, group_languages, is_directory) =
+        section.entries_up_to(group_names, 1)?.into_iter().next()?;
+    if !is_directory {
+        return None;
+    }
+    let group = section.language_data(group_languages)?;
+    // The `RT_ICON` ids are read once; each icon then costs one language lookup.
+    let mut icon_languages = HashMap::new();
+    for (id, named, languages, is_directory) in section.entries(section.type_directory(RT_ICON)?)? {
+        if !named && is_directory {
+            icon_languages.entry(id).or_insert(languages);
+        }
+    }
     if read_u16_le(group, 2)? != 1 {
         return None;
     }
@@ -301,8 +325,11 @@ pub(crate) fn pe_icon_image(file: &mut (impl Read + Seek)) -> Option<Vec<u8>> {
         })
         .collect::<Option<Vec<_>>>()?;
     entries.sort_by(|left, right| right.0.cmp(&left.0));
+    let mut seen = HashSet::new();
+    entries.retain(|(_, id)| seen.insert(*id));
+    entries.truncate(PE_MAX_GROUP_ICONS);
     entries.into_iter().find_map(|(_, id)| {
-        let icon = section.resource(RT_ICON, Some(u32::from(id)))?;
+        let icon = section.language_data(*icon_languages.get(&u32::from(id))?)?;
         if icon.starts_with(PNG_SIGNATURE) {
             Some(icon.to_vec())
         } else {
@@ -479,10 +506,22 @@ static BADGE_LOCK: Mutex<Option<BadgeMemo>> = Mutex::new(None);
 /// HU-0028 · the badge of the original at `source`, or `None` (no icon, unreadable, or not normalizable). With the
 /// same fingerprint the remembered result is returned (a `Some` only while its file is still there).
 pub(crate) fn provider_badge(app_data: &Path, source: &Path) -> Option<ProviderBadge> {
+    remembered_badge(&BADGE_LOCK, app_data, source, || {
+        provider_icon_file(source)
+            .and_then(|icon_file| resolve_badge(app_data, &icon_file, provider_icon_image))
+    })
+}
+
+/// `provider_badge` over a given memo (tests use their own): `extract` runs only when the fingerprint of `source`
+/// (or `app_data`) differs from the remembered one, or when the remembered copy is gone.
+fn remembered_badge(
+    lock: &Mutex<Option<BadgeMemo>>,
+    app_data: &Path,
+    source: &Path,
+    extract: impl FnOnce() -> Option<ProviderBadge>,
+) -> Option<ProviderBadge> {
     let fingerprint = application_fingerprint(source)?;
-    let mut memo = BADGE_LOCK
-        .lock()
-        .unwrap_or_else(|poisoned| poisoned.into_inner());
+    let mut memo = lock.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
     if let Some(remembered) = memo
         .as_ref()
         .filter(|memo| memo.app_data == app_data && memo.fingerprint == fingerprint)
@@ -495,8 +534,7 @@ pub(crate) fn provider_badge(app_data: &Path, source: &Path) -> Option<ProviderB
             Some(_) => {}
         }
     }
-    let badge = provider_icon_file(source)
-        .and_then(|icon_file| resolve_badge(app_data, &icon_file, provider_icon_image));
+    let badge = extract();
     *memo = Some(BadgeMemo {
         app_data: app_data.to_path_buf(),
         fingerprint,
@@ -601,6 +639,20 @@ mod tests {
         ]);
         assert_eq!(icns_largest_png(&file), Some(large.clone()));
         assert_eq!(icns_largest_png(&icns(&[(b"is32", b"legacy")])), None);
+        // A PNG chunk that declares more than 2048 px a side (it would not be decoded) is passed over.
+        let oversized = |width: u32, height: u32| {
+            let mut header = PNG_SIGNATURE.to_vec();
+            header.extend_from_slice(&13_u32.to_be_bytes());
+            header.extend_from_slice(b"IHDR");
+            header.extend_from_slice(&width.to_be_bytes());
+            header.extend_from_slice(&height.to_be_bytes());
+            header.extend_from_slice(&[8, 6, 0, 0, 0, 0, 0, 0, 0]);
+            header
+        };
+        let (wide, tall) = (oversized(4096, 4096), oversized(1024, 4096));
+        let with_oversized = icns(&[(b"ic07", &small), (b"ic14", &wide), (b"ic13", &tall)]);
+        assert_eq!(icns_largest_png(&with_oversized), Some(small.clone()));
+        assert_eq!(icns_largest_png(&icns(&[(b"ic14", &wide)])), None);
         // Broken lengths: total larger than the file, a chunk past the end, a chunk shorter than its header.
         let mut too_long = file.clone();
         too_long[4..8].copy_from_slice(&u32::MAX.to_be_bytes());
@@ -634,6 +686,12 @@ mod tests {
 
     /// A PE32+ with one section (`.rsrc`) holding a resource tree: one `RT_GROUP_ICON` and its `RT_ICON`s.
     fn pe_with_icons(icons: &[(u8, u16, Vec<u8>)]) -> Vec<u8> {
+        let group: Vec<(u8, u16)> = icons.iter().map(|(width, id, _)| (*width, *id)).collect();
+        pe_with_group(icons, &group)
+    }
+
+    /// Like `pe_with_icons`, with the `RT_GROUP_ICON` entries (`width`, `id`) given apart from the `RT_ICON`s.
+    fn pe_with_group(icons: &[(u8, u16, Vec<u8>)], group_entries: &[(u8, u16)]) -> Vec<u8> {
         const SECTION_RVA: u32 = 0x1000;
         const RAW_POINTER: u32 = 0x200;
         let directory = |entries: &[(u32, u32)]| {
@@ -649,12 +707,12 @@ mod tests {
         let mut group = Vec::new();
         group.extend_from_slice(&0_u16.to_le_bytes());
         group.extend_from_slice(&1_u16.to_le_bytes());
-        group.extend_from_slice(&u16::try_from(icons.len()).unwrap().to_le_bytes());
-        for (width, id, data) in icons {
+        group.extend_from_slice(&u16::try_from(group_entries.len()).unwrap().to_le_bytes());
+        for (width, id) in group_entries {
             group.extend_from_slice(&[*width, *width, 0, 0]);
             group.extend_from_slice(&1_u16.to_le_bytes());
             group.extend_from_slice(&32_u16.to_le_bytes());
-            group.extend_from_slice(&u32::try_from(data.len()).unwrap().to_le_bytes());
+            group.extend_from_slice(&0_u32.to_le_bytes());
             group.extend_from_slice(&id.to_le_bytes());
         }
         // Layout: root, type dirs, name dirs, language dirs, data entries, then the data blobs.
@@ -845,6 +903,86 @@ mod tests {
             assert_eq!(provider_icon_image(&file), expected, "{name}");
         }
         assert_eq!(provider_icon_image(&root.join("missing")), None);
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn pe_tries_each_icon_once_and_at_most_64_of_them() {
+        let png = solid_png(16, [0, 9, 0, 255]);
+        let garbage = || b"not a bitmap at all, just bytes...........".to_vec();
+        // 60 000 group entries naming the same undecodable icon, then a decodable one: the repeated id is tried
+        // once, so the cap is not used up and the decodable icon is found.
+        let mut group = vec![(32_u8, 1_u16); 60_000];
+        group.push((16, 2));
+        let repeated = pe_with_group(&[(32, 1, garbage()), (16, 2, png.clone())], &group);
+        assert_eq!(pe_icon_image(&mut Cursor::new(repeated)), Some(png.clone()));
+        // 64 distinct undecodable icons wider than the decodable one: the cap stops before it.
+        let mut icons: Vec<(u8, u16, Vec<u8>)> =
+            (1..=64).map(|id| (200 - id as u8, id, garbage())).collect();
+        icons.push((16, 65, png.clone()));
+        assert_eq!(pe_icon_image(&mut Cursor::new(pe_with_icons(&icons))), None);
+        icons.remove(0);
+        assert_eq!(
+            pe_icon_image(&mut Cursor::new(pe_with_icons(&icons))),
+            Some(png),
+            "63 failures leave room for the 64th"
+        );
+    }
+
+    #[test]
+    fn the_badge_memo_remembers_a_failure_until_the_fingerprint_changes() {
+        let root = env::temp_dir().join(format!("code-ai-badge-memo-{}", Uuid::new_v4()));
+        let app_data = root.join("data");
+        let source = root.join("Original.app");
+        let executable = provider_executable(&source);
+        fs::create_dir_all(executable.parent().unwrap()).unwrap();
+        fs::write(&executable, b"v1").unwrap();
+        let memo = Mutex::new(None);
+        let extractions = Cell::new(0);
+        let fail = || {
+            extractions.set(extractions.get() + 1);
+            None
+        };
+        assert_eq!(remembered_badge(&memo, &app_data, &source, fail), None);
+        assert_eq!(remembered_badge(&memo, &app_data, &source, fail), None);
+        assert_eq!(extractions.get(), 1, "a remembered failure is not retried");
+        // Another version of the original (another fingerprint) is extracted again.
+        fs::write(&executable, b"version 2").unwrap();
+        assert_eq!(remembered_badge(&memo, &app_data, &source, fail), None);
+        assert_eq!(extractions.get(), 2);
+        // A success is remembered while its copy is there, and extracted again when it is gone.
+        let copy = app_data.join("provider-badge/0123456789abcdef.png");
+        fs::create_dir_all(copy.parent().unwrap()).unwrap();
+        fs::write(&copy, solid_png(8, [1, 1, 1, 255])).unwrap();
+        let badge = ProviderBadge {
+            path: copy.to_string_lossy().to_string(),
+        };
+        let succeed = || {
+            extractions.set(extractions.get() + 1);
+            Some(badge.clone())
+        };
+        fs::write(&executable, b"version three").unwrap();
+        assert_eq!(
+            remembered_badge(&memo, &app_data, &source, succeed),
+            Some(badge.clone())
+        );
+        assert_eq!(
+            remembered_badge(&memo, &app_data, &source, succeed),
+            Some(badge.clone())
+        );
+        assert_eq!(extractions.get(), 3);
+        fs::remove_file(&copy).unwrap();
+        assert_eq!(
+            remembered_badge(&memo, &app_data, &source, succeed),
+            Some(badge.clone())
+        );
+        assert_eq!(extractions.get(), 4, "a vanished copy is extracted again");
+        // Without an original there is nothing to remember.
+        assert_eq!(
+            remembered_badge(&memo, &app_data, &root.join("missing"), succeed),
+            None
+        );
+        assert_eq!(extractions.get(), 4);
         fs::remove_dir_all(root).unwrap();
     }
 
