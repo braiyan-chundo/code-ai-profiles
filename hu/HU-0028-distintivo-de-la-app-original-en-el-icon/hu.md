@@ -2,7 +2,7 @@
 id: HU-0028
 titulo: "Distintivo de la app original en el icono de instancia"
 estado: en-proceso
-fase: arquitectura
+fase: verificacion
 area: instancias
 entrega: 1
 prioridad: media
