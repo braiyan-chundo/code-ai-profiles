@@ -23,4 +23,4 @@
 | ◻ | [HU-0024](HU-0024-detectar-la-version-nueva-en-la-publicac/hu.md) Detectar la versión nueva en la publicación oficial e instalarla | actualizaciones | verificacion | code-ai-profiles | — |
 | ◼ | [HU-0025](HU-0025-proyectos-datos-incompletos-y-lector-de-/hu.md) Proyectos: datos incompletos y lector de historias | proyectos | cierre | code-ai-profiles | RN-02 |
 | ◼ | [HU-0026](HU-0026-arrancar-y-detener-instancias-desde-el-s/hu.md) Arrancar y detener instancias desde el sidebar y el dashboard | instancias | cierre | code-ai-profiles | — |
-| ◐ | [HU-0027](HU-0027-icono-personalizado-de-proyecto/hu.md) Icono personalizado de proyecto | proyectos | requisitos | code-ai-profiles | RN-02 RN-04 |
+| ◐ | [HU-0027](HU-0027-icono-personalizado-de-proyecto/hu.md) Icono personalizado de proyecto | proyectos | arquitectura | code-ai-profiles | RN-02 RN-04 |
