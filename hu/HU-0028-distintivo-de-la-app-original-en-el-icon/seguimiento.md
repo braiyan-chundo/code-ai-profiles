@@ -15,3 +15,4 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-11-03 13:31 | orquestador | implementación: backend 4dd8a55 (contrato), e90a629; frontend 771efe1, capturas 1eb605b; sonda con el electron.icns real: distintivo 512 px y Dock 1024 como la maqueta |
 | 2026-11-03 13:41 | orquestador | revisión: PASS (f59102b), sin R-n; O-3 y O-4 corregidas en b97193f; O-1, O-2, O-5 aceptadas |
 | 2026-11-03 13:41 | hu.mjs | fase implementacion → verificacion |
+| 2026-11-03 13:43 | orquestador | verificación entregada: suite en verde sobre 0e949c6, DMG 5b4ea81c… |
