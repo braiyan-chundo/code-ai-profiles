@@ -30,7 +30,7 @@ Aplicación de escritorio open source creada con Tauri, React y Rust para admini
 - Cierra instancias mediante una identidad de proceso verificada, con espera y escalación controlada si no terminan.
 - Permite asignar un icono PNG o JPEG a cada instancia dentro de Code AI Profiles, sin alterar los binarios firmados del proveedor.
 - Reúne en Configuración (⌘, / Ctrl+,) los temas claro, oscuro y del sistema, tres tamaños de texto para toda la interfaz y los permisos opcionales del sistema, cada uno con su explicación y un acceso directo a su panel.
-- Ancla carpetas de proyectos con la metodología agéntica v4 y resume su estado, tecnologías, repos, historias, tiempo y tokens, solo leyendo sus archivos. Marca las historias con datos incompletos y abre cada historia en un lector de Markdown.
+- Ancla carpetas de proyectos con la metodología agéntica v4 y resume su estado, tecnologías, repos, historias, tiempo y tokens, solo leyendo sus archivos. Marca las historias con datos incompletos, abre cada historia en un lector de Markdown y deja ponerle a cada proyecto un icono propio.
 - Usa controles de ventana apropiados para macOS y decoraciones compatibles en Windows y Linux.
 
 ## Plataformas
@@ -56,7 +56,7 @@ estar instalada con su instalador oficial. La app la busca en:
 | Plataforma | Dónde debe estar Claude |
 | --- | --- |
 | macOS | `/Applications/Claude.app` (o `~/Applications/Claude.app`) |
-| Windows | `%LOCALAPPDATA%\AnthropicClaude\Claude.exe`, la ruta del instalador oficial |
+| Windows | El paquete MSIX del instalador oficial (`C:\Program Files\WindowsApps\Claude_…`) o el instalador clásico en `%LOCALAPPDATA%\AnthropicClaude\Claude.exe` |
 | Linux | El paquete `claude-desktop` del repositorio apt oficial |
 
 | Tu equipo | Descarga | Archivo |
@@ -306,13 +306,13 @@ Las referencias cloud, la propiedad remota y los monitores de artefactos no se t
 
 El botón **Detener** verifica que el proceso pertenezca a la aplicación y perfil de la instancia antes de cerrarlo, intenta un cierre normal y solo después escala dentro del árbol o grupo verificado. Si aún quedan procesos, conserva el estado ejecutándose y explica el error en vez de informar un cierre falso.
 
-Puedes asignar un icono PNG o JPEG de hasta 5 MiB a cada instancia. El icono se muestra dentro de Code AI Profiles y sobrevive a la sincronización de su aplicación. En macOS el icono también se ve en el Dock, con la forma de los iconos de macOS y sin tocar la firma de Anthropic; para las copias que Claude actualizó por su cuenta, macOS pide el permiso «Gestión de apps». Windows conserva el icono del ejecutable firmado; Linux crea un launcher opcional cuyo resultado depende del compositor. Consulta [la guía de instancias](docs/instancias.document.md).
+Puedes asignar un icono PNG o JPEG de hasta 5 MiB a cada instancia. El icono se muestra dentro de Code AI Profiles y sobrevive a la sincronización de su aplicación. En macOS el icono también se ve en el Dock, con la forma de los iconos de macOS y sin tocar la firma de Anthropic. Las instancias con icono llevan el de la app original en la esquina inferior derecha, en el Dock y en la app; para las copias que Claude actualizó por su cuenta, macOS pide el permiso «Gestión de apps». Windows conserva el icono del ejecutable firmado; Linux crea un launcher opcional cuyo resultado depende del compositor. Consulta [la guía de instancias](docs/instancias.document.md).
 
 ## Configuración y proyectos
 
 **Configuración** reúne la apariencia y los permisos. Los permisos son opcionales: la app funciona sin ellos, no los pide al abrirse y solo enlaza al panel de Ajustes del Sistema que corresponde. En Windows y Linux no hace falta ninguno. Consulta [la guía de Configuración](docs/configuracion.document.md).
 
-**Proyectos** muestra el resumen de las carpetas que ancles si siguen la metodología agéntica v4: fase, perfil, tecnologías, repos con su rama y último commit, historias por estado, «Tiempo en fases» y tokens de sus métricas. Las historias sin tiempo o sin métricas llevan una etiqueta y un modal explica cómo completarlas; al pulsar una historia se leen sus `.md` en un lector de Markdown, con los enlaces abiertos en el navegador. Es de solo lectura: no ejecuta nada del proyecto, no escribe en él, no usa la red y no lee nada fuera de su carpeta. En macOS, leer carpetas en Escritorio, Documentos o Descargas puede mostrar el aviso de «Archivos y carpetas». Consulta [la guía de Proyectos](docs/proyectos.document.md).
+**Proyectos** muestra el resumen de las carpetas que ancles si siguen la metodología agéntica v4: fase, perfil, tecnologías, repos con su rama y último commit, historias por estado, «Tiempo en fases» y tokens de sus métricas. Las historias sin tiempo o sin métricas llevan una etiqueta y un modal explica cómo completarlas; al pulsar una historia se leen sus `.md` en un lector de Markdown, con los enlaces abiertos en el navegador. Cada proyecto puede llevar una imagen propia (PNG o JPEG) en lugar de su inicial; la app guarda una copia en sus datos. Es de solo lectura: no ejecuta nada del proyecto, no escribe en él, no usa la red y no lee nada fuera de su carpeta. En macOS, leer carpetas en Escritorio, Documentos o Descargas puede mostrar el aviso de «Archivos y carpetas». Consulta [la guía de Proyectos](docs/proyectos.document.md).
 
 ## Privacidad y seguridad
 

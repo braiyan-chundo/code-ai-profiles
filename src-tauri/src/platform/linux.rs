@@ -7,7 +7,8 @@ pub(crate) const PLATFORM_NAME: &str = "linux";
 /// La aplicación compatible es una instalación compartida: no hay copias de bytes que sincronizar.
 pub(crate) const SHARED_INSTALLATION: bool = true;
 
-pub(crate) fn source_display_name(source: &Path) -> Option<String> {
+/// The `.desktop` files of the shared package, in the order they are read (name and icon).
+fn provider_desktop_files() -> Vec<PathBuf> {
     let mut desktop_files = vec![
         PathBuf::from("/usr/share/applications/claude-desktop.desktop"),
         PathBuf::from("/usr/local/share/applications/claude-desktop.desktop"),
@@ -15,12 +16,34 @@ pub(crate) fn source_display_name(source: &Path) -> Option<String> {
     if let Some(home) = dirs::home_dir() {
         desktop_files.push(home.join(".local/share/applications/claude-desktop.desktop"));
     }
-    let desktop_name = desktop_files.into_iter().find_map(|path| {
+    desktop_files
+}
+
+pub(crate) fn source_display_name(source: &Path) -> Option<String> {
+    let desktop_name = provider_desktop_files().into_iter().find_map(|path| {
         fs::read_to_string(path)
             .ok()
             .and_then(|contents| linux_desktop_name(&contents))
     });
     source_name_from_metadata(desktop_name.as_deref(), None, source)
+}
+
+/// HU-0028 · the PNG of the original's icon: `Icon=` of its `.desktop`, looked up in the hicolor theme (512, 256,
+/// 128) of `$XDG_DATA_HOME` (or `~/.local/share`), `/usr/local/share` and `/usr/share`, then in
+/// `/usr/share/pixmaps`. An SVG-only package has no badge (D-7). Read only.
+pub(crate) fn provider_icon_file(_source: &Path) -> Option<PathBuf> {
+    let icon = provider_desktop_files().into_iter().find_map(|path| {
+        fs::read_to_string(path)
+            .ok()
+            .and_then(|contents| linux_desktop_icon(&contents))
+    })?;
+    let data_home = env::var_os("XDG_DATA_HOME")
+        .map(PathBuf::from)
+        .filter(|path| path.is_absolute())
+        .or_else(|| dirs::home_dir().map(|home| home.join(".local/share")));
+    linux_icon_candidates(&icon, data_home.as_deref())
+        .into_iter()
+        .find(|candidate| candidate.is_file())
 }
 
 pub(crate) fn detect_provider_source() -> Option<PathBuf> {

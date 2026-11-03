@@ -85,7 +85,7 @@ tests/*.test.ts       node --test sobre los módulos puros
 - **`invoke` solo en `lib/bridge.ts`**, con una función tipada por comando y su rama mock para el navegador
   (`pnpm dev`); las funciones del bridge son de backend: si necesitas una, la pides. Las otras APIs de Tauri,
   siempre tras `bridge.isDesktop()`: `listen` en `features/scan/useScanRuntime.ts`, `getCurrentWindow` en
-  `app/layout/window-actions.ts`, `convertFileSrc` en `features/instances/instance-icon.ts`.
+  `app/layout/window-actions.ts`, `convertFileSrc` en `lib/local-asset.ts` (`localFileSource`, para los iconos de instancia y de proyecto).
 - **Store**: `features/dashboard` (`useReducer` con un reducer puro). `useDashboard()` da `dashboard`, `loading`,
   `busy`, `error`, `notice`, `iconPreviews`, `busyRef` y acciones estables. El `DashboardState` de Rust se
   **reemplaza** (`replaceDashboard`); las fusiones parciales son funciones puras que pasan por `updateDashboard`.

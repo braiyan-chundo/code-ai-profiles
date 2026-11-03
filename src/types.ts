@@ -101,6 +101,8 @@ export interface CustomIcon {
   systemMessage: string;
   /** Solo macOS; null salvo bloqueo de «Gestión de apps». */
   systemIssue?: CustomIconSystemIssue | null;
+  /** Solo macOS, interno: qué distintivo lleva el icono del Dock. */
+  dockBadge?: string | null;
 }
 
 export interface SessionProfile {
@@ -111,11 +113,19 @@ export interface SessionProfile {
   isOriginal?: boolean;
 }
 
+/** El icono de la aplicación original, ya recortado, para el distintivo de las instancias (HU-0028). */
+export interface ProviderBadge {
+  /** Ruta absoluta del PNG en caché; cambia cuando cambia el icono de la original. */
+  path: string;
+}
+
 export interface SystemInfo {
   appVersion: string;
   platform: "macos" | "windows" | "linux" | "unknown";
   sourcePath: string | null;
   sourceName: string | null;
+  /** null si la original no está o su icono no se pudo leer. */
+  providerBadge: ProviderBadge | null;
   sourceVersion: string | null;
   sourceUpdate: SourceUpdateInfo;
   versionTopology: VersionTopology;
@@ -282,10 +292,14 @@ export interface ProjectInfo {
   technologies: ProjectTechnology[]; histories: ProjectHistory[]; counts: ProjectCounts;
   firstCreated: string | null; lastActivity: string | null; spanDays: number | null; totals: ProjectTotals;
 }
+/** Icono elegido por la persona (HU-0027): la copia normalizada en `<app_data>/project-icons/<id>.png`. */
+export interface ProjectIcon { path: string; revision: number }
 export interface ProjectSummary {
   id: string; path: string; displayPath: string; lastName: string | null; pinnedAt: string;
   lastReadAt: string | null; readAt: string; status: ProjectStatus; message: string | null;
   protectedLocation: ProjectProtectedLocation | null; info: ProjectInfo | null; warnings: ProjectWarning[];
+  /** También en un proyecto roto: ocultarlo es cosa de la interfaz. */
+  icon: ProjectIcon | null;
 }
 export interface ProjectsState { projects: ProjectSummary[]; readAt: string }
 

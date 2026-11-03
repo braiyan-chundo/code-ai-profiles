@@ -294,6 +294,7 @@ const dashboard = (sourcePath: string | null, sourceVersion: string | null): Das
     platform: "macos",
     sourcePath,
     sourceName: "Claude",
+    providerBadge: null,
     sourceVersion,
     sourceUpdate: update({ status: "unavailable" }),
     versionTopology: topology(),

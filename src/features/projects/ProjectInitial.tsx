@@ -1,4 +1,5 @@
 import { FolderXIcon } from "lucide-react";
+import { useState } from "react";
 import { cn } from "../../lib/utils";
 import { projectInitial } from "./projects-selectors";
 
@@ -9,23 +10,34 @@ const SIZES = {
   lg: "size-10 rounded-md text-(length:--fs-heading)/(--lh-heading)",
   /** 64: el de la página, igual que el avatar de una instancia. */
   xl: "size-16 rounded-lg text-(length:--fs-dialog)/(--lh-dialog)",
+  /** 72: la vista previa del diálogo «Icono del proyecto». */
+  dialog: "size-18 rounded-lg text-(length:--fs-dialog)/(--lh-dialog)",
 } as const;
 
 /**
  * La inicial del proyecto en un cuadrado neutro: su identidad en el sidebar, la tarjeta y la página (HU-0023). Sin
  * colores por proyecto. Un proyecto roto lleva la inicial en rojo; en 40 y 64 enseña una carpeta tachada.
+ *
+ * Con `iconSrc` (HU-0027) pinta la imagen elegida en el mismo cuadrado, con un aro fino encima. Si no carga, vuelve a la
+ * inicial; `broken` gana siempre (D-3: un proyecto roto no enseña su icono).
  */
 export function ProjectInitial({
   name,
   size,
   broken = false,
+  iconSrc = null,
   className,
 }: {
   name: string;
   size: keyof typeof SIZES;
   broken?: boolean;
+  /** La URL de la imagen elegida; `null` o ausente, la inicial. */
+  iconSrc?: string | null;
   className?: string;
 }) {
+  // La URL que falló al cargar: una nueva (otra revisión) vuelve a intentarlo.
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const image = iconSrc && !broken && failedSrc !== iconSrc ? iconSrc : null;
   const icon = broken && size !== "sm";
   return (
     <b
@@ -34,10 +46,13 @@ export function ProjectInitial({
         "grid shrink-0 place-items-center bg-(--surface-soft) font-mono font-bold text-muted-foreground ring-1 ring-(--line-strong) ring-inset",
         SIZES[size],
         broken && "text-destructive ring-destructive/45",
+        image && "relative overflow-hidden after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:ring-1 after:ring-(--line-strong) after:ring-inset",
         className,
       )}
     >
-      {icon ? <FolderXIcon className={size === "xl" ? "size-8" : "size-5"} /> : projectInitial(name)}
+      {image ? (
+        <img src={image} alt="" draggable={false} onError={() => setFailedSrc(image)} className="size-full object-cover" />
+      ) : icon ? <FolderXIcon className={size === "xl" ? "size-8" : "size-5"} /> : projectInitial(name)}
     </b>
   );
 }

@@ -6,7 +6,7 @@ import {
   useDashboard,
   useRuntimePlatform,
 } from "../../../features/dashboard";
-import { InstanceDetail, useInstanceActions } from "../../../features/instances";
+import { InstanceDetail, providerBadgeSource, useInstanceActions } from "../../../features/instances";
 import { useDialogs } from "../../providers/dialogs-context";
 import { PageContent } from "../../layout/PageContent";
 import { PageHeader } from "../../layout/PageHeader";
@@ -51,6 +51,7 @@ export function InstanceRoute() {
             pendingSyncIds.includes(instance.id) && outdatedInstances.some((outdated) => outdated.id === instance.id)
           }
           iconPreviewUrl={iconPreviews[instance.id] ?? null}
+          badgeSrc={providerBadgeSource(state.system)}
           onLaunch={() => instanceActions.launch(instance)}
           onStop={() => instanceActions.stop(instance)}
           onUpdate={() => {

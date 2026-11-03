@@ -17,7 +17,7 @@ import {
 } from "../src/features/updates/original-install.ts";
 import { EMPTY_DASHBOARD } from "../src/features/dashboard/dashboard-store.ts";
 import { originalUpdateChannel } from "../src/features/updates/original-update-channel.ts";
-import { iconDimensionsError, iconFileError } from "../src/features/instances/icon-validation.ts";
+import { iconDimensionsError, iconFileError } from "../src/lib/icon-validation.ts";
 import type {
   ArtifactTransferOutcome,
   CodeSession,

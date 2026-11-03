@@ -1056,6 +1056,7 @@ fn projects_registry_rejects_more_than_the_maximum() {
                 last_name: None,
                 pinned_at: now_rfc3339(),
                 last_read_at: None,
+                icon: None,
             })
             .collect(),
     };
@@ -1799,8 +1800,13 @@ fn projects_reader_keeps_symlink_deny_and_cloud_protections() {
     fixture.write("p/.env", "CLAVE=no");
     fixture.write("p/docs/hu.md", "no es una historia");
     let _ = fs::remove_file(fixture.path(&format!("p/hu/{folder}/seguimiento.md")));
-    symlink("../../.env", fixture.path(&format!("p/hu/{folder}/seguimiento.md"))).expect("inner symlink");
-    let read = reader::read_project_history_at(&fixture.app_data(), &env, &id, folder).expect("documents");
+    symlink(
+        "../../.env",
+        fixture.path(&format!("p/hu/{folder}/seguimiento.md")),
+    )
+    .expect("inner symlink");
+    let read =
+        reader::read_project_history_at(&fixture.app_data(), &env, &id, folder).expect("documents");
     let timeline = read
         .documents
         .iter()
@@ -1808,11 +1814,17 @@ fn projects_reader_keeps_symlink_deny_and_cloud_protections() {
         .expect("timeline");
     assert_eq!(timeline.status, ProjectDocumentStatus::Unreadable);
     assert_eq!(timeline.content, None);
-    assert!(read.documents.iter().all(|document| document.content.as_deref() != Some("CLAVE=no")));
+    assert!(read
+        .documents
+        .iter()
+        .all(|document| document.content.as_deref() != Some("CLAVE=no")));
     symlink("../docs", fixture.path("p/hu/HU-0008-docs")).expect("inner folder symlink");
     let error = reader::read_project_history_at(&fixture.app_data(), &env, &id, "HU-0008-docs")
         .expect_err("folder inside the project");
-    assert!(error.to_string().contains("carpeta de la historia"), "{error}");
+    assert!(
+        error.to_string().contains("carpeta de la historia"),
+        "{error}"
+    );
 
     // Nube: no se lee para no descargarlo.
     let mut cloud = fixture.env();
@@ -1840,6 +1852,7 @@ fn projects_reader_keeps_symlink_deny_and_cloud_protections() {
         last_name: None,
         pinned_at: now_rfc3339(),
         last_read_at: None,
+        icon: None,
     });
     save_projects(&fixture.app_data(), &file).expect("save");
     let error = reader::read_project_history_at(&fixture.app_data(), &env, &denied_id, folder)
@@ -1947,4 +1960,348 @@ fn projects_serializes_reader_and_gap_contract_names() {
     let (info, _) = read_v4(&fixture, "p");
     let history = serde_json::to_value(&info.histories[0]).expect("json");
     assert_eq!(history["dataGaps"], json!(["noMetrics"]));
+}
+
+// ── Icono del proyecto (HU-0027) ────────────────────────────────────────────
+
+fn icon_bytes(width: u32, height: u32, color: [u8; 4]) -> Vec<u8> {
+    let image = image::DynamicImage::ImageRgba8(image::ImageBuffer::from_pixel(
+        width,
+        height,
+        image::Rgba(color),
+    ));
+    let mut encoded = Cursor::new(Vec::new());
+    image
+        .write_to(&mut encoded, image::ImageFormat::Png)
+        .expect("encode png");
+    encoded.into_inner()
+}
+
+fn icon_path(app_data: &Path, id: &str) -> PathBuf {
+    app_data.join(PROJECT_ICONS_DIR).join(format!("{id}.png"))
+}
+
+fn stored_icon(app_data: &Path, id: &str) -> Option<PinnedProjectIcon> {
+    load_projects(app_data)
+        .expect("load")
+        .projects
+        .into_iter()
+        .find(|entry| entry.id == id)
+        .and_then(|entry| entry.icon)
+}
+
+// AC-01 · Poner: copia de 512 px en app_data, la revisión crece y la carpeta no cambia.
+#[test]
+fn projects_icon_set_writes_a_normalized_copy_outside_the_project() {
+    let fixture = Fixture::new("icon-set");
+    let env = fixture.env();
+    let app_data = fixture.app_data();
+    let id = pinned_reference(&fixture, &env);
+    let root = fixture.path("p");
+    let before = fingerprint(&root);
+
+    let summary = set_project_icon_at(
+        &app_data,
+        &env,
+        &id,
+        &icon_bytes(40, 20, [200, 80, 40, 255]),
+    )
+    .expect("set icon");
+    let file = icon_path(&app_data, &id);
+    let icon = summary.icon.clone().expect("icon in summary");
+    assert_eq!(icon.path, file.to_string_lossy());
+    assert!(icon.revision > 0);
+    let decoded = image::load_from_memory(&fs::read(&file).expect("copy")).expect("png");
+    assert_eq!((decoded.width(), decoded.height()), (512, 512));
+    assert_eq!(
+        stored_icon(&app_data, &id),
+        Some(PinnedProjectIcon {
+            revision: icon.revision
+        })
+    );
+
+    let again = set_project_icon_at(&app_data, &env, &id, &icon_bytes(8, 8, [0, 0, 255, 255]))
+        .expect("set again");
+    let second = again.icon.expect("icon");
+    assert!(second.revision > icon.revision, "revision grows");
+    assert_eq!(second.path, icon.path);
+
+    let listed = list_projects_at(&app_data, &env).expect("list");
+    assert_eq!(listed.projects[0].icon.as_ref(), Some(&second));
+
+    assert_eq!(fingerprint(&root), before, "project folder untouched");
+    let leftovers: Vec<_> = fs::read_dir(app_data.join(PROJECT_ICONS_DIR))
+        .expect("icons dir")
+        .filter_map(Result::ok)
+        .map(|entry| entry.file_name().to_string_lossy().into_owned())
+        .filter(|name| name.ends_with(".tmp"))
+        .collect();
+    assert!(leftovers.is_empty(), "no temporary files left");
+}
+
+// AC-01 · Una imagen no válida no deja copia ni cambia el registro.
+#[test]
+fn projects_icon_rejects_invalid_images_without_side_effects() {
+    let fixture = Fixture::new("icon-invalid");
+    let env = fixture.env();
+    let app_data = fixture.app_data();
+    let id = pinned_reference(&fixture, &env);
+    let registry = fs::read(app_data.join(PROJECTS_FILE)).expect("registry");
+
+    let error = set_project_icon_at(&app_data, &env, &id, b"no es una imagen").expect_err("bad");
+    assert_eq!(
+        error.to_string(),
+        "El archivo no es una imagen PNG o JPEG válida."
+    );
+    assert_eq!(error.kind(), AppErrorKind::InvalidInput);
+    assert!(set_project_icon_at(&app_data, &env, &id, &[]).is_err());
+    assert!(!icon_path(&app_data, &id).exists());
+    assert_eq!(
+        fs::read(app_data.join(PROJECTS_FILE)).expect("registry"),
+        registry
+    );
+}
+
+// AC-02 · Quitar es idempotente y deja el registro como antes de HU-0027.
+#[test]
+fn projects_icon_clear_is_idempotent() {
+    let fixture = Fixture::new("icon-clear");
+    let env = fixture.env();
+    let app_data = fixture.app_data();
+    let id = pinned_reference(&fixture, &env);
+    set_project_icon_at(&app_data, &env, &id, &icon_bytes(4, 4, [1, 2, 3, 255])).expect("set");
+
+    let cleared = clear_project_icon_at(&app_data, &env, &id).expect("clear");
+    assert_eq!(cleared.icon, None);
+    assert!(!icon_path(&app_data, &id).exists());
+    assert_eq!(stored_icon(&app_data, &id), None);
+    let again = clear_project_icon_at(&app_data, &env, &id).expect("clear again");
+    assert_eq!(again.icon, None);
+    assert!(!fs::read_to_string(app_data.join(PROJECTS_FILE))
+        .expect("registry")
+        .contains("\"icon\""));
+}
+
+// R-2 · Quitar también limpia una copia huérfana cuando el registro ya no tiene icono.
+#[test]
+fn projects_icon_clear_removes_an_orphan_copy() {
+    let fixture = Fixture::new("icon-clear-orphan");
+    let env = fixture.env();
+    let app_data = fixture.app_data();
+    let id = pinned_reference(&fixture, &env);
+    let orphan = icon_path(&app_data, &id);
+    fs::create_dir_all(orphan.parent().expect("icons folder")).expect("folder");
+    fs::write(&orphan, icon_bytes(4, 4, [5, 5, 5, 255])).expect("orphan");
+    assert_eq!(stored_icon(&app_data, &id), None);
+
+    let cleared = clear_project_icon_at(&app_data, &env, &id).expect("clear");
+    assert_eq!(cleared.icon, None);
+    assert!(!orphan.exists());
+}
+
+// AC-04 · Desanclar borra la copia y anclar de nuevo sale sin icono, con otro id.
+#[test]
+fn projects_icon_unpin_removes_the_copy() {
+    let fixture = Fixture::new("icon-unpin");
+    let env = fixture.env();
+    let app_data = fixture.app_data();
+    let id = pinned_reference(&fixture, &env);
+    set_project_icon_at(&app_data, &env, &id, &icon_bytes(4, 4, [9, 9, 9, 255])).expect("set");
+    assert!(icon_path(&app_data, &id).exists());
+
+    unpin_project_at(&app_data, &id).expect("unpin");
+    assert!(!icon_path(&app_data, &id).exists());
+    unpin_project_at(&app_data, &id).expect("unpin again without copy");
+
+    let repinned = pin_project_at(&app_data, &env, &fixture.path("p")).expect("pin again");
+    assert_ne!(repinned.id, id);
+    assert_eq!(repinned.icon, None);
+}
+
+// AC-03 · Registro con icono y copia ausente: sin icono, y leer no toca el registro.
+#[test]
+fn projects_icon_missing_copy_reads_as_none() {
+    let fixture = Fixture::new("icon-missing");
+    let env = fixture.env();
+    let app_data = fixture.app_data();
+    let id = pinned_reference(&fixture, &env);
+    let set =
+        set_project_icon_at(&app_data, &env, &id, &icon_bytes(4, 4, [5, 5, 5, 255])).expect("set");
+    let revision = set.icon.expect("icon").revision;
+    fs::remove_file(icon_path(&app_data, &id)).expect("remove copy");
+
+    assert_eq!(
+        read_project_at(&app_data, &env, &id).expect("read").icon,
+        None
+    );
+    assert_eq!(
+        list_projects_at(&app_data, &env).expect("list").projects[0].icon,
+        None
+    );
+    assert_eq!(
+        stored_icon(&app_data, &id),
+        Some(PinnedProjectIcon { revision }),
+        "registry untouched"
+    );
+
+    // Una copia vacía tampoco cuenta.
+    fs::write(icon_path(&app_data, &id), b"").expect("empty copy");
+    assert_eq!(
+        read_project_at(&app_data, &env, &id).expect("read").icon,
+        None
+    );
+}
+
+// AC-03 · Una copia sustituida por un enlace no se sirve.
+#[cfg(unix)]
+#[test]
+fn projects_icon_symlinked_copy_reads_as_none() {
+    use std::os::unix::fs::symlink;
+    let fixture = Fixture::new("icon-symlink");
+    let env = fixture.env();
+    let app_data = fixture.app_data();
+    let id = pinned_reference(&fixture, &env);
+    set_project_icon_at(&app_data, &env, &id, &icon_bytes(4, 4, [5, 5, 5, 255])).expect("set");
+    let file = icon_path(&app_data, &id);
+    let outside = fixture.path("fuera.png");
+    fs::rename(&file, &outside).expect("move copy away");
+    symlink(&outside, &file).expect("symlink");
+
+    assert_eq!(
+        read_project_at(&app_data, &env, &id).expect("read").icon,
+        None
+    );
+    assert!(stored_icon(&app_data, &id).is_some());
+}
+
+// AC-05 · Un projects.json anterior a HU-0027 carga y, al reescribirse, sigue sin `icon`.
+#[test]
+fn projects_icon_old_registry_loads_and_stays_without_icon() {
+    let fixture = Fixture::new("icon-old-registry");
+    write_reference_project(&fixture, "p");
+    let env = fixture.env();
+    let app_data = fixture.app_data();
+    let id = Uuid::new_v4().to_string();
+    fixture.write(
+        "app-data/projects.json",
+        json!({
+            "version": 1,
+            "projects": [{
+                "id": id,
+                "path": fixture.path("p").to_string_lossy(),
+                "lastName": null,
+                "pinnedAt": "2026-10-01T00:00:00Z",
+                "lastReadAt": null
+            }]
+        })
+        .to_string(),
+    );
+
+    let state = list_projects_at(&app_data, &env).expect("list");
+    assert_eq!(state.projects[0].icon, None);
+    assert_eq!(state.projects[0].last_name.as_deref(), Some("Vetcare"));
+    let rewritten = fs::read_to_string(app_data.join(PROJECTS_FILE)).expect("registry");
+    assert!(rewritten.contains("Vetcare"), "registry was rewritten");
+    assert!(!rewritten.contains("\"icon\""));
+    let value = serde_json::to_value(&state.projects[0]).expect("json");
+    assert_eq!(value["icon"], Value::Null, "always serialized");
+}
+
+// AC-03 · Rust informa el icono también de un proyecto cuya carpeta ya no está.
+#[test]
+fn projects_icon_is_reported_for_missing_folders() {
+    let fixture = Fixture::new("icon-not-found");
+    let env = fixture.env();
+    let app_data = fixture.app_data();
+    let id = pinned_reference(&fixture, &env);
+    set_project_icon_at(&app_data, &env, &id, &icon_bytes(4, 4, [5, 5, 5, 255])).expect("set");
+    fs::remove_dir_all(fixture.path("p")).expect("remove project");
+
+    let summary = read_project_at(&app_data, &env, &id).expect("read");
+    assert_eq!(summary.status, ProjectStatus::NotFound);
+    assert!(summary.icon.is_some());
+    assert!(list_projects_at(&app_data, &env).expect("list").projects[0]
+        .icon
+        .is_some());
+    let value = serde_json::to_value(summary.icon.expect("icon")).expect("json");
+    assert!(value["path"].is_string());
+    assert!(value["revision"].is_u64());
+}
+
+// Ids que no son un anclado: ni archivo ni registro cambian.
+#[test]
+fn projects_icon_rejects_ids_that_are_not_pinned() {
+    let fixture = Fixture::new("icon-ids");
+    let env = fixture.env();
+    let app_data = fixture.app_data();
+    let id = pinned_reference(&fixture, &env);
+    let bytes = icon_bytes(4, 4, [5, 5, 5, 255]);
+    for bad in ["no-uuid", "../../x", ""] {
+        assert_eq!(
+            set_project_icon_at(&app_data, &env, bad, &bytes)
+                .expect_err("set")
+                .to_string(),
+            NOT_PINNED
+        );
+        assert_eq!(
+            clear_project_icon_at(&app_data, &env, bad)
+                .expect_err("clear")
+                .to_string(),
+            NOT_PINNED
+        );
+    }
+    let unknown = Uuid::new_v4().to_string();
+    assert_eq!(
+        set_project_icon_at(&app_data, &env, &unknown, &bytes)
+            .expect_err("unknown")
+            .to_string(),
+        NOT_PINNED
+    );
+    assert!(!icon_path(&app_data, &unknown).exists());
+    // Otra forma del mismo UUID da el nombre canónico, nunca el texto recibido.
+    let braced = format!("{{{id}}}");
+    assert_eq!(
+        project_icon_file(&app_data, &braced).expect("braced"),
+        icon_path(&app_data, &id)
+    );
+    assert_eq!(
+        clear_project_icon_at(&app_data, &env, &braced)
+            .expect_err("braced id is not the stored id")
+            .to_string(),
+        NOT_PINNED
+    );
+}
+
+// Si el registro no se puede guardar, la copia anterior vuelve a su sitio.
+#[cfg(unix)]
+#[test]
+fn projects_icon_restores_the_previous_copy_when_saving_fails() {
+    let fixture = Fixture::new("icon-restore");
+    let env = fixture.env();
+    let app_data = fixture.app_data();
+    let id = pinned_reference(&fixture, &env);
+    set_project_icon_at(&app_data, &env, &id, &icon_bytes(4, 4, [1, 1, 1, 255])).expect("set");
+    let file = icon_path(&app_data, &id);
+    let previous = fs::read(&file).expect("copy");
+    let registry = fs::read(app_data.join(PROJECTS_FILE)).expect("registry");
+
+    // app_data de solo lectura: la copia (en project-icons/) se escribe, pero el registro no.
+    set_mode(&app_data, 0o555);
+    let result = set_project_icon_at(&app_data, &env, &id, &icon_bytes(4, 4, [250, 0, 0, 255]));
+    set_mode(&app_data, 0o755);
+
+    let error = result.expect_err("save fails");
+    assert!(
+        error.to_string().contains("registro de proyectos"),
+        "{error}"
+    );
+    assert_eq!(
+        fs::read(&file).expect("copy"),
+        previous,
+        "previous copy restored"
+    );
+    assert_eq!(
+        fs::read(app_data.join(PROJECTS_FILE)).expect("registry"),
+        registry
+    );
 }

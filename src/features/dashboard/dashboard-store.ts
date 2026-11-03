@@ -7,6 +7,7 @@ export const EMPTY_DASHBOARD: DashboardState = {
     platform: "unknown",
     sourcePath: null,
     sourceName: null,
+    providerBadge: null,
     sourceVersion: null,
     sourceUpdate: {
       status: "unavailable",

@@ -1,0 +1,182 @@
+{
+  "hu": "HU-0027",
+  "generado": "2026-11-03T07:07:47.754Z",
+  "perfil": "S",
+  "fases": [
+    {
+      "fase": "requisitos",
+      "desde": "2026-11-03T06:13:00.000Z",
+      "hasta": "2026-11-03T06:31:00.000Z",
+      "minutos": 18
+    },
+    {
+      "fase": "arquitectura",
+      "desde": "2026-11-03T06:31:00.000Z",
+      "hasta": "2026-11-03T06:39:00.000Z",
+      "minutos": 8
+    },
+    {
+      "fase": "implementacion",
+      "desde": "2026-11-03T06:39:00.000Z",
+      "hasta": "2026-11-03T07:03:00.000Z",
+      "minutos": 24
+    },
+    {
+      "fase": "verificacion",
+      "desde": "2026-11-03T07:03:00.000Z",
+      "hasta": "2026-11-03T07:07:00.000Z",
+      "minutos": 4
+    },
+    {
+      "fase": "cierre",
+      "desde": "2026-11-03T07:07:00.000Z",
+      "hasta": "2026-11-03T07:07:00.000Z",
+      "minutos": 0
+    }
+  ],
+  "minutosTotales": 54,
+  "agentes": [
+    {
+      "agente": "architect",
+      "rol": "architect",
+      "fase": "arquitectura",
+      "modelos": [
+        "claude-opus-5-5"
+      ],
+      "despachos": 1,
+      "minutos": 7,
+      "tokens": {
+        "entrada": 78,
+        "salida": 41843,
+        "cacheEscritura": 160601,
+        "cacheLectura": 3717509,
+        "total": 3920031
+      }
+    },
+    {
+      "agente": "frontend",
+      "rol": "frontend",
+      "fase": "implementacion",
+      "modelos": [
+        "claude-sonnet-5-5",
+        "sonnet"
+      ],
+      "despachos": 2,
+      "minutos": 8,
+      "tokens": {
+        "entrada": 88,
+        "salida": 34160,
+        "cacheEscritura": 172084,
+        "cacheLectura": 2928745,
+        "total": 3135077
+      }
+    },
+    {
+      "agente": "backend",
+      "rol": "backend",
+      "fase": "implementacion",
+      "modelos": [
+        "claude-opus-5-5",
+        "opus",
+        "claude-sonnet-5-5",
+        "sonnet"
+      ],
+      "despachos": 2,
+      "minutos": 10,
+      "tokens": {
+        "entrada": 84,
+        "salida": 36826,
+        "cacheEscritura": 146467,
+        "cacheLectura": 2821691,
+        "total": 3005068
+      }
+    },
+    {
+      "agente": "general-purpose",
+      "rol": "general-purpose",
+      "fase": "requisitos",
+      "modelos": [
+        "claude-sonnet-5-5",
+        "sonnet"
+      ],
+      "despachos": 1,
+      "minutos": 8,
+      "tokens": {
+        "entrada": 72,
+        "salida": 57576,
+        "cacheEscritura": 202033,
+        "cacheLectura": 4857768,
+        "total": 5117449
+      }
+    },
+    {
+      "agente": "architect",
+      "rol": "architect",
+      "fase": "implementacion",
+      "modelos": [
+        "claude-opus-5-5"
+      ],
+      "despachos": 1,
+      "minutos": 5,
+      "tokens": {
+        "entrada": 50,
+        "salida": 28524,
+        "cacheEscritura": 124368,
+        "cacheLectura": 2047033,
+        "total": 2199975
+      }
+    }
+  ],
+  "orquestador": {
+    "aproximado": true,
+    "porFase": [
+      {
+        "fase": "requisitos",
+        "tokens": {
+          "entrada": 62,
+          "salida": 20429,
+          "cacheEscritura": 54018,
+          "cacheLectura": 5290342,
+          "total": 5364851
+        }
+      },
+      {
+        "fase": "arquitectura",
+        "tokens": {
+          "entrada": 10,
+          "salida": 2960,
+          "cacheEscritura": 4503,
+          "cacheLectura": 829330,
+          "total": 836803
+        }
+      },
+      {
+        "fase": "implementacion",
+        "tokens": {
+          "entrada": 60,
+          "salida": 14538,
+          "cacheEscritura": 40515,
+          "cacheLectura": 5366074,
+          "total": 5421187
+        }
+      },
+      {
+        "fase": "verificacion",
+        "tokens": {
+          "entrada": 16,
+          "salida": 3427,
+          "cacheEscritura": 6124,
+          "cacheLectura": 1514270,
+          "total": 1523837
+        }
+      }
+    ]
+  },
+  "totales": {
+    "tokensAgentes": 17377600,
+    "tokensOrquestador": 13146678,
+    "tokens": 30524278,
+    "despachos": 7
+  },
+  "notas": []
+}

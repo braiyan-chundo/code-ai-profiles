@@ -21,6 +21,10 @@ export interface ProjectsContextValue extends ProjectsStore {
   pickFolder: () => Promise<PickResult>;
   /** Ancla la carpeta del candidato. `null` si falló (el motivo queda en `pinError`). */
   pinFolder: (path: string) => Promise<ProjectSummary | null>;
+  /** Guarda el icono (los bytes del PNG o JPEG elegido). `null` si salió bien; si no, el mensaje de error. */
+  setIcon: (id: string, bytes: Uint8Array) => Promise<string | null>;
+  /** Quita el icono y vuelve a la inicial. `null` si salió bien; si no, el mensaje de error. */
+  clearIcon: (id: string) => Promise<string | null>;
   clearPinError: () => void;
   clearActionError: () => void;
 }
