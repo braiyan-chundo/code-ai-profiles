@@ -4,9 +4,10 @@ import type { ManagedInstance, ProjectCandidate } from "../../types";
 
 type Setter<T> = Dispatch<SetStateAction<T>>;
 
-/** El diálogo de proyecto abierto (HU-0025): los datos incompletos o el lector de una historia. Solo ids y carpetas. */
+/** El diálogo de proyecto abierto (HU-0025): los datos incompletos, el icono (HU-0027) o el lector de una historia. Solo ids y carpetas. */
 export type ProjectDialogState =
   | { kind: "incomplete"; projectId: string }
+  | { kind: "icon"; projectId: string }
   | { kind: "reader"; projectId: string; folder: string };
 
 /** Las ocho banderas de los diálogos. Son independientes: pueden convivir dos abiertos, como antes. */

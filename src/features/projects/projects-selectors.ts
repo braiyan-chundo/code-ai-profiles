@@ -1,4 +1,5 @@
 import type {
+  ProjectIcon,
   ProjectInfo,
   ProjectProtectedLocation,
   ProjectStatus,
@@ -50,6 +51,11 @@ export function projectName(project: ProjectSummary): string {
   if (name) return name;
   const segments = project.displayPath.split(/[\\/]/).filter(Boolean);
   return segments[segments.length - 1] ?? "Proyecto";
+}
+
+/** El icono que se enseña (HU-0027, D-3): solo el de un proyecto legible; uno roto muestra siempre su inicial. */
+export function visibleIcon(project: ProjectSummary): ProjectIcon | null {
+  return isReadable(project) ? project.icon : null;
 }
 
 /** La inicial del cuadrado de identidad. */

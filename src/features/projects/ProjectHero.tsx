@@ -1,11 +1,13 @@
-import { CheckIcon, CircleCheckIcon, FileSearchIcon, FolderOpenIcon, HistoryIcon, PinOffIcon, RefreshCwIcon, TriangleAlertIcon } from "lucide-react";
+import { CheckIcon, CircleCheckIcon, FileSearchIcon, FolderOpenIcon, HistoryIcon, PencilIcon, PinOffIcon, RefreshCwIcon, TriangleAlertIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Spinner } from "../../components/ui/spinner";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../components/ui/tooltip";
 import { cn } from "../../lib/utils";
 import { ProjectInitial } from "./ProjectInitial";
+import { projectIconSource } from "./project-icon";
 import { incompleteChip } from "./projects-detail";
 import { formatClock, formatPhase } from "./projects-format";
 import { BADGE_MONO, PATH_TEXT } from "./projects-styles";
@@ -17,7 +19,8 @@ const META = "inline-flex min-w-0 items-center gap-2";
  * La cabecera de la página (AC-03): la inicial de 64, el perfil, la fase y «Metodología v4», el resumen en dos líneas,
  * quién aprueba, la ruta y cuándo se leyó, y las acciones: «Actualizar», «Abrir carpeta» y «Desanclar». Desanclar no
  * pide confirmación: no toca la carpeta y se deshace anclando otra vez. Si hay historias con datos incompletos o avisos
- * de lectura, un chip de 24 px en la fila de insignias abre el modal (HU-0025, D-1).
+ * de lectura, un chip de 24 px en la fila de insignias abre el modal (HU-0025, D-1). La inicial es un botón que abre el
+ * diálogo del icono (HU-0027): sin pista en reposo; al apuntarlo o enfocarlo, velo, lápiz y «Cambiar icono».
  */
 export function ProjectHero({
   project,
@@ -28,6 +31,7 @@ export function ProjectHero({
   onOpenFolder,
   onUnpin,
   onOpenIncomplete,
+  onOpenIcon,
 }: {
   project: ReadableProject;
   refreshing: boolean;
@@ -38,6 +42,7 @@ export function ProjectHero({
   onOpenFolder: () => void;
   onUnpin: () => void;
   onOpenIncomplete: () => void;
+  onOpenIcon: () => void;
 }) {
   const { info } = project;
   const chip = incompleteChip(info, project.warnings);
@@ -57,7 +62,25 @@ export function ProjectHero({
   return (
     <Card>
       <CardContent className="grid grid-cols-[64px_minmax(0,1fr)_auto] items-start gap-6 max-[1070px]:grid-cols-[64px_minmax(0,1fr)]">
-        <ProjectInitial name={name} size="xl" />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              aria-label="Cambiar icono del proyecto"
+              onClick={onOpenIcon}
+              className="group/avatar relative size-16 cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <ProjectInitial name={name} size="xl" iconSrc={projectIconSource(project)} />
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 grid place-items-center rounded-[inherit] bg-(--surface)/70 text-foreground opacity-0 transition-opacity group-hover/avatar:opacity-100 group-focus-visible/avatar:opacity-100 motion-reduce:transition-none"
+              >
+                <PencilIcon className="size-6" />
+              </span>
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">Cambiar icono</TooltipContent>
+        </Tooltip>
         <div className="grid min-w-0 gap-3">
           <div className="flex flex-wrap gap-2">
             {info.profile && <Badge variant="secondary" className={BADGE_MONO}>Perfil {info.profile}</Badge>}

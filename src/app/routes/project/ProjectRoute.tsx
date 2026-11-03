@@ -81,6 +81,7 @@ export function ProjectRoute() {
             project={project}
             onUnpinned={() => navigate("/proyectos", { replace: true })}
             onOpenIncomplete={() => setProjectDialog({ kind: "incomplete", projectId: project.id })}
+            onOpenIcon={() => setProjectDialog({ kind: "icon", projectId: project.id })}
             onOpenHistory={(folder) => setProjectDialog({ kind: "reader", projectId: project.id, folder })}
           />
         ) : (

@@ -22,11 +22,13 @@ export function ProjectPage({
   onUnpinned,
   onOpenIncomplete,
   onOpenHistory,
+  onOpenIcon,
 }: {
   project: ReadableProject;
   onUnpinned: () => void;
   onOpenIncomplete: () => void;
   onOpenHistory: (folder: string) => void;
+  onOpenIcon: () => void;
 }) {
   const { refreshing, refreshOne, openFolder, unpin, actionError, clearActionError } = useProjects();
   const [unpinning, setUnpinning] = useState(false);
@@ -63,6 +65,7 @@ export function ProjectPage({
         onOpenFolder={() => void openFolder(project.id)}
         onUnpin={() => void handleUnpin()}
         onOpenIncomplete={onOpenIncomplete}
+        onOpenIcon={onOpenIcon}
       />
       <ProjectFigures info={project.info} now={now} />
       <div className="grid grid-cols-12 items-stretch gap-6">

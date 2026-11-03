@@ -14,6 +14,7 @@ import {
   IncompleteDataDialog,
   isReadable,
   PinProjectDialog,
+  ProjectIconDialog,
   usePinProject,
   useProjects,
 } from "../../features/projects";
@@ -54,7 +55,7 @@ export function DialogHost() {
     ? readableProject?.info.histories.find((history) => history.folder === projectDialog.folder) ?? null
     : null;
   const projectDialogValid = Boolean(
-    projectDialog && readableProject && (projectDialog.kind === "incomplete" || readerHistory),
+    projectDialog && readableProject && (projectDialog.kind === "incomplete" || projectDialog.kind === "icon" || readerHistory),
   );
   // Un proyecto desanclado o una historia que ya no está al releer: se cierra en vez de dejar una bandera huérfana.
   // Mientras la lista aún carga no se limpia: el proyecto puede estar por llegar.
@@ -199,6 +200,8 @@ export function DialogHost() {
         <Suspense fallback={null}>
           {projectDialog.kind === "incomplete" ? (
             <IncompleteDataDialog project={readableProject} onClose={() => setProjectDialog(null)} />
+          ) : projectDialog.kind === "icon" ? (
+            <ProjectIconDialog project={readableProject} onClose={() => setProjectDialog(null)} />
           ) : readerHistory ? (
             <HistoryReader
               key={`${projectDialog.projectId}:${projectDialog.folder}`}

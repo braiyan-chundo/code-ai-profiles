@@ -10,7 +10,7 @@ import { Input } from "../../components/ui/input";
 import { Spinner } from "../../components/ui/spinner";
 import { cn } from "../../lib/utils";
 import { iconRetryState, iconStatusLead } from "./icon-status";
-import { iconDimensionsError, iconFileError } from "./icon-validation";
+import { iconDimensionsError, iconFileError } from "../../lib/icon-validation";
 import { managedIconSource } from "./instance-icon";
 import type { InstanceIconChange } from "./instance-types";
 

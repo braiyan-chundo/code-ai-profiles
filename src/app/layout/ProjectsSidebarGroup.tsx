@@ -14,6 +14,7 @@ import {
   inProgressCount,
   isReadable,
   ProjectInitial,
+  projectIconSource,
   projectName,
   sortProjects,
   STATUS_LABEL,
@@ -65,7 +66,7 @@ export function ProjectsSidebarGroup() {
                 <SidebarMenuItem key={project.id}>
                   <SidebarMenuButton asChild isActive={active} tooltip={label} className={count > 0 || broken ? "pr-8" : undefined}>
                     <Link to={`/proyectos/${encodeURIComponent(project.id)}`} aria-current={active ? "page" : undefined}>
-                      <ProjectInitial name={name} size="sm" broken={broken} />
+                      <ProjectInitial name={name} size="sm" broken={broken} iconSrc={projectIconSource(project)} />
                       <span className="min-w-0 flex-1 truncate">{name}</span>
                       {broken && <span className="sr-only">{STATUS_LABEL[project.status]}</span>}
                     </Link>
