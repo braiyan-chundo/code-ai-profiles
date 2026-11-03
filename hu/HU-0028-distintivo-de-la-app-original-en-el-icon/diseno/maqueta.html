@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HU-0028 · Maqueta · Distintivo de la app original</title>
+<!--
+  Maqueta estática de la HU-0028: el icono de una instancia con el icono de la aplicación original en la esquina
+  inferior derecha, en el Dock de macOS y en los avatares de la app (InstanceAvatar). Solo HTML y CSS con los tokens
+  de la app; el script cambia el tema y el tamaño del distintivo:  #tema=oscuro&d=36
+  El distintivo se lee de `original-icon.png` junto a este archivo (el .icns de la original pasado a PNG, que no se
+  versiona); si no está, sale un marcador neutro. Las imágenes de las instancias son SVG incrustados: no hay red.
+-->
+<style>
+:root {
+  --surface:#151615; --surface-raised:rgba(33,34,33,.9); --surface-soft:rgba(255,255,255,.045);
+  --line:rgba(255,255,255,.09); --line-strong:rgba(255,255,255,.14); --text:#e8e4e2; --muted:#aaa19e; --quiet:#726b68;
+  --primary:#ff8d6c; --primary-soft:#ffb19b; --secondary:rgba(255,255,255,.06);
+  --wall:linear-gradient(135deg,#2b3a55,#4b2f4f 55%,#6a3b2f);
+  --dock:rgba(40,40,44,.55); --dock-line:rgba(255,255,255,.18);
+  --img-happy:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2322b8a5'/%3E%3Cstop offset='1' stop-color='%230e6d7a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' fill='url(%23g)'/%3E%3Crect x='17' y='13' width='30' height='38' rx='3' fill='%23fff'/%3E%3Cg fill='%2316897f'%3E%3Crect x='22' y='19' width='6' height='6' rx='1'/%3E%3Crect x='36' y='19' width='6' height='6' rx='1'/%3E%3Crect x='22' y='30' width='6' height='6' rx='1'/%3E%3Crect x='36' y='30' width='6' height='6' rx='1'/%3E%3Cpath d='M27 44h10v7H27z'/%3E%3C/g%3E%3Cpath d='M22 8q10 -6 20 0' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+  --img-vet:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='c' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%237fb8e6'/%3E%3Cstop offset='.62' stop-color='%23f7dfae'/%3E%3C/linearGradient%3E%3ClinearGradient id='h1' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%236aa05a'/%3E%3Cstop offset='1' stop-color='%232f6b3f'/%3E%3C/linearGradient%3E%3ClinearGradient id='h2' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%234f8a4c'/%3E%3Cstop offset='1' stop-color='%231f4f33'/%3E%3C/linearGradient%3E%3Cfilter id='b'%3E%3CfeGaussianBlur stdDeviation='.7'/%3E%3C/filter%3E%3C/defs%3E%3Crect width='64' height='64' fill='url(%23c)'/%3E%3Ccircle cx='47' cy='20' r='7' fill='%23fff6d6' opacity='.95'/%3E%3Cellipse cx='20' cy='20' rx='12' ry='3.5' fill='%23fff' opacity='.55' filter='url(%23b)'/%3E%3Cpath d='M-4 46q16 -18 38 -6t36 -4v32H-4z' fill='url(%23h1)' filter='url(%23b)'/%3E%3Cpath d='M-4 54q20 -12 40 -2t32 -2v18H-4z' fill='url(%23h2)'/%3E%3Cg fill='%23fff' opacity='.92'%3E%3Cellipse cx='32' cy='47' rx='5' ry='4'/%3E%3Ccircle cx='24.5' cy='42' r='2.2'/%3E%3Ccircle cx='30' cy='38.5' r='2.2'/%3E%3Ccircle cx='36' cy='38.5' r='2.2'/%3E%3Ccircle cx='41.5' cy='42' r='2.2'/%3E%3C/g%3E%3C/svg%3E");
+  --badge:url("original-icon.png"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='6' width='52' height='52' rx='12' fill='%23c96442'/%3E%3Ccircle cx='32' cy='32' r='12' fill='%23fff' opacity='.9'/%3E%3C/svg%3E");
+  --d:.36;
+}
+:root[data-tema="claro"] {
+  --surface:#f3efeb; --surface-raised:rgba(255,255,255,.92); --surface-soft:rgba(63,46,39,.055);
+  --line:rgba(66,48,40,.11); --line-strong:rgba(66,48,40,.17); --text:#2e2926; --muted:#746b67; --quiet:#9b928d;
+  --secondary:rgba(63,46,39,.07);
+  --wall:linear-gradient(135deg,#b8d4f0,#e9c9e4 55%,#f4d2bd);
+  --dock:rgba(255,255,255,.45); --dock-line:rgba(255,255,255,.6);
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--surface); color:var(--text); font:14px/20px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif; }
+header.top { display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; padding:16px 24px; border-bottom:1px solid var(--line); }
+header.top h1 { margin:0; font-size:17px; line-height:24px; }
+header.top p { margin:0; color:var(--muted); font-size:12px; }
+.ctl { display:flex; gap:8px; flex-wrap:wrap; }
+.ctl a { padding:4px 12px; border:1px solid var(--line-strong); border-radius:8px; color:var(--muted); text-decoration:none; font-size:12px; }
+.ctl a[aria-current] { color:var(--text); background:var(--surface-soft); border-color:var(--primary); }
+main { display:grid; gap:24px; padding:24px; max-width:1200px; margin:0 auto; }
+section { border:1px solid var(--line); border-radius:16px; padding:20px; background:var(--surface-soft); }
+section h2 { margin:0 0 4px; font-size:15px; }
+section > p { margin:0 0 16px; color:var(--muted); font-size:12px; }
+.row { display:flex; flex-wrap:wrap; gap:32px; align-items:flex-end; }
+.cap { margin-top:8px; text-align:center; color:var(--muted); font-size:11px; line-height:16px; }
+.star { color:var(--primary); }
+
+/* ---- Dock de macOS: lienzo 1024, cuerpo 824 con radio 185 y sombra; distintivo encima, abajo a la derecha ---- */
+.wall { background:var(--wall); border-radius:12px; padding:40px 24px 16px; display:flex; justify-content:center; }
+.dock { display:flex; gap:6px; align-items:flex-end; padding:6px 10px; border-radius:22px; background:var(--dock); border:1px solid var(--dock-line); backdrop-filter:blur(20px); }
+.di { --s:64px; position:relative; width:var(--s); height:var(--s); }
+.di .body { position:absolute; inset:9.77%; border-radius:22.5%; background-size:cover; background-position:center; box-shadow:0 calc(var(--s)*.012) calc(var(--s)*.03) rgba(0,0,0,.3); }
+.di .orig { position:absolute; inset:0; background:var(--badge); background-size:contain; background-repeat:no-repeat; }
+.di .bd { position:absolute; width:calc(var(--s)*var(--d)*1.24); height:calc(var(--s)*var(--d)*1.24); right:calc(var(--s)*-.035); bottom:calc(var(--s)*-.035);
+  background:var(--badge); background-size:contain; background-repeat:no-repeat; filter:drop-shadow(0 calc(var(--s)*.01) calc(var(--s)*.02) rgba(0,0,0,.35)); }
+.di .run { position:absolute; left:50%; bottom:-7px; width:4px; height:4px; margin-left:-2px; border-radius:50%; background:var(--text); opacity:.7; }
+.dock .sep { width:1px; align-self:stretch; margin:6px 4px; background:var(--dock-line); }
+.solo-dock { display:flex; gap:28px; align-items:flex-end; }
+
+/* ---- InstanceAvatar: imagen, distintivo abajo a la derecha y punto de estado arriba a la derecha ---- */
+.av { position:relative; display:inline-grid; place-items:center; flex:none; background:var(--secondary); }
+.av .img { position:absolute; inset:0; border-radius:inherit; background-size:cover; background-position:center; }
+.av .bd { position:absolute; right:-4px; bottom:-4px; width:calc(var(--a)*var(--d)*1.24); height:calc(var(--a)*var(--d)*1.24);
+  background:var(--badge); background-size:contain; background-repeat:no-repeat; filter:drop-shadow(0 0 1.5px var(--surface)) drop-shadow(0 0 1px var(--surface)); }
+.av .dot { position:absolute; border-radius:50%; background:var(--primary); box-shadow:0 0 6px var(--primary); outline:2px solid var(--surface); }
+.av .dot.off { background:var(--quiet); box-shadow:none; }
+.a64 { --a:64px; width:64px; height:64px; border-radius:16px; border:1px solid var(--line-strong); }
+.a64 .dot { width:14px; height:14px; right:-4px; top:-4px; }
+.a32 { --a:32px; width:32px; height:32px; border-radius:4px; box-shadow:inset 0 0 0 1px var(--line-strong); }
+.a32 .bd { right:-3px; bottom:-3px; }
+.a32 .dot { width:8px; height:8px; right:-2px; top:-2px; }
+.a16 { --a:16px; width:16px; height:16px; border-radius:6px; }
+.a16 .dot { width:8px; height:8px; right:-2px; bottom:-2px; }
+.a96 { --a:96px; width:96px; height:96px; border-radius:12px; border:1px solid var(--line-strong); }
+.a96 .bd { right:-6px; bottom:-6px; }
+.im-happy { background-image:var(--img-happy); } .im-vet { background-image:var(--img-vet); }
+
+/* página de la instancia */
+.card { display:flex; flex-wrap:wrap; gap:24px; align-items:center; padding:20px; border:1px solid var(--line); border-radius:12px; background:var(--surface-raised); }
+.card .t { display:grid; gap:6px; }
+.pill { display:inline-flex; align-items:center; gap:6px; width:max-content; padding:0 8px; border-radius:999px; font-size:11px; line-height:20px; color:var(--primary); background:rgba(255,141,108,.12); }
+.card h3 { margin:0; font-size:22px; line-height:28px; }
+.card .meta { color:var(--muted); font-size:12px; }
+/* uso por instancia */
+.rank { display:grid; gap:8px; min-width:320px; flex:1; }
+.ri { display:flex; align-items:center; gap:12px; padding:8px 12px; border-radius:4px; background:var(--surface-soft); }
+.ri .n { flex:1; } .ri .p { color:var(--muted); font-size:12px; }
+/* sidebar */
+.sb { width:240px; padding:8px; border-radius:12px; background:var(--surface-raised); border:1px solid var(--line); }
+.sb .g { padding:4px 8px; color:var(--quiet); font-size:11px; }
+.sb .it { display:flex; align-items:center; gap:8px; height:32px; padding:0 8px; border-radius:8px; }
+.sb .it.on { background:var(--surface-soft); }
+/* editor */
+.ed { display:flex; gap:16px; align-items:center; padding:16px; border:1px solid var(--line); border-radius:12px; background:var(--surface-raised); }
+.btn { padding:0 12px; height:32px; display:inline-flex; align-items:center; border:1px solid var(--line-strong); border-radius:8px; font-size:12px; }
+.cmp { display:flex; gap:40px; flex-wrap:wrap; align-items:flex-end; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div><h1>HU-0028 · Distintivo de la app original en el icono de instancia</h1>
+  <p>Maqueta para aprobar. La imagen que eligió la persona no cambia; el distintivo se añade al mostrarla (★ D-2).</p></div>
+  <nav class="ctl" aria-label="Opciones">
+    <a href="#tema=oscuro" data-k="tema" data-v="oscuro">Oscuro</a><a href="#tema=claro" data-k="tema" data-v="claro">Claro</a>
+    <a href="#d=28" data-k="d" data-v="28">Distintivo 28 %</a><a href="#d=36" data-k="d" data-v="36">36 % ★</a><a href="#d=44" data-k="d" data-v="44">44 %</a>
+  </nav>
+</header>
+<main>
+  <section>
+    <h2>1 · Dock de macOS (AC-01)</h2>
+    <p>Plantilla actual de macOS (cuerpo con esquinas redondeadas y sombra) y, encima, el icono de la original en la esquina inferior derecha, montado sobre la esquina del cuerpo con una sombra suave (★ D-3).</p>
+    <div class="wall"><div class="dock">
+      <div class="di"><div class="orig"></div><span class="run"></span></div>
+      <span class="sep"></span>
+      <div class="di"><div class="body im-happy"></div><div class="bd"></div><span class="run"></span></div>
+      <div class="di"><div class="body im-vet"></div><div class="bd"></div></div>
+    </div></div>
+    <div class="cap">Claude original · happy-office (abierta) · vetcare</div>
+    <div class="solo-dock" style="margin-top:24px">
+      <div><div class="di" style="--s:256px"><div class="body im-happy"></div><div class="bd"></div></div><div class="cap">256 px (Finder, vista grande)</div></div>
+      <div><div class="di" style="--s:128px"><div class="body im-happy"></div><div class="bd"></div></div><div class="cap">128 px</div></div>
+      <div><div class="di" style="--s:64px"><div class="body im-happy"></div><div class="bd"></div></div><div class="cap">64 px (Dock)</div></div>
+      <div><div class="di" style="--s:32px"><div class="body im-happy"></div><div class="bd"></div></div><div class="cap">32 px</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>2 · Página de la instancia, 64 px (AC-02)</h2>
+    <p>El distintivo ocupa la esquina inferior derecha; el punto de estado sube a la superior derecha (★ D-4).</p>
+    <div class="card">
+      <span class="av a64"><span class="img im-happy"></span><span class="bd"></span><span class="dot"></span></span>
+      <div class="t"><span class="pill">● Abierta</span><h3>happy-office</h3><span class="meta">Claude 4.4212.0 · perfil propio</span></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <span class="av a64"><span class="img im-vet"></span><span class="bd"></span><span class="dot off"></span></span>
+      <div class="t"><span class="pill" style="color:var(--muted);background:var(--surface-soft)">○ Detenida</span><h3>vetcare</h3><span class="meta">Claude 4.4212.0 · perfil propio</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>3 · «Uso por instancia», 32 px, y sidebar, 16 px (AC-02)</h2>
+    <p>En 32 px lleva distintivo y el punto arriba. En 16 px (sidebar y diálogo de actualización) no lleva distintivo y el punto sigue abajo (★ D-5).</p>
+    <div class="row" style="align-items:flex-start">
+      <div class="rank">
+        <div class="ri"><span class="av a32"><span class="img im-happy"></span><span class="bd"></span><span class="dot"></span></span><span class="n">happy-office</span><span class="p">62 % semanal</span></div>
+        <div class="ri"><span class="av a32"><span class="img im-vet"></span><span class="bd"></span><span class="dot off"></span></span><span class="n">vetcare</span><span class="p">18 % semanal</span></div>
+        <div class="ri"><span class="av a32" style="background:transparent"><span class="img" style="background:var(--badge);background-size:contain"></span><span class="dot off"></span></span><span class="n">Trabajo (sin icono propio)</span><span class="p">5 % semanal</span></div>
+      </div>
+      <div class="sb">
+        <div class="g">Instancias</div>
+        <div class="it on"><span class="av a16"><span class="img im-happy"></span><span class="dot"></span></span>happy-office</div>
+        <div class="it"><span class="av a16"><span class="img im-vet"></span><span class="dot off"></span></span>vetcare</div>
+      </div>
+    </div>
+    <div class="cap" style="text-align:left">La fila «sin icono propio» no cambia: ya es el icono de Claude.</div>
+  </section>
+
+  <section>
+    <h2>4 · Vista previa del editor (AC-02 y AC-04)</h2>
+    <p>Al elegir otra imagen la vista previa ya lleva el distintivo; «Quitar» vuelve al icono de la original, sin distintivo.</p>
+    <div class="row">
+      <div class="ed"><span class="av a96"><span class="img im-happy"></span><span class="bd"></span></span>
+        <div style="display:grid;gap:8px"><strong>Icono</strong><span style="display:flex;gap:8px"><span class="btn">Reemplazar imagen</span><span class="btn">Quitar</span></span></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>5 · Tamaños del distintivo (★ D-3)</h2>
+    <p>El mismo icono en el Dock a 128 px con el distintivo al 28, 36 y 44 % del lado.</p>
+    <div class="cmp">
+      <div><div class="di" style="--s:128px;--d:.28"><div class="body im-vet"></div><div class="bd"></div></div><div class="cap">28 %</div></div>
+      <div><div class="di" style="--s:128px;--d:.36"><div class="body im-vet"></div><div class="bd"></div></div><div class="cap">36 % ★</div></div>
+      <div><div class="di" style="--s:128px;--d:.44"><div class="body im-vet"></div><div class="bd"></div></div><div class="cap">44 %</div></div>
+    </div>
+  </section>
+</main>
+<script>
+function apply() {
+  const q = new URLSearchParams(location.hash.slice(1));
+  const st = { tema: q.get("tema") || sessionStorage.getItem("tema") || "oscuro", d: q.get("d") || sessionStorage.getItem("d") || "36" };
+  try { sessionStorage.setItem("tema", st.tema); sessionStorage.setItem("d", st.d); } catch (e) {}
+  document.documentElement.dataset.tema = st.tema;
+  document.documentElement.style.setProperty("--d", String(Number(st.d) / 100));
+  document.querySelectorAll(".ctl a").forEach(a => a.toggleAttribute("aria-current", st[a.dataset.k] === a.dataset.v));
+}
+addEventListener("hashchange", apply); apply();
+</script>
+</body>
+</html>
