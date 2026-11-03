@@ -81,8 +81,8 @@ en vuelo (`replaceIfNewer`). Rust informa `icon` también en un proyecto roto; *
 - `<app_data>/project-icons/<uuid>.png`, con `<uuid>` = `Uuid::parse_str(&entry.id)?.hyphenated().to_string()`. La ruta
   la calcula Rust a partir del registro; el frontend nunca envía una ruta. En el registro se guarda solo `revision`, no
   la ruta (sobrevive a un cambio de `app_data`); `ProjectIcon.path` se calcula al construir el resumen.
-- `revision = max(ahora_en_ms, anterior + 1)`: crece siempre, también tras «Quitar» y volver a poner, y la URL con
-  `?v=` nunca repite una de la sesión.
+- `revision = max(ahora_en_ms, anterior + 1)`: crece siempre, y la URL con `?v=` nunca repite una de la sesión. Tras
+  «Quitar» no queda revisión anterior, así que la siguiente sale del reloj (O-4 de la revisión).
 - **Archivo que falta o no es válido:** al construir el resumen, `icon` es `Some` solo si el registro lo tiene y
   `fs::symlink_metadata` dice archivo regular (no enlace) de 1 byte a 5 MiB. Si no, `None`, y el registro **no** se
   toca al leer. Un PNG dañado que pase ese filtro lo resuelve el `<img onError>` del frontend: vuelve la inicial.

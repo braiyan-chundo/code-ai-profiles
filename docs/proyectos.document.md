@@ -1,7 +1,8 @@
 # Proyectos
 
 Documento funcional de [HU-0023](../hu/HU-0023-proyectos-resumen-de-proyectos-con-metod/hu.md) y
-[HU-0025](../hu/HU-0025-proyectos-datos-incompletos-y-lector-de-/hu.md). Reglas de negocio:
+[HU-0025](../hu/HU-0025-proyectos-datos-incompletos-y-lector-de-/hu.md) y
+[HU-0027](../hu/HU-0027-icono-personalizado-de-proyecto/hu.md). Reglas de negocio:
 [RN-02 a RN-04](producto/reglas/proyectos.md).
 
 Proyectos muestra el estado de las carpetas de proyectos que siguen la metodología agéntica v4, sin abrirlas a mano.
@@ -15,6 +16,20 @@ Es una vista de solo lectura: no se cruza con las instancias de Claude ni escrib
 - Los anclados se ven en Proyectos y en su sección del sidebar, y siguen ahí al reabrir la app. El máximo es 100.
 - **Desanclar** quita el proyecto de la lista; la carpeta no se toca.
 - **Abrir carpeta** lo abre en Finder, el Explorador o el gestor de archivos.
+
+## Icono del proyecto
+
+Cada proyecto se identifica con su inicial, o con una imagen propia si la persona la eligió:
+
+- En la página del proyecto, el avatar es un botón: al pasar el ratón o con el foco muestra un lápiz y «Cambiar icono».
+  Abre «Icono del proyecto», con vista previa, «Seleccionar imagen» (o «Reemplazar imagen» y «Quitar»), «Cancelar» y
+  «Guardar».
+- La imagen es PNG o JPEG, de hasta 5 MiB y 4096 × 4096. Se recorta al centro y se guarda una copia de 512 px en los
+  datos de Code AI Profiles (`project-icons/`); el proyecto no se toca. Una imagen no válida deja el error bajo los
+  botones y «Guardar» desactivado.
+- El icono sale en el sidebar (desplegado y plegado), en la tarjeta de la lista y en la página. «Quitar» y desanclar
+  borran la copia y vuelve la inicial.
+- Un proyecto roto se ve roto, sin su icono, y su avatar no abre el diálogo. Al arreglarse, el icono vuelve.
 
 ## Qué muestra
 
@@ -68,7 +83,8 @@ y la última línea del reflog, de la que se toman solo el SHA y la fecha.
   simbólicos que lleven a otra parte del proyecto (RN-02).
 
 Code AI Profiles guarda en su carpeta de datos (`projects.json`) solo la ruta, el último nombre leído y las fechas de
-anclado y de última lectura de cada proyecto (RN-04). No guarda cifras, historias ni personas.
+anclado y de última lectura de cada proyecto, más la copia del icono si se eligió uno (`project-icons/`, RN-04). No
+guarda cifras, historias ni personas.
 
 ## Proyectos con problemas
 

@@ -65,4 +65,6 @@ la ventana en Windows 11, solo CI).
 
 ## Veredicto
 
-Pendiente.
+**Aprobada.** 2026-11-03 · Braiyan Rodriguez (mantenedor), tras probar el `.dmg` de esta entrega (`77b2677`):
+
+> «Probado y bien»

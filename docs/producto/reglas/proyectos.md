@@ -19,5 +19,7 @@ Desde HU-0023. El tiempo en fases y los tokens se suman de los `metricas.json` d
 leen transcripciones. Las descartadas muestran sus cifras, tachadas, y no cuentan en los totales.
 
 ### RN-04 · La app guarda la ruta y el último nombre leído de cada proyecto
-Desde HU-0023. Junto a su registro, Code AI Profiles guarda la ruta, el último nombre leído y cuándo se leyó, para
-reconocer un proyecto cuya carpeta se movió o se rompió. Desanclar borra solo eso.
+Desde HU-0023; el icono, desde HU-0027. Junto a su registro, Code AI Profiles guarda la ruta, el último nombre leído y
+cuándo se leyó, para reconocer un proyecto cuya carpeta se movió o se rompió, y la copia normalizada (PNG de 512 px)
+del icono que la persona eligió con el selector, en `project-icons/` de sus datos. Desanclar borra todo eso, también la
+copia. La imagen no sale de la carpeta del proyecto ni se escribe en ella (RN-02 no cambia).

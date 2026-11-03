@@ -6,6 +6,10 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ## [Unreleased]
 
+### Added
+
+- Icono personalizado de proyecto: en la página del proyecto, el avatar abre «Icono del proyecto» para elegir una imagen PNG o JPEG. Sustituye a la inicial en el sidebar, la lista y la página; la app guarda una copia de 512 px en sus datos y no toca el proyecto. «Quitar» o desanclar vuelven a la inicial; un proyecto roto no muestra su icono (HU-0027).
+
 ### Changed
 
 - El botón de plegar el sidebar está en un solo sitio: antes de las migas de cada página. El sidebar ocupa toda la altura de la ventana; en macOS los semáforos quedan sobre su cabecera.

@@ -83,7 +83,7 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 - `invoke` y `Channel` (HU-0017: el progreso de una llamada larga) **solo** en `lib/bridge.ts`; el resto de la app
   recibe un callback. Las otras APIs de Tauri, siempre detrás de `bridge.isDesktop()`, viven en tres
   sitios: `listen` en `features/scan/useScanRuntime.ts`, `getCurrentWindow` en `app/layout/window-actions.ts` y
-  `convertFileSrc` en `features/instances/instance-icon.ts`.
+  `convertFileSrc` en `lib/local-asset.ts` (`localFileSource`, para los iconos de instancia y de proyecto).
 - El alias `@/` → `src/` existe desde la HU-0014 (`tsconfig.json` `paths` y `vite.config.ts`). Lo usan
   `components/ui`, `hooks` y `showcase`. El código nuevo puede usarlo para cruzar carpetas. Lo existente no se
   reescribe por eso. **Excepción:** un módulo que se prueba con `node --test` usa solo imports relativos, porque

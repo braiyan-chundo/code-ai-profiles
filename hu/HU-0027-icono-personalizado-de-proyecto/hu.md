@@ -1,8 +1,8 @@
 ---
 id: HU-0027
 titulo: "Icono personalizado de proyecto"
-estado: en-proceso
-fase: verificacion
+estado: terminada
+fase: cierre
 area: proyectos
 entrega: 1
 prioridad: media
@@ -10,7 +10,7 @@ creada: 2026-11-03
 requiere: { arquitectura: true, diseno: true }
 repos: [code-ai-profiles]
 riesgo: [contrato]
-reglas: [RN-02, RN-04]
+reglas: [RN-04]
 depende: []
 ---
 
@@ -119,23 +119,37 @@ Windows y Linux.
 
 ## Definición de Terminado
 
-- [ ] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
-- [ ] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
-- [ ] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
-- [ ] Revisión técnica pasada, si la historia es riesgosa
-- [ ] La persona probó y aprobó; su veredicto está en `verificacion.md`
-- [ ] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
-- [ ] Commits en cada repo tocado con `HU: HU-0027`. **Sin push, sin publicar, sin desplegar**
-- [ ] Lo que solo comprueba una persona, declarado como pendiente humano
+- [x] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
+- [x] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
+- [x] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
+- [x] Revisión técnica pasada, si la historia es riesgosa
+- [x] La persona probó y aprobó; su veredicto está en `verificacion.md`
+- [x] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
+- [x] Commits en cada repo tocado con `HU: HU-0027`. **Sin push, sin publicar, sin desplegar**
+- [x] Lo que solo comprueba una persona, declarado como pendiente humano
 
 ## Cierre
 
-Fecha, quién cerró y sobre qué veredicto.
+2026-11-03 · cerró el orquestador sobre el veredicto de Braiyan Rodriguez (mantenedor): «Probado y bien», tras probar
+el `.dmg` de `77b2677`. Revisión técnica PASS (`b55cfaf`), con R-1, R-2, O-2 y O-3 corregidas antes de entregar.
 
-SHA por repositorio, con una línea de qué hace cada uno:
+SHA por repositorio, con una línea de qué hace cada uno (code-ai-profiles, rama `ajustes-windows-y-sidebar`):
 
-★ aceptadas tal como estaban:
+- `3b3092a` · contrato `ProjectSummary.icon` y mocks de navegador.
+- `adf610e` · `set_project_icon` / `clear_project_icon`, copia en `project-icons/`, `icon_image.rs` compartido, scope
+  del asset protocol.
+- `66a318d` · avatar-botón, diálogo «Icono del proyecto» e icono en sidebar, tarjeta y página.
+- `3e982eb` · R-2: la copia se borra dentro del candado al quitar y al desanclar.
+- `75688d2` · R-1, O-2, O-3: una selección no válida deja «Guardar» desactivado; etiqueta accesible; gana el último
+  archivo elegido.
+- Gobierno: historia, maqueta, arquitectura, revisión, verificación, grafo y este cierre.
 
-Pendientes humanos (nadie los vio; no se dan por hechos):
+★ aceptadas tal como estaban: D-1 (el avatar es el botón), D-2 (PNG y JPEG), D-3 (roto sin icono), D-4 (roto sin
+diálogo), y las de la maqueta (velo con lápiz centrado, aro fino, textos de error de las instancias, sin pista en
+reposo).
 
-Deuda declarada:
+Pendientes humanos (nadie los vio; no se dan por hechos): el icono en Windows y Linux reales; una imagen real a 16 px
+en esas plataformas.
+
+Deuda declarada: bajar de versión pierde el campo `icon` al primer guardado y deja el PNG huérfano (sin barrido de
+huérfanos); una lista en vuelo puede traer el icono anterior durante milisegundos.

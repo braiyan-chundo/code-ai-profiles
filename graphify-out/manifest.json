@@ -115,8 +115,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1793395257.4332943,
-    "ast_hash": "8a07ab3a03b6be4617d6ee5066583cb7",
+    "mtime": 1793689653.6986117,
+    "ast_hash": "335362f9845f6394f2857121bd970cdc",
     "semantic_hash": ""
   },
   "code.html": {
@@ -160,8 +160,8 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1793686406.8172734,
-    "ast_hash": "613b5fc5b5332ec706027c70eb2eb0c1",
+    "mtime": 1793689653.6988635,
+    "ast_hash": "0c699eec7265bc3eca706307411bc519",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793689412.221089,
-    "ast_hash": "2c0854486418c175ead48b443a0194c1",
+    "mtime": 1793689672.8394108,
+    "ast_hash": "17c71e7aa9f391f7adfb9e96c30e440c",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -390,8 +390,8 @@
     "semantic_hash": ""
   },
   "docs/arquitectura/frontend.md": {
-    "mtime": 1793686341.572465,
-    "ast_hash": "f54e0237bbe470b7a08440580f48649a",
+    "mtime": 1793689643.4993167,
+    "ast_hash": "e9a19eb7e4c8a208538e900f6cef1559",
     "semantic_hash": ""
   },
   "hu/HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md": {
@@ -3160,13 +3160,13 @@
     "semantic_hash": ""
   },
   "docs/producto/reglas/proyectos.md": {
-    "mtime": 1793370968.3099103,
-    "ast_hash": "9a280909d93d42d7558aaedffcd55de2",
+    "mtime": 1793689643.4984858,
+    "ast_hash": "2c9025125189aa5b39fe9dd79255defd",
     "semantic_hash": ""
   },
   "docs/proyectos.document.md": {
-    "mtime": 1793370915.4230745,
-    "ast_hash": "9986cba1bb67040766aa80d12d9f76c2",
+    "mtime": 1793689643.4990478,
+    "ast_hash": "7e14c43739f1ff3051b07fd525c8bc04",
     "semantic_hash": ""
   },
   "hu/HU-0022-configuracion-unificada-con-apariencia-y/verificacion.md": {
@@ -3670,8 +3670,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0027-icono-personalizado-de-proyecto/arquitectura.md": {
-    "mtime": 1793687851.089736,
-    "ast_hash": "64c78ecd39cbfd6d63809d36ad998d98",
+    "mtime": 1793689643.4995914,
+    "ast_hash": "4db7f991d5c3bfff761b82a54ab6be33",
     "semantic_hash": ""
   },
   "hu/HU-0027-icono-personalizado-de-proyecto/briefs/backend.md": {
@@ -3695,8 +3695,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0027-icono-personalizado-de-proyecto/hu.md": {
-    "mtime": 1793689412.167561,
-    "ast_hash": "a2bc05a88902c9b3c33be520424a6cfe",
+    "mtime": 1793689672.7977574,
+    "ast_hash": "3fa6dd5336ba5aaf108338096b0b3bf3",
     "semantic_hash": ""
   },
   "hu/HU-0027-icono-personalizado-de-proyecto/revision.md": {
@@ -3705,8 +3705,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0027-icono-personalizado-de-proyecto/seguimiento.md": {
-    "mtime": 1793689412.2194335,
-    "ast_hash": "143ffeaea7b5020493743193f7a73ee8",
+    "mtime": 1793689666.966918,
+    "ast_hash": "40d77df28920508516e7b5250d44c477",
     "semantic_hash": ""
   },
   "hu/HU-0027-icono-personalizado-de-proyecto/diseno/capturas/01-reposo-1440-claro.png": {
@@ -3980,8 +3980,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0027-icono-personalizado-de-proyecto/verificacion.md": {
-    "mtime": 1793689412.125054,
-    "ast_hash": "564232e721b7e47c613ec51cc9fbc9b0",
+    "mtime": 1793689666.8390036,
+    "ast_hash": "f1429bf13504aefdbcf224dd14d335ec",
+    "semantic_hash": ""
+  },
+  "hu/HU-0027-icono-personalizado-de-proyecto/metricas.json": {
+    "mtime": 1793689667.7552147,
+    "ast_hash": "44aedfbff97946551903f25ec131562a",
     "semantic_hash": ""
   }
 }
