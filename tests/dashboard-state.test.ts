@@ -17,6 +17,7 @@ import {
   runningInstanceIds,
   usageRanking,
 } from "../src/features/dashboard/dashboard-selectors.ts";
+import { showsProviderBadge } from "../src/features/instances/avatar-badge.ts";
 import { applyLiveUsage } from "../src/features/instances/live-usage.ts";
 import { instancePending, instanceStatusLabel, instanceToggle } from "../src/features/instances/instance-status.ts";
 import type { CodeSession, DashboardState, ManagedInstance, OriginalInstallProgress, UsageStats } from "../src/types.ts";
@@ -377,4 +378,12 @@ test("instanceToggle: la operación de otra desactiva sin marcar en curso; la pr
   // El estado aún no cambió: la acción es la que corre, no la que tocaría por el estado.
   assert.equal(instanceToggle(instance("a", { status: "running" }), "launch:a")?.action, "launch");
   assert.equal(instanceToggle(instance("a"), "stop:a")?.action, "stop");
+});
+
+test("showsProviderBadge: solo con icono propio, distintivo y sin fallo de esa ruta (HU-0028)", () => {
+  assert.equal(showsProviderBadge(null, "badge.png", null), false);
+  assert.equal(showsProviderBadge("icon.png", null, null), false);
+  assert.equal(showsProviderBadge("icon.png", "badge.png", "badge.png"), false);
+  assert.equal(showsProviderBadge("icon.png", "badge-2.png", "badge.png"), true);
+  assert.equal(showsProviderBadge("icon.png", "badge.png", null), true);
 });

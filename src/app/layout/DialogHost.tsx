@@ -1,7 +1,7 @@
 import { Suspense, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { originalAppName as selectOriginalAppName, useDashboard, useRuntimePlatform } from "../../features/dashboard";
-import { DeleteInstanceDialog, InstanceEditor, useInstanceActions } from "../../features/instances";
+import { DeleteInstanceDialog, InstanceEditor, providerBadgeSource, useInstanceActions } from "../../features/instances";
 import {
   SessionTransferDialog,
   UnlinkSessionDialog,
@@ -83,6 +83,7 @@ export function DialogHost() {
         <InstanceEditor
           instance={editorInstance}
           sourcePath={state.system.sourcePath}
+          badgeSrc={providerBadgeSource(state.system)}
           platform={runtimePlatform}
           busy={busy === "create" || busy === "update"}
           iconBusy={editorInstance !== null && busy === `icon:${editorInstance.id}`}

@@ -11,12 +11,14 @@ import { Spinner } from "../../components/ui/spinner";
 import { cn } from "../../lib/utils";
 import { iconRetryState, iconStatusLead } from "./icon-status";
 import { iconDimensionsError, iconFileError } from "../../lib/icon-validation";
+import { showsProviderBadge } from "./avatar-badge";
 import { managedIconSource } from "./instance-icon";
 import type { InstanceIconChange } from "./instance-types";
 
 export function InstanceEditor({
   instance,
   sourcePath,
+  badgeSrc = null,
   platform,
   busy,
   iconBusy,
@@ -27,6 +29,8 @@ export function InstanceEditor({
 }: {
   instance: ManagedInstance | null;
   sourcePath: string | null;
+  /** El icono de la aplicación original (HU-0028): se ve en la vista previa mientras haya una imagen. */
+  badgeSrc?: string | null;
   platform: DashboardState["system"]["platform"];
   busy: boolean;
   /** «Reintentar» el icono del Dock en curso. */
@@ -44,6 +48,7 @@ export function InstanceEditor({
   const [iconBytes, setIconBytes] = useState<Uint8Array | null>(null);
   const [iconPreviewUrl, setIconPreviewUrl] = useState<string | null>(null);
   const [removeIcon, setRemoveIcon] = useState(false);
+  const [failedBadge, setFailedBadge] = useState<string | null>(null);
   const [iconError, setIconError] = useState<string | null>(null);
   // El error de ESTE reintento: el aviso global queda tras el fondo del diálogo y puede ser de otra acción.
   const [retryError, setRetryError] = useState<string | null>(null);
@@ -51,6 +56,8 @@ export function InstanceEditor({
   const [permissionsBlocked, setPermissionsBlocked] = useState(false);
   const isNew = !instance;
   const currentIconUrl = instance ? managedIconSource(instance) : null;
+  // Solo con una imagen a la vista: «Quitar» deja la marca sin distintivo (AC-04).
+  const previewSrc = iconPreviewUrl || (!removeIcon && currentIconUrl) || null;
   const locked = busy || iconBusy;
   const dirty = instance
     ? name !== instance.name || iconBytes !== null || removeIcon
@@ -136,10 +143,21 @@ export function InstanceEditor({
             aria-labelledby="instance-icon-heading"
             className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-3 rounded-sm ring-1 ring-border ring-inset bg-(--surface-soft) p-4"
           >
-            <span className="grid size-18 place-items-center overflow-hidden rounded-lg ring-1 ring-(--line-strong) ring-inset bg-secondary text-primary-text">
-              {iconPreviewUrl || (!removeIcon && currentIconUrl)
-                ? <img src={iconPreviewUrl ?? currentIconUrl!} alt="Vista previa del icono de la instancia" className="size-full object-cover" />
-                : <BrandMark size={30} />}
+            <span className="relative size-18">
+              <span className="grid size-full place-items-center overflow-hidden rounded-lg ring-1 ring-(--line-strong) ring-inset bg-secondary text-primary-text">
+                {previewSrc
+                  ? <img src={previewSrc} alt="Vista previa del icono de la instancia" className="size-full object-cover" />
+                  : <BrandMark size={30} />}
+              </span>
+              {showsProviderBadge(previewSrc, badgeSrc, failedBadge) && (
+                <img
+                  src={badgeSrc!}
+                  alt=""
+                  draggable={false}
+                  onError={() => setFailedBadge(badgeSrc)}
+                  className="pointer-events-none absolute -right-1 -bottom-1 size-[36%] [filter:drop-shadow(0_0_1.5px_var(--surface))_drop-shadow(0_0_1px_var(--surface))]"
+                />
+              )}
             </span>
             <div className="grid min-w-0 gap-2">
               <strong id="instance-icon-heading" className="text-xs font-semibold">Icono de la instancia</strong>
