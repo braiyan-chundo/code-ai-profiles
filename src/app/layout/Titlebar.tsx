@@ -1,42 +1,25 @@
 import { MinusIcon, SquareIcon, XIcon } from "lucide-react";
 import type { ReactNode } from "react";
-import { SidebarTrigger, useSidebar } from "../../components/ui/sidebar";
 import { useRuntimePlatform } from "../../features/dashboard";
 import { cn } from "../../lib/utils";
 import { windowAction } from "./window-actions";
 
 /**
- * La zona de la ventana (HU-0019, A-1): arriba a la izquierda, sobre la columna del sidebar, con el botón de plegar.
- * Mide `--titlebar-height` (lo fija `AppShell`) y la barra de la página (`PageHeader`) ocupa el resto de la fila. Ya no
- * lleva la marca: vive en el panel. macOS: los semáforos nativos van superpuestos en `x:20, y:19`, así que se dejan
- * 84 px a la izquierda. Windows y Linux: 16 px. Windows: ventana sin decoraciones, con los controles propios arriba a
- * la derecha, a 10 px del borde. Linux: las decoraciones las pone el gestor de ventanas. Se arrastra desde cualquier
- * zona sin controles.
+ * Lo que la ventana pone en la fila de `--titlebar-height` además de la barra de la página. Windows: ventana sin
+ * decoraciones, con los controles propios arriba a la derecha, a 10 px del borde (`PageHeader` les reserva 160 px).
+ * macOS: los semáforos nativos van superpuestos en `x:20, y:19`, sobre la cabecera del sidebar, que les deja el hueco.
+ * Linux: las decoraciones las pone el gestor de ventanas. El botón de plegar el sidebar vive en `PageHeader`, antes de
+ * las migas; el sidebar ocupa toda la altura.
  */
 export function Titlebar() {
   const platform = useRuntimePlatform();
-  const { state } = useSidebar();
+  if (platform !== "windows") return null;
   return (
-    <>
-      <div
-        data-tauri-drag-region
-        className={cn(
-          "absolute top-0 left-0 z-20 flex h-(--titlebar-height) min-w-max items-center transition-[width] duration-200 ease-linear select-none",
-          state === "expanded" ? "w-(--sidebar-width)" : "w-16",
-          platform === "macos" ? "pl-[84px]" : "pl-4",
-        )}
-      >
-        <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
-      </div>
-
-      {platform === "windows" && (
-        <div className="absolute top-0 right-2.5 z-20 flex" aria-label="Controles de ventana">
-          <WindowButton label="Minimizar" onClick={() => void windowAction("minimize")}><MinusIcon /></WindowButton>
-          <WindowButton label="Maximizar" onClick={() => void windowAction("maximize")}><SquareIcon /></WindowButton>
-          <WindowButton label="Cerrar" close onClick={() => void windowAction("close")}><XIcon /></WindowButton>
-        </div>
-      )}
-    </>
+    <div className="absolute top-0 right-2.5 z-20 flex" aria-label="Controles de ventana">
+      <WindowButton label="Minimizar" onClick={() => void windowAction("minimize")}><MinusIcon /></WindowButton>
+      <WindowButton label="Maximizar" onClick={() => void windowAction("maximize")}><SquareIcon /></WindowButton>
+      <WindowButton label="Cerrar" close onClick={() => void windowAction("close")}><XIcon /></WindowButton>
+    </div>
   );
 }
 

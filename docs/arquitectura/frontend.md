@@ -20,7 +20,7 @@ src/
     providers/          AppProviders, DashboardRuntime, DialogsProvider (+ dialogs-context.ts)
     layout/             AppShell (SidebarProvider), Titlebar, AppSidebar, FeedbackArea, Statusbar, DialogHost,
                         PageHeader, PageContent, PageSkeleton (las dos filas y el esqueleto de una pantalla) y window-actions.ts.
-                        Desde HU-0019, Titlebar es solo la zona de la barra sobre el sidebar y PageHeader es la barra de la página
+                        Titlebar solo pone los controles de ventana de Windows; PageHeader es la barra de la página, con el botón de plegar
     routes/<pantalla>/  un componente de ruta y las piezas que solo usa esa pantalla
   features/<feature>/   componentes, hooks, lógica pura y tipos de una funcionalidad (sin CSS desde la HU-0016)
     index.ts            su API pública
@@ -200,7 +200,7 @@ app/  ──►  features/*  ──►  components/, lib/, types.ts
 - **El tema va en `<html>`** (HU-0016). `AppearanceProvider` aplica `theme-dark`/`theme-light` y `data-text-size`
   (HU-0019; antes `data-session-text`; el campo guardado sigue siendo `sessionTextSize`) sobre `document.documentElement` con `useLayoutEffect`, y así los portales de Radix (menús, diálogos, tooltips),
   que cuelgan de `body`, lo heredan. La plataforma no va en el DOM como gancho de CSS: los componentes que cambian
-  por plataforma (`AppShell`, `Titlebar`) leen `useRuntimePlatform()` y eligen sus clases. La raíz conserva la clase
+  por plataforma (`AppSidebar`, `Titlebar`, `PageHeader`) leen `useRuntimePlatform()` y eligen sus clases. La raíz conserva la clase
   `platform-*` solo como marca para inspeccionar.
 
 ## Router
@@ -268,32 +268,32 @@ Lo que rige desde la HU-0016, con los pasos y la convivencia en `hu/HU-0016-…/
   las dos entradas: `main.tsx` (fuentes e `index.css`) y `showcase/main.tsx`.
 - Orden: preflight y Tailwind; `tokens.css` en `layer(base)` (después del preflight y por debajo de las
   utilidades); `ui-theme.css`; y un `@layer base` con el borde y el anillo por defecto, el `color-scheme` de cada tema
-  y `prefers-reduced-motion`. **`body` no lleva fondo**: en Windows la ventana es transparente con esquinas
-  redondeadas, y el fondo lo pinta la raíz del shell.
+  y `prefers-reduced-motion`. **`body` no lleva fondo**: el fondo lo pinta el marco del shell. La ventana es opaca en
+  las tres plataformas (en Windows, desde 0.4.1, con `backgroundColor` en `tauri.windows.conf.json`).
 - Tokens (`styles/tokens.css`): oscuros en `:root, .theme-dark` (una muestra `.theme-dark` dentro del tema claro
   también los toma), claros en `.theme-light` (detrás) y la escala tipográfica en `:root[data-text-size=…]` (§ Escala). El puente a shadcn,
   en `ui-theme.css` (§ Design system). Lo que el aspecto de la app necesita y no es token de shadcn va como `--ui-*`
-  (por ejemplo, el degradado, el borde y la sombra de la ventana).
+  (por ejemplo, el degradado de fondo de la ventana).
 - **Una sola barra de 52 px** (HU-0019): `--titlebar-height: 52px` en las tres plataformas. No hay franja a todo el
-  ancho. Arriba a la izquierda, `Titlebar` (absoluta, sobre la columna del sidebar), con el hueco de la plataforma y
-  el botón de plegar. Arriba a la derecha, la fila 1 de `SidebarInset`: el `PageHeader` de cada ruta, con «Sección ›
-  Página» y sus acciones, a la altura de la barra. Sin portal: la rejilla lo pone en su sitio. Las zonas sin
-  controles de las dos llevan `data-tauri-drag-region`, en cada elemento, porque el atributo no se hereda.
-- Plataformas (`AppShell`, `Titlebar` y `PageHeader`, con `useRuntimePlatform()`):
-  - **macOS**: hueco de 84 px a la izquierda para los semáforos nativos (`x:20, y:19` en `tauri.macos.conf.json`).
-    Con el sidebar plegado, `PageHeader` lleva `pl-[68px]`.
-  - **Windows**: pinta sus tres controles arriba a la derecha, y `PageHeader` reserva 160 px. Marco con esquinas de
-    20 px, borde y sombra.
-  - **Linux**: decoraciones nativas, sin controles en la barra; hueco de 16 px.
+  ancho. El sidebar ocupa toda la altura a la izquierda. A su derecha, la fila 1 de `SidebarInset`: el `PageHeader`
+  de cada ruta, con el botón de plegar (el único), «Sección › Página» y sus acciones. Sin portal: la rejilla lo pone
+  en su sitio. Las zonas sin controles (la barra de la página, la franja de arriba del sidebar y la fila de la marca)
+  llevan `data-tauri-drag-region`, en cada elemento, porque el atributo no se hereda.
+- Plataformas (`AppSidebar`, `Titlebar` y `PageHeader`, con `useRuntimePlatform()`):
+  - **macOS**: los semáforos nativos (`x:20, y:19` en `tauri.macos.conf.json`) caen sobre la cabecera del sidebar,
+    que lleva `pt-8` para dejarles sitio.
+  - **Windows**: `Titlebar` pinta sus tres controles arriba a la derecha, y `PageHeader` reserva 160 px. Ventana sin
+    decoraciones pero opaca y con `shadow` (`tauri.windows.conf.json`): el borde, la sombra y las esquinas los pone
+    el sistema (redondeadas en Windows 11). La app no dibuja un marco propio: no coincidiría con el del sistema.
+  - **Linux**: decoraciones nativas, sin controles en la barra.
   - Cambiar la altura de la barra obliga a mover `trafficLightPosition` (es de backend o del orquestador).
 - **Sidebar flotante** (HU-0019): `Sidebar variant="floating"` del catálogo, con `--sidebar-width: 256px` (panel de
   240 + 8 de margen) y `--sidebar: var(--surface-raised)`. La marca va en la cabecera del panel.
 - Los elementos estructurales se marcan con `data-slot` (`desktop-shell` en la raíz, `sidebar-wrapper` del catálogo
   en el marco), no con clases propias.
 - El sidebar del catálogo es `position: fixed`. El marco (`SidebarProvider`) lleva `transform: translateZ(0)` y
-  `overflow-hidden` para que quede dentro de la ventana y lo recorten sus esquinas. `AppSidebar` lo baja con
-  `top-(--titlebar-height)! h-auto!`. Los diálogos se pintan en `body`, fuera del marco: su velo cubre la ventana
-  entera, también las esquinas transparentes de Windows, como antes.
+  `overflow-hidden` para que quede dentro de la ventana. Ocupa toda la altura. Los diálogos se pintan en `body`, fuera
+  del marco: su velo cubre la ventana entera.
 - **Escala tipográfica** (HU-0019; sin factor desde la HU-0022). El ajuste de Apariencia escala toda la interfaz:
   - **Tokens.** `tokens.css` declara, en `:root` (normal) y en `:root[data-text-size="compact"|"large"]`, siete
     `--fs-*`, ocho interlineados `--lh-*` (`micro`, `small`, `prose`, `body`, `heading`, `title`, `figure`,
@@ -313,8 +313,7 @@ Lo que rige desde la HU-0016, con los pasos y la convivencia en `hu/HU-0016-…/
     existe.
 - **Sistema armónico** (HU-0022, A-1; la referencia es `DESIGN.md` § «Cómo se aplica»):
   - **Espaciado** solo con los pasos `0, 1, 2, 3, 4, 6, 8, 12` de Tailwind (de 0 a 48 px). Las únicas medidas de
-    espaciado en px son los huecos de controles nativos: `pl-[84px]` en `Titlebar` y `pr-[160px]`/`pl-[68px]` en
-    `PageHeader`. Las alturas y anchos arbitrarios son múltiplos de 4.
+    espaciado en px es el hueco de los controles de ventana de Windows: `pr-[160px]` en `PageHeader`. Las alturas y anchos arbitrarios son múltiplos de 4.
   - **Radios** `rounded-xs` 4, `sm` 8, `md` 12, `lg`/`xl` 16, `2xl` 20 y `3xl` 24. No se usa `rounded-4xl`. Regla
     de anidado: un hijo de todo el ancho lleva `max(8, R − p)`. Las entradas de la app van a 8, como en la maqueta.
   - **Foco**: `focus-visible:ring-2 ring-ring` (o `outline-2 outline-ring`), con `--ring` = `--ui-primary-text` y sin

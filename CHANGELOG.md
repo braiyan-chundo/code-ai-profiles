@@ -6,6 +6,14 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ## [Unreleased]
 
+### Changed
+
+- El botón de plegar el sidebar está en un solo sitio: antes de las migas de cada página. El sidebar ocupa toda la altura de la ventana; en macOS los semáforos quedan sobre su cabecera.
+
+### Fixed
+
+- Windows: la ventana ya no dibuja un marco redondeado propio que no coincidía con el borde del sistema. Ahora es opaca y el borde, la sombra y las esquinas los pone Windows.
+
 ## [0.4.0] - 2026-10-30
 
 Pendiente de probar con una versión real: la instalación directa en macOS de una versión nueva de Claude (detección en la publicación oficial e «Instalar») se probó con pruebas automáticas y datos simulados, porque Anthropic no ha publicado versión desde la 4.4212.0. Si falla, la app lo dice y no toca la original. Windows y Linux solo se han comprobado en CI.
