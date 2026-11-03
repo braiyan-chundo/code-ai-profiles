@@ -273,6 +273,30 @@ pub(crate) async fn unpin_project(app: AppHandle, id: String) -> Result<(), Stri
         .map_err(|error| format!("Desanclar el proyecto terminó inesperadamente: {error}"))?
 }
 
+/// Icono del proyecto (HU-0027): Rust normaliza la imagen y guarda la copia en `app_data`; la
+/// carpeta del proyecto no se toca. Devuelve el proyecto releído.
+#[tauri::command]
+pub(crate) async fn set_project_icon(
+    app: AppHandle,
+    request: SetProjectIconRequest,
+) -> Result<projects::ProjectSummary, String> {
+    tauri::async_runtime::spawn_blocking(move || projects::set_project_icon_sync(&app, request))
+        .await
+        .map_err(|error| {
+            format!("Guardar el icono del proyecto terminó inesperadamente: {error}")
+        })?
+}
+
+#[tauri::command]
+pub(crate) async fn clear_project_icon(
+    app: AppHandle,
+    id: String,
+) -> Result<projects::ProjectSummary, String> {
+    tauri::async_runtime::spawn_blocking(move || projects::clear_project_icon_sync(&app, &id))
+        .await
+        .map_err(|error| format!("Quitar el icono del proyecto terminó inesperadamente: {error}"))?
+}
+
 #[tauri::command]
 pub(crate) async fn open_project_folder(app: AppHandle, id: String) -> Result<(), String> {
     tauri::async_runtime::spawn_blocking(move || {

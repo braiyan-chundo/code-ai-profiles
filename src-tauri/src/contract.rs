@@ -377,6 +377,14 @@ pub(crate) struct SetInstanceIconRequest {
     pub(crate) bytes: Vec<u8>,
 }
 
+/// El icono de un proyecto anclado (HU-0027): Rust lo normaliza y calcula la ruta a partir del id.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct SetProjectIconRequest {
+    pub(crate) id: String,
+    pub(crate) bytes: Vec<u8>,
+}
+
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct UnlinkCodeSessionRequest {

@@ -4,41 +4,8 @@
 
 use super::*;
 
-const ICON_MAX_BYTES: usize = 5 * 1024 * 1024;
-
-const ICON_MAX_DIMENSION: u32 = 4096;
-
 #[cfg(not(target_os = "macos"))]
 const DOCK_ICON_MACOS_ONLY: &str = "El icono del Dock solo se aplica en macOS.";
-
-pub(crate) fn normalized_icon_png(bytes: &[u8]) -> Result<Vec<u8>, String> {
-    if bytes.is_empty() || bytes.len() > ICON_MAX_BYTES {
-        return Err("El icono debe pesar entre 1 byte y 5 MiB.".to_string());
-    }
-    let format = image::guess_format(bytes)
-        .map_err(|_| "El archivo no es una imagen PNG o JPEG válida.".to_string())?;
-    if !matches!(format, image::ImageFormat::Png | image::ImageFormat::Jpeg) {
-        return Err("El icono debe ser PNG o JPEG.".to_string());
-    }
-    let dimensions = image::ImageReader::with_format(Cursor::new(bytes), format)
-        .into_dimensions()
-        .map_err(|_| "No se pudo leer la cabecera del icono.".to_string())?;
-    if dimensions.0 == 0
-        || dimensions.1 == 0
-        || dimensions.0 > ICON_MAX_DIMENSION
-        || dimensions.1 > ICON_MAX_DIMENSION
-    {
-        return Err("Las dimensiones del icono no son válidas (máximo 4096×4096).".to_string());
-    }
-    let image = image::load_from_memory_with_format(bytes, format)
-        .map_err(|_| "No se pudo decodificar el icono.".to_string())?;
-    let normalized = image.resize_to_fill(512, 512, image::imageops::FilterType::Lanczos3);
-    let mut encoded = Cursor::new(Vec::new());
-    normalized
-        .write_to(&mut encoded, image::ImageFormat::Png)
-        .map_err(|error| format!("No se pudo normalizar el icono: {error}"))?;
-    Ok(encoded.into_inner())
-}
 
 pub(crate) fn set_instance_icon_sync(
     app: &AppHandle,
@@ -182,13 +149,12 @@ pub(crate) fn reapply_instance_icon_sync(app: &AppHandle, id: String) -> Result<
     Err(DOCK_ICON_MACOS_ONLY.to_string())
 }
 
-#[cfg(test)]
+// La normalización y su prueba viven en `icon_image.rs`; aquí solo queda el spike visual de macOS.
+#[cfg(all(test, target_os = "macos"))]
 mod tests {
     use super::*;
-    #[cfg(target_os = "macos")]
     use crate::test_support::*;
 
-    #[cfg(target_os = "macos")]
     #[test]
     #[ignore = "visual spike: requires an explicit provider source and retained temp root"]
     fn macos_provider_clone_dock_visual_spike() {
@@ -259,18 +225,5 @@ mod tests {
         println!("DOCK_FIXTURE_STRICT_STATUS={:?}", baseline.strict_status);
         println!("DOCK_FIXTURE_BASELINE_RESTORED=true");
         println!("DOCK_FIXTURE_STATE=workspace icon cleared; exact signature baseline restored; app left running for Dock inspection");
-    }
-
-    #[test]
-    fn normalizes_small_png_icons_and_rejects_invalid_input() {
-        let icon = image::DynamicImage::new_rgba8(4, 8);
-        let mut encoded = Cursor::new(Vec::new());
-        icon.write_to(&mut encoded, image::ImageFormat::Png)
-            .unwrap();
-        let normalized = normalized_icon_png(&encoded.into_inner()).unwrap();
-        let decoded = image::load_from_memory(&normalized).unwrap();
-        assert_eq!((decoded.width(), decoded.height()), (512, 512));
-        assert!(normalized_icon_png(b"not-an-image").is_err());
-        assert!(normalized_icon_png(&vec![0; ICON_MAX_BYTES + 1]).is_err());
     }
 }

@@ -31,7 +31,8 @@
       "assetProtocol": {
         "enable": true,
         "scope": [
-          "$APPDATA/managed-instances/*/branding/icon.png"
+          "$APPDATA/managed-instances/*/branding/icon.png",
+          "$APPDATA/project-icons/*.png"
         ]
       }
     }

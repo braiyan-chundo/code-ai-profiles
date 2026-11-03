@@ -21,6 +21,7 @@ mod commands;
 mod config;
 mod contract;
 mod error;
+mod icon_image;
 mod instances;
 #[cfg(target_os = "macos")]
 mod macos_icon;
@@ -39,6 +40,7 @@ mod versions;
 
 use contract::*;
 use error::*;
+use icon_image::*;
 use instances::*;
 use platform::*;
 use processes::*;
@@ -89,6 +91,8 @@ pub fn run() {
             commands::pick_project_folder,
             commands::pin_project,
             commands::unpin_project,
+            commands::set_project_icon,
+            commands::clear_project_icon,
             commands::open_project_folder,
             commands::read_project_history,
             commands::open_external_link
