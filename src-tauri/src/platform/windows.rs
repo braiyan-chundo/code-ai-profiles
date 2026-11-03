@@ -24,6 +24,12 @@ pub(crate) fn source_display_name(source: &Path) -> Option<String> {
     source_name_from_metadata(product_name.as_deref(), None, source)
 }
 
+/// HU-0028 · the badge comes from the resources of `Claude.exe` itself (classic installer or MSIX), read in Rust by
+/// `provider_badge.rs`: no PowerShell.
+pub(crate) fn provider_icon_file(source: &Path) -> Option<PathBuf> {
+    source.is_file().then(|| source.to_path_buf())
+}
+
 pub(crate) fn detect_provider_source() -> Option<PathBuf> {
     classic_source().or_else(|| packaged_installation().map(|package| package.executable))
 }

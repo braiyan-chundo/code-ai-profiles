@@ -32,7 +32,8 @@
         "enable": true,
         "scope": [
           "$APPDATA/managed-instances/*/branding/icon.png",
-          "$APPDATA/project-icons/*.png"
+          "$APPDATA/project-icons/*.png",
+          "$APPDATA/provider-badge/*.png"
         ]
       }
     }

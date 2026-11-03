@@ -56,6 +56,7 @@ pub(crate) fn set_instance_icon_sync(
             system_applied,
             system_message,
             system_issue: None,
+            dock_badge: None,
         });
         if let Err(error) = save_registry(&paths, &registry) {
             if let Some(bytes) = previous_icon.as_deref() {
@@ -191,7 +192,7 @@ mod tests {
         icon.write_to(&mut encoded, image::ImageFormat::Png)
             .unwrap();
         fs::write(&icon_path, encoded.into_inner()).unwrap();
-        macos_icon::set_workspace_icon(&root, &managed, Some(&icon_path)).unwrap();
+        macos_icon::set_workspace_icon(&root, &managed, Some(&icon_path), None).unwrap();
         let iconized = macos_signature_snapshot(&managed);
         assert_eq!(iconized.code_hash, baseline.code_hash);
         assert_eq!(iconized.team_identifier, baseline.team_identifier);
@@ -213,7 +214,7 @@ mod tests {
             .and_then(|value| value.parse::<u64>().ok())
             .unwrap_or(1_500);
         thread::sleep(Duration::from_millis(capture_ms));
-        macos_icon::set_workspace_icon(&root, &managed, None).unwrap();
+        macos_icon::set_workspace_icon(&root, &managed, None, None).unwrap();
         let restored = macos_signature_snapshot(&managed);
         assert_eq!(
             restored, baseline,

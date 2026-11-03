@@ -770,6 +770,66 @@ const DOCK_ICON_CORNER_RADIUS: f32 = 185.4;
 const DOCK_ICON_SHADOW_OFFSET: u32 = 12;
 const DOCK_ICON_SHADOW_SIGMA: f32 = 12.0;
 const DOCK_ICON_SHADOW_OPACITY: f32 = 0.3;
+/// HU-0028 (★ D-3): the original's badge, 368 px (36 % of the canvas) with its bottom-right corner 36 px from the
+/// canvas edge, so it sits over the body's rounded corner. Its own shadow: 10 px down, σ 8, opacity 0.35.
+const DOCK_BADGE_SIDE: u32 = 368;
+const DOCK_BADGE_INSET: u32 = 36;
+const DOCK_BADGE_SHADOW_OFFSET: u32 = 10;
+const DOCK_BADGE_SHADOW_SIGMA: f32 = 8.0;
+const DOCK_BADGE_SHADOW_OPACITY: f32 = 0.35;
+/// Room around the badge for its blurred shadow (≈3σ plus the offset).
+const DOCK_BADGE_SHADOW_PADDING: u32 = 32;
+
+/// HU-0028 · the original's badge for the Dock: its cache key (the witness saved in `CustomIcon.dock_badge`) and its
+/// PNG bytes.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct DockBadge {
+    pub(crate) key: String,
+    pub(crate) png: Vec<u8>,
+}
+
+/// Resolves the badge of the original once per operation. `None` when the original has no readable icon (D-7).
+pub(crate) fn dock_badge(app_data: &Path, original: &Path) -> Option<DockBadge> {
+    let badge = provider_badge(app_data, original)?;
+    let path = PathBuf::from(&badge.path);
+    let key = path.file_stem()?.to_str()?.to_string();
+    let png = fs::read(&path).ok()?;
+    Some(DockBadge { key, png })
+}
+
+/// Composes the badge (with its shadow) over the bottom-right corner of the Dock canvas. A badge that does not
+/// decode is ignored: the icon stays as it would be without it (D-7).
+fn compose_dock_badge(canvas: &mut image::RgbaImage, badge: &[u8]) {
+    use image::{imageops, Rgba, RgbaImage};
+
+    let Ok(decoded) = image::load_from_memory_with_format(badge, image::ImageFormat::Png) else {
+        return;
+    };
+    if decoded.width() == 0 || decoded.height() == 0 {
+        return;
+    }
+    let badge = imageops::resize(
+        &decoded.to_rgba8(),
+        DOCK_BADGE_SIDE,
+        DOCK_BADGE_SIDE,
+        imageops::FilterType::Lanczos3,
+    );
+    let origin = DOCK_ICON_CANVAS - DOCK_BADGE_INSET - DOCK_BADGE_SIDE;
+    let shadow_side = DOCK_BADGE_SIDE + 2 * DOCK_BADGE_SHADOW_PADDING;
+    let mut shadow = RgbaImage::from_pixel(shadow_side, shadow_side, Rgba([0, 0, 0, 0]));
+    for (x, y, pixel) in badge.enumerate_pixels() {
+        let alpha = (f32::from(pixel[3]) * DOCK_BADGE_SHADOW_OPACITY).round() as u8;
+        shadow.put_pixel(
+            x + DOCK_BADGE_SHADOW_PADDING,
+            y + DOCK_BADGE_SHADOW_PADDING + DOCK_BADGE_SHADOW_OFFSET,
+            Rgba([0, 0, 0, alpha]),
+        );
+    }
+    let shadow = imageops::fast_blur(&shadow, DOCK_BADGE_SHADOW_SIGMA);
+    let shadow_origin = i64::from(origin) - i64::from(DOCK_BADGE_SHADOW_PADDING);
+    imageops::overlay(canvas, &shadow, shadow_origin, shadow_origin);
+    imageops::overlay(canvas, &badge, i64::from(origin), i64::from(origin));
+}
 
 /// Antialiased coverage of the rounded square of side `side` at the centre of pixel (`x`, `y`).
 fn rounded_square_coverage(x: u32, y: u32, side: f32, radius: f32) -> f32 {
@@ -782,8 +842,9 @@ fn rounded_square_coverage(x: u32, y: u32, side: f32, radius: f32) -> f32 {
 }
 
 /// Turns a saved icon (any size, PNG or JPEG) into the Dock icon: centre square crop, 824×824 body with the
-/// rounded mask and a soft shadow on a transparent 1024×1024 canvas. Only `image`, no new dependency.
-pub(crate) fn dock_icon_png(source: &[u8]) -> Result<Vec<u8>, String> {
+/// rounded mask and a soft shadow on a transparent 1024×1024 canvas, and the original's badge on top when there is
+/// one (HU-0028). Only `image`, no new dependency.
+pub(crate) fn dock_icon_png(source: &[u8], badge: Option<&[u8]>) -> Result<Vec<u8>, String> {
     use image::{imageops, Rgba, RgbaImage};
 
     let image = image::load_from_memory(source)
@@ -821,6 +882,9 @@ pub(crate) fn dock_icon_png(source: &[u8]) -> Result<Vec<u8>, String> {
     }
     let mut canvas = imageops::fast_blur(&shadow, DOCK_ICON_SHADOW_SIGMA);
     imageops::overlay(&mut canvas, &body, i64::from(margin), i64::from(margin));
+    if let Some(badge) = badge {
+        compose_dock_badge(&mut canvas, badge);
+    }
     let mut encoded = Cursor::new(Vec::new());
     canvas
         .write_to(&mut encoded, image::ImageFormat::Png)
@@ -829,13 +893,24 @@ pub(crate) fn dock_icon_png(source: &[u8]) -> Result<Vec<u8>, String> {
 }
 
 /// The same saved icon is reapplied on launch, after a sync and on rollbacks: its template is kept for the last
-/// few icons, keyed by the SHA-256 of the saved bytes.
-fn cached_dock_icon_png(source: &[u8]) -> Result<Vec<u8>, String> {
+/// few icons, keyed by the SHA-256 of the saved bytes, a presence byte and the badge bytes when there is one.
+fn dock_template_key(source: &[u8], badge: Option<&[u8]>) -> [u8; 32] {
     use sha2::{Digest, Sha256};
 
+    let mut hasher = Sha256::new();
+    hasher.update((source.len() as u64).to_le_bytes());
+    hasher.update(source);
+    hasher.update([u8::from(badge.is_some())]);
+    if let Some(badge) = badge {
+        hasher.update(badge);
+    }
+    hasher.finalize().into()
+}
+
+fn cached_dock_icon_png(source: &[u8], badge: Option<&[u8]>) -> Result<Vec<u8>, String> {
     const CACHED_TEMPLATES: usize = 4;
     static TEMPLATES: Mutex<Vec<([u8; 32], Vec<u8>)>> = Mutex::new(Vec::new());
-    let key: [u8; 32] = Sha256::digest(source).into();
+    let key = dock_template_key(source, badge);
     if let Some(cached) = TEMPLATES.lock().ok().and_then(|templates| {
         templates
             .iter()
@@ -844,7 +919,7 @@ fn cached_dock_icon_png(source: &[u8]) -> Result<Vec<u8>, String> {
     }) {
         return Ok(cached);
     }
-    let png = dock_icon_png(source)?;
+    let png = dock_icon_png(source, badge)?;
     if let Ok(mut templates) = TEMPLATES.lock() {
         templates.retain(|(cached_key, _)| *cached_key != key);
         if templates.len() >= CACHED_TEMPLATES {
@@ -856,11 +931,12 @@ fn cached_dock_icon_png(source: &[u8]) -> Result<Vec<u8>, String> {
 }
 
 /// Puts (`Some`) or removes (`None`) the Finder icon of a managed copy through NSWorkspace. A refusal is
-/// classified (A-5).
+/// classified (A-5). With an icon, `badge` is composed over its Dock template (HU-0028).
 pub(crate) fn set_workspace_icon(
     instances_root: &Path,
     bundle: &Path,
     icon_path: Option<&Path>,
+    badge: Option<&DockBadge>,
 ) -> Result<(), WorkspaceIconError> {
     guard_managed_bundle(instances_root, bundle)?;
     // Failure 2 of the manual test: the saved icon (square, full bleed) becomes the macOS icon template. The
@@ -869,7 +945,9 @@ pub(crate) fn set_workspace_icon(
         Some(path) => Some(
             fs::read(path)
                 .ok()
-                .and_then(|bytes| cached_dock_icon_png(&bytes).ok())
+                .and_then(|bytes| {
+                    cached_dock_icon_png(&bytes, badge.map(|badge| badge.png.as_slice())).ok()
+                })
                 .ok_or(WorkspaceIconError::Rejected(None))?,
         ),
         None => None,
@@ -910,7 +988,7 @@ pub(crate) fn clear_workspace_icon(
     instances_root: &Path,
     bundle: &Path,
 ) -> Result<(), WorkspaceIconError> {
-    match set_workspace_icon(instances_root, bundle, None) {
+    match set_workspace_icon(instances_root, bundle, None, None) {
         Ok(()) | Err(WorkspaceIconError::Rejected(_)) => {}
         Err(refused) => return Err(refused),
     }
@@ -928,6 +1006,8 @@ pub(crate) struct IconOutcome {
     pub(crate) system_applied: bool,
     pub(crate) system_issue: Option<CustomIconSystemIssue>,
     pub(crate) system_message: String,
+    /// HU-0028 · key of the badge composed into the icon in place: `Some` only when `system_applied` with a badge.
+    pub(crate) dock_badge: Option<String>,
 }
 
 impl IconOutcome {
@@ -935,6 +1015,7 @@ impl IconOutcome {
         icon.system_applied = self.system_applied;
         icon.system_issue = self.system_issue;
         icon.system_message = self.system_message.clone();
+        icon.dock_badge = self.dock_badge.clone();
     }
 }
 
@@ -1014,12 +1095,13 @@ pub(crate) fn apply_icon_to_registered(
     instances_root: &Path,
     bundle: &Path,
     icon_path: &Path,
+    badge: Option<&DockBadge>,
     original: &Path,
     registered: ProviderProvenance,
     name: &str,
     applied_message: &str,
 ) -> Result<IconOutcome, String> {
-    match set_workspace_icon(instances_root, bundle, Some(icon_path)) {
+    match set_workspace_icon(instances_root, bundle, Some(icon_path), badge) {
         Ok(()) => match check_managed_bundle(bundle, original, Some(&registered)) {
             Ok(ManagedBundleState::Iconized | ManagedBundleState::IconizedSelfUpdated { .. }) => {
                 Ok(IconOutcome {
@@ -1027,6 +1109,7 @@ pub(crate) fn apply_icon_to_registered(
                     system_applied: true,
                     system_issue: None,
                     system_message: applied_message.to_string(),
+                    dock_badge: badge.map(|badge| badge.key.clone()),
                 })
             }
             Ok(ManagedBundleState::Clean { .. }) => Ok(IconOutcome {
@@ -1034,6 +1117,7 @@ pub(crate) fn apply_icon_to_registered(
                 system_applied: false,
                 system_issue: None,
                 system_message: MESSAGE_REJECTED.to_string(),
+                dock_badge: None,
             }),
             Err(_) => {
                 let _ = clear_workspace_icon(instances_root, bundle);
@@ -1050,6 +1134,7 @@ pub(crate) fn apply_icon_to_registered(
                 system_applied: false,
                 system_issue: issue,
                 system_message: rejected_message(issue).to_string(),
+                dock_badge: None,
             })
         }
     }
@@ -1080,10 +1165,11 @@ pub(crate) fn restore_after_failure(
     previous_icon: Option<&CustomIcon>,
     previous_provenance: Option<&ProviderProvenance>,
     original: &Path,
+    badge: Option<&DockBadge>,
 ) -> Result<(), String> {
     match previous_icon.filter(|icon| icon.system_applied) {
         Some(icon) => {
-            set_workspace_icon(instances_root, bundle, Some(Path::new(&icon.path)))
+            set_workspace_icon(instances_root, bundle, Some(Path::new(&icon.path)), badge)
                 .map_err(|error| error.message())?;
             check_managed_bundle(bundle, original, previous_provenance)
                 .map(|_| ())
@@ -1143,6 +1229,7 @@ pub(crate) fn set_instance_icon(
         previous.provider_provenance.as_ref(),
         &previous.name,
     )?;
+    let badge = dock_badge(&paths.app_data, original);
     let transaction = (|| {
         fs::create_dir_all(&branding)
             .map_err(|error| format!("No se pudo preparar el icono administrado: {error}"))?;
@@ -1151,6 +1238,7 @@ pub(crate) fn set_instance_icon(
             &paths.instances,
             &app_path,
             &icon_path,
+            badge.as_ref(),
             original,
             registered,
             &previous.name,
@@ -1164,6 +1252,7 @@ pub(crate) fn set_instance_icon(
             system_applied: outcome.system_applied,
             system_message: outcome.system_message,
             system_issue: outcome.system_issue,
+            dock_badge: outcome.dock_badge,
         });
         save_registry(paths, registry).map_err(String::from)
     })();
@@ -1176,6 +1265,7 @@ pub(crate) fn set_instance_icon(
             previous.custom_icon.as_ref(),
             previous.provider_provenance.as_ref(),
             original,
+            badge.as_ref(),
         );
         return Err(with_rollback(error, rollback));
     }
@@ -1210,11 +1300,13 @@ pub(crate) fn reapply_instance_icon(
         previous.provider_provenance.as_ref(),
         &previous.name,
     )?;
+    let badge = dock_badge(&paths.app_data, original);
     let transaction = (|| {
         let outcome = apply_icon_to_registered(
             &paths.instances,
             &app_path,
             &icon_path,
+            badge.as_ref(),
             original,
             registered,
             &previous.name,
@@ -1235,6 +1327,7 @@ pub(crate) fn reapply_instance_icon(
             previous.custom_icon.as_ref(),
             previous.provider_provenance.as_ref(),
             original,
+            badge.as_ref(),
         );
         return Err(with_rollback(error, rollback));
     }
@@ -1289,12 +1382,15 @@ pub(crate) fn clear_instance_icon(
     if let Err(error) = transaction {
         restore_optional_file(&managed_icon, previous_png.as_deref());
         registry.instances[position] = previous.clone();
+        // Only the rollback puts an icon back, so only it resolves the badge.
+        let badge = dock_badge(&paths.app_data, original);
         let rollback = restore_after_failure(
             &paths.instances,
             &app_path,
             previous.custom_icon.as_ref(),
             previous.provider_provenance.as_ref(),
             original,
+            badge.as_ref(),
         );
         return Err(with_rollback(error, rollback));
     }
@@ -1312,6 +1408,7 @@ pub(crate) fn apply_branding_after_update(
     custom_icon: Option<&CustomIcon>,
     original: &Path,
     name: &str,
+    badge: Option<&DockBadge>,
 ) -> Result<Option<IconOutcome>, String> {
     let Some(custom_icon) = custom_icon else {
         return Ok(None);
@@ -1324,12 +1421,14 @@ pub(crate) fn apply_branding_after_update(
             system_applied: false,
             system_issue: custom_icon.system_issue,
             system_message: custom_icon.system_message.clone(),
+            dock_badge: None,
         }));
     }
     apply_icon_to_registered(
         instances_root,
         updated_bundle,
         Path::new(&custom_icon.path),
+        badge,
         original,
         registered,
         name,
@@ -1349,6 +1448,8 @@ pub(crate) fn apply_branding_after_update(
 /// - Finder icon leftovers without a provider-signed provenance (R-2) are removed first; then the copy launches
 ///   only if it registers as a verified clean copy.
 /// - The reapply is skipped while App Management blocks it, and a failed reapply still launches.
+/// - HU-0028 (AC-03): a verified iconized copy whose witness (`CustomIcon.dock_badge`) differs from the original's
+///   current badge gets its icon reapplied once, through the same block and error path as the clean copy.
 pub(crate) fn launch_preflight(
     paths: &ManagedPaths,
     instance: &mut ManagedInstance,
@@ -1369,13 +1470,15 @@ pub(crate) fn launch_preflight(
         };
     };
     let previous = signed_provenance(instance.provider_provenance.as_ref()).cloned();
-    if shape == BundleShape::Iconized && previous.is_some() {
-        let state = verify_managed_bundle(&bundle, original, previous.as_ref(), &name)?;
+    let icon_path = root.join("branding/icon.png");
+    let saved_icon_usable = custom_icon.system_issue != Some(CustomIconSystemIssue::AppManagement)
+        && Path::new(&custom_icon.path) == icon_path
+        && icon_path.is_file();
+    if let (BundleShape::Iconized, Some(previous)) = (shape, previous.as_ref()) {
+        let state = verify_managed_bundle(&bundle, original, Some(previous), &name)?;
         // The provider updated itself inside the copy (strictly newer version, same signer): register what it is
         // now so the next check and the sync topology follow it. The Finder icon is still in place.
-        if let (ManagedBundleState::IconizedSelfUpdated { version }, Some(previous)) =
-            (state, previous.as_ref())
-        {
+        if let ManagedBundleState::IconizedSelfUpdated { version } = state {
             let refreshed =
                 refresh_provenance_after_self_update(&bundle, original, previous, &version)
                     .map_err(|_| bundle_changed_message(&name))?;
@@ -1383,7 +1486,24 @@ pub(crate) fn launch_preflight(
             invalidate_application_cache();
             return Ok(true);
         }
-        return Ok(false);
+        if !saved_icon_usable {
+            return Ok(false);
+        }
+        // HU-0028: the icon in place carries another badge (or none) than the original's current one.
+        let badge = dock_badge(&paths.app_data, original);
+        if badge.as_ref().map(|badge| badge.key.as_str()) == custom_icon.dock_badge.as_deref() {
+            return Ok(false);
+        }
+        reapply_icon_on_launch(
+            paths,
+            instance,
+            &bundle,
+            &icon_path,
+            badge.as_ref(),
+            original,
+            previous.clone(),
+        )?;
+        return Ok(true);
     }
     let had_leftovers = shape == BundleShape::Iconized;
     clear_unregistered_leftovers(&paths.instances, &bundle, shape, previous.as_ref(), &name)?;
@@ -1401,17 +1521,39 @@ pub(crate) fn launch_preflight(
         }
     };
     instance.provider_provenance = Some(registered.clone());
-    let icon_path = root.join("branding/icon.png");
-    if custom_icon.system_issue == Some(CustomIconSystemIssue::AppManagement)
-        || Path::new(&custom_icon.path) != icon_path
-        || !icon_path.is_file()
-    {
+    if !saved_icon_usable {
         return Ok(true);
     }
-    let outcome = match apply_icon_to_registered(
-        &paths.instances,
+    let badge = dock_badge(&paths.app_data, original);
+    reapply_icon_on_launch(
+        paths,
+        instance,
         &bundle,
         &icon_path,
+        badge.as_ref(),
+        original,
+        registered,
+    )?;
+    Ok(true)
+}
+
+/// The reapply of `launch_preflight` on a registered copy. A failed reapply still launches, but only if the copy
+/// is back to a verified clean copy.
+fn reapply_icon_on_launch(
+    paths: &ManagedPaths,
+    instance: &mut ManagedInstance,
+    bundle: &Path,
+    icon_path: &Path,
+    badge: Option<&DockBadge>,
+    original: &Path,
+    registered: ProviderProvenance,
+) -> Result<(), String> {
+    let name = instance.name.clone();
+    let outcome = match apply_icon_to_registered(
+        &paths.instances,
+        bundle,
+        icon_path,
+        badge,
         original,
         registered.clone(),
         &name,
@@ -1420,13 +1562,14 @@ pub(crate) fn launch_preflight(
         Ok(outcome) => outcome,
         Err(_) => {
             // The icon was removed again: the copy launches only if it is back to a verified clean copy.
-            check_managed_bundle(&bundle, original, Some(&registered))
+            check_managed_bundle(bundle, original, Some(&registered))
                 .map_err(|_| bundle_changed_message(&name))?;
             IconOutcome {
                 provenance: registered,
                 system_applied: false,
                 system_issue: None,
                 system_message: MESSAGE_REJECTED.to_string(),
+                dock_badge: None,
             }
         }
     };
@@ -1434,7 +1577,7 @@ pub(crate) fn launch_preflight(
     if let Some(icon) = instance.custom_icon.as_mut() {
         outcome.write_to(icon);
     }
-    Ok(true)
+    Ok(())
 }
 
 #[cfg(test)]
@@ -1579,7 +1722,7 @@ pub(crate) mod tests {
     }
 
     fn put_icon(fixture: &IconFixture, bundle: &Path) {
-        set_workspace_icon(&fixture.paths.instances, bundle, Some(&fixture.icon)).unwrap();
+        set_workspace_icon(&fixture.paths.instances, bundle, Some(&fixture.icon), None).unwrap();
         assert_eq!(bundle_shape(bundle).unwrap(), BundleShape::Iconized);
     }
 
@@ -2232,6 +2375,7 @@ pub(crate) mod tests {
             system_applied: false,
             system_message: "UI only".to_string(),
             system_issue: None,
+            dock_badge: None,
         };
         let copy_of_donor = |label: &str| {
             let copy = fixture
@@ -2252,6 +2396,7 @@ pub(crate) mod tests {
             Some(&custom_icon),
             &fixture.original,
             "Destino",
+            None,
         )
         .unwrap()
         .unwrap();
@@ -2271,6 +2416,7 @@ pub(crate) mod tests {
                 None,
                 &fixture.original,
                 "Destino",
+                None,
             ),
             Ok(None)
         );
@@ -2291,6 +2437,7 @@ pub(crate) mod tests {
             Some(&blocked_icon),
             &fixture.original,
             "Destino",
+            None,
         )
         .unwrap()
         .unwrap();
@@ -2317,6 +2464,7 @@ pub(crate) mod tests {
             system_applied: false,
             system_message: "UI only".to_string(),
             system_issue: None,
+            dock_badge: None,
         };
         restore_after_failure(
             &fixture.paths.instances,
@@ -2324,6 +2472,7 @@ pub(crate) mod tests {
             Some(&previous),
             None,
             &fixture.original,
+            None,
         )
         .unwrap();
         assert_eq!(
@@ -2420,7 +2569,8 @@ pub(crate) mod tests {
                 set_workspace_icon(
                     &fixture.paths.instances,
                     &fixture.managed,
-                    Some(&fixture.icon)
+                    Some(&fixture.icon),
+                    None
                 ),
                 Err(WorkspaceIconError::Rejected(Some(
                     CustomIconSystemIssue::AppManagement
@@ -2490,14 +2640,14 @@ pub(crate) mod tests {
             fixture.root.join("missing.app"),
         ] {
             assert!(matches!(
-                set_workspace_icon(&fixture.paths.instances, &target, Some(&fixture.icon)),
+                set_workspace_icon(&fixture.paths.instances, &target, Some(&fixture.icon), None),
                 Err(WorkspaceIconError::Refused(_))
             ));
         }
         let link = fixture.instance_root.join("application/Link.app");
         std::os::unix::fs::symlink(&fixture.original, &link).unwrap();
         assert!(matches!(
-            set_workspace_icon(&fixture.paths.instances, &link, Some(&fixture.icon)),
+            set_workspace_icon(&fixture.paths.instances, &link, Some(&fixture.icon), None),
             Err(WorkspaceIconError::Refused(_))
         ));
         assert_eq!(
@@ -2566,6 +2716,7 @@ pub(crate) mod tests {
             system_applied: false,
             system_message: "El icono se guardó para Code AI Profiles.".to_string(),
             system_issue: None,
+            dock_badge: None,
         });
         let mut instance = registry.instances[0].clone();
         assert_eq!(
@@ -2690,6 +2841,7 @@ pub(crate) mod tests {
             system_applied: true,
             system_message: "antiguo".to_string(),
             system_issue: None,
+            dock_badge: None,
         });
     }
 
@@ -2812,7 +2964,8 @@ pub(crate) mod tests {
             set_workspace_icon(
                 &fixture.paths.instances,
                 &fixture.managed,
-                Some(&fixture.icon)
+                Some(&fixture.icon),
+                None
             ),
             Err(WorkspaceIconError::Rejected(Some(
                 CustomIconSystemIssue::AppManagement
@@ -2830,6 +2983,7 @@ pub(crate) mod tests {
             &fixture.paths.instances,
             &fixture.managed,
             Some(&fixture.icon),
+            None,
         )
         .unwrap();
         assert_eq!(ICON_ANNOUNCEMENTS.with(|calls| calls.get()), 1, "put");
@@ -2837,6 +2991,7 @@ pub(crate) mod tests {
             &fixture.paths.instances,
             &fixture.managed,
             Some(&fixture.icon),
+            None,
         )
         .unwrap();
         assert_eq!(ICON_ANNOUNCEMENTS.with(|calls| calls.get()), 2, "replace");
@@ -2847,6 +3002,7 @@ pub(crate) mod tests {
             &fixture.paths.instances,
             &fixture.original,
             Some(&fixture.icon),
+            None,
         );
         assert_eq!(
             ICON_ANNOUNCEMENTS.with(|calls| calls.get()),
@@ -2893,6 +3049,7 @@ pub(crate) mod tests {
             &fixture.paths.instances,
             &fixture.managed,
             Some(&fixture.icon),
+            None,
         )
         .unwrap();
         let modified = fs::metadata(&fixture.managed)
@@ -2919,7 +3076,7 @@ pub(crate) mod tests {
         image::DynamicImage::ImageRgba8(photo)
             .write_to(&mut encoded, image::ImageFormat::Png)
             .unwrap();
-        let dock = image::load_from_memory(&dock_icon_png(&encoded.into_inner()).unwrap())
+        let dock = image::load_from_memory(&dock_icon_png(&encoded.into_inner(), None).unwrap())
             .unwrap()
             .to_rgba8();
         assert_eq!(dock.dimensions(), (1024, 1024));
@@ -2942,8 +3099,8 @@ pub(crate) mod tests {
         // A soft shadow below the body, never above it.
         assert!(alpha(512, 930) > 0, "shadow under the body");
         assert_eq!(alpha(512, 70), 0);
-        assert!(dock_icon_png(b"not an image").is_err());
-        assert!(cached_dock_icon_png(b"not an image").is_err());
+        assert!(dock_icon_png(b"not an image", None).is_err());
+        assert!(cached_dock_icon_png(b"not an image", None).is_err());
     }
 
     #[test]
@@ -2981,5 +3138,274 @@ pub(crate) mod tests {
             check(&fixture, &fixture.managed, Some(&provenance)),
             Err(BundleCheckFailure::DesignatedRequirement)
         );
+    }
+
+    /// A solid PNG of `side` px.
+    fn solid_png(side: u32, color: [u8; 4]) -> Vec<u8> {
+        let mut encoded = Cursor::new(Vec::new());
+        image::DynamicImage::ImageRgba8(image::RgbaImage::from_pixel(
+            side,
+            side,
+            image::Rgba(color),
+        ))
+        .write_to(&mut encoded, image::ImageFormat::Png)
+        .unwrap();
+        encoded.into_inner()
+    }
+
+    /// A synthetic `icns` with one PNG chunk (`ic08`): a template with a 25..=230 body on 256 px.
+    fn synthetic_icns(color: [u8; 4]) -> Vec<u8> {
+        let template = image::RgbaImage::from_fn(256, 256, |x, y| {
+            if (25..=230).contains(&x) && (25..=230).contains(&y) {
+                image::Rgba(color)
+            } else {
+                image::Rgba([0, 0, 0, 0])
+            }
+        });
+        let mut png = Cursor::new(Vec::new());
+        image::DynamicImage::ImageRgba8(template)
+            .write_to(&mut png, image::ImageFormat::Png)
+            .unwrap();
+        let png = png.into_inner();
+        let mut file = b"icns".to_vec();
+        file.extend_from_slice(&u32::try_from(png.len() + 16).unwrap().to_be_bytes());
+        file.extend_from_slice(b"ic08");
+        file.extend_from_slice(&u32::try_from(png.len() + 8).unwrap().to_be_bytes());
+        file.extend(png);
+        file
+    }
+
+    /// Gives the fixture's original an `electron.icns` (re-signed) and makes the managed copy a fresh clone of it.
+    fn give_the_original_an_icon(fixture: &IconFixture) {
+        let status = Command::new("/usr/bin/plutil")
+            .args(["-insert", "CFBundleIconFile", "-string", "electron"])
+            .arg(fixture.original.join("Contents/Info.plist"))
+            .status()
+            .unwrap();
+        assert!(status.success());
+        fs::write(
+            fixture.original.join("Contents/Resources/electron.icns"),
+            synthetic_icns([20, 180, 90, 255]),
+        )
+        .unwrap();
+        fixture.resign(&fixture.original);
+        assert!(strict_passes(&fixture.original));
+        fs::remove_dir_all(&fixture.managed).unwrap();
+        clone_directory(&fixture.original, &fixture.managed).unwrap();
+        invalidate_application_cache();
+    }
+
+    #[test]
+    fn the_dock_icon_carries_the_provider_badge_at_the_bottom_right() {
+        let photo = solid_png(600, [220, 40, 40, 255]);
+        let badge = solid_png(64, [20, 180, 90, 255]);
+        let plain = image::load_from_memory(&dock_icon_png(&photo, None).unwrap())
+            .unwrap()
+            .to_rgba8();
+        let badged = image::load_from_memory(&dock_icon_png(&photo, Some(&badge)).unwrap())
+            .unwrap()
+            .to_rgba8();
+        assert_eq!(badged.dimensions(), (1024, 1024));
+        // The badge occupies 620..988: its centre has its colour.
+        let centre = badged.get_pixel(804, 804).0;
+        assert_eq!(centre, [20, 180, 90, 255], "badge centre");
+        assert_eq!(badged.get_pixel(625, 625).0, [20, 180, 90, 255]);
+        assert_eq!(badged.get_pixel(983, 983).0, [20, 180, 90, 255]);
+        // The body away from the badge is exactly the same as without it.
+        for (x, y) in [(300, 300), (512, 512), (150, 800), (800, 150), (600, 600)] {
+            assert_eq!(
+                badged.get_pixel(x, y),
+                plain.get_pixel(x, y),
+                "body ({x}, {y})"
+            );
+        }
+        // Past the body's corner the badge is opaque where there was only margin.
+        assert_eq!(plain.get_pixel(960, 960)[3], 0);
+        assert_eq!(badged.get_pixel(960, 960)[3], 255);
+        for (x, y) in [(0, 0), (1023, 0), (0, 1023), (1023, 1023)] {
+            assert_eq!(badged.get_pixel(x, y)[3], 0, "canvas corner ({x}, {y})");
+        }
+        // A soft shadow just below the badge, over the transparent margin.
+        assert!(badged.get_pixel(804, 992)[3] > 0, "badge shadow");
+        // A badge that does not decode is no badge.
+        assert_eq!(
+            dock_icon_png(&photo, Some(b"not an image")).unwrap(),
+            dock_icon_png(&photo, None).unwrap()
+        );
+    }
+
+    #[test]
+    fn the_dock_template_cache_tells_badges_apart() {
+        let photo = solid_png(32, [1, 2, 3, 255]);
+        let green = solid_png(16, [0, 255, 0, 255]);
+        let blue = solid_png(16, [0, 0, 255, 255]);
+        let keys = [
+            dock_template_key(&photo, None),
+            dock_template_key(&photo, Some(&green)),
+            dock_template_key(&photo, Some(&blue)),
+            dock_template_key(&photo, Some(&[])),
+        ];
+        for (index, key) in keys.iter().enumerate() {
+            for other in &keys[index + 1..] {
+                assert_ne!(key, other);
+            }
+        }
+        assert_eq!(keys[1], dock_template_key(&photo, Some(&green)));
+        assert_ne!(
+            cached_dock_icon_png(&photo, None).unwrap(),
+            cached_dock_icon_png(&photo, Some(&green)).unwrap()
+        );
+        assert_eq!(
+            cached_dock_icon_png(&photo, Some(&green)).unwrap(),
+            dock_icon_png(&photo, Some(&green)).unwrap()
+        );
+    }
+
+    #[test]
+    fn dock_badge_reads_the_icns_of_the_original_bundle_only() {
+        let fixture = IconFixture::new("badge-read", Some(EXPLICIT_REQUIREMENT));
+        assert_eq!(
+            dock_badge(&fixture.paths.app_data, &fixture.original),
+            None,
+            "a bundle without CFBundleIconFile has no badge"
+        );
+        give_the_original_an_icon(&fixture);
+        let icon_file = provider_icon_file(&fixture.original).unwrap();
+        assert_eq!(
+            icon_file,
+            fixture.original.join("Contents/Resources/electron.icns")
+        );
+        let badge = dock_badge(&fixture.paths.app_data, &fixture.original).unwrap();
+        assert!(
+            badge.key.len() == 16 && badge.key.chars().all(|c| c.is_ascii_hexdigit()),
+            "{}",
+            badge.key
+        );
+        let decoded = image::load_from_memory(&badge.png).unwrap().to_rgba8();
+        assert_eq!(
+            decoded.dimensions(),
+            (206, 206),
+            "the template margin is cropped"
+        );
+        assert_eq!(decoded.get_pixel(103, 103).0, [20, 180, 90, 255]);
+        assert!(fixture
+            .paths
+            .app_data
+            .join(format!("provider-badge/{}.png", badge.key))
+            .is_file());
+        assert!(
+            strict_passes(&fixture.original),
+            "the original is only read"
+        );
+        // An icon name that leaves `Contents/Resources` is refused.
+        let status = Command::new("/usr/bin/plutil")
+            .args(["-replace", "CFBundleIconFile", "-string", "../Info.plist"])
+            .arg(fixture.original.join("Contents/Info.plist"))
+            .status()
+            .unwrap();
+        assert!(status.success());
+        assert_eq!(provider_icon_file(&fixture.original), None);
+    }
+
+    #[test]
+    fn the_icon_records_the_badge_it_carries_and_launch_reapplies_only_when_it_changes() {
+        let fixture = IconFixture::new("badge-witness", Some(EXPLICIT_REQUIREMENT));
+        give_the_original_an_icon(&fixture);
+        let key = dock_badge(&fixture.paths.app_data, &fixture.original)
+            .unwrap()
+            .key;
+        let mut registry = registry_for(&fixture);
+        set_instance_icon(
+            &fixture.paths,
+            &mut registry,
+            0,
+            &fixture.original,
+            &icon_png(&fixture),
+        )
+        .unwrap();
+        let icon = registry.instances[0].custom_icon.clone().unwrap();
+        assert!(icon.system_applied);
+        assert_eq!(icon.dock_badge.as_deref(), Some(key.as_str()));
+        let provenance = registry.instances[0].provider_provenance.clone();
+        assert_eq!(
+            check(&fixture, &fixture.managed, provenance.as_ref()),
+            Ok(ManagedBundleState::Iconized)
+        );
+
+        // Same witness: nothing is reapplied.
+        let mut instance = registry.instances[0].clone();
+        WORKSPACE_ICON_CALLS.with(|calls| calls.set(0));
+        assert_eq!(
+            launch_preflight(&fixture.paths, &mut instance, Some(&fixture.original)),
+            Ok(false)
+        );
+        assert_eq!(WORKSPACE_ICON_CALLS.with(|calls| calls.get()), 0);
+
+        // An instance iconized before HU-0028 (no witness) gets the badge once.
+        instance.custom_icon.as_mut().unwrap().dock_badge = None;
+        assert_eq!(
+            launch_preflight(&fixture.paths, &mut instance, Some(&fixture.original)),
+            Ok(true)
+        );
+        assert_eq!(WORKSPACE_ICON_CALLS.with(|calls| calls.get()), 1);
+        assert_eq!(
+            instance.custom_icon.as_ref().unwrap().dock_badge.as_deref(),
+            Some(key.as_str())
+        );
+        assert!(instance.custom_icon.as_ref().unwrap().system_applied);
+        assert_eq!(
+            check(
+                &fixture,
+                &fixture.managed,
+                instance.provider_provenance.as_ref()
+            ),
+            Ok(ManagedBundleState::Iconized),
+            "A-2 still passes with the new image"
+        );
+        assert_eq!(
+            launch_preflight(&fixture.paths, &mut instance, Some(&fixture.original)),
+            Ok(false)
+        );
+        assert_eq!(WORKSPACE_ICON_CALLS.with(|calls| calls.get()), 1);
+        assert_eq!(fs::read(&fixture.icon).unwrap(), icon_png(&fixture), "D-2");
+    }
+
+    #[test]
+    fn launch_preflight_reapplies_without_badge_when_the_witness_is_stale() {
+        let fixture = IconFixture::new("badge-stale", Some(EXPLICIT_REQUIREMENT));
+        let mut registry = registry_for(&fixture);
+        set_instance_icon(
+            &fixture.paths,
+            &mut registry,
+            0,
+            &fixture.original,
+            &icon_png(&fixture),
+        )
+        .unwrap();
+        let mut instance = registry.instances[0].clone();
+        assert_eq!(instance.custom_icon.as_ref().unwrap().dock_badge, None);
+        instance.custom_icon.as_mut().unwrap().dock_badge = Some("stale".to_string());
+        WORKSPACE_ICON_CALLS.with(|calls| calls.set(0));
+        assert_eq!(
+            launch_preflight(&fixture.paths, &mut instance, Some(&fixture.original)),
+            Ok(true)
+        );
+        assert_eq!(WORKSPACE_ICON_CALLS.with(|calls| calls.get()), 1);
+        let icon = instance.custom_icon.as_ref().unwrap();
+        assert_eq!(icon.dock_badge, None, "the original has no badge (D-7)");
+        assert!(icon.system_applied);
+        assert_eq!(
+            check(
+                &fixture,
+                &fixture.managed,
+                instance.provider_provenance.as_ref()
+            ),
+            Ok(ManagedBundleState::Iconized)
+        );
+        assert_eq!(
+            launch_preflight(&fixture.paths, &mut instance, Some(&fixture.original)),
+            Ok(false)
+        );
+        assert_eq!(WORKSPACE_ICON_CALLS.with(|calls| calls.get()), 1);
     }
 }

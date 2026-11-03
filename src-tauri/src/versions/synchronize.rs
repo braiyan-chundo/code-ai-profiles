@@ -162,12 +162,14 @@ fn update_instance_application_from_source_sync(
     let updated_app_path = destination_application.join(relative_app_path);
     #[cfg(target_os = "macos")]
     let updated_branding = {
+        let badge = macos_icon::dock_badge(&paths.app_data, &original);
         match macos_icon::apply_branding_after_update(
             &paths.instances,
             &updated_app_path,
             current.custom_icon.as_ref(),
             &original,
             &current.name,
+            badge.as_ref(),
         ) {
             Ok(outcome) => outcome,
             Err(error) => {
