@@ -15,23 +15,24 @@ import { Titlebar } from "./Titlebar";
 const SIDEBAR_STYLE = { "--sidebar-width": "256px" } as CSSProperties;
 
 /**
- * La ruta de layout (HU-0019, A-1): una sola fila de barra de `--titlebar-height` (52 px en las tres plataformas).
- * Arriba a la izquierda, `Titlebar` (la zona de la ventana sobre el sidebar); arriba a la derecha, el `PageHeader` de
- * cada pantalla. `SidebarInset` tiene cuatro filas: la barra de la página (1), el feedback (2, A-10), su contenido (3)
+ * La ruta de layout (HU-0019, A-1): una sola fila de barra de `--titlebar-height` (52 px en las tres plataformas). El
+ * sidebar ocupa toda la altura a la izquierda; a su derecha, el `PageHeader` de cada pantalla, con el botón de plegar.
+ * `Titlebar` solo añade los controles de ventana de Windows. `SidebarInset` tiene cuatro filas: la barra de la página (1), el feedback (2, A-10), su contenido (3)
  * y el statusbar (4). La pantalla (`<Outlet />`) pinta dos hijos sin envoltorio, `PageHeader` y `PageContent`, que
  * fijan sus filas. `DialogHost`, al final: sus diálogos se pintan en un portal de `body`.
  *
  * - La raíz lleva `data-slot="desktop-shell"` y la clase `platform-*` (el gancho de cada plataforma). El marco
  *   (`SidebarProvider`, `data-slot="sidebar-wrapper"`) lleva `transform` para que el `position: fixed` del sidebar
- *   (y el `absolute` de la barra) queden dentro de la ventana y sus esquinas redondeadas (Windows) lo recorten. La
- *   raíz fija `--titlebar-height`.
+ *   (y el `absolute` de los controles de ventana) queden dentro de la ventana. La raíz fija `--titlebar-height`.
+ * - Ninguna plataforma dibuja un marco propio: el borde, la sombra y las esquinas los pone el sistema (en Windows 11,
+ *   DWM sobre una ventana opaca; ver `tauri.windows.conf.json`). Un marco redondeado dentro de la ventana no coincide
+ *   con el del sistema.
  * - El tema y el tamaño del texto van en `<html>` (A-3). `body` es transparente: el fondo lo pinta el marco.
  * - El sidebar plegado o desplegado se guarda en las preferencias de apariencia (A-5), sin cookie.
  */
 export function AppShell() {
   const runtimePlatform = useRuntimePlatform();
   const { preferences, setPreferences } = useAppearance();
-  const framed = runtimePlatform === "windows";
   return (
     <div
       data-slot="desktop-shell"
@@ -46,10 +47,7 @@ export function AppShell() {
           open={preferences.sidebar === "expanded"}
           onOpenChange={(open) => setPreferences((current) => ({ ...current, sidebar: open ? "expanded" : "collapsed" }))}
           style={SIDEBAR_STYLE}
-          className={cn(
-            "relative h-full min-h-0 overflow-hidden [transform:translateZ(0)] bg-(image:--ui-window) text-foreground [--sidebar:var(--surface-raised)]",
-            framed && "rounded-2xl shadow-(--ui-window-shadow) outline-1 -outline-offset-1 outline-(color:--ui-window-border)",
-          )}
+          className="relative h-full min-h-0 overflow-hidden [transform:translateZ(0)] bg-(image:--ui-window) text-foreground [--sidebar:var(--surface-raised)]"
         >
           <Titlebar />
           <AppSidebar />
