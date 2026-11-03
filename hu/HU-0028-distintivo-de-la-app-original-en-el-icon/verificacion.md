@@ -62,4 +62,7 @@ cuando haya instaladores de la rama.
 
 ## Veredicto
 
-Pendiente.
+**Aprobado** — Braiyan Rodriguez (mantenedor), 2026-11-03: «Probado y bien». Probó el `.dmg` de esta entrega
+(SHA-256 `5b4ea81c…`) en macOS: el distintivo en la app y en el Dock.
+
+Queda pendiente humano: la app en Windows (clásico y MSIX) y Linux, con los instaladores de la rama.

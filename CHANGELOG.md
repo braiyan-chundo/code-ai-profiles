@@ -9,6 +9,7 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 ### Added
 
 - Icono personalizado de proyecto: en la página del proyecto, el avatar abre «Icono del proyecto» para elegir una imagen PNG o JPEG. Sustituye a la inicial en el sidebar, la lista y la página; la app guarda una copia de 512 px en sus datos y no toca el proyecto. «Quitar» o desanclar vuelven a la inicial; un proyecto roto no muestra su icono (HU-0027).
+- Las instancias con icono propio llevan el icono de la app que clonan en la esquina inferior derecha: en el Dock (macOS) y en la app en 32 y 64 px, con el punto de estado arriba. Se lee del icono de la original instalada y se guarda una copia en los datos de la app; la imagen elegida no cambia. Las instancias que ya tenían icono lo reciben al abrirlas (HU-0028).
 
 ### Changed
 

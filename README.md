@@ -306,7 +306,7 @@ Las referencias cloud, la propiedad remota y los monitores de artefactos no se t
 
 El botón **Detener** verifica que el proceso pertenezca a la aplicación y perfil de la instancia antes de cerrarlo, intenta un cierre normal y solo después escala dentro del árbol o grupo verificado. Si aún quedan procesos, conserva el estado ejecutándose y explica el error en vez de informar un cierre falso.
 
-Puedes asignar un icono PNG o JPEG de hasta 5 MiB a cada instancia. El icono se muestra dentro de Code AI Profiles y sobrevive a la sincronización de su aplicación. En macOS el icono también se ve en el Dock, con la forma de los iconos de macOS y sin tocar la firma de Anthropic; para las copias que Claude actualizó por su cuenta, macOS pide el permiso «Gestión de apps». Windows conserva el icono del ejecutable firmado; Linux crea un launcher opcional cuyo resultado depende del compositor. Consulta [la guía de instancias](docs/instancias.document.md).
+Puedes asignar un icono PNG o JPEG de hasta 5 MiB a cada instancia. El icono se muestra dentro de Code AI Profiles y sobrevive a la sincronización de su aplicación. En macOS el icono también se ve en el Dock, con la forma de los iconos de macOS y sin tocar la firma de Anthropic. Las instancias con icono llevan el de la app original en la esquina inferior derecha, en el Dock y en la app; para las copias que Claude actualizó por su cuenta, macOS pide el permiso «Gestión de apps». Windows conserva el icono del ejecutable firmado; Linux crea un launcher opcional cuyo resultado depende del compositor. Consulta [la guía de instancias](docs/instancias.document.md).
 
 ## Configuración y proyectos
 

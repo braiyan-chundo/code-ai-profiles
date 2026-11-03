@@ -1,8 +1,8 @@
 ---
 id: HU-0028
 titulo: "Distintivo de la app original en el icono de instancia"
-estado: en-proceso
-fase: verificacion
+estado: terminada
+fase: cierre
 area: instancias
 entrega: 1
 prioridad: media
@@ -117,29 +117,43 @@ error.
 
 ## Definición de Preparado
 
-- [ ] Petición literal, problema, alcance y fuera de alcance escritos
-- [ ] Criterios numerados y observables desde la interfaz
-- [ ] Reglas de negocio afectadas nombradas
+- [x] Petición literal, problema, alcance y fuera de alcance escritos
+- [x] Criterios numerados y observables desde la interfaz
+- [x] Reglas de negocio afectadas nombradas
 
 ## Definición de Terminado
 
-- [ ] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
-- [ ] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
-- [ ] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
-- [ ] Revisión técnica pasada, si la historia es riesgosa
-- [ ] La persona probó y aprobó; su veredicto está en `verificacion.md`
-- [ ] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
-- [ ] Commits en cada repo tocado con `HU: HU-0028`. **Sin push, sin publicar, sin desplegar**
-- [ ] Lo que solo comprueba una persona, declarado como pendiente humano
+- [x] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
+- [x] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
+- [x] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
+- [x] Revisión técnica pasada, si la historia es riesgosa
+- [x] La persona probó y aprobó; su veredicto está en `verificacion.md`
+- [x] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
+- [x] Commits en cada repo tocado con `HU: HU-0028`. **Sin push, sin publicar, sin desplegar**
+- [x] Lo que solo comprueba una persona, declarado como pendiente humano
 
 ## Cierre
 
-Fecha, quién cerró y sobre qué veredicto.
+2026-11-03, cerró el orquestador sobre el veredicto «Probado y bien» de Braiyan Rodriguez (mantenedor), con el DMG
+`5b4ea81c…` en macOS. Revisión técnica PASS (`f59102b`).
 
-SHA por repositorio, con una línea de qué hace cada uno:
+SHA en `code-ai-profiles` (rama `ajustes-windows-y-sidebar`, sin push):
 
-★ aceptadas tal como estaban:
+- `6460ebf` arquitectura y briefs.
+- `4dd8a55` contrato: `SystemInfo.providerBadge` y `CustomIcon.dockBadge`.
+- `e90a629` Rust: `provider_badge.rs` (icns, PE, hicolor), caché en `provider-badge/`, Dock con distintivo, testigo y
+  scope del asset protocol.
+- `b97193f` O-3 y O-4: topes del lector PE e icns y prueba de la memoria.
+- `771efe1` interfaz: `InstanceAvatar` con distintivo en 32 y 64 px y en el editor; punto de estado arriba.
+- `1eb605b`, `f59102b`, `0e949c6`, `802b744` capturas, revisión, grafo y verificación; el commit de cierre lleva el
+  delta de reglas, la documentación y el CHANGELOG.
 
-Pendientes humanos (nadie los vio; no se dan por hechos):
+★ aceptadas tal como estaban: D-1 a D-7 (icono real de la original, se añade al mostrar, 36 %, punto arriba, sin
+distintivo en 16 px, Windows y Linux solo en la app, sin icono legible no hay distintivo).
 
-Deuda declarada:
+Pendientes humanos (nadie los vio; no se dan por hechos): la app en Windows (clásico y MSIX) y Linux con el distintivo
+real, con los instaladores de la rama.
+
+Deuda declarada: O-1 (la clave depende del mtime del icono: una reaplicación extra por versión de la original en
+instancias que no se sincronizan) y O-2 (tras una transacción fallida, una reaplicación extra). Aceptadas en la
+revisión.

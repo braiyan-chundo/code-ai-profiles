@@ -84,7 +84,7 @@ neutro> }` (un PNG pequeño de un color de la paleta, generado en el scratchpad,
   por la firma del archivo: `icns` → el trozo PNG de mayor ancho (IHDR); `MZ` → recursos PE (A-3); PNG → tal cual.
   Topes: 16 MiB para icns y PNG, 64 MiB para la sección de recursos; ≤ 2048 px por lado al decodificar. Todo con
   límites comprobados (`checked_add`, `get(..)`): un archivo raro da `None`, nunca un pánico. **Sin `sips` ni
-  PowerShell.**
+  PowerShell**; en macOS el nombre del icono (`CFBundleIconFile`) se lee con el `plutil` que la app ya usaba.
 - **Normalización** `badge_png(raw) -> Result<Vec<u8>, ()>`: RGBA, rectángulo de alfa ≥ 128 (vacío → error),
   cuadrado centrado (relleno transparente), lado `min(512, lado recortado)` con Lanczos3, PNG.
 - **Caché en disco** `<app_data>/provider-badge/<clave>.png`, con `<clave>` = 16 hex de SHA-256 de
@@ -92,7 +92,7 @@ neutro> }` (un PNG pequeño de un color de la paleta, generado en el scratchpad,
   cambia (actualización, otro MSIX), cambia la clave. Tras escribir (`write_file_atomic(…, ".provider-badge")`) se
   borran los demás archivos regulares de esa carpeta (sin recursión ni seguir enlaces): copias viejas y temporales.
   Un `<clave>.png` que no es archivo regular de 1 B a 16 MiB se regenera.
-- **Memoria** en el proceso: un solo par `(ApplicationFingerprint de la original, Option<ProviderBadge>)` bajo un
+- **Memoria** en el proceso: un solo par `((app_data, ApplicationFingerprint de la original), Option<ProviderBadge>)` bajo un
   `static BADGE_LOCK: Mutex`, que serializa también la extracción y la limpieza. Con la misma huella se devuelve lo
   recordado (si `Some`, tras comprobar que el archivo sigue ahí); un fallo se recuerda hasta que cambie la huella o
   se reinicie la app (D-7, sin reintentos en cada refresco). `provider_badge` nunca toma el candado del registro.
@@ -128,7 +128,7 @@ apply_branding_after_update(.., badge: Option<&DockBadge>)
   ocupa 620..988 y monta sobre la esquina redondeada del cuerpo (que acaba en 924). Antes, su sombra: la máscara
   alfa del distintivo desplazada 10 px hacia abajo, `fast_blur` σ 8, opacidad 0,35. Constantes `DOCK_BADGE_*` junto a
   las de la plantilla. Un distintivo que no se decodifica se ignora: el icono sale como hoy (D-7).
-- **Caché de plantillas**: la clave pasa a SHA-256 incremental de `source`, un byte de presencia y, si hay, `badge`.
+- **Caché de plantillas**: la clave pasa a SHA-256 incremental de la longitud de `source`, `source`, un byte de presencia y, si hay, `badge`.
 - **Quién resuelve el distintivo**: los que tienen `paths` (`set_instance_icon`, `reapply_instance_icon`,
   `clear_instance_icon` para su reversión, `launch_preflight` y `versions/synchronize.rs`) llaman una vez a
   `dock_badge(&paths.app_data, original)` y lo pasan. `clear_workspace_icon` pasa `None, None`.
@@ -219,3 +219,8 @@ dos y sin fallo → sí; un fallo de otra ruta no cuenta); `test:ui` en verde; `
 Modelos: backend **opus** (cadena de firma de macOS y reaplicación en el arranque, campo nuevo en el registro real,
 análisis de binarios de terceros, contrato y scope del asset protocol); frontend **sonnet** (interfaz sobre un
 contrato cerrado).
+
+## Correcciones al cerrar (O-6)
+
+2026-11-03: A-2 recuerda el par `(app_data, huella)`; A-4 mete la longitud de `source` en la clave de plantillas; se
+aclara que macOS usa el `plutil` existente para leer `CFBundleIconFile`. El código ya era así; solo cambia el texto.
