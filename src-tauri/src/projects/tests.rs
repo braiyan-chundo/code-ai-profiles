@@ -2082,6 +2082,23 @@ fn projects_icon_clear_is_idempotent() {
         .contains("\"icon\""));
 }
 
+// R-2 · Quitar también limpia una copia huérfana cuando el registro ya no tiene icono.
+#[test]
+fn projects_icon_clear_removes_an_orphan_copy() {
+    let fixture = Fixture::new("icon-clear-orphan");
+    let env = fixture.env();
+    let app_data = fixture.app_data();
+    let id = pinned_reference(&fixture, &env);
+    let orphan = icon_path(&app_data, &id);
+    fs::create_dir_all(orphan.parent().expect("icons folder")).expect("folder");
+    fs::write(&orphan, icon_bytes(4, 4, [5, 5, 5, 255])).expect("orphan");
+    assert_eq!(stored_icon(&app_data, &id), None);
+
+    let cleared = clear_project_icon_at(&app_data, &env, &id).expect("clear");
+    assert_eq!(cleared.icon, None);
+    assert!(!orphan.exists());
+}
+
 // AC-04 · Desanclar borra la copia y anclar de nuevo sale sin icono, con otro id.
 #[test]
 fn projects_icon_unpin_removes_the_copy() {

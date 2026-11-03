@@ -1548,7 +1548,7 @@ fn pin_project_at(
     Ok(summary_for(app_data, &entry, outcome, env, &read_at))
 }
 
-/// Tras guardar el registro borra la copia del icono, sin fallar (también si no tenía): anclar de
+/// Tras guardar el registro, y dentro del candado, borra la copia del icono sin fallar (también si no tenía): anclar de
 /// nuevo da otro UUID y sale la inicial.
 fn unpin_project_at(app_data: &Path, id: &str) -> Result<(), String> {
     let icon_file = project_icon_file(app_data, id)?;
@@ -1559,9 +1559,10 @@ fn unpin_project_at(app_data: &Path, id: &str) -> Result<(), String> {
         if file.projects.len() != before {
             save_projects(app_data, &file)?;
         }
+        // Dentro del candado, como en `clear_project_icon_at`: ningún guardado concurrente la pisa.
+        let _ = fs::remove_file(&icon_file);
         Ok::<(), String>(())
     })?;
-    let _ = fs::remove_file(&icon_file);
     Ok(())
 }
 
@@ -1608,8 +1609,8 @@ fn set_project_icon_at(
     Ok(read_project_at(app_data, env, id)?)
 }
 
-/// Quita el icono del registro (guarda solo si cambió) y después borra la copia sin fallar: el
-/// registro manda. Idempotente.
+/// Quita el icono del registro (guarda solo si cambió) y después, dentro del mismo candado, borra la
+/// copia sin fallar: el registro manda. Idempotente.
 fn clear_project_icon_at(
     app_data: &Path,
     env: &ProjectEnv,
@@ -1626,9 +1627,11 @@ fn clear_project_icon_at(
         if entry.icon.take().is_some() {
             save_projects(app_data, &file)?;
         }
+        // Dentro del candado: un `set_project_icon_at` concurrente no puede escribir su copia entre el
+        // registro y este borrado. Si el registro no se guardó, `?` salió antes y la copia sigue.
+        let _ = fs::remove_file(&icon_file);
         Ok::<(), AppError>(())
     })?;
-    let _ = fs::remove_file(&icon_file);
     Ok(read_project_at(app_data, env, id)?)
 }
 
