@@ -6,6 +6,10 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-03
+
+Pendiente de probar en un equipo real: la detección de Claude instalado como paquete MSIX en Windows y el distintivo de la original dentro de la app en Windows y Linux solo se han comprobado con pruebas automáticas y en CI. El distintivo en el Dock y en la app se probó en macOS.
+
 ### Added
 
 - Icono personalizado de proyecto: en la página del proyecto, el avatar abre «Icono del proyecto» para elegir una imagen PNG o JPEG. Sustituye a la inicial en el sidebar, la lista y la página; la app guarda una copia de 512 px en sus datos y no toca el proyecto. «Quitar» o desanclar vuelven a la inicial; un proyecto roto no muestra su icono (HU-0027).
