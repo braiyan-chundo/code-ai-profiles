@@ -282,10 +282,14 @@ export interface ProjectInfo {
   technologies: ProjectTechnology[]; histories: ProjectHistory[]; counts: ProjectCounts;
   firstCreated: string | null; lastActivity: string | null; spanDays: number | null; totals: ProjectTotals;
 }
+/** Icono elegido por la persona (HU-0027): la copia normalizada en `<app_data>/project-icons/<id>.png`. */
+export interface ProjectIcon { path: string; revision: number }
 export interface ProjectSummary {
   id: string; path: string; displayPath: string; lastName: string | null; pinnedAt: string;
   lastReadAt: string | null; readAt: string; status: ProjectStatus; message: string | null;
   protectedLocation: ProjectProtectedLocation | null; info: ProjectInfo | null; warnings: ProjectWarning[];
+  /** También en un proyecto roto: ocultarlo es cosa de la interfaz. */
+  icon: ProjectIcon | null;
 }
 export interface ProjectsState { projects: ProjectSummary[]; readAt: string }
 
