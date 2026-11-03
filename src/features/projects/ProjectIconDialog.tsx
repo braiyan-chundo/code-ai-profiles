@@ -1,5 +1,5 @@
 import { ImageUpIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../../components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 import { FieldError } from "../../components/ui/field";
@@ -27,20 +27,34 @@ export function ProjectIconDialog({ project, onClose }: { project: ReadableProje
   const current = projectIconSource(project);
   const dirty = bytes !== null || (remove && project.icon !== null);
 
+  // Cada selección lleva un número: si llega otra antes de que termine la anterior, gana la última (O-3).
+  const selection = useRef(0);
+  // La vista previa es un `data:` de memoria; no hay URL que revocar, pero al cerrar se descarta cualquier resultado en vuelo.
+  useEffect(() => () => { selection.current += 1; }, []);
+
   const select = async (file: File | null) => {
+    const ticket = ++selection.current;
     setError(null);
     if (!file) return;
+    // Un error de selección deshace la selección válida anterior: la vista previa vuelve al estado guardado y «Guardar» se
+    // desactiva (R-1, AC-03). `remove` se deja como estaba.
+    const discard = (message: string) => {
+      setBytes(null);
+      setPreviewUrl(null);
+      setError(message);
+    };
     const fileError = iconFileError(file);
     if (fileError) {
-      setError(fileError);
+      discard(fileError);
       return;
     }
     try {
       const bitmap = await createImageBitmap(file);
       const dimensionsError = iconDimensionsError(bitmap.width, bitmap.height);
       bitmap.close();
+      if (ticket !== selection.current) return;
       if (dimensionsError) {
-        setError(dimensionsError);
+        discard(dimensionsError);
         return;
       }
       const preview = await new Promise<string>((resolve, reject) => {
@@ -49,11 +63,14 @@ export function ProjectIconDialog({ project, onClose }: { project: ReadableProje
         reader.onerror = () => reject(reader.error ?? new Error("No se pudo leer la imagen"));
         reader.readAsDataURL(file);
       });
-      setBytes(new Uint8Array(await file.arrayBuffer()));
+      const data = new Uint8Array(await file.arrayBuffer());
+      if (ticket !== selection.current) return;
+      setBytes(data);
       setPreviewUrl(preview);
       setRemove(false);
     } catch {
-      setError("No se pudo decodificar la imagen seleccionada.");
+      if (ticket !== selection.current) return;
+      discard("No se pudo decodificar la imagen seleccionada.");
     }
   };
 
@@ -112,6 +129,7 @@ export function ProjectIconDialog({ project, onClose }: { project: ReadableProje
                   size="sm"
                   disabled={saving}
                   onClick={() => {
+                    selection.current += 1;
                     setBytes(null);
                     setPreviewUrl(null);
                     setRemove(true);

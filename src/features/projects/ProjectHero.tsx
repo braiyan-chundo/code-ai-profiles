@@ -66,7 +66,7 @@ export function ProjectHero({
           <TooltipTrigger asChild>
             <button
               type="button"
-              aria-label="Cambiar icono del proyecto"
+              aria-label={`Cambiar icono de ${name}`}
               onClick={onOpenIcon}
               className="group/avatar relative size-16 cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
