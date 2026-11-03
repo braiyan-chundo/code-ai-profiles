@@ -133,6 +133,52 @@ pub(crate) fn normalize_linux_version(value: &str) -> Option<String> {
         .map(str::to_string)
 }
 
+/// Lo que imprime la consulta de `Get-AppxPackage` en Windows (`windows.rs`), una cosa por línea: la familia
+/// del paquete, su carpeta de instalación y los ejecutables relativos de su manifiesto.
+#[cfg(any(test, target_os = "windows"))]
+#[derive(Debug, PartialEq, Eq)]
+pub(crate) struct PackagedQuery {
+    pub(crate) family: String,
+    pub(crate) install_location: PathBuf,
+    /// Solo los que terminan en `Claude.exe`, sin `..` ni rutas absolutas.
+    pub(crate) executables: Vec<String>,
+}
+
+/// `None` si no hay paquete o si la familia no es un nombre de carpeta simple (va dentro de una ruta).
+#[cfg(any(test, target_os = "windows"))]
+pub(crate) fn parse_packaged_query(output: &str) -> Option<PackagedQuery> {
+    let mut lines = output
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty());
+    let family = lines.next()?;
+    let family_is_simple = family
+        .chars()
+        .all(|character| character.is_ascii_alphanumeric() || matches!(character, '.' | '_' | '-'))
+        && !family.starts_with('.');
+    if !family_is_simple {
+        return None;
+    }
+    let install_location = lines.next()?;
+    let executables = lines
+        .filter(|relative| {
+            let segments: Vec<&str> = relative.split(['\\', '/']).collect();
+            !relative.contains(':')
+                && !relative.starts_with(['\\', '/'])
+                && segments.iter().all(|segment| *segment != "..")
+                && segments
+                    .last()
+                    .is_some_and(|name| name.eq_ignore_ascii_case("Claude.exe"))
+        })
+        .map(str::to_string)
+        .collect();
+    Some(PackagedQuery {
+        family: family.to_string(),
+        install_location: PathBuf::from(install_location),
+        executables,
+    })
+}
+
 /// Abre una carpeta en el gestor de archivos del sistema. La ruta la decide Rust (registro de
 /// instancias o de proyectos), nunca el frontend.
 pub(crate) fn open_in_file_manager(path: &Path) -> Result<(), String> {
@@ -203,6 +249,36 @@ mod tests {
             require_provider_source(None),
             Err("No se encontró la instalación original de la aplicación compatible.".to_string())
         );
+    }
+
+    #[test]
+    fn parses_the_windows_package_query() {
+        let query = parse_packaged_query(
+            "Claude_pzs8sxrjxfjjc\r\nC:\\Program Files\\WindowsApps\\Claude_4.4212.0.0_x64__pzs8sxrjxfjjc\r\napp\\claude.exe\r\n",
+        )
+        .expect("a package should be parsed");
+        assert_eq!(query.family, "Claude_pzs8sxrjxfjjc");
+        assert_eq!(
+            query.install_location,
+            PathBuf::from("C:\\Program Files\\WindowsApps\\Claude_4.4212.0.0_x64__pzs8sxrjxfjjc")
+        );
+        assert_eq!(query.executables, vec!["app\\claude.exe".to_string()]);
+
+        let without_manifest = parse_packaged_query("Claude_x\nC:\\Apps\\Claude\n").unwrap();
+        assert!(without_manifest.executables.is_empty());
+    }
+
+    #[test]
+    fn rejects_unsafe_windows_package_query_values() {
+        assert_eq!(parse_packaged_query(""), None);
+        assert_eq!(parse_packaged_query("Claude_x\n"), None);
+        assert_eq!(parse_packaged_query("..\\Roaming\nC:\\Apps\n"), None);
+        assert_eq!(parse_packaged_query("Claude\\x\nC:\\Apps\n"), None);
+        let query = parse_packaged_query(
+            "Claude_x\nC:\\Apps\n..\\Claude.exe\nC:\\Claude.exe\n\\Claude.exe\napp\\Helper.exe\nClaude.exe\n",
+        )
+        .unwrap();
+        assert_eq!(query.executables, vec!["Claude.exe".to_string()]);
     }
 
     #[test]

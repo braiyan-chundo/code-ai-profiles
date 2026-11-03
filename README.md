@@ -56,7 +56,7 @@ estar instalada con su instalador oficial. La app la busca en:
 | Plataforma | Dónde debe estar Claude |
 | --- | --- |
 | macOS | `/Applications/Claude.app` (o `~/Applications/Claude.app`) |
-| Windows | `%LOCALAPPDATA%\AnthropicClaude\Claude.exe`, la ruta del instalador oficial |
+| Windows | El paquete MSIX del instalador oficial (`C:\Program Files\WindowsApps\Claude_…`) o el instalador clásico en `%LOCALAPPDATA%\AnthropicClaude\Claude.exe` |
 | Linux | El paquete `claude-desktop` del repositorio apt oficial |
 
 | Tu equipo | Descarga | Archivo |

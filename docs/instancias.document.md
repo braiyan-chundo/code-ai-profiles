@@ -2,6 +2,16 @@
 
 Documento funcional relacionado con [HU-0004](hu/HU-0004-sincronizacion-desde-la-instancia-mas-reciente-cierre-robusto-artefactos-locales-e-identidad-visual.md) y [HU-0005](hu/HU-0005-recuperar-respuesta-de-la-interfaz-y-versionado-semver.md); abrir y detener desde el sidebar y el dashboard, de [HU-0026](../hu/HU-0026-arrancar-y-detener-instancias-desde-el-s/hu.md).
 
+## Dónde está la original en Windows
+
+Claude para Windows se instala de dos formas, y la app busca las dos. Primero, el instalador clásico en
+`%LOCALAPPDATA%\AnthropicClaude\Claude.exe` (o su carpeta `app-<versión>`). Si no está, el paquete MSIX, que se
+encuentra con `Get-AppxPackage` y vive en `C:\Program Files\WindowsApps\Claude_<versión>_x64__<editor>\`. La consulta
+lee solo los metadatos del paquete y de su manifiesto, y su resultado se guarda unos minutos para no lanzar PowerShell
+en cada refresco. En la versión MSIX, Windows guarda el perfil de la original en
+`%LOCALAPPDATA%\Packages\<familia>\LocalCache\Roaming\Claude`, no en `%APPDATA%\Claude`. La app nunca escribe en
+`WindowsApps`: una instancia copia la aplicación a sus propios datos y se abre con su perfil.
+
 ## Inicio, detección y cierre
 
 Al iniciar una instancia, Code AI Profiles guarda una identidad local del proceso: PID raíz, tiempo de inicio cuando el sistema lo proporciona, grupo de procesos en Unix, huella de la aplicación administrada y el argumento exacto de perfil. La identidad no persiste una línea de comandos completa ni contenido de perfiles.

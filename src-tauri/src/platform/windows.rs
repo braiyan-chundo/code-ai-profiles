@@ -1,4 +1,5 @@
-//! Windows: `Claude.exe` en %LOCALAPPDATA%, PowerShell, Authenticode, `robocopy` y `taskkill`.
+//! Windows: `Claude.exe` en %LOCALAPPDATA% (instalador clásico) o en un paquete MSIX, PowerShell, Authenticode,
+//! `robocopy` y `taskkill`.
 
 use super::*;
 
@@ -24,6 +25,11 @@ pub(crate) fn source_display_name(source: &Path) -> Option<String> {
 }
 
 pub(crate) fn detect_provider_source() -> Option<PathBuf> {
+    classic_source().or_else(|| packaged_installation().map(|package| package.executable))
+}
+
+/// El instalador clásico (Squirrel) deja `Claude.exe` en %LOCALAPPDATA%.
+fn classic_source() -> Option<PathBuf> {
     let local = env::var_os("LOCALAPPDATA").map(PathBuf::from)?;
     let candidates = [
         local.join("AnthropicClaude/Claude.exe"),
@@ -46,7 +52,88 @@ pub(crate) fn detect_provider_source() -> Option<PathBuf> {
     versioned.pop()
 }
 
+/// Claude instalado como paquete MSIX: vive en `C:\Program Files\WindowsApps\<paquete>`, de solo lectura y con
+/// una carpeta por versión, y Windows redirige lo que escribe en AppData a `%LOCALAPPDATA%\Packages\<familia>`.
+#[derive(Clone)]
+struct PackagedInstallation {
+    executable: PathBuf,
+    family: String,
+}
+
+impl PackagedInstallation {
+    fn virtualized_profile(&self) -> Option<PathBuf> {
+        let local = env::var_os("LOCALAPPDATA").map(PathBuf::from)?;
+        Some(
+            local
+                .join("Packages")
+                .join(&self.family)
+                .join("LocalCache/Roaming/Claude"),
+        )
+    }
+}
+
+/// Una consulta encontrada vale 5 minutos mientras su ejecutable exista (una actualización cambia la carpeta); sin
+/// paquete, 1 minuto. Así el refresco del panel no lanza PowerShell cada vez.
+const PACKAGED_FOUND_TTL: Duration = Duration::from_secs(300);
+const PACKAGED_MISSING_TTL: Duration = Duration::from_secs(60);
+
+/// Solo metadatos del paquete y de su manifiesto: no lee nada de los datos de Claude.
+const PACKAGED_QUERY: &str = "$p=Get-AppxPackage -Name Claude -PackageTypeFilter Main | Sort-Object {[version]$_.Version} -Descending | Select-Object -First 1; if($p){$p.PackageFamilyName; $p.InstallLocation; foreach($a in @((Get-AppxPackageManifest -Package $p.PackageFullName).Package.Applications.Application)){$a.Executable}}";
+
+fn packaged_installation() -> Option<PackagedInstallation> {
+    static CACHE: OnceLock<Mutex<Option<(Instant, Option<PackagedInstallation>)>>> =
+        OnceLock::new();
+    let mut cache = CACHE
+        .get_or_init(|| Mutex::new(None))
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner());
+    if let Some((checked_at, cached)) = cache.as_ref() {
+        let fresh = match cached {
+            Some(package) => {
+                checked_at.elapsed() < PACKAGED_FOUND_TTL && package.executable.is_file()
+            }
+            None => checked_at.elapsed() < PACKAGED_MISSING_TTL,
+        };
+        if fresh {
+            return cached.clone();
+        }
+    }
+    let found = query_packaged_installation();
+    *cache = Some((Instant::now(), found.clone()));
+    found
+}
+
+fn query_packaged_installation() -> Option<PackagedInstallation> {
+    let output = Command::new("powershell.exe")
+        .args(["-NoProfile", "-NonInteractive", "-Command", PACKAGED_QUERY])
+        .output()
+        .ok()
+        .filter(|output| output.status.success())?;
+    let query = parse_packaged_query(&String::from_utf8_lossy(&output.stdout))?;
+    let executable = query
+        .executables
+        .iter()
+        .map(|relative| query.install_location.join(relative))
+        .chain([
+            query.install_location.join("app/Claude.exe"),
+            query.install_location.join("Claude.exe"),
+        ])
+        .find(|path| path.is_file())?;
+    Some(PackagedInstallation {
+        executable,
+        family: query.family,
+    })
+}
+
 pub(crate) fn detect_original_profile() -> Option<PathBuf> {
+    if classic_source().is_none() {
+        if let Some(profile) = packaged_installation()
+            .and_then(|package| package.virtualized_profile())
+            .filter(|path| path.is_dir())
+        {
+            return Some(profile);
+        }
+    }
     let mut candidates = Vec::new();
     if let Some(roaming) = env::var_os("APPDATA") {
         let roaming = PathBuf::from(roaming);

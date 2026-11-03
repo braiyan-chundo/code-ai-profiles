@@ -16,6 +16,7 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ### Fixed
 
+- Windows: la app detecta Claude instalado como paquete MSIX (el instalador oficial actual, en `WindowsApps`) y su perfil en `%LOCALAPPDATA%\Packages`. Antes solo buscaba el instalador clásico y no encontraba la original.
 - Windows: la ventana ya no dibuja un marco redondeado propio que no coincidía con el borde del sistema. Ahora es opaca y el borde, la sombra y las esquinas los pone Windows.
 
 ## [0.4.0] - 2026-10-30
