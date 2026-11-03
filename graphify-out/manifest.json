@@ -115,8 +115,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1793728013.2746274,
-    "ast_hash": "a8883254f3d7c58e726713e2c351ca33",
+    "mtime": 1793746681.5065286,
+    "ast_hash": "fac76486bd991acbd0fd959a6dfc296c",
     "semantic_hash": ""
   },
   "code.html": {
@@ -145,8 +145,8 @@
     "semantic_hash": ""
   },
   "docs/instancias.document.md": {
-    "mtime": 1793728013.2747788,
-    "ast_hash": "f9d2684c6319742409f05099aa8b08b4",
+    "mtime": 1793746681.5060406,
+    "ast_hash": "aafd6c5333cc5bc236c518304b139650",
     "semantic_hash": ""
   },
   "scripts/release-version.mjs": {
@@ -160,8 +160,8 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1793728013.2749088,
-    "ast_hash": "771081d179b3c297426ca807ee08b61d",
+    "mtime": 1793746681.5063639,
+    "ast_hash": "3824ce54a904bee9c091a43a1b39a67a",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793731318.1673765,
-    "ast_hash": "561b98a24e05ed2b969f8af5e0efb3ff",
+    "mtime": 1793746692.6394181,
+    "ast_hash": "e619b487416cd38c43966e075353db72",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -2150,8 +2150,8 @@
     "semantic_hash": ""
   },
   "docs/producto/reglas/instancias.md": {
-    "mtime": 1793248079.0279036,
-    "ast_hash": "49234e23b850cf7b2e10a89b9ac590eb",
+    "mtime": 1793746701.3462138,
+    "ast_hash": "7b76f6d6024c6d3121e2fa047bc6fe5f",
     "semantic_hash": ""
   },
   "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/verificacion.md": {
@@ -4000,8 +4000,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0028-distintivo-de-la-app-original-en-el-icon/arquitectura.md": {
-    "mtime": 1793729690.252172,
-    "ast_hash": "5833ff24463853ec890e4e0266cd18b4",
+    "mtime": 1793746664.7570703,
+    "ast_hash": "f4c8a829a6b5845a00eb9b0a9035cb14",
     "semantic_hash": ""
   },
   "hu/HU-0028-distintivo-de-la-app-original-en-el-icon/briefs/backend.md": {
@@ -4025,8 +4025,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0028-distintivo-de-la-app-original-en-el-icon/hu.md": {
-    "mtime": 1793731318.158097,
-    "ast_hash": "7dcf73545fb6134d105f4127dc68347c",
+    "mtime": 1793746691.824704,
+    "ast_hash": "6a90e84c0dedfb41de55ac63bab4ba5b",
     "semantic_hash": ""
   },
   "hu/HU-0028-distintivo-de-la-app-original-en-el-icon/revision.md": {
@@ -4035,8 +4035,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0028-distintivo-de-la-app-original-en-el-icon/seguimiento.md": {
-    "mtime": 1793731318.1660688,
-    "ast_hash": "dca4c3b999ae2561410ad21e64d44469",
+    "mtime": 1793746691.8328662,
+    "ast_hash": "72ed23ae817376ca55beb420e9d45ea1",
     "semantic_hash": ""
   },
   "hu/HU-0028-distintivo-de-la-app-original-en-el-icon/diseno/capturas/01-maqueta-1200-oscuro.png": {
@@ -4127,6 +4127,16 @@
   "hu/HU-0028-distintivo-de-la-app-original-en-el-icon/evidencias/light-5-original-sin-distintivo.png": {
     "mtime": 1793730634.7297423,
     "ast_hash": "5c3eeb02e93b38dc393cde785f844aea",
+    "semantic_hash": ""
+  },
+  "hu/HU-0028-distintivo-de-la-app-original-en-el-icon/metricas.json": {
+    "mtime": 1793746692.6223533,
+    "ast_hash": "af9bad08c9cba694eceb1bdad4a2bad3",
+    "semantic_hash": ""
+  },
+  "hu/HU-0028-distintivo-de-la-app-original-en-el-icon/verificacion.md": {
+    "mtime": 1793746664.7573156,
+    "ast_hash": "45482b911e151fbad30b99ecc67a576c",
     "semantic_hash": ""
   }
 }
