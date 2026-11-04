@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793762064.6190257,
-    "ast_hash": "14c53250b3c64848057a5aedb7d7ca8f",
+    "mtime": 1793762298.927604,
+    "ast_hash": "70ce4e745b92aa1b4f18dd1bf0160894",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -3200,13 +3200,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/hu.md": {
-    "mtime": 1793330575.93077,
-    "ast_hash": "0bc2d2923392b512216154fc89fec982",
+    "mtime": 1793762312.053677,
+    "ast_hash": "691687888923fa9d61d4e754539fac25",
     "semantic_hash": ""
   },
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/seguimiento.md": {
-    "mtime": 1793330575.9315841,
-    "ast_hash": "c668cfbe99025849dde37b79cc3e8062",
+    "mtime": 1793762298.2921972,
+    "ast_hash": "e142c2610a57442830eca0901d475286",
     "semantic_hash": ""
   },
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/evidencias/01-dashboard-oscuro.png": {
@@ -3245,8 +3245,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/verificacion.md": {
-    "mtime": 1793330575.9318545,
-    "ast_hash": "17610526b4a6246bd5addb68a5f34681",
+    "mtime": 1793762298.129908,
+    "ast_hash": "36045899fb30bb772c7df0ab874ddabc",
     "semantic_hash": ""
   },
   "src-tauri/src/commands.rs": {
@@ -4147,6 +4147,11 @@
   "docs/producto/reglas/actualizaciones.md": {
     "mtime": 1793762063.6502905,
     "ast_hash": "3c1ffae11f63775d8603b799c48c257e",
+    "semantic_hash": ""
+  },
+  "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/metricas.json": {
+    "mtime": 1793762298.9104555,
+    "ast_hash": "8614ee1999a7136a9a68864d68386d96",
     "semantic_hash": ""
   }
 }
