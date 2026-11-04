@@ -9,8 +9,8 @@ app). La copia administrada conserva el icono de Finder y se comprueba con una v
 estricta que no admite otro cambio; la firma de Anthropic no cambia. Si macOS lo exige, se pide el permiso
 «Gestión de apps» y la persona reintenta.
 
-### RN-02 · Una instancia con icono propio lleva el icono de la aplicación original en la esquina inferior derecha
-Nace en HU-0028. Se ve en el Dock (macOS) y en la app (avatares de 32 y 64 px y vista previa del editor; no en 16 px,
+### RN-05 · Una instancia con icono propio lleva el icono de la aplicación original en la esquina inferior derecha
+Nace en HU-0028 (se cerró como RN-02 por error: ese id es de proyectos). Se ve en el Dock (macOS) y en la app (avatares de 32 y 64 px y vista previa del editor; no en 16 px,
 donde el punto de estado sigue abajo). La imagen que eligió la persona no cambia: el distintivo se añade al mostrarla.
 El distintivo es el icono real de la original instalada; si no se puede leer, no hay distintivo y nada falla. La
 original y las instancias sin icono propio no lo llevan. En Windows y Linux solo se ve dentro de la app.

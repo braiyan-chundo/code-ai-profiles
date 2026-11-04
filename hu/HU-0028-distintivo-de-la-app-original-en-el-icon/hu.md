@@ -10,7 +10,7 @@ creada: 2026-11-03
 requiere: { arquitectura: true, diseno: true }
 repos: [code-ai-profiles]
 riesgo: [plataforma]
-reglas: [RN-01, RN-02]
+reglas: [RN-01, RN-05]
 depende: []
 ---
 
@@ -105,7 +105,7 @@ error.
 | Regla | Qué pasa | Texto |
 | --- | --- | --- |
 | RN-01 | cambia | En macOS el icono del Dock de una instancia es su imagen con el distintivo de la original. |
-| RN-02 | nace | Una instancia con icono propio lleva el icono de la aplicación original en la esquina inferior derecha, en el Dock y en la app. La imagen que eligió la persona no cambia. |
+| RN-05 | nace | Una instancia con icono propio lleva el icono de la aplicación original en la esquina inferior derecha, en el Dock y en la app. La imagen que eligió la persona no cambia. |
 
 ## Para la persona usuaria
 
