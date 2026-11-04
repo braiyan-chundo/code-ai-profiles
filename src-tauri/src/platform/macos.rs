@@ -20,6 +20,25 @@ pub(crate) fn macos_bundle_value(source: &Path, key: &str) -> Option<String> {
         .and_then(|value| sanitize_source_name(&value))
 }
 
+/// HU-0028 · `Contents/Resources/<CFBundleIconFile>` of the original (`.icns` when the name has no extension), only
+/// if it is a regular file. Read only: nothing is ever written inside the original bundle.
+pub(crate) fn provider_icon_file(source: &Path) -> Option<PathBuf> {
+    let name = macos_bundle_value(source, "CFBundleIconFile")?;
+    if name.contains('/') || name.contains('\\') || name.contains("..") {
+        return None;
+    }
+    let file_name = if Path::new(&name).extension().is_some() {
+        name
+    } else {
+        format!("{name}.icns")
+    };
+    let file = source.join("Contents/Resources").join(file_name);
+    fs::symlink_metadata(&file)
+        .ok()
+        .filter(|metadata| metadata.file_type().is_file())
+        .map(|_| file)
+}
+
 pub(crate) fn macos_provider_candidates() -> Vec<PathBuf> {
     let mut candidates = vec![PathBuf::from("/Applications/Claude.app")];
     if let Some(home) = dirs::home_dir() {

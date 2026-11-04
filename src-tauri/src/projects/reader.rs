@@ -105,7 +105,8 @@ pub(super) fn read_project_history_at(
     for (kind, file) in DOCUMENTS {
         let path = format!("hu/{folder}/{file}");
         let rel = base.join(file);
-        let escapes = matches!(ctx.resolve(&rel), Ok((canonical, _)) if canonical != own_base.join(file));
+        let escapes =
+            matches!(ctx.resolve(&rel), Ok((canonical, _)) if canonical != own_base.join(file));
         let read = if escapes {
             Err(Skip::Outside)
         } else {

@@ -217,6 +217,7 @@ fn system_info_seed(previous: Option<&SystemInfo>) -> SystemInfo {
         platform: platform_name(),
         source_path: None,
         source_name: None,
+        provider_badge: None,
         source_version: None,
         source_update: SourceUpdateInfo::default(),
         version_topology: VersionTopology {
@@ -260,6 +261,10 @@ pub(crate) fn system_info_scoped(
             })
             .unwrap_or_default();
         info.source_name = source.as_deref().and_then(source_display_name);
+        // HU-0028: extracted once per version of the original (memo by fingerprint), then a `stat` per refresh.
+        info.provider_badge = source
+            .as_deref()
+            .and_then(|source| provider_badge(&paths.app_data, source));
         info.source_path = source
             .as_ref()
             .map(|path| path.to_string_lossy().to_string());
@@ -596,6 +601,7 @@ mod tests {
             platform: platform_name(),
             source_path: None,
             source_name: None,
+            provider_badge: None,
             source_version: None,
             source_update: SourceUpdateInfo::default(),
             version_topology: VersionTopology {

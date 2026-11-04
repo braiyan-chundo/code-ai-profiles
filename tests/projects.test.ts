@@ -46,6 +46,7 @@ import {
   projectName,
   selectProtectedProjects,
   sortProjects,
+  visibleIcon,
 } from "../src/features/projects/projects-selectors.ts";
 import { initialProjectsStore, projectsReducer, type ProjectsAction, type ProjectsStore } from "../src/features/projects/projects-store.ts";
 import type {
@@ -54,6 +55,7 @@ import type {
   ProjectDataGap,
   ProjectHistory,
   ProjectHistoryState,
+  ProjectIcon,
   ProjectInfo,
   ProjectStatus,
   ProjectSummary,
@@ -110,7 +112,7 @@ function info(partial: Partial<ProjectInfo> = {}): ProjectInfo {
 function project(id: string, status: ProjectStatus, overrides: Partial<ProjectSummary> = {}): ProjectSummary {
   return {
     id, path: `/p/${id}`, displayPath: `~/Proyectos/${id}`, lastName: id, pinnedAt: "2026-10-29T05:10:00Z", lastReadAt: null,
-    readAt: "2026-10-29T07:31:00Z", status, message: status === "v4" ? null : "Mensaje de Rust", protectedLocation: null,
+    readAt: "2026-10-29T07:31:00Z", status, message: status === "v4" ? null : "Mensaje de Rust", protectedLocation: null, icon: null,
     info: status === "v4" ? info({ name: id }) : null, warnings: [], ...overrides,
   };
 }
@@ -625,4 +627,29 @@ test("enlaces: solo http y https con host son externos; el resto, texto", () => 
     assert.equal(linkTarget(href), "text", href);
   }
   assert.equal(linkTarget(undefined), "text");
+});
+
+// ---- Icono personalizado (HU-0027) ---------------------------------------------------------------------------------------
+
+const ICON: ProjectIcon = { path: "/datos/project-icons/x.png", revision: 7 };
+
+test("D-3: solo un proyecto legible enseña su icono; uno roto, aunque lo tenga guardado, no", () => {
+  assert.deepEqual(visibleIcon(project("ok", "v4", { icon: ICON })), ICON);
+  assert.equal(visibleIcon(project("ok", "v4")), null, "sin icono");
+  for (const status of ["notFound", "configBroken", "permissionDenied", "notV4"] as const) {
+    assert.equal(visibleIcon(project("roto", status, { icon: ICON })), null, status);
+  }
+});
+
+test("HU-0027: project/loaded pone, cambia y quita el icono del proyecto sin tocar a los demás", () => {
+  const plain = project("i", "v4", { readAt: "2026-10-29T09:00:00Z" });
+  const base = run([{ type: "list/loaded", state: { projects: [plain, b], readAt: "x" } }]);
+  const set = run([{ type: "project/loaded", project: { ...plain, readAt: "2026-10-29T09:00:01Z", icon: ICON } }], base);
+  assert.deepEqual(set.projects.find((item) => item.id === "i")?.icon, ICON);
+  assert.equal(set.projects.find((item) => item.id === "b")?.icon, null);
+  const next: ProjectIcon = { path: ICON.path, revision: 8 };
+  const replaced = run([{ type: "project/loaded", project: { ...plain, readAt: "2026-10-29T09:00:02Z", icon: next } }], set);
+  assert.equal(replaced.projects.find((item) => item.id === "i")?.icon?.revision, 8);
+  const cleared = run([{ type: "project/loaded", project: { ...plain, readAt: "2026-10-29T09:00:03Z", icon: null } }], replaced);
+  assert.equal(cleared.projects.find((item) => item.id === "i")?.icon, null);
 });

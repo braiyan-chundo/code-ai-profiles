@@ -6,6 +6,7 @@ import { Card, CardContent } from "../../components/ui/card";
 import { Spinner } from "../../components/ui/spinner";
 import type { ProjectSummary } from "../../types";
 import { ProjectInitial } from "./ProjectInitial";
+import { projectIconSource } from "./project-icon";
 import { StateBar, StateLegend } from "./StateBar";
 import {
   formatLocalDay,
@@ -35,7 +36,7 @@ export function ProjectCard({ project, now }: { project: ProjectSummary; now: Da
       <Card className="h-full transition-shadow group-hover/project:ring-foreground/25">
         <CardContent className="flex h-full flex-col gap-4">
           <div className="flex items-start gap-3">
-            <ProjectInitial name={name} size="lg" />
+            <ProjectInitial name={name} size="lg" iconSrc={projectIconSource(project)} />
             <div className="grid min-w-0 flex-1 gap-1">
               <h2 className="truncate text-(length:--fs-heading)/(--lh-heading) font-semibold tracking-[-0.01em]">{name}</h2>
               <span className={`${PATH_TEXT} truncate`} title={project.displayPath}>{project.displayPath}</span>

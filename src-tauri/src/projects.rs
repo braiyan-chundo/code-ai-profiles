@@ -6,7 +6,8 @@
 //! carpeta, no se ejecuta nada de ella (ningún `Command::new` aquí) y no se usa la red. Todo pasa por
 //! `ReadContext`, que recorre cada ruta componente a componente sin seguir symlinks que salgan de la
 //! carpeta, y exige que quede dentro de ella y fuera de la lista de exclusión (`~/.claude`, `app_data` y el perfil de la original). Lo único que se escribe es
-//! `<app_data>/projects.json`, con `write_json_atomic`.
+//! `<app_data>/projects.json`, con `write_json_atomic`, y la copia normalizada del icono que la persona
+//! elige con el selector (HU-0027), en `<app_data>/project-icons/<uuid>.png`, con `write_file_atomic`.
 //!
 //! El lector de historias (HU-0025, `reader.rs`) lee, al abrirlo, los cuatro `.md` fijos de una historia
 //! con el mismo `ReadContext`, y valida los enlaces externos que la persona pulsa.
@@ -23,6 +24,7 @@ mod tech;
 pub(crate) use reader::{open_external_link_sync, read_project_history_sync};
 
 const PROJECTS_FILE: &str = "projects.json";
+const PROJECT_ICONS_DIR: &str = "project-icons";
 const PROJECTS_VERSION: u32 = 1;
 const MAX_PINNED_PROJECTS: usize = 100;
 const MAX_HISTORIES: usize = 2_000;
@@ -303,6 +305,16 @@ pub(crate) struct ProjectSummary {
     pub(crate) protected_location: Option<ProjectProtectedLocation>,
     pub(crate) info: Option<ProjectInfo>,
     pub(crate) warnings: Vec<ProjectWarning>,
+    /// El icono elegido por la persona (HU-0027). También en un proyecto roto: ocultarlo es del frontend.
+    pub(crate) icon: Option<ProjectIcon>,
+}
+
+/// La copia normalizada del icono: `path` se calcula a partir del registro al construir el resumen.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct ProjectIcon {
+    pub(crate) path: String,
+    pub(crate) revision: u64,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -364,6 +376,16 @@ struct PinnedProject {
     last_name: Option<String>,
     pinned_at: String,
     last_read_at: Option<String>,
+    /// Sin icono no se escribe: un `projects.json` sin iconos queda igual que antes de HU-0027.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    icon: Option<PinnedProjectIcon>,
+}
+
+/// Solo la revisión: la ruta sale del id, así sobrevive a un cambio de `app_data`.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct PinnedProjectIcon {
+    revision: u64,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -389,7 +411,7 @@ fn projects_mutex() -> &'static Mutex<()> {
     LOCK.get_or_init(|| Mutex::new(()))
 }
 
-fn with_projects_lock<T>(operation: impl FnOnce() -> Result<T, String>) -> Result<T, String> {
+fn with_projects_lock<T, E>(operation: impl FnOnce() -> Result<T, E>) -> Result<T, E> {
     let _guard = projects_mutex()
         .lock()
         .unwrap_or_else(|poisoned| poisoned.into_inner());
@@ -1270,7 +1292,32 @@ fn resolve_repo(
 
 // ── Operaciones (A-3) ───────────────────────────────────────────────────────
 
+// ── Icono del proyecto (HU-0027, A-2) ───────────────────────────────────────
+
+/// `<app_data>/project-icons/<uuid>.png`. El nombre sale del UUID ya parseado, nunca del texto
+/// recibido (que puede venir como `urn:uuid:` o `{…}`).
+fn project_icon_file(app_data: &Path, id: &str) -> Result<PathBuf, AppError> {
+    let id = Uuid::parse_str(id).map_err(|_| AppError::invalid_input(NOT_PINNED))?;
+    Ok(app_data
+        .join(PROJECT_ICONS_DIR)
+        .join(format!("{}.png", id.hyphenated())))
+}
+
+/// `Some` solo si el registro tiene icono y la copia es un archivo regular (no un enlace) de 1 byte
+/// a `ICON_MAX_BYTES`. Leer nunca toca el registro: si falta la copia, el resumen sale sin icono.
+fn project_icon(app_data: &Path, entry: &PinnedProject) -> Option<ProjectIcon> {
+    let revision = entry.icon.as_ref()?.revision;
+    let file = project_icon_file(app_data, &entry.id).ok()?;
+    let metadata = fs::symlink_metadata(&file).ok()?;
+    let size_ok = (1..=ICON_MAX_BYTES as u64).contains(&metadata.len());
+    (metadata.is_file() && size_ok).then(|| ProjectIcon {
+        path: file.to_string_lossy().into_owned(),
+        revision,
+    })
+}
+
 fn summary_for(
+    app_data: &Path,
     entry: &PinnedProject,
     outcome: ReadOutcome,
     env: &ProjectEnv,
@@ -1290,11 +1337,13 @@ fn summary_for(
         protected_location: protected_location(&path, env.home.as_deref()),
         info: outcome.info,
         warnings: outcome.warnings,
+        icon: project_icon(app_data, entry),
     }
 }
 
 /// Lee los anclados fuera del mutex y, dentro, relee el registro, aplica `lastName`/`lastReadAt` de
-/// las lecturas correctas y guarda solo si algo cambió.
+/// las lecturas correctas y guarda solo si algo cambió. El `icon` de cada resumen (también de los
+/// rotos) sale del registro releído: una lista que termina después de guardar un icono lo trae.
 fn read_entries(
     app_data: &Path,
     env: &ProjectEnv,
@@ -1305,7 +1354,7 @@ fn read_entries(
         .iter()
         .map(|entry| {
             let outcome = read_project_folder(Path::new(&entry.path), env);
-            summary_for(entry, outcome, env, &read_at)
+            summary_for(app_data, entry, outcome, env, &read_at)
         })
         .collect();
     for summary in &mut summaries {
@@ -1328,10 +1377,17 @@ fn read_entries(
                 }
             }
         }
+        for summary in &mut summaries {
+            summary.icon = file
+                .projects
+                .iter()
+                .find(|item| item.id == summary.id)
+                .and_then(|stored| project_icon(app_data, stored));
+        }
         if changed {
             save_projects(app_data, &file)?;
         }
-        Ok(())
+        Ok::<(), String>(())
     })?;
     Ok(summaries)
 }
@@ -1483,16 +1539,19 @@ fn pin_project_at(
             last_name: name.clone(),
             pinned_at: read_at.clone(),
             last_read_at: Some(read_at.clone()),
+            icon: None,
         };
         file.projects.push(entry.clone());
         save_projects(app_data, &file)?;
         Ok(entry)
     })?;
-    Ok(summary_for(&entry, outcome, env, &read_at))
+    Ok(summary_for(app_data, &entry, outcome, env, &read_at))
 }
 
+/// Tras guardar el registro, y dentro del candado, borra la copia del icono sin fallar (también si no tenía): anclar de
+/// nuevo da otro UUID y sale la inicial.
 fn unpin_project_at(app_data: &Path, id: &str) -> Result<(), String> {
-    Uuid::parse_str(id).map_err(|_| NOT_PINNED.to_string())?;
+    let icon_file = project_icon_file(app_data, id)?;
     with_projects_lock(|| {
         let mut file = load_projects(app_data)?;
         let before = file.projects.len();
@@ -1500,8 +1559,80 @@ fn unpin_project_at(app_data: &Path, id: &str) -> Result<(), String> {
         if file.projects.len() != before {
             save_projects(app_data, &file)?;
         }
+        // Dentro del candado, como en `clear_project_icon_at`: ningún guardado concurrente la pisa.
+        let _ = fs::remove_file(&icon_file);
+        Ok::<(), String>(())
+    })?;
+    Ok(())
+}
+
+/// Normaliza fuera del candado; con él, escribe la copia y fija la revisión en el registro. Si el
+/// registro no se puede guardar, la copia anterior vuelve a su sitio. La carpeta del proyecto no se
+/// toca. Devuelve el proyecto releído (fuera del candado: no es reentrante).
+fn set_project_icon_at(
+    app_data: &Path,
+    env: &ProjectEnv,
+    id: &str,
+    bytes: &[u8],
+) -> Result<ProjectSummary, AppError> {
+    let icon_file = project_icon_file(app_data, id)?;
+    let normalized = normalized_icon_png(bytes).map_err(AppError::invalid_input)?;
+    with_projects_lock(|| {
+        let mut file = load_projects(app_data)?;
+        let entry = file
+            .projects
+            .iter_mut()
+            .find(|entry| entry.id == id)
+            .ok_or_else(|| AppError::invalid_input(NOT_PINNED))?;
+        let now = u64::try_from(Utc::now().timestamp_millis()).unwrap_or(0);
+        let revision = entry
+            .icon
+            .as_ref()
+            .map_or(now, |icon| now.max(icon.revision.saturating_add(1)));
+        let previous = fs::read(&icon_file).ok();
+        let folder = icon_file
+            .parent()
+            .ok_or_else(|| AppError::internal("No se pudo resolver la carpeta de iconos."))?;
+        fs::create_dir_all(folder).map_err(|error| {
+            AppError::local_io(format!("No se pudo guardar el icono del proyecto: {error}"))
+        })?;
+        write_file_atomic(&icon_file, &normalized, ".project-icon").map_err(|error| {
+            AppError::local_io(format!("No se pudo guardar el icono del proyecto: {error}"))
+        })?;
+        entry.icon = Some(PinnedProjectIcon { revision });
+        if let Err(error) = save_projects(app_data, &file) {
+            restore_optional_file(&icon_file, previous.as_deref());
+            return Err(AppError::local_io(error));
+        }
         Ok(())
-    })
+    })?;
+    Ok(read_project_at(app_data, env, id)?)
+}
+
+/// Quita el icono del registro (guarda solo si cambió) y después, dentro del mismo candado, borra la
+/// copia sin fallar: el registro manda. Idempotente.
+fn clear_project_icon_at(
+    app_data: &Path,
+    env: &ProjectEnv,
+    id: &str,
+) -> Result<ProjectSummary, AppError> {
+    let icon_file = project_icon_file(app_data, id)?;
+    with_projects_lock(|| {
+        let mut file = load_projects(app_data)?;
+        let entry = file
+            .projects
+            .iter_mut()
+            .find(|entry| entry.id == id)
+            .ok_or_else(|| AppError::invalid_input(NOT_PINNED))?;
+        if entry.icon.take().is_some() {
+            save_projects(app_data, &file)?;
+        }
+        // Dentro del candado: un `set_project_icon_at` concurrente no puede escribir su copia entre el
+        // registro y este borrado. Si el registro no se guardó, `?` salió antes y la copia sigue.
+        let _ = fs::remove_file(&icon_file);
+        Ok::<(), AppError>(())
+    })?;
+    Ok(read_project_at(app_data, env, id)?)
 }
 
 /// La ruta sale del registro, nunca del frontend; debe existir y ser una carpeta.
@@ -1545,6 +1676,24 @@ pub(crate) fn pin_project_sync(app: &AppHandle, path: &str) -> Result<ProjectSum
 pub(crate) fn unpin_project_sync(app: &AppHandle, id: &str) -> Result<(), String> {
     let paths = ManagedPaths::resolve(app)?;
     unpin_project_at(&paths.app_data, id)
+}
+
+pub(crate) fn set_project_icon_sync(
+    app: &AppHandle,
+    request: SetProjectIconRequest,
+) -> Result<ProjectSummary, String> {
+    let (app_data, env) = environment(app)?;
+    Ok(set_project_icon_at(
+        &app_data,
+        &env,
+        &request.id,
+        &request.bytes,
+    )?)
+}
+
+pub(crate) fn clear_project_icon_sync(app: &AppHandle, id: &str) -> Result<ProjectSummary, String> {
+    let (app_data, env) = environment(app)?;
+    Ok(clear_project_icon_at(&app_data, &env, id)?)
 }
 
 pub(crate) fn project_folder_sync(app: &AppHandle, id: &str) -> Result<PathBuf, String> {

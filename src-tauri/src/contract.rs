@@ -73,6 +73,10 @@ pub(crate) struct CustomIcon {
     /// macOS only: why the copy could not receive the Finder icon. `None` unless App Management blocked it.
     #[serde(default)]
     pub(crate) system_issue: Option<CustomIconSystemIssue>,
+    /// macOS only (HU-0028): key of the provider badge composed into the icon macOS has in place; `None` = no
+    /// badge. Optional in `instances.json`: an older registry reads as `None` and the next launch reapplies.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub(crate) dock_badge: Option<String>,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
@@ -158,6 +162,14 @@ pub(crate) struct SessionTransferInfo {
     pub(crate) mode: SessionTransferMode,
 }
 
+/// The original application's icon, cropped and cached under `<app_data>/provider-badge/` (HU-0028). The file
+/// name is a content key, so a new icon is a new path.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct ProviderBadge {
+    pub(crate) path: String,
+}
+
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct SystemInfo {
@@ -165,6 +177,8 @@ pub(crate) struct SystemInfo {
     pub(crate) platform: String,
     pub(crate) source_path: Option<String>,
     pub(crate) source_name: Option<String>,
+    /// Always serialized: `null` when there is no original or its icon could not be read (D-7).
+    pub(crate) provider_badge: Option<ProviderBadge>,
     pub(crate) source_version: Option<String>,
     pub(crate) source_update: SourceUpdateInfo,
     pub(crate) version_topology: VersionTopology,
@@ -377,6 +391,14 @@ pub(crate) struct SetInstanceIconRequest {
     pub(crate) bytes: Vec<u8>,
 }
 
+/// El icono de un proyecto anclado (HU-0027): Rust lo normaliza y calcula la ruta a partir del id.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct SetProjectIconRequest {
+    pub(crate) id: String,
+    pub(crate) bytes: Vec<u8>,
+}
+
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct UnlinkCodeSessionRequest {
@@ -438,6 +460,7 @@ mod tests {
             system_applied: false,
             system_message: "UI only".to_string(),
             system_issue: None,
+            dock_badge: None,
         });
         assert_eq!(instance.app_path, original_app_path);
         assert!(!instance.custom_icon.unwrap().system_applied);
@@ -463,6 +486,43 @@ mod tests {
         assert_eq!(
             back.system_issue,
             Some(CustomIconSystemIssue::AppManagement)
+        );
+    }
+
+    #[test]
+    fn custom_icon_dock_badge_is_optional_and_only_written_when_present() {
+        let icon: CustomIcon = serde_json::from_value(serde_json::json!({
+            "path": "/managed/branding/icon.png",
+            "revision": 1,
+            "systemApplied": true,
+            "systemMessage": "Applied"
+        }))
+        .unwrap();
+        assert_eq!(icon.dock_badge, None);
+        let value = serde_json::to_value(&icon).unwrap();
+        assert!(
+            value.get("dockBadge").is_none(),
+            "no badge, no key: {value}"
+        );
+        let badged = CustomIcon {
+            dock_badge: Some("0123456789abcdef".to_string()),
+            ..icon
+        };
+        let value = serde_json::to_value(&badged).unwrap();
+        assert_eq!(value["dockBadge"], "0123456789abcdef");
+        let back: CustomIcon = serde_json::from_value(value).unwrap();
+        assert_eq!(back, badged);
+    }
+
+    #[test]
+    fn system_info_always_serializes_the_provider_badge() {
+        let badge = ProviderBadge {
+            path: "/data/provider-badge/0123456789abcdef.png".to_string(),
+        };
+        let value = serde_json::to_value(&badge).unwrap();
+        assert_eq!(
+            value,
+            serde_json::json!({ "path": "/data/provider-badge/0123456789abcdef.png" })
         );
     }
 

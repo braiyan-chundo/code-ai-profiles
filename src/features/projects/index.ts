@@ -8,6 +8,8 @@ export const PinProjectDialog = lazy(() => import("./PinProjectDialog").then(({ 
 
 /** El modal de datos incompletos y el lector de historias (HU-0025) también se cargan al abrirlos; el lector trae `react-markdown`. */
 export const IncompleteDataDialog = lazy(() => import("./IncompleteDataDialog").then(({ IncompleteDataDialog: Dialog }) => ({ default: Dialog })));
+/** El diálogo «Icono del proyecto» (HU-0027) también se carga al abrirlo. */
+export const ProjectIconDialog = lazy(() => import("./ProjectIconDialog").then(({ ProjectIconDialog: Dialog }) => ({ default: Dialog })));
 export const HistoryReader = lazy(() => import("./HistoryReaderDialog"));
 
 export { ProjectsProvider } from "./ProjectsProvider";
@@ -18,6 +20,7 @@ export { ProjectsView, PinProjectButton, RefreshProjectsButton } from "./Project
 export { ProjectPage } from "./ProjectPage";
 export { ProjectBrokenPage } from "./ProjectBrokenPage";
 export { ProjectInitial } from "./ProjectInitial";
+export { projectIconSource } from "./project-icon";
 export {
   findProject,
   inProgressCount,

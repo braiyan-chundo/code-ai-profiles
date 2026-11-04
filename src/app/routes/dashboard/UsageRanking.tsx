@@ -11,6 +11,7 @@ import {
   instancePending,
   instanceToggle,
   managedIconSource,
+  providerBadgeSource,
   useInstanceActions,
 } from "../../../features/instances";
 import { formatCaptureTime } from "../../../lib/format";
@@ -24,6 +25,7 @@ export function UsageRanking() {
   const { dashboard: state, busy, iconPreviews } = useDashboard();
   const { launch, stop } = useInstanceActions();
   const ranking = usageRanking(state.instances);
+  const badgeSrc = providerBadgeSource(state.system);
   const staleIds = new Set(state.system.versionTopology.staleInstanceIds);
   return (
     <Card size="sm" role="region" aria-label="Uso por instancia">
@@ -52,6 +54,7 @@ export function UsageRanking() {
                 <ItemMedia>
                   <InstanceAvatar
                     iconSrc={managedIconSource(instance, iconPreviews[instance.id] ?? null)}
+                    badgeSrc={badgeSrc}
                     status={instance.status}
                     pending={pending}
                     className="size-8 rounded-sm bg-secondary ring-1 ring-(--line-strong) ring-inset [&>svg]:size-5"

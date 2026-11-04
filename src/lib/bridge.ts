@@ -120,6 +120,9 @@ const mockTopology = (): DashboardState["system"]["versionTopology"] => {
   };
 };
 
+// Distintivo de ejemplo (HU-0028): PNG de 16 px de un color de la paleta, nunca la marca de nadie.
+const mockProviderBadge = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAFklEQVR42mM4e2wnSYhhVMOohuGrAQCrzEwfxYWIZQAAAABJRU5ErkJggg==";
+
 const mockState = (): DashboardState => ({
   instances: mockInstances,
   system: {
@@ -127,6 +130,7 @@ const mockState = (): DashboardState => ({
     platform: "macos",
     sourcePath: "/Applications/Claude.app",
     sourceName: mockSourceName,
+    providerBadge: { path: mockProviderBadge },
     sourceVersion: mockSourceVersion,
     sourceUpdate: {
       status: mockOriginalInstalled() ? "current" : "available",
@@ -398,6 +402,17 @@ const mockHappyOfficeInfo = (): ProjectInfo => mockProjectInfo(
 
 const mockProjectsAt = () => new Date().toISOString();
 
+// Iconos de ejemplo (HU-0027): PNG de 16 px de un solo color, en línea para no depender de ningún archivo.
+const mockIconHappyOffice = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAFklEQVR42mO4WR5OEmIY1TCqYfhqAABjCKcQmGhsPwAAAABJRU5ErkJggg==";
+const mockIconPanelFinanzas = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAFklEQVR42mPwqokkCTGMahjVMHw1AACFyR8QERbimgAAAABJRU5ErkJggg==";
+/** Los `blob:` que crea el mock al poner un icono, para revocarlos al cambiarlo o quitarlo. */
+const mockIconUrls = new Map<string, string>();
+const revokeMockIcon = (id: string) => {
+  const url = mockIconUrls.get(id);
+  if (url) URL.revokeObjectURL(url);
+  mockIconUrls.delete(id);
+};
+
 let mockProjects: ProjectSummary[] = [
   {
     id: "5b7f2c1e-8a4d-4c3b-9f6e-1d2a3b4c5d6e",
@@ -412,6 +427,7 @@ let mockProjects: ProjectSummary[] = [
     protectedLocation: null,
     info: mockCodeAiProfilesInfo(),
     warnings: [],
+    icon: null,
   },
   {
     id: "0e9d8c7b-6a5f-4e3d-8c2b-1a0f9e8d7c6b",
@@ -428,6 +444,7 @@ let mockProjects: ProjectSummary[] = [
     warnings: [
       { scope: "repo", target: "vetcare-movil", message: "El repo no tiene carpeta .git: no se muestra rama ni commit." },
     ],
+    icon: null,
   },
   {
     id: "8f1e2d3c-4b5a-4968-8776-655443322110",
@@ -445,6 +462,7 @@ let mockProjects: ProjectSummary[] = [
       { scope: "metrics", target: "HU-0008", message: "metricas.json no es JSON válido (línea 14, columna 3); la historia queda sin cifras." },
       { scope: "manifest", target: "happy-office-mobile/package.json", message: "package.json está en la nube sin descargar y no se lee para no descargarlo." },
     ],
+    icon: { path: mockIconHappyOffice, revision: 1 },
   },
   {
     id: "3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f",
@@ -459,6 +477,7 @@ let mockProjects: ProjectSummary[] = [
     protectedLocation: null,
     info: null,
     warnings: [],
+    icon: { path: mockIconPanelFinanzas, revision: 1 },
   },
 ];
 
@@ -1053,6 +1072,7 @@ export const bridge = {
       protectedLocation: null,
       info: mockLumenInfo(),
       warnings: [],
+      icon: null,
     };
     mockProjects = [...mockProjects, project];
     return project;
@@ -1064,7 +1084,31 @@ export const bridge = {
       return;
     }
     findMockProject(id);
+    revokeMockIcon(id);
     mockProjects = mockProjects.filter((item) => item.id !== id);
+  },
+
+  /** Icono del proyecto (HU-0027): Rust normaliza la imagen y devuelve el proyecto releído. */
+  async setProjectIcon(id: string, bytes: Uint8Array): Promise<ProjectSummary> {
+    if (isTauri()) return call("set_project_icon", { request: { id, bytes: Array.from(bytes) } });
+    await mockWait(160);
+    const current = findMockProject(id);
+    revokeMockIcon(id);
+    const url = URL.createObjectURL(new Blob([bytes as BlobPart], { type: "image/png" }));
+    mockIconUrls.set(id, url);
+    const project = { ...mockReadProject(current), icon: { path: url, revision: Date.now() } };
+    mockProjects = mockProjects.map((item) => (item.id === id ? project : item));
+    return project;
+  },
+
+  async clearProjectIcon(id: string): Promise<ProjectSummary> {
+    if (isTauri()) return call("clear_project_icon", { id });
+    await mockWait(120);
+    const current = findMockProject(id);
+    revokeMockIcon(id);
+    const project = { ...mockReadProject(current), icon: null };
+    mockProjects = mockProjects.map((item) => (item.id === id ? project : item));
+    return project;
   },
 
   async openProjectFolder(id: string): Promise<void> {

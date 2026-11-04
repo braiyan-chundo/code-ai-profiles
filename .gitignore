@@ -20,3 +20,6 @@ graphify-out/*
 # metodología v4
 .metodo/pruebas/
 .metodo/actividad.log
+
+# Icono de la app original para ver las maquetas en local: es de su autor y no se versiona.
+hu/*/diseno/original-icon.png

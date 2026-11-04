@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Code AI Profiles",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "identifier": "com.braiyan.claudeprofiles",
   "build": {
     "beforeDevCommand": "pnpm dev",
@@ -31,7 +31,9 @@
       "assetProtocol": {
         "enable": true,
         "scope": [
-          "$APPDATA/managed-instances/*/branding/icon.png"
+          "$APPDATA/managed-instances/*/branding/icon.png",
+          "$APPDATA/project-icons/*.png",
+          "$APPDATA/provider-badge/*.png"
         ]
       }
     }

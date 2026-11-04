@@ -20,6 +20,8 @@ export interface InstanceDetailProps {
   /** Quedó por detrás tras instalar la original y se sincronizará al detenerla (HU-0017). */
   syncPending: boolean;
   iconPreviewUrl: string | null;
+  /** El icono de la aplicación original (HU-0028), o `null` si no hay. */
+  badgeSrc: string | null;
   onLaunch: () => void;
   onStop: () => void;
   /** Abre el diálogo de sincronización con esta sola instancia (HU-0024, AC-03). */
@@ -43,6 +45,7 @@ export function InstanceDetail({
   updateAvailable,
   syncPending,
   iconPreviewUrl,
+  badgeSrc,
   onLaunch,
   onStop,
   onUpdate,
@@ -69,10 +72,12 @@ export function InstanceDetail({
         <CardContent className="flex-row flex-wrap items-center gap-x-6 gap-y-4">
           <InstanceAvatar
             iconSrc={iconSrc}
+            badgeSrc={badgeSrc}
             status={instance.status}
             pending={pending}
             className="size-16 rounded-2xl border border-(--line-strong) bg-secondary [&>svg]:size-9"
-            dotClassName="-right-1 -bottom-1 size-3.5"
+            badgeClassName="-right-1 -bottom-1"
+            dotClassName="-right-1 -bottom-1 size-3.5 group-data-badged/avatar:-top-1"
           />
           <div className="grid min-w-0 flex-1 basis-60 gap-2">
             <div className="flex flex-wrap items-center gap-2">

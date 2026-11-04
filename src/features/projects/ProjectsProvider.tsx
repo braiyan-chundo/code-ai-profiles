@@ -98,6 +98,25 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  // El icono (HU-0027): Rust devuelve el proyecto ya releído. El error no pasa por `actionError`: el diálogo lo enseña junto a sus botones.
+  const setIcon = useCallback(async (id: string, bytes: Uint8Array): Promise<string | null> => {
+    try {
+      dispatch({ type: "project/loaded", project: await bridge.setProjectIcon(id, bytes) });
+      return null;
+    } catch (reason) {
+      return friendlyError(reason);
+    }
+  }, []);
+
+  const clearIcon = useCallback(async (id: string): Promise<string | null> => {
+    try {
+      dispatch({ type: "project/loaded", project: await bridge.clearProjectIcon(id) });
+      return null;
+    } catch (reason) {
+      return friendlyError(reason);
+    }
+  }, []);
+
   const clearPinError = useCallback(() => dispatch({ type: "pin-error/cleared" }), []);
   const clearActionError = useCallback(() => dispatch({ type: "action-error/changed", error: null }), []);
 
@@ -114,9 +133,11 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
     openFolder,
     pickFolder,
     pinFolder,
+    setIcon,
+    clearIcon,
     clearPinError,
     clearActionError,
-  }), [clearActionError, clearPinError, openFolder, pickFolder, pinFolder, refreshAll, refreshOne, store, unpin]);
+  }), [clearActionError, clearIcon, clearPinError, openFolder, pickFolder, pinFolder, refreshAll, refreshOne, setIcon, store, unpin]);
 
   return <ProjectsContext.Provider value={value}>{children}</ProjectsContext.Provider>;
 }

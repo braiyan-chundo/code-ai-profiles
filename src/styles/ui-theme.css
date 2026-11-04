@@ -21,10 +21,8 @@
   --ui-popover: rgba(43, 44, 43, 0.98);
   /* .modal-backdrop (el antiguo modal.css): el velo de los diálogos */
   --ui-overlay: rgba(5, 6, 5, 0.58);
-  /* HU-0016: el marco de la ventana, de la antigua .app-window (shell.css): degradado, borde y sombra */
+  /* HU-0016: el fondo de la ventana, de la antigua .app-window (shell.css). El borde y la sombra los pone el sistema. */
   --ui-window: linear-gradient(145deg, rgba(28, 29, 28, 0.985), rgba(16, 17, 16, 0.99));
-  --ui-window-border: rgba(255, 255, 255, 0.11);
-  --ui-window-shadow: 0 40px 100px rgba(0, 0, 0, 0.56), inset 0 1px 0 rgba(255, 255, 255, 0.045);
   /* HU-0016: el botón de cerrar de Windows al pasar el ratón (.platform-windows .window-dot.close:hover) */
   --ui-window-close: #c42b1c;
   /* HU-0016: contexto «normal» y «elevado» de una sesión (.session-context.context-normal / .context-elevated, el antiguo session-list.css) */
@@ -40,8 +38,6 @@
   --ui-overlay: rgba(67, 50, 43, 0.3);
   /* .theme-light .app-window (el antiguo theme-light.css) */
   --ui-window: linear-gradient(145deg, rgba(249, 247, 244, 0.995), rgba(235, 229, 224, 0.995));
-  --ui-window-border: rgba(68, 46, 38, 0.14);
-  --ui-window-shadow: 0 40px 100px rgba(75, 54, 45, 0.22), inset 0 1px rgba(255, 255, 255, 0.8);
   /* los mismos dos, más oscuros: 4,5:1 o más sobre #f3efeb (success 4,77:1 y warning 4,64:1; HU-0022 oscurece el
      success desde #3f7a52, que daba 4,46:1) */
   --ui-success: #3b7550;

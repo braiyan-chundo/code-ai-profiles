@@ -201,10 +201,9 @@ const CLASS_START = "(?<![\\w\\-\\[(/])";
 const CLASS_END = "(?![\\w\\-.\\[(])";
 const OFF_SCALE_SPACING = new RegExp(`${CLASS_START}-?${SPACING_PREFIX}-(?:${OFF_SCALE_STEPS})${CLASS_END}`, "g");
 const ARBITRARY_SPACING = new RegExp(`${CLASS_START}-?(${SPACING_PREFIX})-\\[\\s*-?\\d*\\.?\\d+(?:px|rem|em)\\s*\\]`, "g");
-/** Los tres huecos de posición de controles nativos: las únicas medidas de espaciado en px permitidas. */
+/** El hueco de los controles de ventana de Windows: la única medida de espaciado en px permitida. */
 const SPACING_EXCEPTIONS: Record<string, string[]> = {
-  "app/layout/Titlebar.tsx": ["pl-[84px]"],
-  "app/layout/PageHeader.tsx": ["pr-[160px]", "pl-[68px]"],
+  "app/layout/PageHeader.tsx": ["pr-[160px]"],
 };
 const RADIUS_PX = [4, 8, 12, 16, 20, 24];
 const RADIUS_CLASS = "rounded(?:-(?:t|b|l|r|s|e|tl|tr|bl|br|ss|se|ee|es))?";
@@ -528,10 +527,9 @@ test("9 · canario: cada detector marca fugas sintéticas, también con rutas de
   for (const sample of ["p-0", "px-3", "py-1", "gap-2", "mt-4", "-mx-1", "p-6", "gap-8", "pt-12", "m-auto", "p-(--x)", "p-[var(--x)]", "px-0 py-0", "ring-1", "border-px", "size-5", "h-7", "top-1.5", "text-(length:--fs-small)/(--lh-small)"]) {
     assert.deepEqual(bad(sample), [], `marcó un espaciado válido: ${sample}`);
   }
-  assert.deepEqual(bad("pl-[84px]", "app/layout/Titlebar.tsx"), [], "la excepción de Titlebar");
-  assert.deepEqual(bad("pr-[160px] pl-[68px]", "app\\layout\\PageHeader.tsx"), [], "las excepciones de PageHeader, con ruta de Windows");
-  assert.ok(bad("pl-[84px]", "app/layout/PageHeader.tsx").length > 0, "la excepción de Titlebar no vale en otro archivo");
-  assert.ok(bad("pl-[90px]", "app/layout/Titlebar.tsx").length > 0, "otra medida en Titlebar");
+  assert.deepEqual(bad("pr-[160px]", "app\\layout\\PageHeader.tsx"), [], "la excepción de PageHeader, con ruta de Windows");
+  assert.ok(bad("pr-[160px]", "app/layout/Titlebar.tsx").length > 0, "la excepción de PageHeader no vale en otro archivo");
+  assert.ok(bad("pl-[68px]", "app/layout/PageHeader.tsx").length > 0, "otra medida en PageHeader");
   for (const sample of ["rounded-4xl", "rounded-t-4xl", "rounded-[calc(var(--radius)-3px)]", "rounded-[min(var(--radius-md),10px)]", "rounded-[9px]", "rounded-[2px]", "rounded-l-[10px]", "hover:rounded-[14px]"]) {
     assert.ok(bad(sample).length > 0, `no marcó el radio ${sample}`);
   }

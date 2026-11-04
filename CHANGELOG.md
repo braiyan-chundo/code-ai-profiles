@@ -6,6 +6,24 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-03
+
+Pendiente de probar en un equipo real: la detección de Claude instalado como paquete MSIX en Windows y el distintivo de la original dentro de la app en Windows y Linux solo se han comprobado con pruebas automáticas y en CI. El distintivo en el Dock y en la app se probó en macOS.
+
+### Added
+
+- Icono personalizado de proyecto: en la página del proyecto, el avatar abre «Icono del proyecto» para elegir una imagen PNG o JPEG. Sustituye a la inicial en el sidebar, la lista y la página; la app guarda una copia de 512 px en sus datos y no toca el proyecto. «Quitar» o desanclar vuelven a la inicial; un proyecto roto no muestra su icono (HU-0027).
+- Las instancias con icono propio llevan el icono de la app que clonan en la esquina inferior derecha: en el Dock (macOS) y en la app en 32 y 64 px, con el punto de estado arriba. Se lee del icono de la original instalada y se guarda una copia en los datos de la app; la imagen elegida no cambia. Las instancias que ya tenían icono lo reciben al abrirlas (HU-0028).
+
+### Changed
+
+- El botón de plegar el sidebar está en un solo sitio: antes de las migas de cada página. El sidebar ocupa toda la altura de la ventana; en macOS los semáforos quedan sobre su cabecera.
+
+### Fixed
+
+- Windows: la app detecta Claude instalado como paquete MSIX (el instalador oficial actual, en `WindowsApps`) y su perfil en `%LOCALAPPDATA%\Packages`. Antes solo buscaba el instalador clásico y no encontraba la original.
+- Windows: la ventana ya no dibuja un marco redondeado propio que no coincidía con el borde del sistema. Ahora es opaca y el borde, la sombra y las esquinas los pone Windows.
+
 ## [0.4.0] - 2026-10-30
 
 Pendiente de probar con una versión real: la instalación directa en macOS de una versión nueva de Claude (detección en la publicación oficial e «Instalar») se probó con pruebas automáticas y datos simulados, porque Anthropic no ha publicado versión desde la 4.4212.0. Si falla, la app lo dice y no toca la original. Windows y Linux solo se han comprobado en CI.

@@ -27,6 +27,7 @@ import {
   matchesOriginalApp,
   originalAppName as selectOriginalAppName,
   useDashboard,
+  useRuntimePlatform,
 } from "../../features/dashboard";
 import {
   InstanceAvatar,
@@ -49,7 +50,9 @@ const NO_SOURCE_TITLE = "Instala una aplicación compatible o configura una ruta
  * La navegación de la app (HU-0016, AC-01): Dashboard, la aplicación original y una entrada por instancia, con
  * «Nueva instancia», «Escanear sistema» y «Configuración». Plegado a iconos, cada entrada lleva su tooltip.
  * Es un panel flotante (HU-0019, A-2): `variant="floating"`, con la marca en su cabecera y, junto a cada perfil, el
- * número de sesiones. Se pinta debajo de la barra: el contenedor `fixed` del catálogo empieza en `--titlebar-height`.
+ * número de sesiones. Ocupa toda la altura de la ventana; el botón de plegar está en `PageHeader`. En macOS la cabecera
+ * deja arriba 32 px para los semáforos nativos (`x:20, y:19`). La franja de arriba y la fila de la marca son zona de
+ * arrastre de la ventana (sus textos no reciben el puntero, para que el arrastre llegue a la fila).
  *
  * Bajo «Instancias» va el grupo «Proyectos» (HU-0023). A 680 px de alto la lista se desplaza y su final se funde (la
  * máscara de `SidebarContent`; el `pb-6` deja el último elemento fuera del fundido al llegar abajo).
@@ -69,6 +72,7 @@ export function AppSidebar() {
   const instanceMatch = useMatch("/instancias/:instanceId");
   const activeInstanceId = instanceMatch?.params.instanceId;
   const { state: sidebarState, setOpen } = useSidebar();
+  const platform = useRuntimePlatform();
   const [query, setQuery] = useState("");
   const searchRef = useRef<HTMLInputElement>(null);
   const sourceFound = Boolean(state.system.sourcePath);
@@ -106,12 +110,15 @@ export function AppSidebar() {
     <Sidebar
       collapsible="icon"
       variant="floating"
-      className="top-(--titlebar-height)! h-auto! *:data-[slot=sidebar-inner]:ring-foreground/10"
+      className="*:data-[slot=sidebar-inner]:ring-foreground/10"
       role="navigation"
       aria-label="Navegación principal"
     >
-      <SidebarHeader className="gap-0 p-0 pt-3">
-        <div className="flex items-center gap-2 pr-3 pb-1 pl-4 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+      <SidebarHeader data-tauri-drag-region className={cn("gap-0 p-0", platform === "macos" ? "pt-8" : "pt-3")}>
+        <div
+          data-tauri-drag-region
+          className="flex items-center gap-2 pr-3 pb-1 pl-4 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 [&>*]:pointer-events-none"
+        >
           <BrandMark size={20} className="shrink-0 text-(--primary-soft) in-[.theme-light]:text-primary-text" />
           <span className="truncate text-(length:--fs-title)/(--lh-title) font-bold tracking-[-0.05em] text-foreground group-data-[collapsible=icon]:hidden">
             Code AI Profiles

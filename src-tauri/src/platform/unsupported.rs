@@ -11,6 +11,10 @@ pub(crate) fn source_display_name(source: &Path) -> Option<String> {
     source_name_from_metadata(None, None, source)
 }
 
+pub(crate) fn provider_icon_file(_source: &Path) -> Option<PathBuf> {
+    None
+}
+
 pub(crate) fn detect_provider_source() -> Option<PathBuf> {
     None
 }

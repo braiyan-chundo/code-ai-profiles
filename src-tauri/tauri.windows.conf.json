@@ -1,0 +1,21 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Code AI Profiles",
+        "width": 1440,
+        "height": 920,
+        "minWidth": 980,
+        "minHeight": 680,
+        "center": true,
+        "decorations": false,
+        "transparent": false,
+        "shadow": true,
+        "resizable": true,
+        "backgroundColor": "#151615"
+      }
+    ]
+  }
+}
