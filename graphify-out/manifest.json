@@ -1,6 +1,6 @@
 {
   "package.json": {
-    "mtime": 1793749701.1280134,
+    "mtime": 1793760353.892832,
     "ast_hash": "01cf3252790c323b113e6bc9c771838f",
     "semantic_hash": ""
   },
@@ -30,7 +30,7 @@
     "semantic_hash": "a85314b3cde4f5d5b64d48e0c7b18194"
   },
   "src-tauri/tauri.conf.json": {
-    "mtime": 1793749701.128655,
+    "mtime": 1793760353.8940306,
     "ast_hash": "cf44c96c8694b18e51db00078beb0010",
     "semantic_hash": ""
   },
@@ -115,7 +115,7 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1793749706.7958155,
+    "mtime": 1793760353.8855546,
     "ast_hash": "dee1396d4285cc383b973574528dea68",
     "semantic_hash": ""
   },
@@ -160,8 +160,8 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1793749706.8171377,
-    "ast_hash": "13e947e27ca38b6dc057b7f90ead1342",
+    "mtime": 1793763171.637227,
+    "ast_hash": "6121a005d94e22cb07e2c079059d43a0",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
@@ -170,7 +170,7 @@
     "semantic_hash": ""
   },
   "docs/versionado.document.md": {
-    "mtime": 1793749706.7961545,
+    "mtime": 1793760353.8858452,
     "ast_hash": "1f75c409fb0fec544f7a89acf55a2fd2",
     "semantic_hash": ""
   },
@@ -295,7 +295,7 @@
     "semantic_hash": ""
   },
   "docs/producto/reglas/README.md": {
-    "mtime": 1793330575.7740679,
+    "mtime": 1793763010.283829,
     "ast_hash": "2104b918544484d91498f7d23bcc7cb8",
     "semantic_hash": ""
   },
@@ -330,7 +330,7 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793749599.890676,
+    "mtime": 1793763010.292468,
     "ast_hash": "e619b487416cd38c43966e075353db72",
     "semantic_hash": ""
   },
@@ -1630,12 +1630,12 @@
     "semantic_hash": ""
   },
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/hu.md": {
-    "mtime": 1793248079.032261,
+    "mtime": 1793763010.2898755,
     "ast_hash": "f7c9741c20b8851c0cf2a523471d461f",
     "semantic_hash": ""
   },
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/seguimiento.md": {
-    "mtime": 1793249717.5880435,
+    "mtime": 1793763010.2911625,
     "ast_hash": "c1634aa259feebb794451e0ba7a801f3",
     "semantic_hash": ""
   },
@@ -1695,7 +1695,7 @@
     "semantic_hash": ""
   },
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/verificacion.md": {
-    "mtime": 1793248079.0325136,
+    "mtime": 1793763010.2913158,
     "ast_hash": "24dd754307642f8f5185fdee00081f3d",
     "semantic_hash": ""
   },
@@ -2150,7 +2150,7 @@
     "semantic_hash": ""
   },
   "docs/producto/reglas/instancias.md": {
-    "mtime": 1793749599.823295,
+    "mtime": 1793763010.283977,
     "ast_hash": "7b76f6d6024c6d3121e2fa047bc6fe5f",
     "semantic_hash": ""
   },
@@ -3200,12 +3200,12 @@
     "semantic_hash": ""
   },
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/hu.md": {
-    "mtime": 1793330575.93077,
+    "mtime": 1793763010.2914925,
     "ast_hash": "0bc2d2923392b512216154fc89fec982",
     "semantic_hash": ""
   },
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/seguimiento.md": {
-    "mtime": 1793330575.9315841,
+    "mtime": 1793763010.2920465,
     "ast_hash": "c668cfbe99025849dde37b79cc3e8062",
     "semantic_hash": ""
   },
@@ -3245,7 +3245,7 @@
     "semantic_hash": ""
   },
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/verificacion.md": {
-    "mtime": 1793330575.9318545,
+    "mtime": 1793763010.2921667,
     "ast_hash": "17610526b4a6246bd5addb68a5f34681",
     "semantic_hash": ""
   },
@@ -3290,8 +3290,8 @@
     "semantic_hash": ""
   },
   "src-tauri/src/platform/mod.rs": {
-    "mtime": 1793749599.8928413,
-    "ast_hash": "b82de51cad130a8ccaf2e36529558463",
+    "mtime": 1793763076.7399495,
+    "ast_hash": "1318949ac69ed5b1d28f9896d01f8022",
     "semantic_hash": ""
   },
   "src-tauri/src/platform/unix.rs": {
@@ -3305,8 +3305,8 @@
     "semantic_hash": ""
   },
   "src-tauri/src/platform/windows.rs": {
-    "mtime": 1793749599.8931036,
-    "ast_hash": "1fccabe9aa88ea71ac3f766f539083bc",
+    "mtime": 1793763076.7397153,
+    "ast_hash": "89066f9dd0fcadd7e9baccc3278281b3",
     "semantic_hash": ""
   },
   "src-tauri/src/processes.rs": {
@@ -4025,7 +4025,7 @@
     "semantic_hash": ""
   },
   "hu/HU-0028-distintivo-de-la-app-original-en-el-icon/hu.md": {
-    "mtime": 1793749599.8901958,
+    "mtime": 1793763010.2923284,
     "ast_hash": "6a90e84c0dedfb41de55ac63bab4ba5b",
     "semantic_hash": ""
   },
