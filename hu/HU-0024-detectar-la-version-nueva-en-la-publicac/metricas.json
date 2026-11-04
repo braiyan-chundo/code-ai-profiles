@@ -1,0 +1,162 @@
+{
+  "hu": "HU-0024",
+  "generado": "2026-11-04T03:18:18.910Z",
+  "perfil": "S",
+  "fases": [
+    {
+      "fase": "requisitos",
+      "desde": "2026-10-30T00:58:00.000Z",
+      "hasta": "2026-10-30T00:59:00.000Z",
+      "minutos": 1
+    },
+    {
+      "fase": "arquitectura",
+      "desde": "2026-10-30T00:59:00.000Z",
+      "hasta": "2026-10-30T01:07:00.000Z",
+      "minutos": 8
+    },
+    {
+      "fase": "implementacion",
+      "desde": "2026-10-30T01:07:00.000Z",
+      "hasta": "2026-10-30T01:23:00.000Z",
+      "minutos": 16
+    },
+    {
+      "fase": "verificacion",
+      "desde": "2026-10-30T01:23:00.000Z",
+      "hasta": "2026-11-04T03:18:00.000Z",
+      "minutos": 7315
+    },
+    {
+      "fase": "cierre",
+      "desde": "2026-11-04T03:18:00.000Z",
+      "hasta": "2026-11-04T03:18:00.000Z",
+      "minutos": 0
+    }
+  ],
+  "minutosTotales": 7340,
+  "agentes": [
+    {
+      "agente": "architect",
+      "rol": "architect",
+      "fase": "arquitectura",
+      "modelos": [
+        "claude-opus-5-5"
+      ],
+      "despachos": 1,
+      "minutos": 8,
+      "tokens": {
+        "entrada": 70,
+        "salida": 44496,
+        "cacheEscritura": 150208,
+        "cacheLectura": 3309518,
+        "total": 3504292
+      }
+    },
+    {
+      "agente": "backend",
+      "rol": "backend",
+      "fase": "implementacion",
+      "modelos": [
+        "claude-opus-5-5",
+        "opus"
+      ],
+      "despachos": 1,
+      "minutos": 13,
+      "tokens": {
+        "entrada": 80,
+        "salida": 52973,
+        "cacheEscritura": 145845,
+        "cacheLectura": 3714503,
+        "total": 3913401
+      }
+    },
+    {
+      "agente": "architect",
+      "rol": "architect",
+      "fase": "implementacion",
+      "modelos": [
+        "claude-opus-5-5"
+      ],
+      "despachos": 1,
+      "minutos": 4,
+      "tokens": {
+        "entrada": 46,
+        "salida": 19854,
+        "cacheEscritura": 97646,
+        "cacheLectura": 1643390,
+        "total": 1760936
+      }
+    },
+    {
+      "agente": "frontend",
+      "rol": "frontend",
+      "fase": "implementacion",
+      "modelos": [
+        "claude-sonnet-5-5",
+        "sonnet"
+      ],
+      "despachos": 1,
+      "minutos": 12,
+      "tokens": {
+        "entrada": 68,
+        "salida": 20301,
+        "cacheEscritura": 177487,
+        "cacheLectura": 2038341,
+        "total": 2236197
+      }
+    }
+  ],
+  "orquestador": {
+    "aproximado": true,
+    "porFase": [
+      {
+        "fase": "requisitos",
+        "tokens": {
+          "entrada": 8,
+          "salida": 5388,
+          "cacheEscritura": 7636,
+          "cacheLectura": 951712,
+          "total": 964744
+        }
+      },
+      {
+        "fase": "arquitectura",
+        "tokens": {
+          "entrada": 14,
+          "salida": 4520,
+          "cacheEscritura": 8976,
+          "cacheLectura": 1467396,
+          "total": 1480906
+        }
+      },
+      {
+        "fase": "implementacion",
+        "tokens": {
+          "entrada": 50,
+          "salida": 8576,
+          "cacheEscritura": 29874,
+          "cacheLectura": 4788959,
+          "total": 4827459
+        }
+      },
+      {
+        "fase": "verificacion",
+        "tokens": {
+          "entrada": 1400,
+          "salida": 368613,
+          "cacheEscritura": 2118164,
+          "cacheLectura": 127616890,
+          "total": 130105067
+        }
+      }
+    ]
+  },
+  "totales": {
+    "tokensAgentes": 11414826,
+    "tokensOrquestador": 137378176,
+    "tokens": 148793002,
+    "despachos": 4
+  },
+  "notas": []
+}
