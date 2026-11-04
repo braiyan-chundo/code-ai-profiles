@@ -6,6 +6,10 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ## [Unreleased]
 
+### Fixed
+
+- Windows: al iniciar, escanear o detener una instancia ya no se abren ventanas de PowerShell ni de consola. Los procesos auxiliares (PowerShell, `tasklist`, `taskkill`, `robocopy`) se lanzan sin ventana.
+
 ## [0.5.0] - 2026-11-03
 
 Pendiente de probar en un equipo real: la detección de Claude instalado como paquete MSIX en Windows y el distintivo de la original dentro de la app en Windows y Linux solo se han comprobado con pruebas automáticas y en CI. El distintivo en el Dock y en la app se probó en macOS.
