@@ -2,7 +2,7 @@
 id: HU-0031
 titulo: "Pestaña Maqueta en el lector de historias"
 estado: en-proceso
-fase: implementacion
+fase: verificacion
 area: proyectos
 entrega: 1
 prioridad: media

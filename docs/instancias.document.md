@@ -34,6 +34,12 @@ instancia, sin confirmación al detener. Mientras una operación corre, los boto
 desactivados y la fila dice «Abriendo…» o «Deteniendo…»; si falla, el aviso de siempre se titula «No se pudo
 abrir/detener {nombre}». La Claude original y las instancias sin copia no llevan botón.
 
+## Perfiles detenidos
+
+Un perfil detenido (instancia u original, sin operación en curso) lleva el icono «zᶻ» después de su nombre en el sidebar
+y en «Uso por instancia» del dashboard (HU-0030, RN-08). Es decorativo (`aria-hidden`): el estado lo siguen leyendo el
+texto oculto y el tooltip. Con el sidebar plegado no se ve.
+
 ## Iconos por instancia
 
 Desde el editor de una instancia se puede seleccionar una imagen PNG o JPEG de hasta 5 MiB. La aplicación valida y normaliza el archivo a PNG cuadrado administrado fuera del bundle del proveedor. El icono aparece en la tarjeta y el editor, sobrevive a una sincronización de aplicación y se puede reemplazar o quitar sin modificar la aplicación original.

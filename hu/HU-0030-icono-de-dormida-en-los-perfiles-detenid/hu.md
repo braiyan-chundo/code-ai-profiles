@@ -2,7 +2,7 @@
 id: HU-0030
 titulo: "Icono de dormida en los perfiles detenidos"
 estado: en-proceso
-fase: implementacion
+fase: verificacion
 area: instancias
 entrega: 1
 prioridad: media

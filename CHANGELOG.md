@@ -10,6 +10,13 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 - Carpeta de datos de la original elegida por la persona: si la app no encuentra las sesiones de Claude en su carpeta habitual, la página de la original lo avisa y deja elegir la carpeta de datos de Claude (la que contiene `claude-code-sessions`). La elegida se usa para las sesiones, las transferencias, el estado y la exclusión de Proyectos; se puede cambiar o volver a la detectada. Solo se guarda la ruta y no se abre ningún archivo para validarla. En macOS, Windows y Linux (HU-0029).
 
+- Icono de dormida «zᶻ» después del nombre de los perfiles detenidos (instancias y original), en el sidebar y en «Uso por instancia». No sale mientras el perfil se abre o se detiene, ni con el sidebar plegado (HU-0030).
+- Pestaña «Maqueta» en el lector de historias, solo si la historia tiene `diseno/maqueta.html`: se ve estática, aislada de la app y sin red, y «Abrir en el navegador» la abre completa en el navegador del sistema. Hasta 1 MiB se pinta; si pesa más, solo se puede abrir fuera (HU-0031).
+
+### Changed
+
+- Las vistas usan todo el ancho a la derecha del sidebar, sin el tope de 1200 px; la lista de proyectos reparte sus tarjetas en columnas según el espacio.
+
 ### Fixed
 
 - Windows: al iniciar, escanear o detener una instancia ya no se abren ventanas de PowerShell ni de consola. Los procesos auxiliares (PowerShell, `tasklist`, `taskkill`, `robocopy`) se lanzan sin ventana.
