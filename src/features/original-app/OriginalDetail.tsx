@@ -150,23 +150,23 @@ export function OriginalDetail({
               )}
             </div>
           </div>
-        {profileView.chosenPath && (
-          <div className="flex w-full basis-full flex-wrap items-center gap-3 border-t border-border pt-4">
-            <span className="font-mono text-(length:--fs-micro)/(--lh-micro) font-medium tracking-[0.08em] text-muted-foreground uppercase">Carpeta de datos</span>
-            <span className="min-w-0 flex-1 basis-60 truncate font-mono text-(length:--fs-small)/(--lh-small) text-muted-foreground" title={profileView.chosenPath}>
-              {profileView.chosenPath}
-            </span>
-            <Badge variant="outline" className="border-primary/30 font-mono text-(length:--fs-micro)/(--lh-micro) font-semibold tracking-[0.08em] text-primary-text uppercase">
-              Elegida
-            </Badge>
-            <Button type="button" variant="outline" size="sm" onClick={onChooseFolder} disabled={busy}>
-              {profileBusy === "choose" ? <Spinner aria-hidden="true" /> : <FolderOpenIcon />} Cambiar carpeta
-            </Button>
-            <Button type="button" variant="ghost" size="sm" onClick={onForgetFolder} disabled={busy}>
-              {profileBusy === "forget" ? <Spinner aria-hidden="true" /> : <RotateCcwIcon />} Usar la detectada
-            </Button>
-          </div>
-        )}
+          {profileView.chosenPath && (
+            <div className="flex w-full basis-full flex-wrap items-center gap-3 border-t border-border pt-4">
+              <span className="font-mono text-(length:--fs-micro)/(--lh-micro) font-medium tracking-[0.08em] text-muted-foreground uppercase">Carpeta de datos</span>
+              <span className="min-w-0 flex-1 basis-60 truncate font-mono text-(length:--fs-small)/(--lh-small) text-muted-foreground" title={profileView.chosenPath}>
+                {profileView.chosenPath}
+              </span>
+              <Badge variant="outline" className="border-primary/30 font-mono text-(length:--fs-micro)/(--lh-micro) font-semibold tracking-[0.08em] text-primary-text uppercase">
+                Elegida
+              </Badge>
+              <Button type="button" variant="outline" size="sm" onClick={onChooseFolder} disabled={busy}>
+                {profileBusy === "choose" ? <Spinner aria-hidden="true" /> : <FolderOpenIcon />} Cambiar carpeta
+              </Button>
+              <Button type="button" variant="ghost" size="sm" onClick={onForgetFolder} disabled={busy}>
+                {profileBusy === "forget" ? <Spinner aria-hidden="true" /> : <RotateCcwIcon />} Usar la detectada
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 

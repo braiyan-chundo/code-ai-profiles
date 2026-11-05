@@ -131,6 +131,10 @@ pub(crate) fn validate_original_profile_folder(
     } else {
         picked.to_path_buf()
     };
+    // Antes que `claude-code-sessions`: la carpeta de la app se rechaza por su motivo real (M-4), no por M-3.
+    if path_is_within(&profile, app_data) || path_is_within(app_data, &profile) {
+        return Err(APP_DATA_FOLDER.to_string());
+    }
     let sessions = fs::symlink_metadata(profile.join(CODE_SESSIONS_FOLDER))
         .map_err(|_| WITHOUT_CODE_SESSIONS.to_string())?;
     if sessions.file_type().is_symlink() {
@@ -138,9 +142,6 @@ pub(crate) fn validate_original_profile_folder(
     }
     if !sessions.is_dir() {
         return Err(WITHOUT_CODE_SESSIONS.to_string());
-    }
-    if path_is_within(&profile, app_data) || path_is_within(app_data, &profile) {
-        return Err(APP_DATA_FOLDER.to_string());
     }
     if profile.to_str().is_none() {
         return Err(UNSAVEABLE_PATH.to_string());
@@ -435,6 +436,13 @@ mod tests {
         fs::create_dir_all(root.0.join(CODE_SESSIONS_FOLDER)).unwrap();
         assert_eq!(
             validate_original_profile_folder(&root.0, &app_data),
+            Err(APP_DATA_FOLDER.to_string())
+        );
+        // O-2: sin `claude-code-sessions`, la carpeta de la app se rechaza igual por su motivo real.
+        let bare_instance = app_data.join("managed-instances/5678/profile");
+        fs::create_dir_all(&bare_instance).unwrap();
+        assert_eq!(
+            validate_original_profile_folder(&bare_instance, &app_data),
             Err(APP_DATA_FOLDER.to_string())
         );
     }
