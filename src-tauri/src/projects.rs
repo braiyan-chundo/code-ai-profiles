@@ -505,8 +505,8 @@ impl ProjectEnv {
     }
 }
 
-/// `deny` = `<home>/.claude`, `app_data_dir` (perfiles y copias administradas) y el perfil de la
-/// aplicación original. Solo se calculan sus rutas: no se listan ni se leen.
+/// `deny` = `<home>/.claude`, `app_data_dir` (perfiles y copias administradas) y las carpetas de la
+/// aplicación original (efectiva, detectada y elegida). Solo se calculan sus rutas: no se listan ni se leen.
 fn environment(app: &AppHandle) -> Result<(PathBuf, ProjectEnv), String> {
     let paths = ManagedPaths::resolve(app)?;
     let home = dirs::home_dir();
@@ -514,9 +514,8 @@ fn environment(app: &AppHandle) -> Result<(PathBuf, ProjectEnv), String> {
     if let Some(home) = &home {
         deny.push(home.join(".claude"));
     }
-    if let Some(profile) = detect_original_profile() {
-        deny.push(profile);
-    }
+    // HU-0029: the effective folder, the detected one and the saved choice (even if no longer valid).
+    deny.extend(original_profile_deny(&resolve_original_profile(&paths)));
     let env = ProjectEnv::new(home, deny, Limits::default());
     Ok((paths.app_data, env))
 }

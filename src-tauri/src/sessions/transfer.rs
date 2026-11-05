@@ -35,19 +35,21 @@ pub(crate) struct TransferProfile {
 }
 
 fn resolve_transfer_profile(
+    paths: &ManagedPaths,
     registry: &Registry,
     id: &str,
     inventory: &ProcessInventory,
 ) -> Result<TransferProfile, String> {
     if id == ORIGINAL_INSTANCE_ID {
-        let profile_path = detect_original_profile().ok_or_else(|| {
+        // HU-0029: the effective folder (the chosen one when still valid, else the detected one).
+        let profile_path = resolve_original_profile(paths).path.ok_or_else(|| {
             "No se encontró el perfil local de la aplicación original.".to_string()
         })?;
         return Ok(TransferProfile {
             id: ORIGINAL_INSTANCE_ID.to_string(),
             name: "Aplicación original".to_string(),
             profile_path,
-            status: original_instance_status_with_inventory(inventory),
+            status: original_instance_status_with_inventory(paths, inventory),
         });
     }
 
@@ -411,10 +413,12 @@ pub(crate) fn copy_code_session_sync(
     let mut session_links = load_session_links(&paths)?;
     let inventory = ProcessInventory::capture();
     refresh_instance_statuses(&mut registry, &inventory);
-    let source = resolve_transfer_profile(&registry, &request.source_instance_id, &inventory)
-        .map_err(|error| format!("No se pudo usar el perfil de origen: {error}"))?;
-    let target = resolve_transfer_profile(&registry, &request.target_instance_id, &inventory)
-        .map_err(|error| format!("No se pudo usar el perfil de destino: {error}"))?;
+    let source =
+        resolve_transfer_profile(&paths, &registry, &request.source_instance_id, &inventory)
+            .map_err(|error| format!("No se pudo usar el perfil de origen: {error}"))?;
+    let target =
+        resolve_transfer_profile(&paths, &registry, &request.target_instance_id, &inventory)
+            .map_err(|error| format!("No se pudo usar el perfil de destino: {error}"))?;
 
     if source.status != InstanceStatus::Stopped || target.status != InstanceStatus::Stopped {
         return Err(format!(
@@ -639,8 +643,9 @@ pub(crate) fn unlink_code_session_sync(
     let mut registry = load_registry(&paths)?;
     let inventory = ProcessInventory::capture();
     refresh_instance_statuses(&mut registry, &inventory);
-    let linked_instance = resolve_transfer_profile(&registry, &link.linked_instance_id, &inventory)
-        .map_err(|error| format!("La instancia vinculada no está disponible: {error}"))?;
+    let linked_instance =
+        resolve_transfer_profile(&paths, &registry, &link.linked_instance_id, &inventory)
+            .map_err(|error| format!("La instancia vinculada no está disponible: {error}"))?;
     if linked_instance.status == InstanceStatus::Running {
         return Err(format!(
             "Detén “{}” antes de desvincular la sesión.",

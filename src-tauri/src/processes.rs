@@ -5,12 +5,13 @@
 use super::*;
 
 pub(crate) fn original_instance_status_with_inventory(
+    paths: &ManagedPaths,
     inventory: &ProcessInventory,
 ) -> InstanceStatus {
     let Some(source) = detect_provider_source() else {
         return InstanceStatus::Missing;
     };
-    if detect_original_profile().is_none() {
+    if resolve_original_profile(paths).path.is_none() {
         return InstanceStatus::Missing;
     }
     if inventory.application_is_running(&source) {
