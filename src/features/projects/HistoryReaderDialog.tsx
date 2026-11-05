@@ -1,5 +1,5 @@
-import { EyeIcon, FileTextIcon, RefreshCwIcon, TriangleAlertIcon, XIcon } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { ExternalLinkIcon, EyeIcon, FileTextIcon, PanelsTopLeftIcon, RefreshCwIcon, TriangleAlertIcon, XIcon } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { NoticeAlert } from "../../components/NoticeAlert";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
@@ -15,7 +15,7 @@ import { cn } from "../../lib/utils";
 import type { ProjectDocument, ProjectDocumentKind, ProjectHistory, ProjectHistoryDocuments } from "../../types";
 import { GapTag } from "./GapTag";
 import { HistoryMarkdown } from "./HistoryMarkdown";
-import { readerBody } from "./history-reader";
+import { mockupActions, mockupDocument, readerBody, tabLabel } from "./history-reader";
 import { STATE_LABEL } from "./projects-detail";
 import { formatDay, formatPhase } from "./projects-format";
 import { BADGE_MONO } from "./projects-styles";
@@ -28,6 +28,38 @@ type Load =
 
 const GAP_LABEL = { noTime: "Sin tiempo", noMetrics: "Sin métricas" } as const;
 const BODY_SCROLL = "min-h-0 [&>[data-slot=scroll-area-viewport]>div]:block!";
+
+/** Un aviso del pie: el título dice qué no se pudo abrir y el mensaje, el de Rust. */
+type FooterNotice = { title: string; message: string };
+
+/** «Abrir en el navegador»: la maqueta completa, con sus scripts, en el navegador del sistema (HU-0031, A-5). */
+function OpenMockupButton({ opening, onOpen }: { opening: boolean; onOpen: () => void }) {
+  return (
+    <Button variant="outline" size="sm" disabled={opening} onClick={onOpen}>
+      {opening ? <Spinner aria-hidden="true" /> : <ExternalLinkIcon aria-hidden="true" />} Abrir en el navegador
+    </Button>
+  );
+}
+
+/** El cuerpo de una maqueta de más de 1 MiB: no se pinta aquí, pero se puede abrir fuera. Sin «Reintentar». */
+function TooLargeMockup({ document, opening, onOpen }: { document: ProjectDocument; opening: boolean; onOpen: () => void }) {
+  return (
+    <Empty aria-label="La maqueta es demasiado grande para verla aquí" className="m-6 w-auto flex-none gap-4 rounded-xl border border-dashed bg-(--surface-soft)">
+      <EmptyHeader className="max-w-md gap-2">
+        <EmptyMedia variant="icon" className="rounded-md ring-1 ring-(--line) ring-inset">
+          <PanelsTopLeftIcon aria-hidden="true" />
+        </EmptyMedia>
+        <EmptyTitle className="text-(length:--fs-heading)/(--lh-heading) font-semibold">La maqueta es demasiado grande para verla aquí</EmptyTitle>
+        <EmptyDescription className="text-(length:--fs-small)/(--lh-small)">
+          {document.message ?? "maqueta.html pesa más de 1 MiB y no se pinta aquí."}
+        </EmptyDescription>
+      </EmptyHeader>
+      <EmptyContent>
+        <OpenMockupButton opening={opening} onOpen={onOpen} />
+      </EmptyContent>
+    </Empty>
+  );
+}
 
 /** El cuerpo de una pestaña ilegible: qué pasó (el mensaje de Rust) y «Reintentar». */
 function UnreadableDocument({ document, retrying, onRetry }: { document: ProjectDocument; retrying: boolean; onRetry: () => void }) {
@@ -67,8 +99,11 @@ function LoadingBody() {
 
 /**
  * El lector de una historia (HU-0025, A-5): `hu.md`, `arquitectura.md`, `verificacion.md` y `seguimiento.md` en pestañas,
- * de solo lectura. Pide los archivos a Rust al abrir y en «Reintentar»; una respuesta que llega después de cerrar, de
- * cambiar de historia o de reintentar se descarta. El contenido vive solo en el estado de este diálogo: no pasa por un
+ * de solo lectura, y la pestaña «Maqueta» si la historia tiene `diseno/maqueta.html` (HU-0031, A-3/A-4). La maqueta se
+ * pinta en un `<iframe sandbox="">` sin ningún permiso (ni scripts, ni formularios, ni salir del marco) con `srcdoc` y una
+ * CSP propia sin red: no se escucha su `load` ni sus mensajes y nunca se lee su documento. «Abrir en el navegador» la
+ * pide a Rust por la historia, nunca por una ruta. Pide los archivos a Rust al abrir y en «Reintentar»; una respuesta que
+ * llega después de cerrar, de cambiar de historia o de reintentar se descarta. El contenido vive solo en el estado de este diálogo: no pasa por un
  * store, `localStorage` ni la URL, y se suelta al cerrar. Se carga con `lazy` porque trae `react-markdown`.
  * Nada lo deja ocupado, así que Escape, la X y el clic fuera cierran siempre.
  */
@@ -85,8 +120,9 @@ export default function HistoryReaderDialog({
   const [load, setLoad] = useState<Load>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
   const [selected, setSelected] = useState<ProjectDocumentKind | null>(null);
-  const [linkError, setLinkError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<FooterNotice | null>(null);
   const [retrying, setRetrying] = useState(false);
+  const [opening, setOpening] = useState(false);
 
   useEffect(() => {
     let current = true;
@@ -114,12 +150,24 @@ export default function HistoryReaderDialog({
     setAttempt((value) => value + 1);
   }, []);
   const openLink = useCallback((href: string) => {
-    setLinkError(null);
-    bridge.openExternalLink(href).catch((reason: unknown) => setLinkError(friendlyError(reason)));
+    setNotice(null);
+    bridge
+      .openExternalLink(href)
+      .catch((reason: unknown) => setNotice({ title: "No se pudo abrir el enlace", message: friendlyError(reason) }));
   }, []);
+  const openMockup = useCallback(() => {
+    setNotice(null);
+    setOpening(true);
+    bridge
+      .openHistoryMockup(projectId, folder)
+      .catch((reason: unknown) => setNotice({ title: "No se pudo abrir la maqueta", message: friendlyError(reason) }))
+      .finally(() => setOpening(false));
+  }, [projectId, folder]);
 
   const documents = load.status === "ready" ? load.data.documents : [];
   const active = documents.find((document) => document.kind === selected) ?? documents[0];
+  const mockupHtml = active?.kind === "design" && active.status === "ok" ? active.content : null;
+  const srcdoc = useMemo(() => (mockupHtml === null ? null : mockupDocument(mockupHtml).srcdoc), [mockupHtml]);
 
   const meta = (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-(length:--fs-small)/(--lh-small) text-muted-foreground">
@@ -171,68 +219,88 @@ export default function HistoryReaderDialog({
                     className="flex-none font-mono text-(length:--fs-small)/(--lh-small)"
                   >
                     {document.status === "unreadable" && <TriangleAlertIcon aria-label="No se pudo leer" className="text-warning" />}
-                    {document.file}
+                    {tabLabel(document)}
                   </TabsTrigger>
                 ))}
               </TabsList>
             ) : null}
           </DialogHeader>
 
-          <ScrollArea key={active?.kind ?? load.status} type="always" className={BODY_SCROLL}>
-            {load.status === "loading" ? (
-              <LoadingBody />
-            ) : load.status === "error" ? (
-              <Empty aria-label="No se pudo leer la historia" className="m-6 w-auto flex-none gap-4 rounded-xl border border-dashed bg-(--surface-soft)">
-                <EmptyHeader className="max-w-md gap-2">
-                  <EmptyMedia variant="icon" className="rounded-md text-destructive ring-1 ring-(--line) ring-inset">
-                    <TriangleAlertIcon aria-hidden="true" />
-                  </EmptyMedia>
-                  <EmptyTitle className="text-(length:--fs-heading)/(--lh-heading) font-semibold">No se pudo leer la historia</EmptyTitle>
-                  <EmptyDescription className="text-(length:--fs-small)/(--lh-small)">{load.message}</EmptyDescription>
-                </EmptyHeader>
-                <EmptyContent>
-                  <Button variant="outline" disabled={retrying} onClick={retry}>
-                    {retrying ? <Spinner aria-hidden="true" /> : <RefreshCwIcon aria-hidden="true" />} Reintentar
-                  </Button>
-                </EmptyContent>
-              </Empty>
-            ) : active ? (
-              <TabsContent value={active.kind} className="outline-none">
-                {active.status === "ok" && active.content !== null ? (
-                  <div className="px-6 py-6">
-                    <HistoryMarkdown content={readerBody(active.content, history.title)} onOpenLink={openLink} />
-                  </div>
-                ) : (
-                  <UnreadableDocument document={active} retrying={retrying} onRetry={retry} />
-                )}
-              </TabsContent>
-            ) : (
-              <Empty aria-label="Sin archivos" className="m-6 w-auto flex-none gap-4 rounded-xl border border-dashed bg-(--surface-soft)">
-                <EmptyHeader className="max-w-md gap-2">
-                  <EmptyMedia variant="icon" className="rounded-md ring-1 ring-(--line) ring-inset"><FileTextIcon aria-hidden="true" /></EmptyMedia>
-                  <EmptyTitle className="text-(length:--fs-heading)/(--lh-heading) font-semibold">Esta historia no tiene archivos que leer</EmptyTitle>
-                  <EmptyDescription className="text-(length:--fs-small)/(--lh-small)">
-                    No hay <span className="font-mono">hu.md</span> ni los demás archivos en su carpeta.
-                  </EmptyDescription>
-                </EmptyHeader>
-              </Empty>
-            )}
-          </ScrollArea>
+          {active && srcdoc !== null ? (
+            // La maqueta ocupa la fila entera del cuerpo, sin el ancho de lectura de los `.md`; el marco hace su scroll.
+            <TabsContent key={active.kind} value={active.kind} className="flex min-h-0 flex-col outline-none">
+              <div className="flex flex-none items-center gap-2 border-b bg-(--surface-soft) px-6 py-2 text-(length:--fs-small)/(--lh-small) text-muted-foreground">
+                <PanelsTopLeftIcon aria-hidden="true" className="size-4 shrink-0" />
+                <span className="min-w-0 flex-1">Vista estática: sus botones funcionan en el navegador.</span>
+                <OpenMockupButton opening={opening} onOpen={openMockup} />
+              </div>
+              <iframe
+                title={`Maqueta de ${history.id}`}
+                sandbox=""
+                srcDoc={srcdoc}
+                referrerPolicy="no-referrer"
+                className="block min-h-0 w-full flex-1 border-0 bg-white"
+              />
+            </TabsContent>
+          ) : (
+            <ScrollArea key={active?.kind ?? load.status} type="always" className={BODY_SCROLL}>
+              {load.status === "loading" ? (
+                <LoadingBody />
+              ) : load.status === "error" ? (
+                <Empty aria-label="No se pudo leer la historia" className="m-6 w-auto flex-none gap-4 rounded-xl border border-dashed bg-(--surface-soft)">
+                  <EmptyHeader className="max-w-md gap-2">
+                    <EmptyMedia variant="icon" className="rounded-md text-destructive ring-1 ring-(--line) ring-inset">
+                      <TriangleAlertIcon aria-hidden="true" />
+                    </EmptyMedia>
+                    <EmptyTitle className="text-(length:--fs-heading)/(--lh-heading) font-semibold">No se pudo leer la historia</EmptyTitle>
+                    <EmptyDescription className="text-(length:--fs-small)/(--lh-small)">{load.message}</EmptyDescription>
+                  </EmptyHeader>
+                  <EmptyContent>
+                    <Button variant="outline" disabled={retrying} onClick={retry}>
+                      {retrying ? <Spinner aria-hidden="true" /> : <RefreshCwIcon aria-hidden="true" />} Reintentar
+                    </Button>
+                  </EmptyContent>
+                </Empty>
+              ) : active ? (
+                <TabsContent value={active.kind} className="outline-none">
+                  {active.status === "tooLarge" && mockupActions(active).open ? (
+                    <TooLargeMockup document={active} opening={opening} onOpen={openMockup} />
+                  ) : active.kind !== "design" && active.status === "ok" && active.content !== null ? (
+                    <div className="px-6 py-6">
+                      <HistoryMarkdown content={readerBody(active.content, history.title)} onOpenLink={openLink} />
+                    </div>
+                  ) : (
+                    <UnreadableDocument document={active} retrying={retrying} onRetry={retry} />
+                  )}
+                </TabsContent>
+              ) : (
+                <Empty aria-label="Sin archivos" className="m-6 w-auto flex-none gap-4 rounded-xl border border-dashed bg-(--surface-soft)">
+                  <EmptyHeader className="max-w-md gap-2">
+                    <EmptyMedia variant="icon" className="rounded-md ring-1 ring-(--line) ring-inset"><FileTextIcon aria-hidden="true" /></EmptyMedia>
+                    <EmptyTitle className="text-(length:--fs-heading)/(--lh-heading) font-semibold">Esta historia no tiene archivos que leer</EmptyTitle>
+                    <EmptyDescription className="text-(length:--fs-small)/(--lh-small)">
+                      No hay <span className="font-mono">hu.md</span> ni los demás archivos en su carpeta.
+                    </EmptyDescription>
+                  </EmptyHeader>
+                </Empty>
+              )}
+            </ScrollArea>
+          )}
         </Tabs>
 
         <div className="grid gap-3 border-t px-6 py-4">
-          {linkError && (
+          {notice && (
             <NoticeAlert
               variant="destructive"
               icon={<TriangleAlertIcon aria-hidden="true" />}
-              title="No se pudo abrir el enlace"
+              title={notice.title}
               action={
-                <Button variant="ghost" size="icon-sm" onClick={() => setLinkError(null)} aria-label="Cerrar aviso">
+                <Button variant="ghost" size="icon-sm" onClick={() => setNotice(null)} aria-label="Cerrar aviso">
                   <XIcon />
                 </Button>
               }
             >
-              {linkError}
+              {notice.message}
             </NoticeAlert>
           )}
           <div className="flex items-center justify-between gap-4">
