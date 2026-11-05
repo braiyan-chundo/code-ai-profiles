@@ -20,8 +20,8 @@
     "semantic_hash": "dca85abae9a1b384a67b37f98b2f05ea"
   },
   "src-tauri/src/lib.rs": {
-    "mtime": 1793861769.920237,
-    "ast_hash": "43ca4e8cbae7ae6bd670d95f8837f609",
+    "mtime": 1793863907.4959338,
+    "ast_hash": "0e5c72626998cceda5af21f9fdde7cc9",
     "semantic_hash": ""
   },
   "src-tauri/src/main.rs": {
@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/lib/bridge.ts": {
-    "mtime": 1793861553.630972,
-    "ast_hash": "53f6a5382b8f7455a180e4f91615913d",
+    "mtime": 1793864339.9924138,
+    "ast_hash": "79ca62aa605a83c08144ddb7685faee5",
     "semantic_hash": ""
   },
   "src/main.tsx": {
@@ -55,8 +55,8 @@
     "semantic_hash": ""
   },
   "src/types.ts": {
-    "mtime": 1793861526.6320612,
-    "ast_hash": "48da0da56cb02b0d96231a6d9c6378cc",
+    "mtime": 1793863802.8412716,
+    "ast_hash": "815ce92b2875dd806ed794fc58bb2d42",
     "semantic_hash": ""
   },
   "src/vite-env.d.ts": {
@@ -110,8 +110,8 @@
     "semantic_hash": ""
   },
   "DESIGN.md": {
-    "mtime": 1793330575.7715075,
-    "ast_hash": "14568f7bc811af88f0ca5b3f1fdbfb7f",
+    "mtime": 1793865150.8589628,
+    "ast_hash": "b2d1ae1efabaa8518b1b3015ff2acd2c",
     "semantic_hash": ""
   },
   "README.md": {
@@ -145,8 +145,8 @@
     "semantic_hash": ""
   },
   "docs/instancias.document.md": {
-    "mtime": 1793749599.823173,
-    "ast_hash": "aafd6c5333cc5bc236c518304b139650",
+    "mtime": 1793865214.2815907,
+    "ast_hash": "ea8a2af5210d5b5a1e92819fa3b41bdd",
     "semantic_hash": ""
   },
   "scripts/release-version.mjs": {
@@ -160,8 +160,8 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1793862395.4487586,
-    "ast_hash": "5dffef7e6ddf6a2a3b2a911c843fd527",
+    "mtime": 1793865214.2810385,
+    "ast_hash": "096e92aea76a3744ca89900b8b78e0cf",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793862413.73272,
-    "ast_hash": "050b11d743b93b7042b52747c448db00",
+    "mtime": 1793865214.3624086,
+    "ast_hash": "3e26873142030e9a7094afc5d2a1228e",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -495,8 +495,8 @@
     "semantic_hash": ""
   },
   "tests/dashboard-state.test.ts": {
-    "mtime": 1793861923.947872,
-    "ast_hash": "fd76036b49da3cefdcc0ec942e0939aa",
+    "mtime": 1793863167.236054,
+    "ast_hash": "f369f88ba7cf3fc459459fc4b64fb878",
     "semantic_hash": ""
   },
   "tests/format.test.ts": {
@@ -535,8 +535,8 @@
     "semantic_hash": ""
   },
   "src/features/instances/index.ts": {
-    "mtime": 1793749599.8977807,
-    "ast_hash": "c24dc3a2a1ace2272f6ea3839299cc78",
+    "mtime": 1793863167.235131,
+    "ast_hash": "bad8ba4a2fd3bff64e12e3304069cc3a",
     "semantic_hash": ""
   },
   "src/features/instances/instance-icon.ts": {
@@ -1510,8 +1510,8 @@
     "semantic_hash": ""
   },
   "src/app/layout/AppSidebar.tsx": {
-    "mtime": 1793749599.8949108,
-    "ast_hash": "fa0ddcea59bf963a30dafb11442e0c58",
+    "mtime": 1793865150.8567233,
+    "ast_hash": "970140a9b244057e66c378af64a2ddb3",
     "semantic_hash": ""
   },
   "src/app/layout/PageHeader.tsx": {
@@ -1525,8 +1525,8 @@
     "semantic_hash": ""
   },
   "src/app/routes/original/OriginalRoute.tsx": {
-    "mtime": 1793861923.9405272,
-    "ast_hash": "16f5935db6c19f759175ce9c367a0dd8",
+    "mtime": 1793862900.4689016,
+    "ast_hash": "00959630082885769eef1b6c1bc51b0b",
     "semantic_hash": ""
   },
   "src/components/BrandMark.tsx": {
@@ -1540,8 +1540,8 @@
     "semantic_hash": ""
   },
   "src/features/instances/instance-status.ts": {
-    "mtime": 1793749599.8979864,
-    "ast_hash": "50f67e9528c4cd425649659e64274783",
+    "mtime": 1793863167.2348783,
+    "ast_hash": "19c5b39a6d3248f770bab2738188fa58",
     "semantic_hash": ""
   },
   "src/lib/webview-support.ts": {
@@ -1565,8 +1565,8 @@
     "semantic_hash": ""
   },
   "src/app/routes/dashboard/DashboardRoute.tsx": {
-    "mtime": 1793330575.9412448,
-    "ast_hash": "312c7b8602491f747cfa1e01dd216994",
+    "mtime": 1793862900.4683955,
+    "ast_hash": "2c3aa78f7b5f23e7329013b78f13195e",
     "semantic_hash": ""
   },
   "src/app/routes/dashboard/SummaryCards.tsx": {
@@ -1575,8 +1575,8 @@
     "semantic_hash": ""
   },
   "src/app/routes/dashboard/UsageRanking.tsx": {
-    "mtime": 1793749599.8958414,
-    "ast_hash": "24ce9691695d82d4e81aea2d45803984",
+    "mtime": 1793863167.2357926,
+    "ast_hash": "dbd7fc06407dd15e2c7990f2f3621c99",
     "semantic_hash": ""
   },
   "src/components/NoticeAlert.tsx": {
@@ -1585,8 +1585,8 @@
     "semantic_hash": ""
   },
   "src/features/instances/InstanceDetail.tsx": {
-    "mtime": 1793749599.8972492,
-    "ast_hash": "238baf3fde37c53b608c6e929f49b709",
+    "mtime": 1793862900.4676678,
+    "ast_hash": "c448b7fd24d7a1818a688d8ff406c248",
     "semantic_hash": ""
   },
   "src/features/instances/InstanceStatusBadge.tsx": {
@@ -1605,8 +1605,8 @@
     "semantic_hash": ""
   },
   "src/features/original-app/OriginalDetail.tsx": {
-    "mtime": 1793862353.186602,
-    "ast_hash": "40ce0dfdeb97a56bf0f76fc8b7069178",
+    "mtime": 1793862900.4673066,
+    "ast_hash": "79b3436cbfdabfd9fc10dd29f9b32beb",
     "semantic_hash": ""
   },
   "src/features/sessions/SessionList.tsx": {
@@ -2460,8 +2460,8 @@
     "semantic_hash": ""
   },
   "src-tauri/src/projects.rs": {
-    "mtime": 1793861717.1142855,
-    "ast_hash": "8858a6e12e24b6e67b1bbd08e35645b8",
+    "mtime": 1793863897.6370356,
+    "ast_hash": "16b4e427a1953a887d1e063a2bc4cbd8",
     "semantic_hash": ""
   },
   "src-tauri/src/projects/git.rs": {
@@ -2480,8 +2480,8 @@
     "semantic_hash": ""
   },
   "src-tauri/src/projects/tests.rs": {
-    "mtime": 1793749599.893849,
-    "ast_hash": "e7333866b5d5bc2fbb607dc301081f7d",
+    "mtime": 1793864005.0303764,
+    "ast_hash": "b678010cff40f14dff255bf367e5b4f7",
     "semantic_hash": ""
   },
   "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/apariencia-dark-comodo-1440.png": {
@@ -2645,8 +2645,8 @@
     "semantic_hash": ""
   },
   "src/app/routes/settings/SettingsRoute.tsx": {
-    "mtime": 1793330575.942365,
-    "ast_hash": "d6938686138cb83af2f20ba80b4d5b27",
+    "mtime": 1793862900.474581,
+    "ast_hash": "8ad552ad94598dba17fb01d5820b32f4",
     "semantic_hash": ""
   },
   "src/features/appearance/AppearanceSettings.tsx": {
@@ -2845,8 +2845,8 @@
     "semantic_hash": ""
   },
   "tests/projects.test.ts": {
-    "mtime": 1793749599.9033618,
-    "ast_hash": "5454f5e896f3cf5e648f9ee9b0a1458c",
+    "mtime": 1793865166.2261949,
+    "ast_hash": "c0a44056e8a51643f8a6776c3d73069a",
     "semantic_hash": ""
   },
   "hu/HU-0022-configuracion-unificada-con-apariencia-y/revision-tecnica.md": {
@@ -2875,8 +2875,8 @@
     "semantic_hash": ""
   },
   "src/app/routes/project/ProjectRoute.tsx": {
-    "mtime": 1793749599.8961914,
-    "ast_hash": "5b6f22c2381878082da8b2b09c2da6c1",
+    "mtime": 1793862900.4721231,
+    "ast_hash": "c2402fc0a49035344ceff385970ab5e6",
     "semantic_hash": ""
   },
   "src/app/routes/projects/ProjectsRoute.tsx": {
@@ -2890,8 +2890,8 @@
     "semantic_hash": ""
   },
   "src/features/projects/ProjectBrokenPage.tsx": {
-    "mtime": 1793330575.947149,
-    "ast_hash": "5ebc11aa4e8ba300d5f51a89a2cdade1",
+    "mtime": 1793862900.4694495,
+    "ast_hash": "6d81d47dd7895d1a86841b09212599d7",
     "semantic_hash": ""
   },
   "src/features/projects/ProjectCard.tsx": {
@@ -2925,8 +2925,8 @@
     "semantic_hash": ""
   },
   "src/features/projects/ProjectPage.tsx": {
-    "mtime": 1793749599.9000955,
-    "ast_hash": "68dbff69539d5d180abacb236b5d9c8d",
+    "mtime": 1793862900.4691296,
+    "ast_hash": "438fb9501a27c78c68f1f69b3cc1844b",
     "semantic_hash": ""
   },
   "src/features/projects/ProjectRepos.tsx": {
@@ -2940,8 +2940,8 @@
     "semantic_hash": ""
   },
   "src/features/projects/ProjectsView.tsx": {
-    "mtime": 1793330575.949015,
-    "ast_hash": "5cd92b1d23952882b4d79af33a2f65d0",
+    "mtime": 1793862908.1663897,
+    "ast_hash": "8c6a28a5ef279cf7709c1f12b117507a",
     "semantic_hash": ""
   },
   "src/features/projects/StateBar.tsx": {
@@ -3165,8 +3165,8 @@
     "semantic_hash": ""
   },
   "docs/proyectos.document.md": {
-    "mtime": 1793749599.823718,
-    "ast_hash": "7e14c43739f1ff3051b07fd525c8bc04",
+    "mtime": 1793865214.2814069,
+    "ast_hash": "00277b0501e5e2313930d39f0af72fdc",
     "semantic_hash": ""
   },
   "hu/HU-0022-configuracion-unificada-con-apariencia-y/verificacion.md": {
@@ -3250,8 +3250,8 @@
     "semantic_hash": ""
   },
   "src-tauri/src/commands.rs": {
-    "mtime": 1793861717.1879323,
-    "ast_hash": "d692309f8d20c19a86989f6ecc473b77",
+    "mtime": 1793863907.3547535,
+    "ast_hash": "852773b56bff9390c71de3e3d80fbf04",
     "semantic_hash": ""
   },
   "src-tauri/src/contract.rs": {
@@ -3510,8 +3510,8 @@
     "semantic_hash": ""
   },
   "src-tauri/src/projects/reader.rs": {
-    "mtime": 1793749599.8936164,
-    "ast_hash": "16d55e3acdb665321e2e52130065e173",
+    "mtime": 1793864118.83487,
+    "ast_hash": "3a2a446dbfc7ecc255d7d67b33bf2384",
     "semantic_hash": ""
   },
   "src/features/instances/InstanceToggleButton.tsx": {
@@ -3565,8 +3565,8 @@
     "semantic_hash": ""
   },
   "src/features/projects/HistoryReaderDialog.tsx": {
-    "mtime": 1793749599.8988082,
-    "ast_hash": "e3bf7812fabd5fc3a77d7dd61155294c",
+    "mtime": 1793864762.86219,
+    "ast_hash": "96d587e03aef69adf35c4ea691cc9972",
     "semantic_hash": ""
   },
   "src/features/projects/IncompleteDataDialog.tsx": {
@@ -3575,8 +3575,8 @@
     "semantic_hash": ""
   },
   "src/features/projects/history-reader.ts": {
-    "mtime": 1793749599.9003088,
-    "ast_hash": "4c253590bb9ec127b21a5ca91dae1266",
+    "mtime": 1793865150.873487,
+    "ast_hash": "7a3c46e84441b45fb57674f9b1801d44",
     "semantic_hash": ""
   },
   "hu/HU-0025-proyectos-datos-incompletos-y-lector-de-/evidencias/01-proyecto-chip-1440-oscuro.png": {
@@ -4197,6 +4197,86 @@
   "hu/HU-0029-carpeta-de-datos-de-la-original-elegida-/verificacion.md": {
     "mtime": 1793862413.6906729,
     "ast_hash": "00b2ca618b0b6b894e39924ef44c0709",
+    "semantic_hash": ""
+  },
+  "src/features/instances/SleepingMark.tsx": {
+    "mtime": 1793863193.2353232,
+    "ast_hash": "96ad75c9bcbb6129c34048a25906c9e4",
+    "semantic_hash": ""
+  },
+  "hu/HU-0030-icono-de-dormida-en-los-perfiles-detenid/diseno/maqueta.html": {
+    "mtime": 1793862936.6808689,
+    "ast_hash": "12565c770ae218d1895be513d7009f5c",
+    "semantic_hash": ""
+  },
+  "hu/HU-0030-icono-de-dormida-en-los-perfiles-detenid/diseno/vista.md": {
+    "mtime": 1793863134.8396661,
+    "ast_hash": "26d26ae6bae9bb64cd5855f636ac39cc",
+    "semantic_hash": ""
+  },
+  "hu/HU-0030-icono-de-dormida-en-los-perfiles-detenid/hu.md": {
+    "mtime": 1793865214.3188388,
+    "ast_hash": "2559b38e9bde50c5a83e7ae80fbab6e5",
+    "semantic_hash": ""
+  },
+  "hu/HU-0030-icono-de-dormida-en-los-perfiles-detenid/revision.md": {
+    "mtime": 1793865214.2854667,
+    "ast_hash": "7a549328737ed1099fc02cf21bb0a0a0",
+    "semantic_hash": ""
+  },
+  "hu/HU-0030-icono-de-dormida-en-los-perfiles-detenid/seguimiento.md": {
+    "mtime": 1793865214.326461,
+    "ast_hash": "d34d0d7468913e9fcabb6a765bdbfdbe",
+    "semantic_hash": ""
+  },
+  "hu/HU-0030-icono-de-dormida-en-los-perfiles-detenid/verificacion.md": {
+    "mtime": 1793865214.2890303,
+    "ast_hash": "ca6fca51f43f6b028dfbec38679a430f",
+    "semantic_hash": ""
+  },
+  "hu/HU-0031-pestana-maqueta-en-el-lector-de-historia/arquitectura.md": {
+    "mtime": 1793863696.10688,
+    "ast_hash": "101fa5d34e0648de0f211c46071f9294",
+    "semantic_hash": ""
+  },
+  "hu/HU-0031-pestana-maqueta-en-el-lector-de-historia/briefs/backend.md": {
+    "mtime": 1793863706.0517716,
+    "ast_hash": "2e1d14fd6e0f654114df2199260cd8b2",
+    "semantic_hash": ""
+  },
+  "hu/HU-0031-pestana-maqueta-en-el-lector-de-historia/briefs/frontend.md": {
+    "mtime": 1793863696.2259848,
+    "ast_hash": "c9292f4d127841dac9e9287f87170bfd",
+    "semantic_hash": ""
+  },
+  "hu/HU-0031-pestana-maqueta-en-el-lector-de-historia/diseno/maqueta.html": {
+    "mtime": 1793862973.5421386,
+    "ast_hash": "03e82edcad8fcbce5d917cab12748d4f",
+    "semantic_hash": ""
+  },
+  "hu/HU-0031-pestana-maqueta-en-el-lector-de-historia/diseno/vista.md": {
+    "mtime": 1793863735.1410737,
+    "ast_hash": "8cdd0d11b17f304cebcd0252fbc573b1",
+    "semantic_hash": ""
+  },
+  "hu/HU-0031-pestana-maqueta-en-el-lector-de-historia/hu.md": {
+    "mtime": 1793865214.3540633,
+    "ast_hash": "b1ea4de9fb769a7032d4981c06d98c6d",
+    "semantic_hash": ""
+  },
+  "hu/HU-0031-pestana-maqueta-en-el-lector-de-historia/revision.md": {
+    "mtime": 1793865214.2874856,
+    "ast_hash": "16d3c2e4c65dedfbd762f9cbfadae314",
+    "semantic_hash": ""
+  },
+  "hu/HU-0031-pestana-maqueta-en-el-lector-de-historia/seguimiento.md": {
+    "mtime": 1793865214.361251,
+    "ast_hash": "019d281c15a64bf6f8159bade64225f1",
+    "semantic_hash": ""
+  },
+  "hu/HU-0031-pestana-maqueta-en-el-lector-de-historia/verificacion.md": {
+    "mtime": 1793865214.2907205,
+    "ast_hash": "9ffd97e2aa8b405dc3a7f97828768979",
     "semantic_hash": ""
   }
 }
