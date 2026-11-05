@@ -127,7 +127,7 @@ This design system uses **Inter** for its clean, Swiss-inspired readability and 
 ## Layout & Spacing
 The layout follows a **Fixed-Fluid hybrid** model common in desktop apps.
 - **Sidebar:** Fixed width (256px, a floating 240px panel with 8px margins) with a semi-transparent acrylic background.
-- **Main Content:** Fluid width with a maximum container of 1200px to maintain readability.
+- **Main Content:** Fluid width that uses all the space to the right of the sidebar; only long-form text keeps a reading width (720–760px).
 - **Margins:** Generous outer margins (32px) provide "breathing room" that signifies a premium application.
 - **Grid:** A 12-column grid is used for dashboard views, while single-column layouts are preferred for focused session management.
 
