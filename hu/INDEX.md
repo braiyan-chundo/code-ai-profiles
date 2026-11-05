@@ -2,7 +2,7 @@
 
 > Generado por `node .metodo/scripts/hu.mjs index`. **No se edita a mano.**
 
-19 historias · ◻ en-espera: 1 · ◐ en-proceso: 1 · ◼ terminada: 15 · ✕ descartada: 2
+22 historias · ◻ en-espera: 1 · ◐ en-proceso: 4 · ◼ terminada: 15 · ✕ descartada: 2
 
 | | Historia | Área | Fase | Repos | Reglas |
 | --- | --- | --- | --- | --- | --- |
@@ -25,3 +25,6 @@
 | ◼ | [HU-0026](HU-0026-arrancar-y-detener-instancias-desde-el-s/hu.md) Arrancar y detener instancias desde el sidebar y el dashboard | instancias | cierre | code-ai-profiles | — |
 | ◼ | [HU-0027](HU-0027-icono-personalizado-de-proyecto/hu.md) Icono personalizado de proyecto | proyectos | cierre | code-ai-profiles | RN-04 |
 | ◼ | [HU-0028](HU-0028-distintivo-de-la-app-original-en-el-icon/hu.md) Distintivo de la app original en el icono de instancia | instancias | cierre | code-ai-profiles | RN-01 RN-05 |
+| ◐ | [HU-0029](HU-0029-carpeta-de-datos-de-la-original-elegida-/hu.md) Carpeta de datos de la original elegida por la persona | sesiones | verificacion | code-ai-profiles | RN-07 |
+| ◐ | [HU-0030](HU-0030-icono-de-dormida-en-los-perfiles-detenid/hu.md) Icono de dormida en los perfiles detenidos | instancias | verificacion | code-ai-profiles | RN-08 |
+| ◐ | [HU-0031](HU-0031-pestana-maqueta-en-el-lector-de-historia/hu.md) Pestaña Maqueta en el lector de historias | proyectos | verificacion | code-ai-profiles | RN-09 |

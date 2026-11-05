@@ -26,6 +26,7 @@ mod instances;
 #[cfg(target_os = "macos")]
 mod macos_icon;
 mod official_release;
+mod original_profile;
 mod original_update;
 mod platform;
 mod processes;
@@ -43,6 +44,7 @@ use contract::*;
 use error::*;
 use icon_image::*;
 use instances::*;
+use original_profile::*;
 use platform::*;
 use processes::*;
 use project_picker::*;
@@ -91,13 +93,16 @@ pub fn run() {
             commands::list_projects,
             commands::read_project,
             commands::pick_project_folder,
+            commands::choose_original_profile_folder,
+            commands::forget_original_profile_folder,
             commands::pin_project,
             commands::unpin_project,
             commands::set_project_icon,
             commands::clear_project_icon,
             commands::open_project_folder,
             commands::read_project_history,
-            commands::open_external_link
+            commands::open_external_link,
+            commands::open_history_mockup
         ])
         .run(tauri::generate_context!())
         .expect("error while running Code AI Profiles");

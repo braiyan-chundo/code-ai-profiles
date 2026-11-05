@@ -43,6 +43,7 @@ pub(crate) fn test_managed_paths(root: &Path) -> ManagedPaths {
         source_update_cache: root.join("source-update-cache.json"),
         artifact_exports: root.join("artifact-exports"),
         original_update: root.join("original-update"),
+        original_profile: root.join("original-profile.json"),
     }
 }
 

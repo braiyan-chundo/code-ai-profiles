@@ -37,7 +37,7 @@ import {
   technologySources,
   timeHint,
 } from "../src/features/projects/projects-detail.ts";
-import { linkTarget, readerBody } from "../src/features/projects/history-reader.ts";
+import { MOCKUP_CSP, linkTarget, mockupActions, mockupDocument, readerBody, tabLabel } from "../src/features/projects/history-reader.ts";
 import {
   findProject,
   inProgressCount,
@@ -51,6 +51,7 @@ import {
 import { initialProjectsStore, projectsReducer, type ProjectsAction, type ProjectsStore } from "../src/features/projects/projects-store.ts";
 import type {
   ProjectCandidate,
+  ProjectDocument,
   ProjectCounts,
   ProjectDataGap,
   ProjectHistory,
@@ -627,6 +628,97 @@ test("enlaces: solo http y https con host son externos; el resto, texto", () => 
     assert.equal(linkTarget(href), "text", href);
   }
   assert.equal(linkTarget(undefined), "text");
+});
+
+// ---- Pestaña Maqueta (HU-0031) -------------------------------------------------------------------------------------------
+
+const META = `<meta http-equiv="Content-Security-Policy" content="${MOCKUP_CSP}"><meta http-equiv="x-dns-prefetch-control" content="off">`;
+const count = (text: string, part: string) => text.split(part).length - 1;
+
+test("A-3: el <meta> CSP va justo tras el doctype, en cualquier caja", () => {
+  const rest = "\n<html><head><style>b{}</style></head><body><img src=\"data:,x\"><script>x()</script></body></html>";
+  assert.equal(mockupDocument(`<!doctype html>${rest}`).srcdoc, `<!doctype html>${META}${rest}`);
+  assert.equal(mockupDocument(`<!DOCTYPE HTML>${rest}`).srcdoc, `<!DOCTYPE HTML>${META}${rest}`);
+  assert.equal(mockupDocument(`  \n<!Doctype html SYSTEM "about:legacy-compat">${rest}`).srcdoc, `  \n<!Doctype html SYSTEM "about:legacy-compat">${META}${rest}`);
+});
+
+test("A-3: tras los comentarios que preceden al doctype; sin doctype, al principio", () => {
+  const head = "<!-- uno -->\n<!--\ndos\n-->  <!doctype html>";
+  assert.equal(mockupDocument(`${head}<p>x</p>`).srcdoc, `${head}${META}<p>x</p>`);
+  assert.equal(mockupDocument("<!----><!--->\n<!--><!-- a --!><!doctype html><p>").srcdoc, `<!----><!--->\n<!--><!-- a --!><!doctype html>${META}<p>`);
+  assert.equal(mockupDocument("<html><style>b{}</style></html>").srcdoc, `${META}<html><style>b{}</style></html>`);
+  assert.equal(mockupDocument("<!-- nota --><p>sin doctype</p>").srcdoc, `${META}<!-- nota --><p>sin doctype</p>`);
+  assert.equal(mockupDocument("").srcdoc, META);
+});
+
+test("A-3: lo que el analizador no se salta deja el <meta> al principio (nunca fuera del <head>)", () => {
+  // Un `<!-->` cierra el comentario: la imagen ya es contenido, aunque luego venga un `-->` y un doctype.
+  const abrupt = "<!--><img src=\"x\">--><!doctype html><p>";
+  assert.equal(mockupDocument(abrupt).srcdoc, META + abrupt);
+  const firstClose = "<!-- a --><img src=\"x\"> --><!doctype html>";
+  assert.equal(mockupDocument(firstClose).srcdoc, META + firstClose);
+  // El NBSP no es espacio para el analizador: abriría el <body> antes del <meta>.
+  assert.equal(mockupDocument("\u00a0<!doctype html><p>").srcdoc, `${META}\u00a0<!doctype html><p>`);
+  assert.equal(mockupDocument("<!-- sin cierre <!doctype html>").srcdoc, `${META}<!-- sin cierre <!doctype html>`);
+});
+
+test("A-3: quita un BOM inicial y no toca nada más", () => {
+  const html = "<!doctype html>\r\n<html><body>\uFEFF<p>á</p></body></html>\r\n";
+  assert.equal(mockupDocument(`\uFEFF${html}`).srcdoc, `<!doctype html>${META}\r\n<html><body>\uFEFF<p>á</p></body></html>\r\n`);
+  assert.equal(mockupDocument(`\uFEFF${html}`).srcdoc.replace(META, ""), html);
+});
+
+test("A-3: el <meta> una sola vez y antes de cualquier <style>, <img> o <script>", () => {
+  for (const html of [
+    "<!doctype html><style>a{}</style><img src=\"data:,\"><script>1</script>",
+    "<!-- c --><!doctype html><head><script>1</script></head>",
+    "<img src=\"data:,\"><style>a{}</style>",
+    "<script>1</script>",
+  ]) {
+    const { srcdoc } = mockupDocument(html);
+    assert.equal(count(srcdoc, META), 1, html);
+    const at = srcdoc.indexOf(META);
+    for (const tag of ["<style", "<img", "<script"]) {
+      const found = srcdoc.indexOf(tag);
+      if (found >= 0) assert.ok(at < found, `${tag} en ${html}`);
+    }
+  }
+});
+
+test("A-3: una maqueta llena de comentarios no congela el lector", () => {
+  const start = Date.now();
+  const html = `${"<!---->".repeat(50_000)}<p>sin doctype</p>`;
+  assert.equal(mockupDocument(html).srcdoc, META + html);
+  assert.ok(Date.now() - start < 1000);
+});
+
+test("A-3: la CSP del marco no abre red, la app ni scripts", () => {
+  assert.ok(MOCKUP_CSP.includes("default-src 'none'"));
+  for (const part of ["https:", "http:", "'self'", "asset:", "unsafe-eval", "script-src"]) {
+    assert.ok(!MOCKUP_CSP.includes(part), part);
+  }
+});
+
+const doc = (kind: ProjectDocument["kind"], file: string, status: ProjectDocument["status"] = "ok"): ProjectDocument => ({
+  kind, file, path: `hu/HU-0031-x/${file}`, status, content: status === "ok" ? "x" : null, message: status === "ok" ? null : "m",
+});
+const MDS = [doc("hu", "hu.md"), doc("architecture", "arquitectura.md"), doc("verification", "verificacion.md"), doc("timeline", "seguimiento.md")];
+
+test("AC-01: la pestaña de la maqueta dice «Maqueta»; las demás, su archivo", () => {
+  assert.equal(tabLabel(doc("design", "maqueta.html")), "Maqueta");
+  assert.equal(tabLabel(doc("hu", "hu.md")), "hu.md");
+  assert.deepEqual(MDS.map(tabLabel), ["hu.md", "arquitectura.md", "verificacion.md", "seguimiento.md"]);
+  assert.ok(!MDS.map(tabLabel).includes("Maqueta"), "sin maqueta no hay pestaña «Maqueta»");
+  const labels = [...MDS, doc("design", "maqueta.html", "tooLarge")].map(tabLabel);
+  assert.equal(labels.at(-1), "Maqueta");
+  assert.equal(labels.filter((label) => label === "Maqueta").length, 1);
+});
+
+test("AC-04: la maqueta legible o grande se abre fuera sin reintentar; la ilegible reintenta sin abrir", () => {
+  assert.deepEqual(mockupActions(doc("design", "maqueta.html", "ok")), { open: true, retry: false });
+  assert.deepEqual(mockupActions(doc("design", "maqueta.html", "tooLarge")), { open: true, retry: false });
+  assert.deepEqual(mockupActions(doc("design", "maqueta.html", "unreadable")), { open: false, retry: true });
+  assert.equal(mockupActions(doc("hu", "hu.md")).open, false, "un .md no se abre en el navegador");
 });
 
 // ---- Icono personalizado (HU-0027) ---------------------------------------------------------------------------------------

@@ -11,5 +11,6 @@ export { DeleteInstanceDialog } from "./DeleteInstanceDialog";
 export { useInstanceActions } from "./useInstanceActions";
 export { InstanceAvatar } from "./InstanceAvatar";
 export { InstanceToggleButton } from "./InstanceToggleButton";
-export { instancePending, instanceStatusLabel, instanceToggle } from "./instance-status";
+export { instancePending, instanceStatusLabel, isSleeping, instanceToggle } from "./instance-status";
 export type { InstancePending, InstanceToggle } from "./instance-status";
+export { SleepingMark } from "./SleepingMark";

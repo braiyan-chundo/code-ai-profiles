@@ -45,3 +45,8 @@ export function instanceToggle(
     : `${action === "launch" ? "Abrir" : "Detener"} ${instance.name}`;
   return { action, label, pending: pending !== null, disabled: busy !== null };
 }
+
+/** «Dormida» (HU-0030): detenida y sin operación en curso. Abriendo o deteniendo ya tiene su propio estado. */
+export function isSleeping(status: InstanceStatus, pending: InstancePending | null): boolean {
+  return status === "stopped" && pending === null;
+}

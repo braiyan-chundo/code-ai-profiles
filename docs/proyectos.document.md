@@ -86,6 +86,21 @@ Code AI Profiles guarda en su carpeta de datos (`projects.json`) solo la ruta, e
 anclado y de última lectura de cada proyecto, más la copia del icono si se eligió uno (`project-icons/`, RN-04). No
 guarda cifras, historias ni personas.
 
+## Maqueta de la historia
+
+El lector de una historia muestra una pestaña «Maqueta», la última, solo si existe `hu/<carpeta>/diseno/maqueta.html`
+(HU-0031, RN-09). Se lee con las mismas defensas que los `.md` (sin seguir enlaces simbólicos fuera de la carpeta de la
+historia) y un tope propio de 1 MiB.
+
+- **Dentro de la app** se pinta en un `<iframe sandbox="">` con `srcdoc`, sin scripts y con una CSP propia en `<meta>`
+  (`default-src 'none'`, estilos en línea e imágenes `data:`): no puede hablar con la app ni cargar nada de internet. Las
+  maquetas que se dibujan con JavaScript se ven incompletas; sus botones de estado y tema no funcionan aquí.
+- **«Abrir en el navegador»** abre ese mismo archivo, re-validado en Rust, en el navegador del sistema (`file://`, sin
+  shell). La interfaz nunca envía una ruta. Fuera de la app la maqueta corre con sus scripts como cualquier página local,
+  y se abre con el programa asociado a `.html`.
+- **Más de 1 MiB:** no se pinta; la pestaña lo dice y ofrece solo «Abrir en el navegador». Ilegible por otro motivo: el
+  aviso de siempre con «Reintentar».
+
 ## Proyectos con problemas
 
 Un proyecto roto sigue en la lista con un aviso y la opción de desanclarlo, con el último nombre leído:

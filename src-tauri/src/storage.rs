@@ -121,6 +121,8 @@ pub(crate) struct ManagedPaths {
     pub(crate) source_update_cache: PathBuf,
     pub(crate) artifact_exports: PathBuf,
     pub(crate) original_update: PathBuf,
+    /// The data folder of the original chosen by the person (HU-0029): only its path.
+    pub(crate) original_profile: PathBuf,
 }
 
 impl ManagedPaths {
@@ -143,6 +145,7 @@ impl ManagedPaths {
             source_update_cache: app_data.join("source-update-cache.json"),
             artifact_exports: app_data.join("artifact-exports"),
             original_update: app_data.join("original-update"),
+            original_profile: app_data.join("original-profile.json"),
             app_data,
             instances,
         })

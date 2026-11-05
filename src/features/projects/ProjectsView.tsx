@@ -66,7 +66,7 @@ export function ProjectsView({ onPin, pinBusy }: { onPin: () => void; pinBusy: b
 
   if (status === "error" && projects.length === 0) {
     return (
-      <div className="mx-auto grid w-full max-w-[1200px] gap-4">
+      <div className="grid w-full gap-4">
         <NoticeAlert
           variant="destructive"
           icon={<TriangleAlertIcon aria-hidden="true" />}
@@ -83,7 +83,7 @@ export function ProjectsView({ onPin, pinBusy }: { onPin: () => void; pinBusy: b
 
   if (projects.length === 0) {
     return (
-      <div className="mx-auto grid w-full max-w-[1200px] gap-4">
+      <div className="grid w-full gap-4">
         {actionError && banner(actionError, clearActionError)}
         <Empty aria-label="Sin proyectos" className="gap-4 rounded-xl border border-dashed bg-(--surface-soft)">
           <EmptyHeader className="max-w-md gap-2">
@@ -110,7 +110,7 @@ export function ProjectsView({ onPin, pinBusy }: { onPin: () => void; pinBusy: b
   const readable = sorted.filter(isReadable).length;
   const total = sorted.length;
   return (
-    <div className="mx-auto grid w-full max-w-[1200px] gap-4">
+    <div className="grid w-full gap-4">
       {error && banner(error, null)}
       {actionError && banner(actionError, clearActionError)}
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-(length:--fs-small)/(--lh-small) text-muted-foreground">
@@ -123,7 +123,7 @@ export function ProjectsView({ onPin, pinBusy }: { onPin: () => void; pinBusy: b
           Solo lectura{readAt ? ` · leídos a las ${formatClock(readAt)}` : ""}
         </span>
       </div>
-      <ul className="grid grid-cols-2 gap-6 max-[760px]:grid-cols-1" aria-label="Lista de proyectos">
+      <ul className="grid grid-cols-[repeat(auto-fill,minmax(380px,1fr))] gap-6" aria-label="Lista de proyectos">
         {sorted.map((project) => (
           <li key={project.id} className="min-w-0">
             {isReadable(project) ? (

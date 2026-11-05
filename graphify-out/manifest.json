@@ -1,7 +1,7 @@
 {
   "package.json": {
-    "mtime": 1793760353.892832,
-    "ast_hash": "01cf3252790c323b113e6bc9c771838f",
+    "mtime": 1793885436.6922169,
+    "ast_hash": "0ff102828f00ee3f55e2ea541b0cd683",
     "semantic_hash": ""
   },
   "scripts/graphify.mjs": {
@@ -20,8 +20,8 @@
     "semantic_hash": "dca85abae9a1b384a67b37f98b2f05ea"
   },
   "src-tauri/src/lib.rs": {
-    "mtime": 1793749599.892199,
-    "ast_hash": "df0d614fe4bc9e0d41f751cf4f773acd",
+    "mtime": 1793863907.4959338,
+    "ast_hash": "0e5c72626998cceda5af21f9fdde7cc9",
     "semantic_hash": ""
   },
   "src-tauri/src/main.rs": {
@@ -30,8 +30,8 @@
     "semantic_hash": "a85314b3cde4f5d5b64d48e0c7b18194"
   },
   "src-tauri/tauri.conf.json": {
-    "mtime": 1793760353.8940306,
-    "ast_hash": "cf44c96c8694b18e51db00078beb0010",
+    "mtime": 1793885436.6927116,
+    "ast_hash": "9717b78702925ada5722717fdf3fb813",
     "semantic_hash": ""
   },
   "src-tauri/tauri.linux.conf.json": {
@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/lib/bridge.ts": {
-    "mtime": 1793749599.9020777,
-    "ast_hash": "4c77f60504969c780b7c8a335e7ecfdf",
+    "mtime": 1793864339.9924138,
+    "ast_hash": "79ca62aa605a83c08144ddb7685faee5",
     "semantic_hash": ""
   },
   "src/main.tsx": {
@@ -55,8 +55,8 @@
     "semantic_hash": ""
   },
   "src/types.ts": {
-    "mtime": 1793749599.9029145,
-    "ast_hash": "1904beee1b00bb41c34abcfe06ccd604",
+    "mtime": 1793863802.8412716,
+    "ast_hash": "815ce92b2875dd806ed794fc58bb2d42",
     "semantic_hash": ""
   },
   "src/vite-env.d.ts": {
@@ -110,13 +110,13 @@
     "semantic_hash": ""
   },
   "DESIGN.md": {
-    "mtime": 1793330575.7715075,
-    "ast_hash": "14568f7bc811af88f0ca5b3f1fdbfb7f",
+    "mtime": 1793865150.8589628,
+    "ast_hash": "b2d1ae1efabaa8518b1b3015ff2acd2c",
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1793760353.8855546,
-    "ast_hash": "dee1396d4285cc383b973574528dea68",
+    "mtime": 1793885436.7030215,
+    "ast_hash": "d3538101829d548962042fa1a09d2f46",
     "semantic_hash": ""
   },
   "code.html": {
@@ -140,13 +140,13 @@
     "semantic_hash": ""
   },
   "docs/sesiones.document.md": {
-    "mtime": 1791894359.7542782,
-    "ast_hash": "b2928b24ac4c34757cd69fcc618734f5",
+    "mtime": 1793862395.4490156,
+    "ast_hash": "7c7405752043036fc975f1474f36d106",
     "semantic_hash": ""
   },
   "docs/instancias.document.md": {
-    "mtime": 1793749599.823173,
-    "ast_hash": "aafd6c5333cc5bc236c518304b139650",
+    "mtime": 1793865214.2815907,
+    "ast_hash": "ea8a2af5210d5b5a1e92819fa3b41bdd",
     "semantic_hash": ""
   },
   "scripts/release-version.mjs": {
@@ -160,8 +160,8 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1793760353.8852189,
-    "ast_hash": "13e947e27ca38b6dc057b7f90ead1342",
+    "mtime": 1793885446.0201855,
+    "ast_hash": "ab684ceb44cbb307a274a6ef49da6d5f",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
@@ -170,8 +170,8 @@
     "semantic_hash": ""
   },
   "docs/versionado.document.md": {
-    "mtime": 1793760353.8858452,
-    "ast_hash": "1f75c409fb0fec544f7a89acf55a2fd2",
+    "mtime": 1793885436.7034593,
+    "ast_hash": "da240f41579aa7f9eda8f0a981efb53f",
     "semantic_hash": ""
   },
   "src/lib/scan-controller.ts": {
@@ -200,8 +200,8 @@
     "semantic_hash": ""
   },
   "tests/source-update-controller.test.ts": {
-    "mtime": 1793749599.9036226,
-    "ast_hash": "c42506a3c8bd868928e87d6edfb81511",
+    "mtime": 1793861526.6325521,
+    "ast_hash": "fdcf68a2b2c0af370fe4b05c715a3b60",
     "semantic_hash": ""
   },
   "CLAUDE.md": {
@@ -295,7 +295,7 @@
     "semantic_hash": ""
   },
   "docs/producto/reglas/README.md": {
-    "mtime": 1793762063.6504605,
+    "mtime": 1793885634.424086,
     "ast_hash": "5779fc7762e15e7e4cd8a02982f0700c",
     "semantic_hash": ""
   },
@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793762298.927604,
-    "ast_hash": "70ce4e745b92aa1b4f18dd1bf0160894",
+    "mtime": 1793885645.2107127,
+    "ast_hash": "e019b210d307721a612e71b3351cfdd2",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -435,8 +435,8 @@
     "semantic_hash": ""
   },
   "src/features/dashboard/dashboard-store.ts": {
-    "mtime": 1793749599.8970008,
-    "ast_hash": "3f44c8e97f2a5588081ccb46604cccea",
+    "mtime": 1793861526.6323783,
+    "ast_hash": "42f1abb28d070d5c985c3310ee7fa1d2",
     "semantic_hash": ""
   },
   "src/features/instances/instance-types.ts": {
@@ -495,8 +495,8 @@
     "semantic_hash": ""
   },
   "tests/dashboard-state.test.ts": {
-    "mtime": 1793749599.9031749,
-    "ast_hash": "3e474a4ea0d52ffc5c66b62b855b32e4",
+    "mtime": 1793863167.236054,
+    "ast_hash": "f369f88ba7cf3fc459459fc4b64fb878",
     "semantic_hash": ""
   },
   "tests/format.test.ts": {
@@ -535,8 +535,8 @@
     "semantic_hash": ""
   },
   "src/features/instances/index.ts": {
-    "mtime": 1793749599.8977807,
-    "ast_hash": "c24dc3a2a1ace2272f6ea3839299cc78",
+    "mtime": 1793863167.235131,
+    "ast_hash": "bad8ba4a2fd3bff64e12e3304069cc3a",
     "semantic_hash": ""
   },
   "src/features/instances/instance-icon.ts": {
@@ -545,8 +545,8 @@
     "semantic_hash": ""
   },
   "src/features/original-app/index.ts": {
-    "mtime": 1793211133.703407,
-    "ast_hash": "19be52223d2319fe3e2e0919754404bc",
+    "mtime": 1793861916.676205,
+    "ast_hash": "1e46f7fcd08398ded04d42a4678306e6",
     "semantic_hash": ""
   },
   "src/features/scan/ScanProgressPanel.tsx": {
@@ -1510,8 +1510,8 @@
     "semantic_hash": ""
   },
   "src/app/layout/AppSidebar.tsx": {
-    "mtime": 1793749599.8949108,
-    "ast_hash": "fa0ddcea59bf963a30dafb11442e0c58",
+    "mtime": 1793865150.8567233,
+    "ast_hash": "970140a9b244057e66c378af64a2ddb3",
     "semantic_hash": ""
   },
   "src/app/layout/PageHeader.tsx": {
@@ -1525,8 +1525,8 @@
     "semantic_hash": ""
   },
   "src/app/routes/original/OriginalRoute.tsx": {
-    "mtime": 1793749599.896093,
-    "ast_hash": "fbcb41062e49bf00e10ca00a60699c1c",
+    "mtime": 1793862900.4689016,
+    "ast_hash": "00959630082885769eef1b6c1bc51b0b",
     "semantic_hash": ""
   },
   "src/components/BrandMark.tsx": {
@@ -1540,8 +1540,8 @@
     "semantic_hash": ""
   },
   "src/features/instances/instance-status.ts": {
-    "mtime": 1793749599.8979864,
-    "ast_hash": "50f67e9528c4cd425649659e64274783",
+    "mtime": 1793863167.2348783,
+    "ast_hash": "19c5b39a6d3248f770bab2738188fa58",
     "semantic_hash": ""
   },
   "src/lib/webview-support.ts": {
@@ -1565,8 +1565,8 @@
     "semantic_hash": ""
   },
   "src/app/routes/dashboard/DashboardRoute.tsx": {
-    "mtime": 1793330575.9412448,
-    "ast_hash": "312c7b8602491f747cfa1e01dd216994",
+    "mtime": 1793862900.4683955,
+    "ast_hash": "2c3aa78f7b5f23e7329013b78f13195e",
     "semantic_hash": ""
   },
   "src/app/routes/dashboard/SummaryCards.tsx": {
@@ -1575,8 +1575,8 @@
     "semantic_hash": ""
   },
   "src/app/routes/dashboard/UsageRanking.tsx": {
-    "mtime": 1793749599.8958414,
-    "ast_hash": "24ce9691695d82d4e81aea2d45803984",
+    "mtime": 1793863167.2357926,
+    "ast_hash": "dbd7fc06407dd15e2c7990f2f3621c99",
     "semantic_hash": ""
   },
   "src/components/NoticeAlert.tsx": {
@@ -1585,8 +1585,8 @@
     "semantic_hash": ""
   },
   "src/features/instances/InstanceDetail.tsx": {
-    "mtime": 1793749599.8972492,
-    "ast_hash": "238baf3fde37c53b608c6e929f49b709",
+    "mtime": 1793862900.4676678,
+    "ast_hash": "c448b7fd24d7a1818a688d8ff406c248",
     "semantic_hash": ""
   },
   "src/features/instances/InstanceStatusBadge.tsx": {
@@ -1605,8 +1605,8 @@
     "semantic_hash": ""
   },
   "src/features/original-app/OriginalDetail.tsx": {
-    "mtime": 1793749599.8982189,
-    "ast_hash": "08e9545aea1ead5c036911358cf75fbd",
+    "mtime": 1793862900.4673066,
+    "ast_hash": "79b3436cbfdabfd9fc10dd29f9b32beb",
     "semantic_hash": ""
   },
   "src/features/sessions/SessionList.tsx": {
@@ -1630,12 +1630,12 @@
     "semantic_hash": ""
   },
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/hu.md": {
-    "mtime": 1793762075.3551204,
+    "mtime": 1793885634.4366672,
     "ast_hash": "db9919ae91d53ec23051301f40193633",
     "semantic_hash": ""
   },
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/seguimiento.md": {
-    "mtime": 1793762063.7598488,
+    "mtime": 1793885634.4380562,
     "ast_hash": "8f060435b1d0c733241c72208d4093aa",
     "semantic_hash": ""
   },
@@ -1695,7 +1695,7 @@
     "semantic_hash": ""
   },
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/verificacion.md": {
-    "mtime": 1793762063.6505497,
+    "mtime": 1793885634.4382474,
     "ast_hash": "64797588cac688bcc2718af898670284",
     "semantic_hash": ""
   },
@@ -2150,7 +2150,7 @@
     "semantic_hash": ""
   },
   "docs/producto/reglas/instancias.md": {
-    "mtime": 1793762063.6498692,
+    "mtime": 1793885634.424697,
     "ast_hash": "cfa718e3c41a2e15725fb6924823a548",
     "semantic_hash": ""
   },
@@ -2460,8 +2460,8 @@
     "semantic_hash": ""
   },
   "src-tauri/src/projects.rs": {
-    "mtime": 1793749599.893289,
-    "ast_hash": "e6e4a910a5f685de02f5555a33c01cd5",
+    "mtime": 1793863897.6370356,
+    "ast_hash": "16b4e427a1953a887d1e063a2bc4cbd8",
     "semantic_hash": ""
   },
   "src-tauri/src/projects/git.rs": {
@@ -2480,8 +2480,8 @@
     "semantic_hash": ""
   },
   "src-tauri/src/projects/tests.rs": {
-    "mtime": 1793749599.893849,
-    "ast_hash": "e7333866b5d5bc2fbb607dc301081f7d",
+    "mtime": 1793864005.0303764,
+    "ast_hash": "b678010cff40f14dff255bf367e5b4f7",
     "semantic_hash": ""
   },
   "hu/HU-0022-configuracion-unificada-con-apariencia-y/evidencias/paso1/apariencia-dark-comodo-1440.png": {
@@ -2645,8 +2645,8 @@
     "semantic_hash": ""
   },
   "src/app/routes/settings/SettingsRoute.tsx": {
-    "mtime": 1793330575.942365,
-    "ast_hash": "d6938686138cb83af2f20ba80b4d5b27",
+    "mtime": 1793862900.474581,
+    "ast_hash": "8ad552ad94598dba17fb01d5820b32f4",
     "semantic_hash": ""
   },
   "src/features/appearance/AppearanceSettings.tsx": {
@@ -2845,8 +2845,8 @@
     "semantic_hash": ""
   },
   "tests/projects.test.ts": {
-    "mtime": 1793749599.9033618,
-    "ast_hash": "5454f5e896f3cf5e648f9ee9b0a1458c",
+    "mtime": 1793865166.2261949,
+    "ast_hash": "c0a44056e8a51643f8a6776c3d73069a",
     "semantic_hash": ""
   },
   "hu/HU-0022-configuracion-unificada-con-apariencia-y/revision-tecnica.md": {
@@ -2875,8 +2875,8 @@
     "semantic_hash": ""
   },
   "src/app/routes/project/ProjectRoute.tsx": {
-    "mtime": 1793749599.8961914,
-    "ast_hash": "5b6f22c2381878082da8b2b09c2da6c1",
+    "mtime": 1793862900.4721231,
+    "ast_hash": "c2402fc0a49035344ceff385970ab5e6",
     "semantic_hash": ""
   },
   "src/app/routes/projects/ProjectsRoute.tsx": {
@@ -2890,8 +2890,8 @@
     "semantic_hash": ""
   },
   "src/features/projects/ProjectBrokenPage.tsx": {
-    "mtime": 1793330575.947149,
-    "ast_hash": "5ebc11aa4e8ba300d5f51a89a2cdade1",
+    "mtime": 1793862900.4694495,
+    "ast_hash": "6d81d47dd7895d1a86841b09212599d7",
     "semantic_hash": ""
   },
   "src/features/projects/ProjectCard.tsx": {
@@ -2925,8 +2925,8 @@
     "semantic_hash": ""
   },
   "src/features/projects/ProjectPage.tsx": {
-    "mtime": 1793749599.9000955,
-    "ast_hash": "68dbff69539d5d180abacb236b5d9c8d",
+    "mtime": 1793862900.4691296,
+    "ast_hash": "438fb9501a27c78c68f1f69b3cc1844b",
     "semantic_hash": ""
   },
   "src/features/projects/ProjectRepos.tsx": {
@@ -2940,8 +2940,8 @@
     "semantic_hash": ""
   },
   "src/features/projects/ProjectsView.tsx": {
-    "mtime": 1793330575.949015,
-    "ast_hash": "5cd92b1d23952882b4d79af33a2f65d0",
+    "mtime": 1793862908.1663897,
+    "ast_hash": "8c6a28a5ef279cf7709c1f12b117507a",
     "semantic_hash": ""
   },
   "src/features/projects/StateBar.tsx": {
@@ -3165,8 +3165,8 @@
     "semantic_hash": ""
   },
   "docs/proyectos.document.md": {
-    "mtime": 1793749599.823718,
-    "ast_hash": "7e14c43739f1ff3051b07fd525c8bc04",
+    "mtime": 1793865214.2814069,
+    "ast_hash": "00277b0501e5e2313930d39f0af72fdc",
     "semantic_hash": ""
   },
   "hu/HU-0022-configuracion-unificada-con-apariencia-y/verificacion.md": {
@@ -3200,12 +3200,12 @@
     "semantic_hash": ""
   },
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/hu.md": {
-    "mtime": 1793762312.053677,
+    "mtime": 1793885634.4390397,
     "ast_hash": "691687888923fa9d61d4e754539fac25",
     "semantic_hash": ""
   },
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/seguimiento.md": {
-    "mtime": 1793762298.2921972,
+    "mtime": 1793885634.4415178,
     "ast_hash": "e142c2610a57442830eca0901d475286",
     "semantic_hash": ""
   },
@@ -3245,18 +3245,18 @@
     "semantic_hash": ""
   },
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/verificacion.md": {
-    "mtime": 1793762298.129908,
+    "mtime": 1793885634.4429626,
     "ast_hash": "36045899fb30bb772c7df0ab874ddabc",
     "semantic_hash": ""
   },
   "src-tauri/src/commands.rs": {
-    "mtime": 1793749599.8917937,
-    "ast_hash": "ea06fbe57a2344513bcd717c4cca3636",
+    "mtime": 1793863907.3547535,
+    "ast_hash": "852773b56bff9390c71de3e3d80fbf04",
     "semantic_hash": ""
   },
   "src-tauri/src/contract.rs": {
-    "mtime": 1793749599.8919156,
-    "ast_hash": "79c2cce9ab5f7b437050ba79b3e7f41d",
+    "mtime": 1793861516.6704276,
+    "ast_hash": "9195f8747cab58e24421a8ca6175119f",
     "semantic_hash": ""
   },
   "src-tauri/src/error.rs": {
@@ -3290,8 +3290,8 @@
     "semantic_hash": ""
   },
   "src-tauri/src/platform/mod.rs": {
-    "mtime": 1793749599.8928413,
-    "ast_hash": "b82de51cad130a8ccaf2e36529558463",
+    "mtime": 1793763076.7399495,
+    "ast_hash": "1318949ac69ed5b1d28f9896d01f8022",
     "semantic_hash": ""
   },
   "src-tauri/src/platform/unix.rs": {
@@ -3305,13 +3305,13 @@
     "semantic_hash": ""
   },
   "src-tauri/src/platform/windows.rs": {
-    "mtime": 1793749599.8931036,
-    "ast_hash": "1fccabe9aa88ea71ac3f766f539083bc",
+    "mtime": 1793763076.7397153,
+    "ast_hash": "89066f9dd0fcadd7e9baccc3278281b3",
     "semantic_hash": ""
   },
   "src-tauri/src/processes.rs": {
-    "mtime": 1793338478.564341,
-    "ast_hash": "7fdcf81571092e29c4abfecef99b4d5e",
+    "mtime": 1793861717.1132643,
+    "ast_hash": "822dcca088a85f5ab22a449c633a3e74",
     "semantic_hash": ""
   },
   "src-tauri/src/project_picker.rs": {
@@ -3320,13 +3320,13 @@
     "semantic_hash": ""
   },
   "src-tauri/src/scan.rs": {
-    "mtime": 1793749599.8941667,
-    "ast_hash": "1a3877a35325e14bdbeadd534d9db7d1",
+    "mtime": 1793861717.113663,
+    "ast_hash": "6f6e06f59369448c370c3d25f77ec671",
     "semantic_hash": ""
   },
   "src-tauri/src/sessions/links.rs": {
-    "mtime": 1793338478.5652218,
-    "ast_hash": "bbec8b001a024758cc6eeb955d93be12",
+    "mtime": 1793861717.1131554,
+    "ast_hash": "5c349cb5055394e1aabe0a1d2428c644",
     "semantic_hash": ""
   },
   "src-tauri/src/sessions/mod.rs": {
@@ -3335,18 +3335,18 @@
     "semantic_hash": ""
   },
   "src-tauri/src/sessions/transfer.rs": {
-    "mtime": 1793338478.5657358,
-    "ast_hash": "ee73143144499c881f4090e30f5301ae",
+    "mtime": 1793861717.2688787,
+    "ast_hash": "78af7d51e863c31f7578e64942719d73",
     "semantic_hash": ""
   },
   "src-tauri/src/storage.rs": {
-    "mtime": 1793338478.5659406,
-    "ast_hash": "8b327afe1356a5ac685a218cfa69cda1",
+    "mtime": 1793861717.1129377,
+    "ast_hash": "897543a4e8193dea9aa017c9d190ab2e",
     "semantic_hash": ""
   },
   "src-tauri/src/test_support.rs": {
-    "mtime": 1793338478.566145,
-    "ast_hash": "8cb87c7af6668ddac813458b83091f51",
+    "mtime": 1793861717.113035,
+    "ast_hash": "da42fd11633815f01398c2fb4b0a6b17",
     "semantic_hash": ""
   },
   "src-tauri/src/versions/feed.rs": {
@@ -3370,8 +3370,8 @@
     "semantic_hash": ""
   },
   "src-tauri/src/versions/topology.rs": {
-    "mtime": 1793338478.5672536,
-    "ast_hash": "b778a06d23aa7a6473dd6af191104966",
+    "mtime": 1793861717.1133492,
+    "ast_hash": "20f8fda738d992abd4aae3d2898c3cc4",
     "semantic_hash": ""
   },
   "docs/arquitectura/revision-refactor-backend.md": {
@@ -3510,8 +3510,8 @@
     "semantic_hash": ""
   },
   "src-tauri/src/projects/reader.rs": {
-    "mtime": 1793749599.8936164,
-    "ast_hash": "16d55e3acdb665321e2e52130065e173",
+    "mtime": 1793864118.83487,
+    "ast_hash": "3a2a446dbfc7ecc255d7d67b33bf2384",
     "semantic_hash": ""
   },
   "src/features/instances/InstanceToggleButton.tsx": {
@@ -3565,8 +3565,8 @@
     "semantic_hash": ""
   },
   "src/features/projects/HistoryReaderDialog.tsx": {
-    "mtime": 1793749599.8988082,
-    "ast_hash": "e3bf7812fabd5fc3a77d7dd61155294c",
+    "mtime": 1793864762.86219,
+    "ast_hash": "96d587e03aef69adf35c4ea691cc9972",
     "semantic_hash": ""
   },
   "src/features/projects/IncompleteDataDialog.tsx": {
@@ -3575,8 +3575,8 @@
     "semantic_hash": ""
   },
   "src/features/projects/history-reader.ts": {
-    "mtime": 1793749599.9003088,
-    "ast_hash": "4c253590bb9ec127b21a5ca91dae1266",
+    "mtime": 1793865150.873487,
+    "ast_hash": "7a3c46e84441b45fb57674f9b1801d44",
     "semantic_hash": ""
   },
   "hu/HU-0025-proyectos-datos-incompletos-y-lector-de-/evidencias/01-proyecto-chip-1440-oscuro.png": {
@@ -4025,7 +4025,7 @@
     "semantic_hash": ""
   },
   "hu/HU-0028-distintivo-de-la-app-original-en-el-icon/hu.md": {
-    "mtime": 1793762063.6501882,
+    "mtime": 1793885634.4432607,
     "ast_hash": "6cfcf561f406342504e278c46977961d",
     "semantic_hash": ""
   },
@@ -4140,18 +4140,158 @@
     "semantic_hash": ""
   },
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/metricas.json": {
-    "mtime": 1793762064.601383,
+    "mtime": 1793885634.4368217,
     "ast_hash": "78c8ee0b2e002753270fdcb05aac4e26",
     "semantic_hash": ""
   },
   "docs/producto/reglas/actualizaciones.md": {
-    "mtime": 1793762063.6502905,
+    "mtime": 1793885634.4243598,
     "ast_hash": "3c1ffae11f63775d8603b799c48c257e",
     "semantic_hash": ""
   },
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/metricas.json": {
-    "mtime": 1793762298.9104555,
+    "mtime": 1793885634.4402828,
     "ast_hash": "8614ee1999a7136a9a68864d68386d96",
+    "semantic_hash": ""
+  },
+  "src-tauri/src/original_profile.rs": {
+    "mtime": 1793862362.7682986,
+    "ast_hash": "a738c740086a8bf324819041eb26cead",
+    "semantic_hash": ""
+  },
+  "src/features/instances/SleepingMark.tsx": {
+    "mtime": 1793863193.2353232,
+    "ast_hash": "96ad75c9bcbb6129c34048a25906c9e4",
+    "semantic_hash": ""
+  },
+  "src/features/original-app/original-profile.ts": {
+    "mtime": 1793861916.6708958,
+    "ast_hash": "e02020efb6c73c0b7571b2ce3c5d2cc5",
+    "semantic_hash": ""
+  },
+  "src/features/original-app/useOriginalProfileActions.ts": {
+    "mtime": 1793861916.6733756,
+    "ast_hash": "665e61bf97645082da23fb0c41077f16",
+    "semantic_hash": ""
+  },
+  "hu/HU-0029-carpeta-de-datos-de-la-original-elegida-/arquitectura.md": {
+    "mtime": 1793861351.5526972,
+    "ast_hash": "11f2d39fa2c966f23135205141d55de6",
+    "semantic_hash": ""
+  },
+  "hu/HU-0029-carpeta-de-datos-de-la-original-elegida-/briefs/backend.md": {
+    "mtime": 1793861408.4429333,
+    "ast_hash": "4910a83a29560f508277e98904d96ed4",
+    "semantic_hash": ""
+  },
+  "hu/HU-0029-carpeta-de-datos-de-la-original-elegida-/briefs/frontend.md": {
+    "mtime": 1793861394.294681,
+    "ast_hash": "5438f03d44b6f607322281511f1be880",
+    "semantic_hash": ""
+  },
+  "hu/HU-0029-carpeta-de-datos-de-la-original-elegida-/diseno/maqueta.html": {
+    "mtime": 1793861121.6753795,
+    "ast_hash": "16352ef44f19519669543f2a2b241abd",
+    "semantic_hash": ""
+  },
+  "hu/HU-0029-carpeta-de-datos-de-la-original-elegida-/diseno/vista.md": {
+    "mtime": 1793861138.4891613,
+    "ast_hash": "70c076ce5dfc870628f0f96f40752bf5",
+    "semantic_hash": ""
+  },
+  "hu/HU-0029-carpeta-de-datos-de-la-original-elegida-/hu.md": {
+    "mtime": 1793862413.7233548,
+    "ast_hash": "fa0f44bdadac977bbbadc10eddacd4cf",
+    "semantic_hash": ""
+  },
+  "hu/HU-0029-carpeta-de-datos-de-la-original-elegida-/revision.md": {
+    "mtime": 1793862413.6883934,
+    "ast_hash": "18f097d88c0935456efbd769b3fc4916",
+    "semantic_hash": ""
+  },
+  "hu/HU-0029-carpeta-de-datos-de-la-original-elegida-/seguimiento.md": {
+    "mtime": 1793862413.7314394,
+    "ast_hash": "631551379496f300c04d049c3dca491a",
+    "semantic_hash": ""
+  },
+  "hu/HU-0029-carpeta-de-datos-de-la-original-elegida-/verificacion.md": {
+    "mtime": 1793862413.6906729,
+    "ast_hash": "00b2ca618b0b6b894e39924ef44c0709",
+    "semantic_hash": ""
+  },
+  "hu/HU-0030-icono-de-dormida-en-los-perfiles-detenid/diseno/maqueta.html": {
+    "mtime": 1793862936.6808689,
+    "ast_hash": "12565c770ae218d1895be513d7009f5c",
+    "semantic_hash": ""
+  },
+  "hu/HU-0030-icono-de-dormida-en-los-perfiles-detenid/diseno/vista.md": {
+    "mtime": 1793863134.8396661,
+    "ast_hash": "26d26ae6bae9bb64cd5855f636ac39cc",
+    "semantic_hash": ""
+  },
+  "hu/HU-0030-icono-de-dormida-en-los-perfiles-detenid/hu.md": {
+    "mtime": 1793865214.3188388,
+    "ast_hash": "2559b38e9bde50c5a83e7ae80fbab6e5",
+    "semantic_hash": ""
+  },
+  "hu/HU-0030-icono-de-dormida-en-los-perfiles-detenid/revision.md": {
+    "mtime": 1793865214.2854667,
+    "ast_hash": "7a549328737ed1099fc02cf21bb0a0a0",
+    "semantic_hash": ""
+  },
+  "hu/HU-0030-icono-de-dormida-en-los-perfiles-detenid/seguimiento.md": {
+    "mtime": 1793865214.326461,
+    "ast_hash": "d34d0d7468913e9fcabb6a765bdbfdbe",
+    "semantic_hash": ""
+  },
+  "hu/HU-0030-icono-de-dormida-en-los-perfiles-detenid/verificacion.md": {
+    "mtime": 1793865214.2890303,
+    "ast_hash": "ca6fca51f43f6b028dfbec38679a430f",
+    "semantic_hash": ""
+  },
+  "hu/HU-0031-pestana-maqueta-en-el-lector-de-historia/arquitectura.md": {
+    "mtime": 1793863696.10688,
+    "ast_hash": "101fa5d34e0648de0f211c46071f9294",
+    "semantic_hash": ""
+  },
+  "hu/HU-0031-pestana-maqueta-en-el-lector-de-historia/briefs/backend.md": {
+    "mtime": 1793863706.0517716,
+    "ast_hash": "2e1d14fd6e0f654114df2199260cd8b2",
+    "semantic_hash": ""
+  },
+  "hu/HU-0031-pestana-maqueta-en-el-lector-de-historia/briefs/frontend.md": {
+    "mtime": 1793863696.2259848,
+    "ast_hash": "c9292f4d127841dac9e9287f87170bfd",
+    "semantic_hash": ""
+  },
+  "hu/HU-0031-pestana-maqueta-en-el-lector-de-historia/diseno/maqueta.html": {
+    "mtime": 1793862973.5421386,
+    "ast_hash": "03e82edcad8fcbce5d917cab12748d4f",
+    "semantic_hash": ""
+  },
+  "hu/HU-0031-pestana-maqueta-en-el-lector-de-historia/diseno/vista.md": {
+    "mtime": 1793863735.1410737,
+    "ast_hash": "8cdd0d11b17f304cebcd0252fbc573b1",
+    "semantic_hash": ""
+  },
+  "hu/HU-0031-pestana-maqueta-en-el-lector-de-historia/hu.md": {
+    "mtime": 1793865214.3540633,
+    "ast_hash": "b1ea4de9fb769a7032d4981c06d98c6d",
+    "semantic_hash": ""
+  },
+  "hu/HU-0031-pestana-maqueta-en-el-lector-de-historia/revision.md": {
+    "mtime": 1793865214.2874856,
+    "ast_hash": "16d3c2e4c65dedfbd762f9cbfadae314",
+    "semantic_hash": ""
+  },
+  "hu/HU-0031-pestana-maqueta-en-el-lector-de-historia/seguimiento.md": {
+    "mtime": 1793865214.361251,
+    "ast_hash": "019d281c15a64bf6f8159bade64225f1",
+    "semantic_hash": ""
+  },
+  "hu/HU-0031-pestana-maqueta-en-el-lector-de-historia/verificacion.md": {
+    "mtime": 1793865214.2907205,
+    "ast_hash": "9ffd97e2aa8b405dc3a7f97828768979",
     "semantic_hash": ""
   }
 }

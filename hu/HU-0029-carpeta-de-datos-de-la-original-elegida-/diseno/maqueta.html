@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HU-0029 · Maqueta · Carpeta de datos de la original</title>
+<!--
+  Maqueta estática de la HU-0029: la página de la aplicación original cuando no encuentra las sesiones, con el aviso
+  «Elegir carpeta», la carpeta elegida, el rechazo y la elegida desaparecida. Solo HTML y CSS con los tokens de la app;
+  el script cambia el estado y el tema:  #estado=aviso|elegida|rechazo|desaparecida&tema=oscuro|claro
+-->
+<style>
+:root{--surface:#151615;--surface-raised:rgba(33,34,33,.9);--surface-soft:rgba(255,255,255,.045);--line:rgba(255,255,255,.09);--line-strong:rgba(255,255,255,.14);--text:#e8e4e2;--muted:#aaa19e;--quiet:#726b68;--primary:#ff8d6c;--primary-text:#ffb19b;--warning:#e8b45c;--danger:#ef7e70;--on-primary:#1b1210;--ok:#7fcf8f}
+.light{--surface:#f3efeb;--surface-raised:rgba(255,255,255,.92);--surface-soft:rgba(63,46,39,.055);--line:rgba(66,48,40,.11);--line-strong:rgba(66,48,40,.17);--text:#2e2926;--muted:#746b67;--quiet:#9b928d;--primary:#e86a45;--primary-text:#b8492a;--warning:#a8741c;--danger:#be4f42;--on-primary:#fff;--ok:#2f8a47}
+*{box-sizing:border-box}
+body{margin:0;background:var(--surface);color:var(--text);font:14px/20px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.bar{position:sticky;top:0;z-index:2;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar b{font-size:12px;color:var(--muted);margin-right:4px}
+.bar button{font:inherit;font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--line-strong);background:transparent;color:var(--text);cursor:pointer}
+.bar button[aria-pressed=true]{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.page{max-width:1200px;margin:0 auto;padding:20px 16px 48px;display:grid;gap:16px}
+.eyebrow{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{margin:2px 0 0;font-size:22px;line-height:28px}
+.note{font-size:12px;color:var(--quiet)}
+.card{background:var(--surface-raised);border:1px solid var(--line);border-radius:14px;padding:16px}
+.alert{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:center;border:1px solid var(--line-strong);border-radius:12px;padding:12px 16px;background:var(--surface-raised)}
+.alert svg{width:16px;height:16px;grid-row:span 2}
+.alert .t{font-weight:600}
+.alert .d{grid-column:2;font-size:12px;color:var(--muted)}
+.alert .a{grid-column:3;grid-row:1/span 2;display:flex;gap:8px}
+.alert.err{border-color:color-mix(in srgb,var(--danger) 45%,transparent)}
+.btn{font:inherit;font-size:13px;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:8px;border:1px solid var(--line-strong);background:transparent;color:var(--text);cursor:pointer;white-space:nowrap}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:var(--on-primary);font-weight:600}
+.btn.ghost{border-color:transparent;color:var(--muted)}
+.btn.sm{height:28px;font-size:12px;padding:0 10px}
+.btn svg{width:14px;height:14px}
+.head{display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px}
+.avatar{width:64px;height:64px;border-radius:16px;border:1px solid var(--line-strong);background:var(--surface-soft);display:grid;place-items:center;position:relative}
+.avatar i{position:absolute;right:-4px;bottom:-4px;width:14px;height:14px;border-radius:50%;background:var(--quiet);border:2px solid var(--surface)}
+.info{flex:1;min-width:240px;display:grid;gap:8px}
+.badges{display:flex;gap:8px;flex-wrap:wrap}
+.badge{font-size:11px;line-height:16px;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:6px;background:var(--surface-soft);border:1px solid var(--line)}
+.badge.p{color:var(--primary-text);border-color:color-mix(in srgb,var(--primary) 35%,transparent)}
+.path{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.metrics{display:flex;gap:12px;flex-wrap:wrap}
+.metric{min-width:96px;display:grid;gap:8px;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface-soft)}
+.metric small{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.metric strong{font-size:14px}
+.metric.new{outline:2px dashed color-mix(in srgb,var(--primary) 55%,transparent);outline-offset:3px}
+.folder{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.folder .lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.folder .fp{flex:1;min-width:200px;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.new-mark{outline:2px dashed color-mix(in srgb,var(--primary) 55%,transparent);outline-offset:4px;border-radius:10px}
+.sess-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-weight:600;font-size:15px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:10px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.row .m{font-size:12px;color:var(--muted)}
+.empty{padding:24px;text-align:center;color:var(--muted);border:1px dashed var(--line-strong);border-radius:10px}
+.legend{font-size:12px;color:var(--muted);display:grid;gap:4px}
+.legend b{color:var(--text)}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="bar" role="toolbar" aria-label="Controles de la maqueta">
+  <b>Estado</b>
+  <button data-estado="aviso">1 · No encuentra sesiones</button>
+  <button data-estado="elegida">2 · Carpeta elegida</button>
+  <button data-estado="rechazo">3 · Carpeta rechazada</button>
+  <button data-estado="desaparecida">4 · La elegida ya no existe</button>
+  <b style="margin-left:12px">Tema</b>
+  <button data-tema="oscuro">Oscuro</button>
+  <button data-tema="claro">Claro</button>
+</div>
+
+<main class="page">
+  <div>
+    <div class="eyebrow">Aplicación original</div>
+    <h1>Claude</h1>
+  </div>
+
+  <!-- AC-01 · aviso: sin carpeta detectada o sin claude-code-sessions -->
+  <div class="alert new-mark" data-show="aviso" role="status">
+    <svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+    <span class="t">No encontramos las sesiones de Claude en su carpeta habitual</span>
+    <span class="d">Si Claude guarda sus datos en otra carpeta, elígela: es la que contiene <span class="mono">claude-code-sessions</span>.</span>
+    <span class="a"><button class="btn sm primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> Elegir carpeta</button></span>
+  </div>
+
+  <!-- AC-06 · la elegida desapareció -->
+  <div class="alert new-mark" data-show="desaparecida" role="status">
+    <svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+    <span class="t">La carpeta elegida ya no existe</span>
+    <span class="d mono" style="font-size:12px">D:\Datos\Claude</span>
+    <span class="a"><button class="btn sm primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> Elegir carpeta</button><button class="btn sm">Usar la detectada</button></span>
+  </div>
+
+  <!-- AC-03 · rechazo: es el aviso de error de la app (FeedbackArea), encima del aviso de siempre -->
+  <div class="alert err new-mark" data-show="rechazo" role="alert">
+    <svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg>
+    <span class="t">Esa carpeta no tiene sesiones de Claude</span>
+    <span class="d">Elige la carpeta de datos de Claude, la que contiene <span class="mono">claude-code-sessions</span>. No se guardó nada.</span>
+    <span class="a"><button class="btn sm ghost" aria-label="Cerrar">✕</button></span>
+  </div>
+  <div class="alert" data-show="rechazo" role="status">
+    <svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+    <span class="t">No encontramos las sesiones de Claude en su carpeta habitual</span>
+    <span class="d">Si Claude guarda sus datos en otra carpeta, elígela: es la que contiene <span class="mono">claude-code-sessions</span>.</span>
+    <span class="a"><button class="btn sm primary">Elegir carpeta</button></span>
+  </div>
+
+  <!-- Cabecera de la original (OriginalDetail) -->
+  <section class="card">
+    <div class="head">
+      <div class="avatar"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m8 10 3 2-3 2M13 15h3"/></svg><i style="background:var(--ok)"></i></div>
+      <div class="info">
+        <div class="badges"><span class="badge">Abierta</span><span class="badge p">Principal</span><span class="badge">Instalación original</span></div>
+        <span class="path mono">C:\Program Files\WindowsApps\Claude_4.16336.0_x64__pzs8sxrjxfjjc\app\claude.exe</span>
+        <span class="path mono">Versión 4.16336.0</span>
+      </div>
+      <div class="metrics">
+        <div class="metric new"><small>Perfil local</small><strong data-perfil>Sin sesiones</strong></div>
+        <div class="metric"><small>Sesiones Code</small><strong data-cuenta>0</strong></div>
+        <button class="btn" style="height:40px;align-self:center">↻ Actualizar original</button>
+      </div>
+    </div>
+    <!-- D-6 · solo con una carpeta elegida -->
+    <div class="folder new-mark" data-show="elegida">
+      <span class="lbl">Carpeta de datos</span>
+      <span class="fp mono" title="D:\Datos\Claude">D:\Datos\Claude</span>
+      <span class="badge p">Elegida</span>
+      <button class="btn sm">Cambiar carpeta</button>
+      <button class="btn sm ghost">Usar la detectada</button>
+    </div>
+  </section>
+
+  <!-- Sesiones -->
+  <section class="card" aria-label="Sesiones de la aplicación original">
+    <div class="sess-h"><span>Sesiones de la aplicación original</span><span class="badge" data-cuenta-badge>0 sesiones</span></div>
+    <div class="empty" data-hide="elegida">La aplicación original aún no tiene sesiones de Code indexadas</div>
+    <div data-show="elegida">
+      <div class="row"><span>Aclaración de tarea</span><button class="btn sm">Transferir</button><span class="m mono">ui-ecare · historia-DEC-7599 · hace 2 h</span></div>
+      <div class="row"><span>Revisar migración de pagos</span><button class="btn sm">Transferir</button><span class="m mono">Karibu · develop · ayer</span></div>
+      <div class="row"><span>Pruebas del módulo de reservas</span><button class="btn sm">Transferir</button><span class="m mono">ui-ecare · main · hace 3 días</span></div>
+    </div>
+  </section>
+
+  <section class="legend">
+    <span>Lo marcado con borde punteado es nuevo. Lo demás es la página de hoy.</span>
+    <span><b>1</b> · AC-01: el aviso sale solo si no hay carpeta detectada o la detectada no tiene <span class="mono">claude-code-sessions</span>. «Perfil local» dice «Sin sesiones» (o «Sin detectar» si no hay carpeta).</span>
+    <span><b>2</b> · AC-02 y D-6: con una carpeta elegida no hay aviso; «Perfil local» dice «Elegido» y debajo se ve la carpeta con «Cambiar carpeta» y «Usar la detectada».</span>
+    <span><b>3</b> · AC-03: el rechazo usa el aviso de error que ya tiene la app; la página queda como estaba.</span>
+    <span><b>4</b> · AC-06 y D-5: si la elegida desaparece, la app vuelve a la detectada y el aviso lo dice.</span>
+    <span>Con las sesiones en su carpeta habitual (macOS, por ejemplo) no cambia nada: ni aviso ni fila de carpeta.</span>
+  </section>
+</main>
+<script>
+const state={estado:"aviso",tema:"oscuro"};
+function read(){for(const kv of location.hash.slice(1).split("&")){const[k,v]=kv.split("=");if(k in state&&v)state[k]=v}}
+function apply(){
+  document.documentElement.classList.toggle("light",state.tema==="claro");
+  document.querySelectorAll("[data-estado]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.estado===state.estado));
+  document.querySelectorAll("[data-tema]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.tema===state.tema));
+  document.querySelectorAll("[data-show]").forEach(el=>el.classList.toggle("hidden",el.dataset.show!==state.estado));
+  document.querySelectorAll("[data-hide]").forEach(el=>el.classList.toggle("hidden",el.dataset.hide===state.estado));
+  const chosen=state.estado==="elegida";
+  document.querySelector("[data-perfil]").textContent=chosen?"Elegido":"Sin sesiones";
+  document.querySelector("[data-cuenta]").textContent=chosen?"3":"0";
+  document.querySelector("[data-cuenta-badge]").textContent=chosen?"3 sesiones":"0 sesiones";
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-estado],[data-tema]");if(!b)return;if(b.dataset.estado)state.estado=b.dataset.estado;if(b.dataset.tema)state.tema=b.dataset.tema;location.hash=`estado=${state.estado}&tema=${state.tema}`;apply()});
+read();apply();
+</script>
+</body>
+</html>

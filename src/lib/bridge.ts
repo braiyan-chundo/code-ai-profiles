@@ -10,6 +10,7 @@ import type {
   InstallOriginalUpdateRequest,
   InstanceStatus,
   OriginalApplicationUpdateResult,
+  OriginalProfileOrigin,
   OriginalInstallProgress,
   OriginalInstallResult,
   ProjectCandidate,
@@ -46,12 +47,38 @@ const mockPackageBytes = 378_072_300;
 let mockSourceVersion = latestMockVersion;
 let mockInstall: { cancelled: boolean; cancellable: boolean } | null = null;
 let mockOriginalStatus: InstanceStatus = "stopped";
-let mockOriginalSessions: CodeSession[] = [
+const mockExampleOriginalSessions: CodeSession[] = [
   { id: "local-original-1", title: "Qleo project context and corrections", model: "opus-4-8", effort: "high", completedTurns: 101, createdAt: Date.now() - 2_592_000_000, lastActivityAt: Date.now() - 1_800_000, isArchived: false, contextTokens: 45_521, contextWindowTokens: 1_000_000, contextPercent: 4.5521, publishedArtifactCount: 3, artifactMonitor: { monitorType: "artifact-comment-monitor", state: "armed", artifactCount: 3 } },
   { id: "local-original-2", title: "Moovimi Manager", model: "opus-4-8", effort: "high", completedTurns: 64, createdAt: Date.now() - 1_209_600_000, lastActivityAt: Date.now() - 86_400_000, isArchived: false, contextTokens: 647_000, contextWindowTokens: 1_000_000, contextPercent: 64.7 },
   { id: "local-original-3", title: "Njord REST API", model: "sonnet-4-5", effort: "medium", completedTurns: 32, createdAt: Date.now() - 604_800_000, lastActivityAt: Date.now() - 172_800_000, isArchived: false, contextTokens: 167_200, contextWindowTokens: 200_000, contextPercent: 83.6 },
   { id: "local-original-4", title: "Rutas de calendario no funcionan", model: "modelo-privado-acme", effort: null, completedTurns: 5, createdAt: Date.now() - 259_200_000, lastActivityAt: Date.now() - 216_000_000, isArchived: true, contextTokens: 32_400, contextWindowTokens: null, contextPercent: null },
 ];
+
+// Carpeta de datos de la original (HU-0029). Con `?original=sin-sesiones` (antes del `#`) arranca en la detectada
+// sin `claude-code-sessions`, para probar el aviso sin tocar los datos reales de Claude.
+const mockDetectedProfilePath = "~/Library/Application Support/Claude";
+const mockChosenProfilePath = "/Users/demo/Datos de Claude";
+const mockStartsWithoutSessions = () =>
+  typeof window !== "undefined" && new URLSearchParams(window.location.search).get("original") === "sin-sesiones";
+interface MockOriginalProfile {
+  path: string | null;
+  origin: OriginalProfileOrigin;
+  hasSessions: boolean;
+  chosenMissing: boolean;
+}
+const mockInitialOriginalProfile = (): MockOriginalProfile => ({
+  path: mockDetectedProfilePath,
+  origin: "detected",
+  hasSessions: !mockStartsWithoutSessions(),
+  chosenMissing: false,
+});
+const mockInitialOriginalSessions = () => (mockStartsWithoutSessions() ? [] : [...mockExampleOriginalSessions]);
+let mockOriginalProfile = mockInitialOriginalProfile();
+let mockOriginalSessions: CodeSession[] = mockInitialOriginalSessions();
+let mockChooseOriginalCount = 0;
+const mockMissingSessionsFolderError =
+  "Esa carpeta no tiene «claude-code-sessions». Elige la carpeta de datos de Claude que la contiene. No se guardó nada.";
+
 let mockInstances: ManagedInstance[] = [
   {
     id: "demo-work",
@@ -141,7 +168,10 @@ const mockState = (): DashboardState => ({
       warning: null,
     },
     versionTopology: mockTopology(),
-    originalProfilePath: "~/Library/Application Support/Claude",
+    originalProfilePath: mockOriginalProfile.path,
+    originalProfileOrigin: mockOriginalProfile.origin,
+    originalProfileHasSessions: mockOriginalProfile.hasSessions,
+    originalProfileChosenMissing: mockOriginalProfile.chosenMissing,
     originalStatus: mockOriginalStatus,
     originalCodeSessions: mockOriginalSessions,
     freeBytes: 452_800_000_000,
@@ -638,9 +668,52 @@ const mockTimelineMarkdown = (history: ProjectHistory) => [
   "",
 ].join("\n");
 
+// Maqueta de ejemplo (HU-0031): pequeña, con su `<style>` y un `<script>` que en el lector no corre (el marco no
+// tiene permisos) y en el navegador sí. Sin URLs: no hay nada que cargar.
+const mockMockupHtml = (history: ProjectHistory) => [
+  "<!doctype html>",
+  "<!-- Maqueta de ejemplo del modo navegador -->",
+  "<html lang=\"es\">",
+  "<head>",
+  "<meta charset=\"utf-8\">",
+  `<title>${history.id} · Maqueta</title>`,
+  "<style>",
+  "body{margin:0;font:14px/20px system-ui,sans-serif;background:#151615;color:#e8e4e2}",
+  ".bar{display:flex;gap:8px;padding:10px 16px;border-bottom:1px solid #333}",
+  ".bar button{font:inherit;font-size:12px;padding:3px 10px;border-radius:99px;border:1px solid #444;background:transparent;color:inherit}",
+  ".bar button[aria-pressed=true]{background:#ff8d6c;border-color:#ff8d6c;color:#1b1210}",
+  ".card{display:flex;gap:24px;align-items:center;padding:24px}",
+  ".icon{width:96px;height:96px;border-radius:22px;background:linear-gradient(135deg,#22b8a5,#0e6d7a)}",
+  ".kicker{font-size:11px;letter-spacing:.08em;color:#aaa19e;text-transform:uppercase}",
+  "h1{font-size:18px;margin:4px 0 0}",
+  "</style>",
+  "</head>",
+  "<body>",
+  "<div class=\"bar\"><button aria-pressed=\"true\" data-caso=\"1\">Estado 1</button><button aria-pressed=\"false\" data-caso=\"2\">Estado 2</button></div>",
+  `<div class="card"><div class="icon"></div><div><div class="kicker">Maqueta de ${history.id}</div><h1 id="titulo">${history.title}</h1><p id="caso">Estado 1 (estático: los botones no cambian nada aquí)</p></div></div>`,
+  "<script>",
+  "for (const b of document.querySelectorAll('[data-caso]')) b.addEventListener('click', () => {",
+  "  for (const o of document.querySelectorAll('[data-caso]')) o.setAttribute('aria-pressed', String(o === b));",
+  "  document.getElementById('caso').textContent = 'Estado ' + b.dataset.caso + ' (los scripts corren)';",
+  "});",
+  "</script>",
+  "</body>",
+  "</html>",
+  "",
+].join("\n");
+
+// Qué maqueta trae cada historia del mock (HU-0031). Las tres son del proyecto «Code AI Profiles», terminadas:
+// HU-0014 la tiene y se pinta, HU-0016 pesa más de 1 MiB y HU-0019 no se pudo leer. Las demás, sin maqueta.
+const MOCK_MOCKUPS: Record<string, "ok" | "tooLarge" | "unreadable"> = {
+  "HU-0014-design-system-con-shadcn-y-showcase-loca": "ok",
+  "HU-0016-rediseno-con-sidebar-dashboard-y-pagina-": "tooLarge",
+  "HU-0019-header-compacto-sidebar-flotante-y-tipog": "unreadable",
+};
+
 /**
  * Las terminadas y descartadas tienen los cuatro archivos; las demás, solo hu.md y seguimiento.md.
  * En las historias cuyo id acaba en 3, verificacion.md sale ilegible para ver ese estado.
+ * La maqueta, al final y solo en las de `MOCK_MOCKUPS`.
  */
 const mockHistoryDocuments = (history: ProjectHistory): ProjectDocument[] => {
   const ok = (kind: ProjectDocument["kind"], file: string, content: string): ProjectDocument => ({
@@ -662,6 +735,20 @@ const mockHistoryDocuments = (history: ProjectHistory): ProjectDocument[] => {
       : ok("verification", "verificacion.md", mockVerificationMarkdown(history)));
   }
   documents.push(ok("timeline", "seguimiento.md", mockTimelineMarkdown(history)));
+  const mockup = MOCK_MOCKUPS[history.folder];
+  const design = { kind: "design", file: "maqueta.html", path: `hu/${history.folder}/diseno/maqueta.html` } as const;
+  if (mockup === "ok") documents.push({ ...design, status: "ok", content: mockMockupHtml(history), message: null });
+  if (mockup === "tooLarge") {
+    documents.push({ ...design, status: "tooLarge", content: null, message: "maqueta.html pesa más de 1 MiB y no se pinta aquí." });
+  }
+  if (mockup === "unreadable") {
+    documents.push({
+      ...design,
+      status: "unreadable",
+      content: null,
+      message: "maqueta.html apunta fuera de la carpeta de la historia y no se lee.",
+    });
+  }
   return documents;
 };
 
@@ -1041,6 +1128,27 @@ export const bridge = {
     return project;
   },
 
+  /** Selector nativo de la carpeta de datos de la original (HU-0029). `null` si la persona cancela. */
+  async chooseOriginalProfileFolder(): Promise<DashboardState | null> {
+    if (isTauri()) return call("choose_original_profile_folder");
+    await mockWait(200);
+    mockChooseOriginalCount += 1;
+    // Alterna: la 1.ª elección se rechaza (M-3), la 2.ª se acepta.
+    if (mockChooseOriginalCount % 2 === 1) throw new Error(mockMissingSessionsFolderError);
+    mockOriginalProfile = { path: mockChosenProfilePath, origin: "chosen", hasSessions: true, chosenMissing: false };
+    mockOriginalSessions = [...mockExampleOriginalSessions];
+    return mockState();
+  },
+
+  /** Olvida la carpeta elegida y vuelve a la detectada (HU-0029). */
+  async forgetOriginalProfileFolder(): Promise<DashboardState> {
+    if (isTauri()) return call("forget_original_profile_folder");
+    await mockWait(160);
+    mockOriginalProfile = mockInitialOriginalProfile();
+    mockOriginalSessions = mockInitialOriginalSessions();
+    return mockState();
+  },
+
   async pickProjectFolder(): Promise<ProjectCandidate | null> {
     if (isTauri()) return call("pick_project_folder");
     await mockWait(200);
@@ -1156,5 +1264,24 @@ export const bridge = {
     }
     mockOpenedLinks.push(parsed.href);
     console.info("[mock] openExternalLink", parsed.href);
+  },
+
+  /**
+   * Abre `diseno/maqueta.html` de la historia en el navegador del sistema (HU-0031). Nunca recibe una ruta:
+   * Rust la vuelve a resolver y validar. El mock no abre nada: lo registra.
+   */
+  async openHistoryMockup(id: string, folder: string): Promise<void> {
+    if (isTauri()) {
+      await call("open_history_mockup", { id, folder });
+      return;
+    }
+    await mockWait(160);
+    if (!/^HU-\d{4}(-[^/\\:…]*)?$/.test(folder) || folder.includes("..") || folder.length > 120) {
+      throw new Error("La historia no es válida.");
+    }
+    const project = findMockProject(id);
+    const history = project.info?.histories.find((item) => item.folder === folder);
+    if (!history) throw new Error("La historia ya no está en el proyecto. Pulsa «Actualizar».");
+    console.info("[mock] openHistoryMockup", `hu/${folder}/diseno/maqueta.html`);
   },
 };

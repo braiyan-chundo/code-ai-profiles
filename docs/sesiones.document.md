@@ -51,6 +51,27 @@ La barra y el porcentaje solo aparecen cuando se conoce la ventana. Si hay token
 - Una respuesta con uso pero sin modelo utilizable puede conservar el conteo, aunque el límite y el porcentaje quedan no disponibles.
 - Las recomendaciones visuales solo describen ocupación estimada de contexto; no controlan ni ejecutan la compactación.
 
+## Carpeta de datos de la original
+
+Las sesiones de Code de la aplicación original se leen de `<carpeta de datos>/claude-code-sessions/`. La carpeta de datos
+es la que la app detecta en su ruta habitual por plataforma (`detect_original_profile()`), salvo que la persona haya
+elegido otra (HU-0029, RN-07).
+
+- **Cuándo se pregunta.** Si no hay carpeta detectada o la detectada no tiene `claude-code-sessions`, la página de la
+  original muestra un aviso con «Elegir carpeta» (selector nativo de carpetas). Con las sesiones en su sitio no cambia
+  nada.
+- **Qué se acepta.** Una carpeta real (ni enlace simbólico ni unión de Windows) que contenga `claude-code-sessions`. Si la
+  persona elige la propia `claude-code-sessions`, se usa la carpeta que la contiene. Se rechazan la carpeta de datos de
+  Code AI Profiles, cualquier carpeta dentro de ella y las que la contienen. La validación solo mira nombres y tipos: no
+  abre ningún archivo.
+- **Dónde se guarda.** `<datos de la app>/original-profile.json`, con solo la ruta. Si falta o está dañado, se usa la
+  detectada.
+- **Para qué se usa.** Una sola resolución (`resolve_original_profile`, `src-tauri/src/original_profile.rs`) da la
+  carpeta a las sesiones, al estado de la original, a la topología de versiones, a las transferencias y a la lista de
+  exclusión de Proyectos (que excluye la efectiva, la detectada y la guardada).
+- **Si desaparece.** Si la elegida deja de existir o pierde `claude-code-sessions`, la app vuelve a la detectada y el
+  aviso dice «La carpeta elegida ya no existe»; la ruta se conserva hasta elegir otra o pulsar «Usar la detectada».
+
 ## Privacidad
 
 El escaneo deserializa exclusivamente los campos necesarios de metadatos. No muestra ni registra el contenido de prompts, respuestas, razonamientos o resultados de herramientas, y no lee credenciales, cookies o tokens OAuth para calcular el contexto. Todo el cálculo se realiza localmente sobre archivos a los que ya tiene acceso el usuario.

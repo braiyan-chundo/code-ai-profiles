@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HU-0030 · Maqueta · Icono de dormida</title>
+<!-- Maqueta estática de la HU-0030: icono de dormida tras el nombre de los perfiles detenidos, en el sidebar y en
+     «Uso por instancia». Ejes: #icono=zz|luna&tema=oscuro|claro -->
+<style>
+:root{--surface:#151615;--side:#1b1c1b;--raised:rgba(33,34,33,.9);--soft:rgba(255,255,255,.045);--line:rgba(255,255,255,.09);--line-strong:rgba(255,255,255,.14);--text:#e8e4e2;--muted:#aaa19e;--quiet:#726b68;--primary:#ff8d6c;--on-primary:#1b1210;--ok:#7fcf8f;--active:rgba(255,255,255,.07)}
+.light{--surface:#f3efeb;--side:#ebe6e1;--raised:rgba(255,255,255,.92);--soft:rgba(63,46,39,.055);--line:rgba(66,48,40,.11);--line-strong:rgba(66,48,40,.17);--text:#2e2926;--muted:#746b67;--quiet:#9b928d;--primary:#e86a45;--on-primary:#fff;--ok:#2f8a47;--active:rgba(63,46,39,.07)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--surface);color:var(--text);font:14px/20px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.bar{position:sticky;top:0;z-index:2;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar b{font-size:12px;color:var(--muted)}
+.bar button{font:inherit;font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--line-strong);background:transparent;color:var(--text);cursor:pointer}
+.bar button[aria-pressed=true]{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.wrap{display:flex;gap:24px;padding:20px 16px;flex-wrap:wrap;align-items:flex-start}
+h2{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.side{width:248px;background:var(--side);border:1px solid var(--line);border-radius:14px;padding:10px 8px}
+.glabel{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--quiet);padding:8px 8px 4px}
+.item{display:flex;align-items:center;gap:8px;height:32px;padding:0 8px;border-radius:8px;font-size:14px}
+.item.active{background:var(--active)}
+.av{width:16px;height:16px;border-radius:4px;position:relative;flex:none}
+.av i{position:absolute;right:-2px;bottom:-2px;width:7px;height:7px;border-radius:50%;border:1.5px solid var(--side)}
+.name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.grow{flex:1}
+.count{font-size:11px;color:var(--muted);min-width:18px;text-align:center}
+.sleep{flex:none;color:var(--quiet);display:inline-flex;align-items:flex-end;line-height:1;font-weight:700;font-family:ui-monospace,Menlo,monospace;user-select:none}
+.sleep .z1{font-size:12px}.sleep .z2{font-size:9px;transform:translateY(-6px)}
+.sleep svg{width:12px;height:12px}
+.new{outline:1px dashed color-mix(in srgb,var(--primary) 60%,transparent);outline-offset:3px;border-radius:3px}
+.card{flex:1;min-width:420px;background:var(--raised);border:1px solid var(--line);border-radius:14px;padding:16px}
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.row .av{width:32px;height:32px;border-radius:8px}
+.row .av i{width:10px;height:10px;border-width:2px;border-color:var(--raised)}
+.badge{font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:6px;background:var(--soft);border:1px solid var(--line);white-space:nowrap}
+.meter{width:140px;height:6px;border-radius:3px;background:var(--soft);overflow:hidden}.meter b{display:block;height:100%;background:var(--primary)}
+.legend{padding:0 16px 32px;font-size:12px;color:var(--muted);display:grid;gap:4px}
+</style>
+</head>
+<body>
+<div class="bar"><b>Icono</b><button data-icono="zz">zᶻ ★</button><button data-icono="luna">Luna</button><b style="margin-left:12px">Tema</b><button data-tema="oscuro">Oscuro</button><button data-tema="claro">Claro</button></div>
+<div class="wrap">
+  <div>
+    <h2>Sidebar</h2>
+    <nav class="side" id="side"></nav>
+  </div>
+  <div style="flex:1;min-width:420px">
+    <h2>Dashboard · Uso por instancia</h2>
+    <section class="card" id="rank"></section>
+  </div>
+</div>
+<div class="legend">
+  <span>Borde punteado: lo nuevo. El icono va pegado al nombre, en el color apagado del texto; el contador de sesiones no se mueve.</span>
+  <span>Solo perfiles detenidos (instancias y original). Abiertos, sin detectar y en transición («Abriendo…») no lo llevan.</span>
+  <span>Con el sidebar plegado no se ve: solo el avatar con su punto, como hoy.</span>
+</div>
+<script>
+const P=[
+ {n:"Claude Desktop",s:"stopped",c:"#4b4b4b",k:4,orig:1},
+ {n:"Work Profile",s:"running",c:"#22b8a5",k:3},
+ {n:"Personal Dev",s:"stopped",c:"#7b6cf0",k:1},
+ {n:"Experimental Lab",s:"stopped",c:"#e0a14a",k:0},
+ {n:"Clientes",s:"opening",c:"#e06a8a",k:2},
+];
+const st={icono:"zz",tema:"oscuro"};
+function sleep(){return st.icono==="zz"?'<span class="sleep new" aria-hidden="true"><span class="z1">z</span><span class="z2">z</span></span>':'<span class="sleep new" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>'}
+function dot(s){return s==="running"?"var(--ok)":s==="opening"?"var(--primary)":"var(--quiet)"}
+function lab(s){return s==="running"?"Abierta":s==="opening"?"Abriendo…":"Detenida"}
+function render(){
+  document.documentElement.classList.toggle("light",st.tema==="claro");
+  document.querySelectorAll("[data-icono]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.icono===st.icono));
+  document.querySelectorAll("[data-tema]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.tema===st.tema));
+  const item=(p,a)=>`<div class="item${a?" active":""}"><span class="av" style="background:${p.c}"><i style="background:${dot(p.s)}"></i></span><span class="name">${p.n}</span>${p.s==="stopped"?sleep():""}<span class="grow"></span>${p.k?`<span class="count">${p.k}</span>`:""}</div>`;
+  document.getElementById("side").innerHTML=`<div class="glabel">General</div><div class="item">▦ Dashboard</div>${item(P[0])}<div class="glabel">Instancias</div>${P.slice(1).map((p,i)=>item(p,i===1)).join("")}`;
+  document.getElementById("rank").innerHTML=P.slice(1).map((p,i)=>`<div class="row"><span class="av" style="background:${p.c}"><i style="background:${dot(p.s)}"></i></span><span style="display:flex;align-items:center;gap:6px;min-width:0;flex:1"><span class="name">${p.n}</span>${p.s==="stopped"?sleep():""}<span class="badge">${lab(p.s)}</span></span><span class="meter"><b style="width:${[62,35,12,48][i]}%"></b></span><span style="font-size:12px;color:var(--muted);width:40px;text-align:right">${[62,35,12,48][i]}%</span></div>`).join("");
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-icono],[data-tema]");if(!b)return;if(b.dataset.icono)st.icono=b.dataset.icono;if(b.dataset.tema)st.tema=b.dataset.tema;render()});
+for(const kv of location.hash.slice(1).split("&")){const[k,v]=kv.split("=");if(k in st&&v)st[k]=v}
+render();
+</script>
+</body>
+</html>

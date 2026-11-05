@@ -119,6 +119,9 @@ export interface ProviderBadge {
   path: string;
 }
 
+/** De dónde sale la carpeta de datos efectiva de la original (HU-0029). */
+export type OriginalProfileOrigin = "chosen" | "detected" | "none";
+
 export interface SystemInfo {
   appVersion: string;
   platform: "macos" | "windows" | "linux" | "unknown";
@@ -129,7 +132,13 @@ export interface SystemInfo {
   sourceVersion: string | null;
   sourceUpdate: SourceUpdateInfo;
   versionTopology: VersionTopology;
+  /** La carpeta de datos efectiva de la original: la elegida si sigue valiendo, si no la detectada (HU-0029). */
   originalProfilePath: string | null;
+  originalProfileOrigin: OriginalProfileOrigin;
+  /** La carpeta efectiva tiene `claude-code-sessions/`. */
+  originalProfileHasSessions: boolean;
+  /** Hay una carpeta elegida guardada que ya no vale; se usa la detectada (D-5). */
+  originalProfileChosenMissing: boolean;
   originalStatus: InstanceStatus;
   originalCodeSessions: CodeSession[];
   freeBytes: number | null;
@@ -305,8 +314,10 @@ export interface ProjectsState { projects: ProjectSummary[]; readAt: string }
 
 /* ── Lector de historias (HU-0025) ────────────────────────────────────────── */
 
-export type ProjectDocumentKind = "hu" | "architecture" | "verification" | "timeline";
-export type ProjectDocumentStatus = "ok" | "unreadable";
+/** `design` es `diseno/maqueta.html` (HU-0031): el último y solo si existe. */
+export type ProjectDocumentKind = "hu" | "architecture" | "verification" | "timeline" | "design";
+/** `tooLarge` solo llega con `design`: la maqueta pasa de 1 MiB y no se pinta en el lector. */
+export type ProjectDocumentStatus = "ok" | "unreadable" | "tooLarge";
 export interface ProjectDocument {
   kind: ProjectDocumentKind;
   /** Nombre fijo del archivo (`hu.md`). */
@@ -314,10 +325,10 @@ export interface ProjectDocument {
   /** Relativa a la carpeta del proyecto, con `/` (`hu/<carpeta>/hu.md`). */
   path: string;
   status: ProjectDocumentStatus;
-  /** El Markdown completo, solo si `status` es `ok`. */
+  /** El Markdown completo (o el HTML de la maqueta), solo si `status` es `ok`. */
   content: string | null;
-  /** Qué pasó, solo si `status` es `unreadable`. */
+  /** Qué pasó, solo si `status` es `unreadable` o `tooLarge`. */
   message: string | null;
 }
-/** Los `.md` de una historia en orden hu → arquitectura → verificación → seguimiento, solo los que existen. */
+/** Los documentos de una historia en orden hu → arquitectura → verificación → seguimiento → maqueta, solo los que existen. */
 export interface ProjectHistoryDocuments { folder: string; documents: ProjectDocument[]; readAt: string }
