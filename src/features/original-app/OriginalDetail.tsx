@@ -1,12 +1,14 @@
-import { DownloadIcon, RefreshCwIcon, TerminalSquareIcon } from "lucide-react";
+import { DownloadIcon, FolderOpenIcon, RefreshCwIcon, RotateCcwIcon, TerminalSquareIcon, TriangleAlertIcon } from "lucide-react";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import { Spinner } from "../../components/ui/spinner";
+import { NoticeAlert } from "../../components/NoticeAlert";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import type { CodeSession, DashboardState, SessionProfile } from "../../types";
 import { InstanceAvatar, InstanceStatusBadge } from "../instances";
 import { SessionList } from "../sessions";
 import type { OriginalInstallAvailability } from "../updates";
+import type { OriginalProfileView } from "./original-profile";
 
 /**
  * El cuerpo de `#/original` (HU-0016, AC-04): la aplicación original con su ruta, versión, estado, perfil local y
@@ -20,7 +22,10 @@ export function OriginalDetail({
   appName,
   appPath,
   platform,
-  profilePath,
+  profileView,
+  profileBusy,
+  onChooseFolder,
+  onForgetFolder,
   version,
   status,
   sessions,
@@ -36,7 +41,11 @@ export function OriginalDetail({
   appName: string;
   appPath: string;
   platform: DashboardState["system"]["platform"];
-  profilePath: string | null;
+  profileView: OriginalProfileView;
+  /** Se está eligiendo u olvidando la carpeta: qué botón corre. */
+  profileBusy: "choose" | "forget" | null;
+  onChooseFolder: () => void;
+  onForgetFolder: () => void;
   version: string | null;
   status: SessionProfile["status"];
   sessions: CodeSession[];
@@ -73,10 +82,23 @@ export function OriginalDetail({
               {appPath}
             </span>
             <span className="font-mono text-(length:--fs-small)/(--lh-small) text-muted-foreground">Versión {version ?? "—"}</span>
+            {profileView.chosenPath && (
+              <div className="flex min-w-0 flex-wrap items-center gap-2">
+                <span className="min-w-0 truncate font-mono text-(length:--fs-small)/(--lh-small) text-muted-foreground" title={profileView.chosenPath}>
+                  Datos · {profileView.chosenPath}
+                </span>
+                <Button type="button" variant="outline" size="sm" onClick={onChooseFolder} disabled={busy}>
+                  {profileBusy === "choose" ? <Spinner aria-hidden="true" /> : <FolderOpenIcon />} Cambiar carpeta
+                </Button>
+                <Button type="button" variant="outline" size="sm" onClick={onForgetFolder} disabled={busy}>
+                  {profileBusy === "forget" ? <Spinner aria-hidden="true" /> : <RotateCcwIcon />} Usar la detectada
+                </Button>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <Metric label="Perfil local" value={profilePath ? "Detectado" : "Sin detectar"} />
+            <Metric label="Perfil local" value={profileView.label} />
             <Metric label="Sesiones Code" value={`${sessions.length}`} />
             <div className="grid justify-items-end gap-2">
               <div className="flex flex-wrap items-center justify-end gap-3">
@@ -120,6 +142,29 @@ export function OriginalDetail({
           </div>
         </CardContent>
       </Card>
+
+      {profileView.warning && (
+        <NoticeAlert
+          icon={<TriangleAlertIcon aria-hidden="true" />}
+          title={profileView.warning === "chosen-missing" ? "La carpeta elegida ya no existe" : "No se encontraron las sesiones de Claude"}
+          action={
+            <>
+              <Button type="button" size="sm" onClick={onChooseFolder} disabled={busy}>
+                {profileBusy === "choose" ? <Spinner aria-hidden="true" /> : <FolderOpenIcon />} Elegir carpeta
+              </Button>
+              {profileView.canForget && (
+                <Button type="button" variant="outline" size="sm" onClick={onForgetFolder} disabled={busy}>
+                  {profileBusy === "forget" ? <Spinner aria-hidden="true" /> : <RotateCcwIcon />} Usar la detectada
+                </Button>
+              )}
+            </>
+          }
+        >
+          {profileView.warning === "chosen-missing"
+            ? "Se usa la carpeta detectada. Elige otra o vuelve a la detectada."
+            : "No están en la carpeta habitual. Elige la carpeta de datos de Claude: la que contiene «claude-code-sessions»."}
+        </NoticeAlert>
+      )}
 
       <Card size="sm" role="region" aria-label="Sesiones de Code de la aplicación original">
         <CardHeader>

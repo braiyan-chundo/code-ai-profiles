@@ -17,6 +17,7 @@ import {
   runningInstanceIds,
   usageRanking,
 } from "../src/features/dashboard/dashboard-selectors.ts";
+import { originalProfileView } from "../src/features/original-app/original-profile.ts";
 import { showsProviderBadge } from "../src/features/instances/avatar-badge.ts";
 import { applyLiveUsage } from "../src/features/instances/live-usage.ts";
 import { instancePending, instanceStatusLabel, instanceToggle } from "../src/features/instances/instance-status.ts";
@@ -386,4 +387,13 @@ test("showsProviderBadge: solo con icono propio, distintivo y sin fallo de esa r
   assert.equal(showsProviderBadge("icon.png", "badge.png", "badge.png"), false);
   assert.equal(showsProviderBadge("icon.png", "badge-2.png", "badge.png"), true);
   assert.equal(showsProviderBadge("icon.png", "badge.png", null), true);
+});
+
+test("originalProfileView resume la carpeta de datos de la original (HU-0029, A-5)", () => {
+  const base = { originalProfilePath: "/datos", originalProfileOrigin: "detected" as const, originalProfileHasSessions: true, originalProfileChosenMissing: false };
+  assert.deepEqual(originalProfileView({ ...base, originalProfileOrigin: "chosen" }), { label: "Elegido", warning: null, chosenPath: "/datos", canForget: true });
+  assert.deepEqual(originalProfileView(base), { label: "Detectado", warning: null, chosenPath: null, canForget: false });
+  assert.deepEqual(originalProfileView({ ...base, originalProfileHasSessions: false }), { label: "Sin sesiones", warning: "no-sessions", chosenPath: null, canForget: false });
+  assert.deepEqual(originalProfileView({ ...base, originalProfilePath: null, originalProfileOrigin: "none", originalProfileHasSessions: false }), { label: "Sin detectar", warning: "no-sessions", chosenPath: null, canForget: false });
+  assert.deepEqual(originalProfileView({ ...base, originalProfileChosenMissing: true }), { label: "Detectado", warning: "chosen-missing", chosenPath: null, canForget: true });
 });
