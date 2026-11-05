@@ -2,7 +2,7 @@
 id: HU-0029
 titulo: "Carpeta de datos de la original elegida por la persona"
 estado: en-proceso
-fase: arquitectura
+fase: verificacion
 area: sesiones
 entrega: 1
 prioridad: alta

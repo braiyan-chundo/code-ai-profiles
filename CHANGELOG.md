@@ -6,6 +6,10 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ## [Unreleased]
 
+### Added
+
+- Carpeta de datos de la original elegida por la persona: si la app no encuentra las sesiones de Claude en su carpeta habitual, la página de la original lo avisa y deja elegir la carpeta de datos de Claude (la que contiene `claude-code-sessions`). La elegida se usa para las sesiones, las transferencias, el estado y la exclusión de Proyectos; se puede cambiar o volver a la detectada. Solo se guarda la ruta y no se abre ningún archivo para validarla. En macOS, Windows y Linux (HU-0029).
+
 ### Fixed
 
 - Windows: al iniciar, escanear o detener una instancia ya no se abren ventanas de PowerShell ni de consola. Los procesos auxiliares (PowerShell, `tasklist`, `taskkill`, `robocopy`) se lanzan sin ventana.

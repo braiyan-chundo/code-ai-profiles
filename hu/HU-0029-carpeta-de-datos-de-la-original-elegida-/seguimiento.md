@@ -9,3 +9,5 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-11-05 01:43 | orquestador | petición: «que al detectar el claude original pregunte en que carpeta estan las sesiones…» y «que le pregunte al usuario donde esta su instalacion de claude o su carpeta de perfil no? y ya,porfa haz eso» — Braiyan Rodriguez (mantenedor), 2026-11-03 y 2026-11-05 |
 | 2026-11-05 01:43 | hu.mjs | fase requisitos → arquitectura |
 | 2026-11-05 01:47 | orquestador | maqueta aprobada: «Aprobada» — Braiyan Rodriguez (mantenedor), 2026-11-05 |
+| 2026-11-05 01:50 | hu.mjs | fase arquitectura → implementacion |
+| 2026-11-05 02:06 | hu.mjs | fase implementacion → verificacion |
