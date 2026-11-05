@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HU-0031 · Maqueta · Pestaña Maqueta</title>
+<!-- Maqueta estática de la HU-0031: el lector de historias con la pestaña «Maqueta» (solo si existe
+     diseno/maqueta.html). Ejes: #caso=con|sin|ilegible&tab=maqueta|hu&tema=oscuro|claro -->
+<style>
+:root{--surface:#151615;--raised:#1d1e1d;--soft:rgba(255,255,255,.045);--line:rgba(255,255,255,.09);--line-strong:rgba(255,255,255,.14);--text:#e8e4e2;--muted:#aaa19e;--quiet:#726b68;--primary:#ff8d6c;--on-primary:#1b1210;--warning:#e8b45c;--ok:#7fcf8f}
+.light{--surface:#f3efeb;--raised:#fff;--soft:rgba(63,46,39,.055);--line:rgba(66,48,40,.11);--line-strong:rgba(66,48,40,.17);--text:#2e2926;--muted:#746b67;--quiet:#9b928d;--primary:#e86a45;--on-primary:#fff;--warning:#a8741c;--ok:#2f8a47}
+*{box-sizing:border-box}
+body{margin:0;background:var(--surface);color:var(--text);font:14px/20px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+.mono{font-family:ui-monospace,Menlo,monospace}
+.bar{position:sticky;top:0;z-index:3;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar b{font-size:12px;color:var(--muted)}
+.bar button{font:inherit;font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--line-strong);background:transparent;color:var(--text);cursor:pointer}
+.bar button[aria-pressed=true]{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.backdrop{padding:24px 16px;background:rgba(0,0,0,.35);min-height:calc(100vh - 49px);display:grid;place-items:start center}
+.dialog{width:min(960px,100%);height:min(720px,calc(100vh - 100px));background:var(--raised);border:1px solid var(--line-strong);border-radius:16px;display:grid;grid-template-rows:auto auto minmax(0,1fr);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.dh{padding:18px 24px 12px;display:grid;gap:6px}
+.dh .meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.badge{font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:6px;background:var(--soft);border:1px solid var(--line)}
+.dh h3{margin:0;font-size:17px}
+.x{position:absolute;right:20px;top:16px}
+.tabs{padding:0 24px 12px;border-bottom:1px solid var(--line)}
+.tl{display:inline-flex;gap:2px;padding:3px;border-radius:9px;background:var(--soft);flex-wrap:wrap}
+.tl button{font:inherit;font-size:12px;height:26px;padding:0 10px;border:0;border-radius:7px;background:transparent;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.tl button[aria-selected=true]{background:var(--raised);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.tl svg{width:13px;height:13px}
+.new{outline:1.5px dashed color-mix(in srgb,var(--primary) 60%,transparent);outline-offset:2px}
+.body{overflow:auto;position:relative}
+.md{max-width:720px;padding:24px;display:grid;gap:12px}
+.md h4{margin:8px 0 0;font-size:15px}
+.md p{margin:0;color:var(--text)}
+.frame{position:absolute;inset:0;display:grid;grid-template-rows:auto minmax(0,1fr)}
+.note{display:flex;align-items:center;gap:8px;padding:8px 24px;font-size:12px;color:var(--muted);border-bottom:1px solid var(--line);background:var(--soft)}
+.note svg{width:14px;height:14px;flex:none}
+iframe{width:100%;height:100%;border:0;background:#fff}
+.unread{margin:24px;padding:32px;border:1px dashed var(--line-strong);border-radius:12px;background:var(--soft);display:grid;justify-items:center;gap:10px;text-align:center}
+.btn{font:inherit;font-size:13px;height:32px;padding:0 12px;border-radius:8px;border:1px solid var(--line-strong);background:transparent;color:var(--text)}
+.legend{max-width:960px;margin:0 auto;padding:16px;font-size:12px;color:var(--muted);display:grid;gap:4px}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="bar">
+  <b>Caso</b><button data-caso="con">Con maqueta</button><button data-caso="sin">Sin maqueta</button><button data-caso="ilegible">Maqueta ilegible</button>
+  <b style="margin-left:12px">Tema</b><button data-tema="oscuro">Oscuro</button><button data-tema="claro">Claro</button>
+</div>
+<div class="backdrop">
+  <div class="dialog" role="dialog" aria-label="Lector de historia" style="position:relative">
+    <div class="dh">
+      <div class="meta"><span class="badge mono">HU-0028</span><span class="badge">Terminada</span><span class="badge mono">cierre</span></div>
+      <h3>Distintivo de la app original en el icono de instancia</h3>
+      <button class="btn x" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="tabs"><div class="tl" role="tablist" id="tl"></div></div>
+    <div class="body" id="body"></div>
+  </div>
+</div>
+<div class="legend">
+  <span>Borde punteado: lo nuevo. La pestaña «Maqueta» es la última y solo aparece si existe <span class="mono">diseno/maqueta.html</span>.</span>
+  <span>La maqueta ocupa todo el cuerpo del lector (sin el ancho de lectura de los .md), aislada de la app y sin red. Una franja dice que es la maqueta de la historia y, si sus scripts no pueden correr, que se ve estática.</span>
+  <span>Ilegible (más de 512 KiB o enlace que sale de la historia): el mismo aviso con «Reintentar» que los .md.</span>
+</div>
+<script>
+const st={caso:"con",tab:"maqueta",tema:"oscuro"};
+const ICON={md:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>',mq:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>'};
+const SAMPLE=`<!doctype html><html><body style="margin:0;font:14px system-ui;background:#151615;color:#e8e4e2"><div style="padding:10px 16px;border-bottom:1px solid #333;display:flex;gap:8px"><span style="padding:3px 10px;border-radius:99px;background:#ff8d6c;color:#1b1210;font-size:12px">Estado 1</span><span style="padding:3px 10px;border-radius:99px;border:1px solid #444;font-size:12px">Estado 2</span></div><div style="padding:24px;display:flex;gap:24px;align-items:center"><div style="width:96px;height:96px;border-radius:22px;background:linear-gradient(135deg,#22b8a5,#0e6d7a);position:relative"><div style="position:absolute;right:-6px;bottom:-6px;width:36px;height:36px;border-radius:9px;background:#d97757"></div></div><div><div style="font-size:11px;letter-spacing:.08em;color:#aaa19e;text-transform:uppercase">Maqueta de la historia</div><div style="font-size:18px;font-weight:600;margin-top:4px">Icono de instancia con distintivo</div></div></div></body></html>`;
+function render(){
+  document.documentElement.classList.toggle("light",st.tema==="claro");
+  document.querySelectorAll("[data-caso]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.caso===st.caso));
+  document.querySelectorAll("[data-tema]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.tema===st.tema));
+  const tabs=[["hu","hu.md"],["architecture","arquitectura.md"],["verification","verificacion.md"],["timeline","seguimiento.md"]];
+  if(st.caso!=="sin")tabs.push(["maqueta","Maqueta"]);
+  if(st.caso==="sin"&&st.tab==="maqueta")st.tab="hu";
+  document.getElementById("tl").innerHTML=tabs.map(([k,l])=>`<button role="tab" data-tab="${k}" aria-selected="${st.tab===k}" class="${k==="maqueta"?"new":""}">${k==="maqueta"?ICON.mq:ICON.md}${l}</button>`).join("");
+  const body=document.getElementById("body");
+  if(st.tab!=="maqueta"){body.innerHTML=`<div class="md"><h4>Distintivo de la app original en el icono de instancia</h4><p>Como mantenedor con varias instancias con icono propio quiero que cada icono lleve en su esquina inferior derecha el icono de la aplicación que clona…</p><h4>Petición original</h4><p style="color:var(--muted)">«al momento de crear el icono o imagen de la instancia…»</p></div>`;return}
+  if(st.caso==="ilegible"){body.innerHTML=`<div class="unread"><span style="color:var(--warning)">⚠</span><strong>No se pudo leer <span class="mono">diseno/maqueta.html</span></strong><span style="font-size:12px;color:var(--muted)">diseno/maqueta.html supera el tamaño máximo que se lee (512 KiB). Las otras pestañas siguen disponibles.</span><button class="btn">↻ Reintentar</button></div>`;return}
+  body.innerHTML=`<div class="frame new" style="outline-offset:-3px"><div class="note">${ICON.mq}<span><span class="mono">diseno/maqueta.html</span> · se muestra aislada, sin acceso a la app ni a internet.</span></div><iframe sandbox title="Maqueta de la historia"></iframe></div>`;
+  body.querySelector("iframe").srcdoc=SAMPLE;
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-caso],[data-tema],[data-tab]");if(!b)return;if(b.dataset.caso){st.caso=b.dataset.caso;st.tab="maqueta"}if(b.dataset.tema)st.tema=b.dataset.tema;if(b.dataset.tab)st.tab=b.dataset.tab;render()});
+for(const kv of location.hash.slice(1).split("&")){const[k,v]=kv.split("=");if(k in st&&v)st[k]=v}
+render();
+</script>
+</body>
+</html>
