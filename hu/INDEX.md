@@ -2,7 +2,7 @@
 
 > Generado por `node .metodo/scripts/hu.mjs index`. **No se edita a mano.**
 
-19 historias · ◻ en-espera: 2 · ◐ en-proceso: 2 · ◼ terminada: 13 · ✕ descartada: 2
+19 historias · ◻ en-espera: 1 · ◐ en-proceso: 1 · ◼ terminada: 15 · ✕ descartada: 2
 
 | | Historia | Área | Fase | Repos | Reglas |
 | --- | --- | --- | --- | --- | --- |
@@ -13,15 +13,15 @@
 | ◼ | [HU-0014](HU-0014-design-system-con-shadcn-y-showcase-loca/hu.md) Design system con shadcn y showcase local | interfaz | cierre | code-ai-profiles | — |
 | ◼ | [HU-0015](HU-0015-frontend-escalable-componentes-features-/hu.md) Frontend escalable: componentes, features y router | interfaz | cierre | code-ai-profiles | — |
 | ◼ | [HU-0016](HU-0016-rediseno-con-sidebar-dashboard-y-pagina-/hu.md) Rediseño con sidebar, dashboard y página por instancia | interfaz | cierre | code-ai-profiles | — |
-| ◐ | [HU-0017](HU-0017-descargar-e-instalar-la-original-en-maco/hu.md) Descargar e instalar la original en macOS | actualizaciones | verificacion | code-ai-profiles | — |
+| ◼ | [HU-0017](HU-0017-descargar-e-instalar-la-original-en-maco/hu.md) Descargar e instalar la original en macOS | actualizaciones | cierre | code-ai-profiles | RN-06 |
 | ◻ | [HU-0018](HU-0018-descargar-e-instalar-la-original-en-wind/hu.md) Descargar e instalar la original en Windows y Linux | actualizaciones | requisitos | code-ai-profiles | — |
 | ◼ | [HU-0019](HU-0019-header-compacto-sidebar-flotante-y-tipog/hu.md) Header compacto, sidebar flotante y tipografía legible | interfaz | cierre | code-ai-profiles | — |
 | ◼ | [HU-0020](HU-0020-icono-personalizado-de-la-instancia-en-e/hu.md) Icono personalizado de la instancia en el Dock de macOS | instancias | cierre | code-ai-profiles | — |
 | ◐ | [HU-0021](HU-0021-spike-relevo-del-retorno-de-inicio-de-se/hu.md) Spike: relevo del retorno de inicio de sesión a la instancia correcta | instancias | requisitos | code-ai-profiles | — |
 | ◼ | [HU-0022](HU-0022-configuracion-unificada-con-apariencia-y/hu.md) Configuración unificada con apariencia y permisos | interfaz | cierre | code-ai-profiles | — |
 | ◼ | [HU-0023](HU-0023-proyectos-resumen-de-proyectos-con-metod/hu.md) Proyectos: resumen de proyectos con metodología v4 | proyectos | cierre | code-ai-profiles | — |
-| ◻ | [HU-0024](HU-0024-detectar-la-version-nueva-en-la-publicac/hu.md) Detectar la versión nueva en la publicación oficial e instalarla | actualizaciones | verificacion | code-ai-profiles | — |
+| ◼ | [HU-0024](HU-0024-detectar-la-version-nueva-en-la-publicac/hu.md) Detectar la versión nueva en la publicación oficial e instalarla | actualizaciones | cierre | code-ai-profiles | — |
 | ◼ | [HU-0025](HU-0025-proyectos-datos-incompletos-y-lector-de-/hu.md) Proyectos: datos incompletos y lector de historias | proyectos | cierre | code-ai-profiles | RN-02 |
 | ◼ | [HU-0026](HU-0026-arrancar-y-detener-instancias-desde-el-s/hu.md) Arrancar y detener instancias desde el sidebar y el dashboard | instancias | cierre | code-ai-profiles | — |
 | ◼ | [HU-0027](HU-0027-icono-personalizado-de-proyecto/hu.md) Icono personalizado de proyecto | proyectos | cierre | code-ai-profiles | RN-04 |
-| ◼ | [HU-0028](HU-0028-distintivo-de-la-app-original-en-el-icon/hu.md) Distintivo de la app original en el icono de instancia | instancias | cierre | code-ai-profiles | RN-01 RN-02 |
+| ◼ | [HU-0028](HU-0028-distintivo-de-la-app-original-en-el-icon/hu.md) Distintivo de la app original en el icono de instancia | instancias | cierre | code-ai-profiles | RN-01 RN-05 |
