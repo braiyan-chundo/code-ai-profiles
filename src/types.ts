@@ -119,6 +119,9 @@ export interface ProviderBadge {
   path: string;
 }
 
+/** De dónde sale la carpeta de datos efectiva de la original (HU-0029). */
+export type OriginalProfileOrigin = "chosen" | "detected" | "none";
+
 export interface SystemInfo {
   appVersion: string;
   platform: "macos" | "windows" | "linux" | "unknown";
@@ -129,7 +132,13 @@ export interface SystemInfo {
   sourceVersion: string | null;
   sourceUpdate: SourceUpdateInfo;
   versionTopology: VersionTopology;
+  /** La carpeta de datos efectiva de la original: la elegida si sigue valiendo, si no la detectada (HU-0029). */
   originalProfilePath: string | null;
+  originalProfileOrigin: OriginalProfileOrigin;
+  /** La carpeta efectiva tiene `claude-code-sessions/`. */
+  originalProfileHasSessions: boolean;
+  /** Hay una carpeta elegida guardada que ya no vale; se usa la detectada (D-5). */
+  originalProfileChosenMissing: boolean;
   originalStatus: InstanceStatus;
   originalCodeSessions: CodeSession[];
   freeBytes: number | null;

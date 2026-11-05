@@ -170,6 +170,15 @@ pub(crate) struct ProviderBadge {
     pub(crate) path: String,
 }
 
+/// Where the effective data folder of the original comes from (HU-0029).
+#[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub(crate) enum OriginalProfileOrigin {
+    Chosen,
+    Detected,
+    None,
+}
+
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct SystemInfo {
@@ -182,7 +191,13 @@ pub(crate) struct SystemInfo {
     pub(crate) source_version: Option<String>,
     pub(crate) source_update: SourceUpdateInfo,
     pub(crate) version_topology: VersionTopology,
+    /// The effective data folder of the original: the chosen one when it is still valid, else the detected one.
     pub(crate) original_profile_path: Option<String>,
+    pub(crate) original_profile_origin: OriginalProfileOrigin,
+    /// The effective folder has `claude-code-sessions/`.
+    pub(crate) original_profile_has_sessions: bool,
+    /// A chosen folder is saved but no longer valid, so the detected one is used (HU-0029, D-5).
+    pub(crate) original_profile_chosen_missing: bool,
     pub(crate) original_status: InstanceStatus,
     pub(crate) original_code_sessions: Vec<CodeSession>,
     pub(crate) free_bytes: Option<u64>,
