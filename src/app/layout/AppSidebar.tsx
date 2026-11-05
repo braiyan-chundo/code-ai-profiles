@@ -32,6 +32,8 @@ import {
 import {
   InstanceAvatar,
   instancePending,
+  isSleeping,
+  SleepingMark,
   instanceStatusLabel,
   instanceToggle,
   managedIconSource,
@@ -182,6 +184,7 @@ export function AppSidebar() {
                         className="size-4"
                       />
                       <span className="min-w-0 flex-1 truncate">{originalName}</span>
+                      {sourceFound && isSleeping(state.system.originalStatus, null) && <SleepingMark className="group-data-[collapsible=icon]:hidden" />}
                       <span className="sr-only">{sourceFound ? instanceStatusLabel(state.system.originalStatus) : "No detectada"}</span>
                     </Link>
                   </SidebarMenuButton>
@@ -227,6 +230,7 @@ export function AppSidebar() {
                             className="size-4"
                           />
                           <span className="min-w-0 flex-1 truncate">{instance.name}</span>
+                          {isSleeping(instance.status, pending) && <SleepingMark className="group-data-[collapsible=icon]:hidden" />}
                           <span className="sr-only">{status}</span>
                         </Link>
                       </SidebarMenuButton>

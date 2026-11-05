@@ -20,7 +20,7 @@ import {
 import { originalProfileView } from "../src/features/original-app/original-profile.ts";
 import { showsProviderBadge } from "../src/features/instances/avatar-badge.ts";
 import { applyLiveUsage } from "../src/features/instances/live-usage.ts";
-import { instancePending, instanceStatusLabel, instanceToggle } from "../src/features/instances/instance-status.ts";
+import { instancePending, instanceStatusLabel, instanceToggle, isSleeping } from "../src/features/instances/instance-status.ts";
 import type { CodeSession, DashboardState, ManagedInstance, OriginalInstallProgress, UsageStats } from "../src/types.ts";
 
 function session(id: string, title: string): CodeSession {
@@ -396,4 +396,12 @@ test("originalProfileView resume la carpeta de datos de la original (HU-0029, A-
   assert.deepEqual(originalProfileView({ ...base, originalProfileHasSessions: false }), { label: "Sin sesiones", warning: "no-sessions", chosenPath: null, canForget: false });
   assert.deepEqual(originalProfileView({ ...base, originalProfilePath: null, originalProfileOrigin: "none", originalProfileHasSessions: false }), { label: "Sin detectar", warning: "no-sessions", chosenPath: null, canForget: false });
   assert.deepEqual(originalProfileView({ ...base, originalProfileChosenMissing: true }), { label: "Detectado", warning: "chosen-missing", chosenPath: null, canForget: true });
+});
+
+test("isSleeping: solo detenida y sin operación en curso (HU-0030)", () => {
+  assert.equal(isSleeping("stopped", null), true);
+  assert.equal(isSleeping("running", null), false);
+  assert.equal(isSleeping("missing", null), false);
+  assert.equal(isSleeping("stopped", "launching"), false);
+  assert.equal(isSleeping("stopped", "stopping"), false);
 });
