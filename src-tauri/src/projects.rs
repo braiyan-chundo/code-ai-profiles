@@ -333,6 +333,8 @@ pub(crate) enum ProjectDocumentKind {
     Architecture,
     Verification,
     Timeline,
+    /// `diseno/maqueta.html` (HU-0031), el último y solo si existe.
+    Design,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
@@ -340,6 +342,8 @@ pub(crate) enum ProjectDocumentKind {
 pub(crate) enum ProjectDocumentStatus {
     Ok,
     Unreadable,
+    /// Solo para `Design`: la maqueta pasa de 1 MiB y no se pinta en el lector (HU-0031).
+    TooLarge,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -351,9 +355,9 @@ pub(crate) struct ProjectDocument {
     /// Relativa a la carpeta del proyecto, con `/` (`hu/<carpeta>/hu.md`).
     pub(crate) path: String,
     pub(crate) status: ProjectDocumentStatus,
-    /// El Markdown completo, solo si `status` es `Ok`.
+    /// El Markdown completo (o el HTML de la maqueta), solo si `status` es `Ok`.
     pub(crate) content: Option<String>,
-    /// Qué pasó, solo si `status` es `Unreadable`.
+    /// Qué pasó, solo si `status` es `Unreadable` o `TooLarge`.
     pub(crate) message: Option<String>,
 }
 
@@ -361,7 +365,7 @@ pub(crate) struct ProjectDocument {
 #[serde(rename_all = "camelCase")]
 pub(crate) struct ProjectHistoryDocuments {
     pub(crate) folder: String,
-    /// En el orden hu → arquitectura → verificación → seguimiento, solo los que existen.
+    /// En el orden hu → arquitectura → verificación → seguimiento → maqueta, solo los que existen.
     pub(crate) documents: Vec<ProjectDocument>,
     pub(crate) read_at: String,
 }

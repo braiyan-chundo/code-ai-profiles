@@ -1208,4 +1208,23 @@ export const bridge = {
     mockOpenedLinks.push(parsed.href);
     console.info("[mock] openExternalLink", parsed.href);
   },
+
+  /**
+   * Abre `diseno/maqueta.html` de la historia en el navegador del sistema (HU-0031). Nunca recibe una ruta:
+   * Rust la vuelve a resolver y validar. El mock no abre nada: lo registra.
+   */
+  async openHistoryMockup(id: string, folder: string): Promise<void> {
+    if (isTauri()) {
+      await call("open_history_mockup", { id, folder });
+      return;
+    }
+    await mockWait(160);
+    if (!/^HU-\d{4}(-[^/\\:…]*)?$/.test(folder) || folder.includes("..") || folder.length > 120) {
+      throw new Error("La historia no es válida.");
+    }
+    const project = findMockProject(id);
+    const history = project.info?.histories.find((item) => item.folder === folder);
+    if (!history) throw new Error("La historia ya no está en el proyecto. Pulsa «Actualizar».");
+    console.info("[mock] openHistoryMockup", `hu/${folder}/diseno/maqueta.html`);
+  },
 };
