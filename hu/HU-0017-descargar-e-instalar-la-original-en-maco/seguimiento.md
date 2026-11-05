@@ -18,3 +18,6 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-10-28 14:55 | hu.mjs | fase implementacion → verificacion |
 | 2026-10-28 14:55 | orquestador | verificación preparada; suite una vez sobre el commit de verificación; instalador .dmg para el Mac del mantenedor; la prueba real queda para cuando el feed publique una versión nueva |
 | 2026-10-28 23:34 | orquestador | feed oficial consultado (darwin/universal, device_id nulo): última versión 3.6556.2, igual a la instalada; la prueba real sigue esperando una versión nueva |
+| 2026-11-03 22:14 | orquestador | veredicto: «ya la probe y funciono» — Braiyan Rodriguez (mantenedor), 2026-11-03: actualización real en macOS |
+| 2026-11-03 22:14 | hu.mjs | fase verificacion → cierre |
+| 2026-11-03 22:14 | hu.mjs | estado en-proceso → terminada |

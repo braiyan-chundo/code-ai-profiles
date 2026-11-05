@@ -1,8 +1,8 @@
 ---
 id: HU-0017
 titulo: "Descargar e instalar la original en macOS"
-estado: en-proceso
-fase: verificacion
+estado: terminada
+fase: cierre
 area: actualizaciones
 entrega: 1
 prioridad: media
@@ -10,7 +10,7 @@ creada: 2026-10-28
 requiere: { arquitectura: true, diseno: false }
 repos: [code-ai-profiles]
 riesgo: [permisos, estados]
-reglas: []
+reglas: [RN-06]
 depende: []
 ---
 
@@ -146,23 +146,32 @@ versión posterior a la instalada (o con una original más antigua instalada a p
 
 ## Definición de Terminado
 
-- [ ] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
-- [ ] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
-- [ ] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
-- [ ] Revisión técnica pasada, si la historia es riesgosa
-- [ ] La persona probó y aprobó; su veredicto está en `verificacion.md`
-- [ ] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
-- [ ] Commits en cada repo tocado con `HU: HU-0017`. **Sin push, sin publicar, sin desplegar**
-- [ ] Lo que solo comprueba una persona, declarado como pendiente humano
+- [x] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
+- [x] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
+- [x] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
+- [x] Revisión técnica pasada, si la historia es riesgosa
+- [x] La persona probó y aprobó; su veredicto está en `verificacion.md`
+- [x] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
+- [x] Commits en cada repo tocado con `HU: HU-0017`. **Sin push, sin publicar, sin desplegar**
+- [x] Lo que solo comprueba una persona, declarado como pendiente humano
 
 ## Cierre
 
-Fecha, quién cerró y sobre qué veredicto.
+2026-11-03, cerró el orquestador sobre el veredicto «ya la probe y funciono» de Braiyan Rodriguez (mantenedor):
+la actualización real en macOS funcionó. Revisión técnica PASS (`revision-tecnica.md`), con R-1..R-6 corregidas
+antes de la prueba.
 
-SHA por repositorio, con una línea de qué hace cada uno:
+SHA en `code-ai-profiles`: el código entró en `develop` con la rama `hu-0017-actualizar-original-macos` y salió en
+la 0.3.0.
 
-★ aceptadas tal como estaban:
+- Backend `46eae71`…`0023e97`: contrato, `config.rs`, verificación, intercambio atómico y recuperación.
+- Frontend `e283657`…`720d877`: botón «Descargar e instalar», progreso y sincronización pendiente.
+- Correcciones de la revisión: `edda501`, `7bc4a40`, `5f4712b`, `9e93f4b`, `2a3b5a9`.
+- El commit de cierre lleva el veredicto y RN-06.
 
-Pendientes humanos (nadie los vio; no se dan por hechos):
+★ aceptadas tal como estaban: D-1 a D-6.
 
-Deuda declarada:
+Pendientes humanos (nadie los vio; no se dan por hechos): ninguno de esta historia. Windows y Linux van en la
+HU-0018.
+
+Deuda declarada: ninguna nueva.

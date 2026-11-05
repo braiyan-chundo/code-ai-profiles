@@ -1,7 +1,7 @@
 {
   "package.json": {
-    "mtime": 1793760353.892832,
-    "ast_hash": "01cf3252790c323b113e6bc9c771838f",
+    "mtime": 1793885436.6922169,
+    "ast_hash": "0ff102828f00ee3f55e2ea541b0cd683",
     "semantic_hash": ""
   },
   "scripts/graphify.mjs": {
@@ -30,8 +30,8 @@
     "semantic_hash": "a85314b3cde4f5d5b64d48e0c7b18194"
   },
   "src-tauri/tauri.conf.json": {
-    "mtime": 1793760353.8940306,
-    "ast_hash": "cf44c96c8694b18e51db00078beb0010",
+    "mtime": 1793885436.6927116,
+    "ast_hash": "9717b78702925ada5722717fdf3fb813",
     "semantic_hash": ""
   },
   "src-tauri/tauri.linux.conf.json": {
@@ -115,8 +115,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1793760353.8855546,
-    "ast_hash": "dee1396d4285cc383b973574528dea68",
+    "mtime": 1793885436.7030215,
+    "ast_hash": "d3538101829d548962042fa1a09d2f46",
     "semantic_hash": ""
   },
   "code.html": {
@@ -160,8 +160,8 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1793865214.2810385,
-    "ast_hash": "096e92aea76a3744ca89900b8b78e0cf",
+    "mtime": 1793885446.0201855,
+    "ast_hash": "ab684ceb44cbb307a274a6ef49da6d5f",
     "semantic_hash": ""
   },
   "docs/rendimiento.document.md": {
@@ -170,8 +170,8 @@
     "semantic_hash": ""
   },
   "docs/versionado.document.md": {
-    "mtime": 1793760353.8858452,
-    "ast_hash": "1f75c409fb0fec544f7a89acf55a2fd2",
+    "mtime": 1793885436.7034593,
+    "ast_hash": "da240f41579aa7f9eda8f0a981efb53f",
     "semantic_hash": ""
   },
   "src/lib/scan-controller.ts": {
@@ -295,8 +295,8 @@
     "semantic_hash": ""
   },
   "docs/producto/reglas/README.md": {
-    "mtime": 1793763010.283829,
-    "ast_hash": "2104b918544484d91498f7d23bcc7cb8",
+    "mtime": 1793885634.424086,
+    "ast_hash": "5779fc7762e15e7e4cd8a02982f0700c",
     "semantic_hash": ""
   },
   "hu/HU-0010-publicar-el-fix-de-actualizacion-como-ve/arquitectura.md": {
@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "hu/INDEX.md": {
-    "mtime": 1793865214.3624086,
-    "ast_hash": "3e26873142030e9a7094afc5d2a1228e",
+    "mtime": 1793885645.2107127,
+    "ast_hash": "e019b210d307721a612e71b3351cfdd2",
     "semantic_hash": ""
   },
   "hu/HU-0011-adopcion-v4/pack-rust-tauri/pack.json": {
@@ -1630,13 +1630,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/hu.md": {
-    "mtime": 1793763010.2898755,
-    "ast_hash": "f7c9741c20b8851c0cf2a523471d461f",
+    "mtime": 1793885634.4366672,
+    "ast_hash": "db9919ae91d53ec23051301f40193633",
     "semantic_hash": ""
   },
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/seguimiento.md": {
-    "mtime": 1793763010.2911625,
-    "ast_hash": "c1634aa259feebb794451e0ba7a801f3",
+    "mtime": 1793885634.4380562,
+    "ast_hash": "8f060435b1d0c733241c72208d4093aa",
     "semantic_hash": ""
   },
   "docs/arquitectura/backend.md": {
@@ -1695,8 +1695,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0017-descargar-e-instalar-la-original-en-maco/verificacion.md": {
-    "mtime": 1793763010.2913158,
-    "ast_hash": "24dd754307642f8f5185fdee00081f3d",
+    "mtime": 1793885634.4382474,
+    "ast_hash": "64797588cac688bcc2718af898670284",
     "semantic_hash": ""
   },
   "hu/HU-0018-descargar-e-instalar-la-original-en-wind/hu.md": {
@@ -2150,8 +2150,8 @@
     "semantic_hash": ""
   },
   "docs/producto/reglas/instancias.md": {
-    "mtime": 1793763010.283977,
-    "ast_hash": "7b76f6d6024c6d3121e2fa047bc6fe5f",
+    "mtime": 1793885634.424697,
+    "ast_hash": "cfa718e3c41a2e15725fb6924823a548",
     "semantic_hash": ""
   },
   "hu/HU-0020-icono-personalizado-de-la-instancia-en-e/verificacion.md": {
@@ -3200,13 +3200,13 @@
     "semantic_hash": ""
   },
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/hu.md": {
-    "mtime": 1793763010.2914925,
-    "ast_hash": "0bc2d2923392b512216154fc89fec982",
+    "mtime": 1793885634.4390397,
+    "ast_hash": "691687888923fa9d61d4e754539fac25",
     "semantic_hash": ""
   },
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/seguimiento.md": {
-    "mtime": 1793763010.2920465,
-    "ast_hash": "c668cfbe99025849dde37b79cc3e8062",
+    "mtime": 1793885634.4415178,
+    "ast_hash": "e142c2610a57442830eca0901d475286",
     "semantic_hash": ""
   },
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/evidencias/01-dashboard-oscuro.png": {
@@ -3245,8 +3245,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/verificacion.md": {
-    "mtime": 1793763010.2921667,
-    "ast_hash": "17610526b4a6246bd5addb68a5f34681",
+    "mtime": 1793885634.4429626,
+    "ast_hash": "36045899fb30bb772c7df0ab874ddabc",
     "semantic_hash": ""
   },
   "src-tauri/src/commands.rs": {
@@ -4025,8 +4025,8 @@
     "semantic_hash": ""
   },
   "hu/HU-0028-distintivo-de-la-app-original-en-el-icon/hu.md": {
-    "mtime": 1793763010.2923284,
-    "ast_hash": "6a90e84c0dedfb41de55ac63bab4ba5b",
+    "mtime": 1793885634.4432607,
+    "ast_hash": "6cfcf561f406342504e278c46977961d",
     "semantic_hash": ""
   },
   "hu/HU-0028-distintivo-de-la-app-original-en-el-icon/revision.md": {
@@ -4139,9 +4139,29 @@
     "ast_hash": "45482b911e151fbad30b99ecc67a576c",
     "semantic_hash": ""
   },
+  "hu/HU-0017-descargar-e-instalar-la-original-en-maco/metricas.json": {
+    "mtime": 1793885634.4368217,
+    "ast_hash": "78c8ee0b2e002753270fdcb05aac4e26",
+    "semantic_hash": ""
+  },
+  "docs/producto/reglas/actualizaciones.md": {
+    "mtime": 1793885634.4243598,
+    "ast_hash": "3c1ffae11f63775d8603b799c48c257e",
+    "semantic_hash": ""
+  },
+  "hu/HU-0024-detectar-la-version-nueva-en-la-publicac/metricas.json": {
+    "mtime": 1793885634.4402828,
+    "ast_hash": "8614ee1999a7136a9a68864d68386d96",
+    "semantic_hash": ""
+  },
   "src-tauri/src/original_profile.rs": {
     "mtime": 1793862362.7682986,
     "ast_hash": "a738c740086a8bf324819041eb26cead",
+    "semantic_hash": ""
+  },
+  "src/features/instances/SleepingMark.tsx": {
+    "mtime": 1793863193.2353232,
+    "ast_hash": "96ad75c9bcbb6129c34048a25906c9e4",
     "semantic_hash": ""
   },
   "src/features/original-app/original-profile.ts": {
@@ -4184,24 +4204,19 @@
     "ast_hash": "fa0f44bdadac977bbbadc10eddacd4cf",
     "semantic_hash": ""
   },
-  "hu/HU-0029-carpeta-de-datos-de-la-original-elegida-/seguimiento.md": {
-    "mtime": 1793862413.7314394,
-    "ast_hash": "631551379496f300c04d049c3dca491a",
-    "semantic_hash": ""
-  },
   "hu/HU-0029-carpeta-de-datos-de-la-original-elegida-/revision.md": {
     "mtime": 1793862413.6883934,
     "ast_hash": "18f097d88c0935456efbd769b3fc4916",
     "semantic_hash": ""
   },
+  "hu/HU-0029-carpeta-de-datos-de-la-original-elegida-/seguimiento.md": {
+    "mtime": 1793862413.7314394,
+    "ast_hash": "631551379496f300c04d049c3dca491a",
+    "semantic_hash": ""
+  },
   "hu/HU-0029-carpeta-de-datos-de-la-original-elegida-/verificacion.md": {
     "mtime": 1793862413.6906729,
     "ast_hash": "00b2ca618b0b6b894e39924ef44c0709",
-    "semantic_hash": ""
-  },
-  "src/features/instances/SleepingMark.tsx": {
-    "mtime": 1793863193.2353232,
-    "ast_hash": "96ad75c9bcbb6129c34048a25906c9e4",
     "semantic_hash": ""
   },
   "hu/HU-0030-icono-de-dormida-en-los-perfiles-detenid/diseno/maqueta.html": {

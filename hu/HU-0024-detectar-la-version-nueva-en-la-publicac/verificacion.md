@@ -52,11 +52,11 @@ CI).
 
 ## Veredicto
 
-Pendiente. 2026-10-29 · Braiyan Rodriguez (mantenedor), al instalar el `.dmg`:
+**Aprobado** — Braiyan Rodriguez (mantenedor), 2026-11-03. Probó en macOS la actualización real a una versión nueva
+de Claude y confirmó que esa prueba cubre también esta historia (aviso de versión nueva e «Instalar»): «Sí, ciérrala
+también».
 
-> «no me sale, porque la version de claude original ya esta en la 4.4212.0 quizas hay que esperar que salga una
-> actualizacion, pero hagamos algo llevemos todo lo que se arreglo a develop»
+Antes, 2026-10-29, al instalar el `.dmg`: la original ya estaba en la versión publicada (4.4212.0), así que no había
+nada que ofrecer, y el código entró en `develop` antes del veredicto por decisión del mantenedor.
 
-La original ya estaba en la versión publicada, así que no había nada que ofrecer (es el comportamiento esperado). La
-prueba real queda para la próxima versión de Claude; el código entra en `develop` antes del veredicto, por decisión
-del mantenedor.
+Queda pendiente humano: nada de esta historia; Windows y Linux van en la HU-0018.
