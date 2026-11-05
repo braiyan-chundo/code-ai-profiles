@@ -42,7 +42,8 @@ export function linkTarget(href: string | undefined): "external" | "text" {
 export const MOCKUP_CSP =
   "default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; media-src data:; form-action 'none'; base-uri 'none'";
 
-const MOCKUP_META = `<meta http-equiv="Content-Security-Policy" content="${MOCKUP_CSP}">`;
+// O-1 (revisión HU-0031): WebView2 no frena `dns-prefetch` con la CSP; el control va junto a ella.
+const MOCKUP_META = `<meta http-equiv="Content-Security-Policy" content="${MOCKUP_CSP}"><meta http-equiv="x-dns-prefetch-control" content="off">`;
 /** Los únicos espacios que el analizador de HTML se salta antes del doctype (no `\s`: el NBSP abriría el `<body>`). */
 const HTML_SPACE = /[\t\n\f\r ]*/y;
 const DOCTYPE = /<!doctype[^>]*>/iy;

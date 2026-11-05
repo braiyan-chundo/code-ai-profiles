@@ -632,7 +632,7 @@ test("enlaces: solo http y https con host son externos; el resto, texto", () => 
 
 // ---- Pestaña Maqueta (HU-0031) -------------------------------------------------------------------------------------------
 
-const META = `<meta http-equiv="Content-Security-Policy" content="${MOCKUP_CSP}">`;
+const META = `<meta http-equiv="Content-Security-Policy" content="${MOCKUP_CSP}"><meta http-equiv="x-dns-prefetch-control" content="off">`;
 const count = (text: string, part: string) => text.split(part).length - 1;
 
 test("A-3: el <meta> CSP va justo tras el doctype, en cualquier caja", () => {
