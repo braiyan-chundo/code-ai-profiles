@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { EmptyState } from "../../../components/EmptyState";
 import { originalAppName as selectOriginalAppName, useDashboard, useRuntimePlatform } from "../../../features/dashboard";
-import { OriginalDetail } from "../../../features/original-app";
+import { OriginalDetail, originalProfileView, useOriginalProfileActions } from "../../../features/original-app";
 import { useScan } from "../../../features/scan";
 import { useTransferProfiles } from "../../../features/sessions";
 import { originalInstallAvailability, SourceUpdateBanner, useUpdateActions } from "../../../features/updates";
@@ -20,6 +21,17 @@ export function OriginalRoute() {
   const runtimePlatform = useRuntimePlatform();
   const transferProfiles = useTransferProfiles();
   const { installOriginal, checkOriginalUpdate } = useUpdateActions();
+  const profileActions = useOriginalProfileActions();
+  const [lastProfileAction, setLastProfileAction] = useState<"choose" | "forget">("choose");
+  const chooseFolder = () => {
+    setLastProfileAction("choose");
+    return profileActions.choose();
+  };
+  const forgetFolder = () => {
+    setLastProfileAction("forget");
+    return profileActions.forget();
+  };
+  const profileView = originalProfileView(state.system);
   const appName = selectOriginalAppName(state.system);
   const sourcePath = state.system.sourcePath;
   const openOriginalUpdate = () => {
@@ -32,13 +44,16 @@ export function OriginalRoute() {
       <PageHeader eyebrow="Aplicación original" title={sourcePath ? appName : "Aplicación original"} />
       <PageContent aria-live="polite" aria-busy={loading}>
         {sourcePath ? (
-          <div className="mx-auto grid w-full max-w-[1200px] gap-4">
+          <div className="grid w-full gap-4">
             <SourceUpdateBanner onUpdate={openOriginalUpdate} />
             <OriginalDetail
               appName={appName}
               appPath={sourcePath}
               platform={runtimePlatform}
-              profilePath={state.system.originalProfilePath}
+              profileView={profileView}
+              profileBusy={busy === "original-profile" ? lastProfileAction : null}
+              onChooseFolder={() => void chooseFolder()}
+              onForgetFolder={() => void forgetFolder()}
               version={state.system.sourceVersion}
               status={state.system.originalStatus}
               sessions={state.system.originalCodeSessions}

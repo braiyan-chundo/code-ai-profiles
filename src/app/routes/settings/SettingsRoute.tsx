@@ -31,7 +31,7 @@ export function SettingsRoute() {
         <Tabs
           value={section}
           onValueChange={(next) => navigate(`/configuracion/${next}`, { replace: true })}
-          className="max-w-[896px] gap-6 max-[1070px]:max-w-none"
+          className="gap-6"
         >
           <TabsList aria-label="Secciones de Configuración">
             <TabsTrigger value="apariencia">

@@ -63,7 +63,7 @@ export function InstanceDetail({
   const sessionCount = instance.codeSessions.length;
 
   return (
-    <div className="mx-auto grid w-full max-w-[1200px] gap-4" aria-busy={pending !== null}>
+    <div className="grid w-full gap-4" aria-busy={pending !== null}>
       <Card
         size="sm"
         data-status={pending ?? instance.status}

@@ -20,7 +20,7 @@ pub(crate) fn build_version_topology(
             reason: Some("No se encontró la aplicación original compatible.".to_string()),
         };
     };
-    let original_valid = original_instance_status_with_inventory(inventory)
+    let original_valid = original_instance_status_with_inventory(paths, inventory)
         == InstanceStatus::Stopped
         && validate_source(&original).is_ok()
         && (SHARED_INSTALLATION

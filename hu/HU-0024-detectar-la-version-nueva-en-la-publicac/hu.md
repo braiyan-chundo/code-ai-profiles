@@ -1,8 +1,8 @@
 ---
 id: HU-0024
 titulo: "Detectar la versión nueva en la publicación oficial e instalarla"
-estado: en-espera
-fase: verificacion
+estado: terminada
+fase: cierre
 area: actualizaciones
 entrega: 1
 prioridad: alta
@@ -136,11 +136,30 @@ prueba real pendiente de la HU-0017.
 
 ## Definición de Terminado
 
-- [ ] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
-- [ ] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
-- [ ] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
-- [ ] Revisión técnica pasada, si la historia es riesgosa
-- [ ] La persona probó y aprobó; su veredicto está en `verificacion.md`
-- [ ] Delta de reglas de negocio aplicado en `docs/producto/reglas/`
-- [ ] Commits en cada repo tocado con `HU: HU-0024`. **Sin push, sin publicar, sin desplegar**
-- [ ] Lo que solo comprueba una persona, declarado como pendiente humano
+- [x] Tipos, build y suite en verde una vez sobre los SHA finales (`pruebas.mjs estado`)
+- [x] Configuración fuera del código y guarda de producción en verde (`config.mjs check`, `entorno.mjs check`)
+- [x] Pruebas nuevas proporcionales al riesgo, o la razón de no añadirlas
+- [x] Revisión técnica pasada, si la historia es riesgosa
+- [x] La persona probó y aprobó; su veredicto está en `verificacion.md`
+- [x] Delta de reglas de negocio aplicado en `docs/producto/reglas/` (ninguna regla escrita cambia; el «Instalar» sigue RN-06)
+- [x] Commits en cada repo tocado con `HU: HU-0024`. **Sin push, sin publicar, sin desplegar**
+- [x] Lo que solo comprueba una persona, declarado como pendiente humano
+
+## Cierre
+
+2026-11-03, cerró el orquestador sobre el veredicto del mantenedor: la prueba real en macOS con una versión nueva de
+Claude cubre el aviso y la instalación («Sí, ciérrala también»). Revisión técnica PASS (`d5ae23d`).
+
+SHA en `code-ai-profiles` (salió en la 0.4.0):
+
+- `f8a491f` avisos de versión nueva desde la publicación oficial y botones «Actualizar».
+- `4544ead` plantilla de la publicación oficial de versiones (`CAP_UPDATE_RELEASES_URL`).
+- `40b13c5` versión objetivo desde la publicación oficial confirmada por el feed.
+- `d7e534c`, `f34cc5d` correcciones R-1..R-4 de la revisión.
+- El commit de cierre lleva este veredicto.
+
+★ aceptadas tal como estaban: D-1 a D-3.
+
+Pendientes humanos (nadie los vio; no se dan por hechos): ninguno de esta historia.
+
+Deuda declarada: ninguna nueva.

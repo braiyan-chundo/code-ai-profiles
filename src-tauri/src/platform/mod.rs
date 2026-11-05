@@ -413,6 +413,19 @@ mod tests {
     }
 
     #[test]
+    fn windows_child_processes_never_open_a_console_window() {
+        let source = include_str!("windows.rs");
+        assert_eq!(source.matches("Command::new(").count(), 1);
+        let helper = source
+            .split("fn hidden_command(")
+            .nth(1)
+            .and_then(|rest| rest.split("\n}\n").next())
+            .expect("hidden_command helper");
+        assert!(helper.contains("Command::new(program)"));
+        assert!(helper.contains("creation_flags(CREATE_NO_WINDOW)"));
+    }
+
+    #[test]
     fn parses_the_windows_package_query() {
         let query = parse_packaged_query(
             "Claude_pzs8sxrjxfjjc\r\nC:\\Program Files\\WindowsApps\\Claude_4.4212.0.0_x64__pzs8sxrjxfjjc\r\napp\\claude.exe\r\n",

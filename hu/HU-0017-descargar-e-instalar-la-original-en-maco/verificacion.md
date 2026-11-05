@@ -61,4 +61,7 @@ Dónde: la app instalada en tu Mac desde el `.dmg` de esta rama. Necesita una cu
 
 ## Veredicto
 
-Pendiente de la persona: probará cuando salga una versión nueva de Claude y avisará cómo fue.
+**Aprobado** — Braiyan Rodriguez (mantenedor), 2026-11-03: «ya la probe y funciono». Probó la actualización real
+en macOS con una versión nueva de Claude publicada en el feed oficial.
+
+Queda pendiente humano: Windows y Linux, que no cambian con esta historia (siguen con el handoff).

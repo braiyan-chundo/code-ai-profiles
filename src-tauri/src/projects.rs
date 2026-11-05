@@ -10,7 +10,8 @@
 //! elige con el selector (HU-0027), en `<app_data>/project-icons/<uuid>.png`, con `write_file_atomic`.
 //!
 //! El lector de historias (HU-0025, `reader.rs`) lee, al abrirlo, los cuatro `.md` fijos de una historia
-//! con el mismo `ReadContext`, y valida los enlaces externos que la persona pulsa.
+//! y su `diseno/maqueta.html` (HU-0031) con el mismo `ReadContext`, valida los enlaces externos que la
+//! persona pulsa y abre la maqueta en el navegador del sistema.
 
 use super::*;
 use chrono::{NaiveDate, NaiveDateTime, SecondsFormat};
@@ -21,7 +22,9 @@ mod method;
 mod reader;
 mod tech;
 
-pub(crate) use reader::{open_external_link_sync, read_project_history_sync};
+pub(crate) use reader::{
+    open_external_link_sync, open_history_mockup_sync, read_project_history_sync,
+};
 
 const PROJECTS_FILE: &str = "projects.json";
 const PROJECT_ICONS_DIR: &str = "project-icons";
@@ -333,6 +336,8 @@ pub(crate) enum ProjectDocumentKind {
     Architecture,
     Verification,
     Timeline,
+    /// `diseno/maqueta.html` (HU-0031), el último y solo si existe.
+    Design,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
@@ -340,6 +345,8 @@ pub(crate) enum ProjectDocumentKind {
 pub(crate) enum ProjectDocumentStatus {
     Ok,
     Unreadable,
+    /// Solo para `Design`: la maqueta pasa de 1 MiB y no se pinta en el lector (HU-0031).
+    TooLarge,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -351,9 +358,9 @@ pub(crate) struct ProjectDocument {
     /// Relativa a la carpeta del proyecto, con `/` (`hu/<carpeta>/hu.md`).
     pub(crate) path: String,
     pub(crate) status: ProjectDocumentStatus,
-    /// El Markdown completo, solo si `status` es `Ok`.
+    /// El Markdown completo (o el HTML de la maqueta), solo si `status` es `Ok`.
     pub(crate) content: Option<String>,
-    /// Qué pasó, solo si `status` es `Unreadable`.
+    /// Qué pasó, solo si `status` es `Unreadable` o `TooLarge`.
     pub(crate) message: Option<String>,
 }
 
@@ -361,7 +368,7 @@ pub(crate) struct ProjectDocument {
 #[serde(rename_all = "camelCase")]
 pub(crate) struct ProjectHistoryDocuments {
     pub(crate) folder: String,
-    /// En el orden hu → arquitectura → verificación → seguimiento, solo los que existen.
+    /// En el orden hu → arquitectura → verificación → seguimiento → maqueta, solo los que existen.
     pub(crate) documents: Vec<ProjectDocument>,
     pub(crate) read_at: String,
 }
@@ -505,8 +512,8 @@ impl ProjectEnv {
     }
 }
 
-/// `deny` = `<home>/.claude`, `app_data_dir` (perfiles y copias administradas) y el perfil de la
-/// aplicación original. Solo se calculan sus rutas: no se listan ni se leen.
+/// `deny` = `<home>/.claude`, `app_data_dir` (perfiles y copias administradas) y las carpetas de la
+/// aplicación original (efectiva, detectada y elegida). Solo se calculan sus rutas: no se listan ni se leen.
 fn environment(app: &AppHandle) -> Result<(PathBuf, ProjectEnv), String> {
     let paths = ManagedPaths::resolve(app)?;
     let home = dirs::home_dir();
@@ -514,9 +521,8 @@ fn environment(app: &AppHandle) -> Result<(PathBuf, ProjectEnv), String> {
     if let Some(home) = &home {
         deny.push(home.join(".claude"));
     }
-    if let Some(profile) = detect_original_profile() {
-        deny.push(profile);
-    }
+    // HU-0029: the effective folder, the detected one and the saved choice (even if no longer valid).
+    deny.extend(original_profile_deny(&resolve_original_profile(&paths)));
     let env = ProjectEnv::new(home, deny, Limits::default());
     Ok((paths.app_data, env))
 }

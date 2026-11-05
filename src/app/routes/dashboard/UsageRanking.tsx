@@ -9,6 +9,8 @@ import {
   InstanceToggleButton,
   UsageBar,
   instancePending,
+  isSleeping,
+  SleepingMark,
   instanceToggle,
   managedIconSource,
   providerBadgeSource,
@@ -68,6 +70,7 @@ export function UsageRanking() {
                     >
                       {instance.name}
                     </Link>
+                    {isSleeping(instance.status, pending) && <SleepingMark />}
                     <InstanceStatusBadge status={instance.status} pending={pending} className="shrink-0" />
                     {staleIds.has(instance.id) && (
                       <Badge

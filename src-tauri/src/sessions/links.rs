@@ -273,6 +273,7 @@ mod tests {
             source_update_cache: root.join("source-update-cache.json"),
             artifact_exports: root.join("artifact-exports"),
             original_update: root.join("original-update"),
+            original_profile: root.join("original-profile.json"),
         };
         let session_id = "local_96812ba4-6864-40d5-a70a-0470f244022c";
         let manifest = |transfer_id: &str, created_at: &str, source_id: &str, target_id: &str| {

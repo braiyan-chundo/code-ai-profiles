@@ -256,6 +256,57 @@ pub(crate) async fn pick_project_folder(
         .map_err(|error| format!("El selector de carpetas terminó inesperadamente: {error}"))?
 }
 
+/// Abre el selector de la carpeta de datos de la original sin el candado (la persona puede tardar), y
+/// luego valida y guarda dentro de él. `None` si la persona cancela: nada cambia (HU-0029).
+#[tauri::command]
+pub(crate) async fn choose_original_profile_folder(
+    app: AppHandle,
+) -> Result<Option<DashboardState>, String> {
+    let picker_app = app.clone();
+    let picked = tauri::async_runtime::spawn_blocking(move || {
+        pick_original_profile_folder_sync(&picker_app)
+    })
+    .await
+    .map_err(|error| format!("El selector de carpetas terminó inesperadamente: {error}"))??;
+    let Some(picked) = picked else {
+        return Ok(None);
+    };
+    let worker_app = app.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        app_state(&worker_app)
+            .with_registry_operation(|| choose_original_profile_folder_sync(&worker_app, &picked))
+    })
+    .await
+    .map_err(|error| format!("Guardar la carpeta elegida terminó inesperadamente: {error}"))??;
+    dashboard_from_scope_async(
+        app,
+        RefreshScope::ORIGINAL_PROFILE,
+        "La actualización del panel",
+    )
+    .await
+    .map(Some)
+}
+
+/// Olvida la carpeta elegida y vuelve a la detectada (HU-0029).
+#[tauri::command]
+pub(crate) async fn forget_original_profile_folder(
+    app: AppHandle,
+) -> Result<DashboardState, String> {
+    let worker_app = app.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        app_state(&worker_app)
+            .with_registry_operation(|| forget_original_profile_folder_sync(&worker_app))
+    })
+    .await
+    .map_err(|error| format!("Volver a la carpeta detectada terminó inesperadamente: {error}"))??;
+    dashboard_from_scope_async(
+        app,
+        RefreshScope::ORIGINAL_PROFILE,
+        "La actualización del panel",
+    )
+    .await
+}
+
 #[tauri::command]
 pub(crate) async fn pin_project(
     app: AppHandle,
@@ -328,6 +379,21 @@ pub(crate) async fn open_external_link(url: String) -> Result<(), String> {
     tauri::async_runtime::spawn_blocking(move || projects::open_external_link_sync(&url))
         .await
         .map_err(|error| format!("La apertura del enlace terminó inesperadamente: {error}"))?
+}
+
+/// Abre `diseno/maqueta.html` de la historia `folder` del proyecto anclado `id` en el navegador del
+/// sistema (HU-0031). Nunca recibe una ruta: Rust la vuelve a resolver y validar.
+#[tauri::command]
+pub(crate) async fn open_history_mockup(
+    app: AppHandle,
+    id: String,
+    folder: String,
+) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        projects::open_history_mockup_sync(&app, &id, &folder)
+    })
+    .await
+    .map_err(|error| format!("La apertura de la maqueta terminó inesperadamente: {error}"))?
 }
 
 #[tauri::command]

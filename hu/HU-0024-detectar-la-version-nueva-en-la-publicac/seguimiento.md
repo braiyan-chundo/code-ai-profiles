@@ -12,3 +12,7 @@ Se añade al final, nunca se reescribe. La escriben `hu.mjs` (fase, estado, log)
 | 2026-10-29 20:07 | hu.mjs | fase arquitectura → implementacion |
 | 2026-10-29 20:23 | hu.mjs | fase implementacion → verificacion |
 | 2026-10-29 20:27 | hu.mjs | estado en-proceso → en-espera · prueba real con la próxima versión de Claude: la original ya estaba en 4.4212.0; el código entra en develop por decisión del mantenedor |
+| 2026-11-03 22:18 | orquestador | veredicto: la prueba real de la HU-0017 en macOS cubre esta historia: «Sí, ciérrala también» — Braiyan Rodriguez (mantenedor), 2026-11-03 |
+| 2026-11-03 22:18 | hu.mjs | estado en-espera → en-proceso |
+| 2026-11-03 22:18 | hu.mjs | fase verificacion → cierre |
+| 2026-11-03 22:18 | hu.mjs | estado en-proceso → terminada |

@@ -2,6 +2,18 @@
 //! `robocopy` y `taskkill`.
 
 use super::*;
+use std::ffi::OsStr;
+use std::os::windows::process::CommandExt;
+
+/// Evita que Windows abra una ventana de consola por cada proceso auxiliar: la app es GUI y no hay consola que heredar.
+const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+
+/// Único punto donde este archivo crea un proceso hijo; todos nacen sin ventana de consola.
+fn hidden_command(program: impl AsRef<OsStr>) -> Command {
+    let mut command = Command::new(program);
+    command.creation_flags(CREATE_NO_WINDOW);
+    command
+}
 
 pub(crate) const PLATFORM_NAME: &str = "windows";
 
@@ -9,7 +21,7 @@ pub(crate) const PLATFORM_NAME: &str = "windows";
 pub(crate) const SHARED_INSTALLATION: bool = false;
 
 pub(crate) fn source_display_name(source: &Path) -> Option<String> {
-    let product_name = Command::new("powershell.exe")
+    let product_name = hidden_command("powershell.exe")
         .args([
             "-NoProfile",
             "-NonInteractive",
@@ -110,7 +122,7 @@ fn packaged_installation() -> Option<PackagedInstallation> {
 }
 
 fn query_packaged_installation() -> Option<PackagedInstallation> {
-    let output = Command::new("powershell.exe")
+    let output = hidden_command("powershell.exe")
         .args(["-NoProfile", "-NonInteractive", "-Command", PACKAGED_QUERY])
         .output()
         .ok()
@@ -168,7 +180,7 @@ pub(crate) fn validate_source(path: &Path) -> Result<(), String> {
 }
 
 pub(crate) fn source_version(source: &Path) -> Option<String> {
-    let powershell = Command::new("powershell.exe")
+    let powershell = hidden_command("powershell.exe")
         .args([
             "-NoProfile",
             "-NonInteractive",
@@ -206,7 +218,7 @@ pub(crate) fn fingerprint_metadata_paths(canonical_path: &Path) -> Vec<PathBuf> 
 }
 
 fn windows_signer_subject(path: &Path) -> Option<String> {
-    let output = Command::new("powershell.exe")
+    let output = hidden_command("powershell.exe")
         .args([
             "-NoProfile",
             "-NonInteractive",
@@ -248,7 +260,7 @@ pub(crate) fn copy_provider_bundle(
     let destination = application_root.join("Claude");
     fs::create_dir_all(&destination)
         .map_err(|error| format!("No se pudo crear el destino de la aplicación: {error}"))?;
-    let status = Command::new("robocopy")
+    let status = hidden_command("robocopy")
         .arg(source_dir)
         .arg(&destination)
         .args([
@@ -284,7 +296,7 @@ pub(crate) fn personalize_application_path(
 
 fn process_is_alive(pid: u32) -> bool {
     let filter = format!("PID eq {pid}");
-    Command::new("tasklist")
+    hidden_command("tasklist")
         .args(["/FI", &filter, "/FO", "CSV", "/NH"])
         .output()
         .map(|output| {
@@ -302,7 +314,7 @@ pub(crate) fn signal_verified_processes(
     force: bool,
 ) -> Result<(), AppError> {
     for (pid, _start_time) in processes {
-        let mut command = Command::new("taskkill");
+        let mut command = hidden_command("taskkill");
         command.args(["/PID", &pid.to_string(), "/T"]);
         if force {
             command.arg("/F");
@@ -357,7 +369,7 @@ pub(crate) fn apply_external_icon_best_effort(
 
 /// Abre el canal oficial de actualización de la original (fuera de macOS).
 pub(crate) fn open_update_url(url: &str) -> Result<std::process::ExitStatus, std::io::Error> {
-    Command::new("rundll32.exe")
+    hidden_command("rundll32.exe")
         .args(["url.dll,FileProtocolHandler", url])
         .status()
 }
@@ -366,7 +378,7 @@ pub(crate) fn open_update_url(url: &str) -> Result<std::process::ExitStatus, std
 /// (HU-0025). `url` llega ya validada y reserializada por `projects::reader::external_link`; va como
 /// argumento, nunca en una cadena de shell. Distinto de `open_update_url`, que es solo del canal oficial.
 pub(crate) fn open_external_url(url: &str) -> Result<(), AppError> {
-    let status = Command::new("rundll32.exe")
+    let status = hidden_command("rundll32.exe")
         .args(["url.dll,FileProtocolHandler", url])
         .status()
         .map_err(|error| {

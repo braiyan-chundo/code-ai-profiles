@@ -46,6 +46,13 @@ impl RefreshScope {
         sessions: true,
         ..Self::LIGHT
     };
+    /// After choosing or forgetting the original's data folder (HU-0029): its sessions, its status (it can go
+    /// from `missing` to `stopped`) and the topology that depends on that status.
+    pub(crate) const ORIGINAL_PROFILE: Self = Self {
+        sessions: true,
+        topology: true,
+        ..Self::LIGHT
+    };
     pub(crate) const VERSIONS: Self = Self {
         processes: true,
         bundle_names: false,
@@ -229,6 +236,9 @@ fn system_info_seed(previous: Option<&SystemInfo>) -> SystemInfo {
             reason: Some("Pendiente de escaneo completo.".to_string()),
         },
         original_profile_path: None,
+        original_profile_origin: OriginalProfileOrigin::None,
+        original_profile_has_sessions: false,
+        original_profile_chosen_missing: false,
         original_status: InstanceStatus::Missing,
         original_code_sessions: Vec::new(),
         free_bytes: None,
@@ -278,20 +288,26 @@ pub(crate) fn system_info_scoped(
         }
     }
     if scope.sessions {
-        let original_profile = detect_original_profile();
+        let original_profile = resolve_original_profile(paths);
         let mut sessions = original_profile
+            .path
             .as_deref()
             .zip(transcripts)
             .map(|(profile, transcripts)| read_code_sessions(profile, transcripts))
             .unwrap_or_default();
         apply_session_links_to_profile(&mut sessions, ORIGINAL_INSTANCE_ID, session_links);
         info.original_profile_path = original_profile
+            .path
             .as_ref()
             .map(|path| path.to_string_lossy().to_string());
+        info.original_profile_origin = original_profile.origin;
+        info.original_profile_has_sessions = original_profile.has_code_sessions;
+        info.original_profile_chosen_missing = original_profile.chosen_missing;
         info.original_code_sessions = sessions;
     }
     if scope.processes {
         info.original_status = original_instance_status_with_inventory(
+            paths,
             inventory.expect("process inventory is required by process refresh"),
         );
     }
@@ -613,6 +629,9 @@ mod tests {
                 reason: None,
             },
             original_profile_path: Some("/private/not-read".to_string()),
+            original_profile_origin: OriginalProfileOrigin::Detected,
+            original_profile_has_sessions: true,
+            original_profile_chosen_missing: false,
             original_status: InstanceStatus::Stopped,
             original_code_sessions: vec![session.clone()],
             free_bytes: Some(44),

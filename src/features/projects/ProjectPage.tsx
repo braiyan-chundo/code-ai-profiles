@@ -43,7 +43,7 @@ export function ProjectPage({
   };
 
   return (
-    <div className="mx-auto grid w-full max-w-[1200px] gap-8">
+    <div className="grid w-full gap-8">
       {actionError && (
         <NoticeAlert
           variant="destructive"
