@@ -33,7 +33,7 @@ export function ProjectBrokenPage({
   const name = projectName(project);
   const lastRead = project.lastReadAt ? `leído por última vez el ${formatLocalDay(project.lastReadAt)}` : "nunca se pudo leer";
   return (
-    <div className="mx-auto grid w-full max-w-[1200px] gap-8">
+    <div className="grid w-full gap-8">
       <Card className="ring-destructive/35" data-status={project.status}>
         <CardContent className="grid grid-cols-[64px_minmax(0,1fr)_auto] items-start gap-6 max-[1070px]:grid-cols-[64px_minmax(0,1fr)]">
           <ProjectInitial name={name} size="xl" broken />

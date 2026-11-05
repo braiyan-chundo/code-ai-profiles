@@ -46,7 +46,7 @@ export function ProjectRoute() {
       <>
         <PageHeader eyebrow="Proyectos" title="No encontrado" />
         <PageContent>
-          <Empty aria-label="Proyecto no encontrado" className="mx-auto max-w-[1200px] gap-4 rounded-xl border border-dashed bg-(--surface-soft)">
+          <Empty aria-label="Proyecto no encontrado" className="gap-4 rounded-xl border border-dashed bg-(--surface-soft)">
             <EmptyHeader className="max-w-md gap-2">
               <EmptyMedia variant="icon" className="rounded-md ring-1 ring-(--line) ring-inset">
                 <FolderSearchIcon aria-hidden="true" />

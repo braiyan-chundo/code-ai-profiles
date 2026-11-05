@@ -61,7 +61,7 @@ export function OriginalDetail({
 }) {
   const channel = platform === "linux" ? "Linux" : platform === "windows" ? "Windows" : "macOS";
   return (
-    <div className="mx-auto grid w-full max-w-[1200px] gap-4">
+    <div className="grid w-full gap-4">
       {profileView.warning && (
         <NoticeAlert
           icon={<TriangleAlertIcon aria-hidden="true" />}

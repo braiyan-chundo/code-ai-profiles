@@ -61,7 +61,7 @@ export function DashboardRoute() {
         {loading ? (
           <PageSkeleton />
         ) : (
-          <div className="mx-auto grid w-full max-w-[1200px] gap-4">
+          <div className="grid w-full gap-4">
             <SourceUpdateBanner
               onUpdate={() => {
                 clearFeedback();
