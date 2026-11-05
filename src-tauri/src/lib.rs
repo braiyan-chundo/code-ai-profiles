@@ -101,7 +101,8 @@ pub fn run() {
             commands::clear_project_icon,
             commands::open_project_folder,
             commands::read_project_history,
-            commands::open_external_link
+            commands::open_external_link,
+            commands::open_history_mockup
         ])
         .run(tauri::generate_context!())
         .expect("error while running Code AI Profiles");

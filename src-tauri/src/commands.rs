@@ -381,6 +381,21 @@ pub(crate) async fn open_external_link(url: String) -> Result<(), String> {
         .map_err(|error| format!("La apertura del enlace terminó inesperadamente: {error}"))?
 }
 
+/// Abre `diseno/maqueta.html` de la historia `folder` del proyecto anclado `id` en el navegador del
+/// sistema (HU-0031). Nunca recibe una ruta: Rust la vuelve a resolver y validar.
+#[tauri::command]
+pub(crate) async fn open_history_mockup(
+    app: AppHandle,
+    id: String,
+    folder: String,
+) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        projects::open_history_mockup_sync(&app, &id, &folder)
+    })
+    .await
+    .map_err(|error| format!("La apertura de la maqueta terminó inesperadamente: {error}"))?
+}
+
 #[tauri::command]
 pub(crate) async fn open_system_settings(panel: SystemSettingsPanel) -> Result<(), String> {
     tauri::async_runtime::spawn_blocking(move || open_system_settings_sync(panel))

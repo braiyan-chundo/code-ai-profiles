@@ -10,7 +10,8 @@
 //! elige con el selector (HU-0027), en `<app_data>/project-icons/<uuid>.png`, con `write_file_atomic`.
 //!
 //! El lector de historias (HU-0025, `reader.rs`) lee, al abrirlo, los cuatro `.md` fijos de una historia
-//! con el mismo `ReadContext`, y valida los enlaces externos que la persona pulsa.
+//! y su `diseno/maqueta.html` (HU-0031) con el mismo `ReadContext`, valida los enlaces externos que la
+//! persona pulsa y abre la maqueta en el navegador del sistema.
 
 use super::*;
 use chrono::{NaiveDate, NaiveDateTime, SecondsFormat};
@@ -21,7 +22,9 @@ mod method;
 mod reader;
 mod tech;
 
-pub(crate) use reader::{open_external_link_sync, read_project_history_sync};
+pub(crate) use reader::{
+    open_external_link_sync, open_history_mockup_sync, read_project_history_sync,
+};
 
 const PROJECTS_FILE: &str = "projects.json";
 const PROJECT_ICONS_DIR: &str = "project-icons";

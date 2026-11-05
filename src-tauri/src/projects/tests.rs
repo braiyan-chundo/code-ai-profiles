@@ -1860,6 +1860,342 @@ fn projects_reader_keeps_symlink_deny_and_cloud_protections() {
     assert_eq!(error.to_string(), FORBIDDEN_MESSAGE);
 }
 
+// ── HU-0031 · Pestaña Maqueta ───────────────────────────────────────────────
+
+const MOCKUP_FOLDER: &str = "HU-0002-registro";
+const MOCKUP_REL: &str = "p/hu/HU-0002-registro/diseno/maqueta.html";
+
+fn design(documents: &ProjectHistoryDocuments) -> Option<&ProjectDocument> {
+    documents
+        .documents
+        .iter()
+        .find(|document| document.kind == ProjectDocumentKind::Design)
+}
+
+// H31-1 · Presente: la última pestaña, con su ruta y `\n`; nada más de `diseno/` se lee; solo lectura.
+#[test]
+fn projects_reader_h31_reads_the_mockup_last() {
+    let fixture = Fixture::new("h31-present");
+    let env = fixture.env();
+    let id = pinned_reference(&fixture, &env);
+    for file in ["arquitectura.md", "verificacion.md", "seguimiento.md"] {
+        fixture.write(&format!("p/hu/{MOCKUP_FOLDER}/{file}"), "# x\n");
+    }
+    fixture.write(MOCKUP_REL, "<!doctype html>\r\n<p>x</p>");
+    fixture.write(
+        &format!("p/hu/{MOCKUP_FOLDER}/diseno/otra.html"),
+        "<p>no</p>",
+    );
+    fixture.write(
+        &format!("p/hu/{MOCKUP_FOLDER}/diseno/captura.png"),
+        [0x89u8, b'P', b'N', b'G'],
+    );
+    let registry = fs::read(fixture.app_data().join(PROJECTS_FILE)).expect("registry");
+    let before = fingerprint(&fixture.path("p"));
+
+    let read = reader::read_project_history_at(&fixture.app_data(), &env, &id, MOCKUP_FOLDER)
+        .expect("documents");
+    assert_eq!(read.documents.len(), 5, "{:?}", kinds(&read));
+    assert_eq!(
+        kinds(&read).last().copied(),
+        Some((ProjectDocumentKind::Design, "maqueta.html"))
+    );
+    let mockup = read.documents.last().expect("design");
+    assert_eq!(mockup.path, "hu/HU-0002-registro/diseno/maqueta.html");
+    assert_eq!(mockup.status, ProjectDocumentStatus::Ok);
+    assert_eq!(mockup.content.as_deref(), Some("<!doctype html>\n<p>x</p>"));
+    assert_eq!(mockup.message, None);
+
+    assert_eq!(fingerprint(&fixture.path("p")), before);
+    assert_eq!(
+        fs::read(fixture.app_data().join(PROJECTS_FILE)).expect("registry"),
+        registry
+    );
+}
+
+// H31-2 · Ausente: sin maqueta, o con `diseno/` vacía, no hay pestaña.
+#[test]
+fn projects_reader_h31_omits_a_missing_mockup() {
+    let fixture = Fixture::new("h31-absent");
+    let env = fixture.env();
+    let id = pinned_reference(&fixture, &env);
+    let read = reader::read_project_history_at(&fixture.app_data(), &env, &id, MOCKUP_FOLDER)
+        .expect("documents");
+    assert!(design(&read).is_none());
+    fs::create_dir_all(fixture.path(&format!("p/hu/{MOCKUP_FOLDER}/diseno"))).expect("empty");
+    let read = reader::read_project_history_at(&fixture.app_data(), &env, &id, MOCKUP_FOLDER)
+        .expect("documents");
+    assert!(design(&read).is_none(), "{:?}", kinds(&read));
+    assert_eq!(
+        kinds(&read),
+        vec![
+            (ProjectDocumentKind::Hu, "hu.md"),
+            (ProjectDocumentKind::Timeline, "seguimiento.md"),
+        ],
+        "the other tabs are unchanged"
+    );
+}
+
+// H31-3 · Topes: 1 MiB se pinta, 1 MiB + 1 es `tooLarge`; un `.md` grande sigue ilegible; `\0` ilegible.
+#[test]
+fn projects_reader_h31_applies_the_mockup_limit() {
+    let fixture = Fixture::new("h31-limits");
+    let env = fixture.env();
+    let id = pinned_reference(&fixture, &env);
+    let read_design = || {
+        let read = reader::read_project_history_at(&fixture.app_data(), &env, &id, MOCKUP_FOLDER)
+            .expect("documents");
+        (
+            read.documents.len(),
+            design(&read).cloned().expect("design"),
+        )
+    };
+
+    fixture.write(MOCKUP_REL, "a".repeat(reader::MOCKUP_LIMIT as usize));
+    let (_, at_limit) = read_design();
+    assert_eq!(at_limit.status, ProjectDocumentStatus::Ok);
+    assert_eq!(
+        at_limit.content.as_ref().map(String::len),
+        Some(reader::MOCKUP_LIMIT as usize)
+    );
+
+    fixture.write(MOCKUP_REL, "a".repeat(reader::MOCKUP_LIMIT as usize + 1));
+    fixture.write(
+        &format!("p/hu/{MOCKUP_FOLDER}/verificacion.md"),
+        "b".repeat(reader::DOCUMENT_LIMIT as usize + 1),
+    );
+    let read = reader::read_project_history_at(&fixture.app_data(), &env, &id, MOCKUP_FOLDER)
+        .expect("documents");
+    let too_large = design(&read).expect("design");
+    assert_eq!(too_large.status, ProjectDocumentStatus::TooLarge);
+    assert_eq!(too_large.content, None);
+    assert_eq!(
+        too_large.message.as_deref(),
+        Some("maqueta.html pesa más de 1 MiB y no se pinta aquí.")
+    );
+    let verification = read
+        .documents
+        .iter()
+        .find(|document| document.kind == ProjectDocumentKind::Verification)
+        .expect("verification");
+    assert_eq!(
+        verification.status,
+        ProjectDocumentStatus::Unreadable,
+        "tooLarge is only for the mockup"
+    );
+    assert_eq!(verification.content, None);
+
+    fixture.write(MOCKUP_REL, "<p>\0</p>".as_bytes());
+    let (_, binary) = read_design();
+    assert_eq!(binary.status, ProjectDocumentStatus::Unreadable);
+    assert_eq!(binary.content, None);
+    assert_eq!(
+        binary.message.as_deref(),
+        Some("maqueta.html no es un archivo de texto.")
+    );
+}
+
+/// Los cuatro symlinks que no se siguen: la maqueta hacia fuera, la maqueta hacia otro archivo del
+/// proyecto, `diseno/` hacia fuera y `diseno/` hacia otra carpeta del proyecto.
+#[cfg(unix)]
+fn mockup_symlink_cases(fixture: &Fixture) -> Vec<(&'static str, Box<dyn Fn()>)> {
+    use std::os::unix::fs::symlink;
+    fixture.write("fuera/maqueta.html", "<p>secreto de fuera</p>");
+    fixture.write("fuera-diseno/maqueta.html", "<p>secreto de fuera</p>");
+    fixture.write("p/docs/diseno/maqueta.html", "<p>otra carpeta</p>");
+    let diseno = fixture.path(&format!("p/hu/{MOCKUP_FOLDER}/diseno"));
+    let mockup = fixture.path(MOCKUP_REL);
+    let outside_file = fixture.path("fuera/maqueta.html");
+    let outside_dir = fixture.path("fuera-diseno");
+    let reset = {
+        let diseno = diseno.clone();
+        move || {
+            if fs::symlink_metadata(&diseno).is_ok_and(|metadata| metadata.file_type().is_symlink())
+            {
+                fs::remove_file(&diseno).expect("remove link");
+            } else if diseno.exists() {
+                fs::remove_dir_all(&diseno).expect("remove dir");
+            }
+        }
+    };
+    let file_reset = reset.clone();
+    let inner_reset = reset.clone();
+    let dir_reset = reset.clone();
+    let mockup_inner = mockup.clone();
+    let diseno_dir = diseno.clone();
+    vec![
+        (
+            "maqueta.html -> outside",
+            Box::new(move || {
+                file_reset();
+                fs::create_dir_all(mockup.parent().expect("parent")).expect("diseno");
+                symlink(&outside_file, &mockup).expect("symlink");
+            }),
+        ),
+        (
+            "maqueta.html -> ../hu.md",
+            Box::new(move || {
+                inner_reset();
+                fs::create_dir_all(mockup_inner.parent().expect("parent")).expect("diseno");
+                symlink("../hu.md", &mockup_inner).expect("symlink");
+            }),
+        ),
+        (
+            "diseno -> outside",
+            Box::new(move || {
+                dir_reset();
+                symlink(&outside_dir, &diseno_dir).expect("symlink");
+            }),
+        ),
+        (
+            "diseno -> project folder",
+            Box::new(move || {
+                reset();
+                symlink("../../../docs/diseno", &diseno).expect("symlink");
+            }),
+        ),
+    ]
+}
+
+// H31-4 · Symlinks en la lectura: la maqueta es ilegible («fuera») y las demás pestañas siguen.
+#[cfg(unix)]
+#[test]
+fn projects_reader_h31_does_not_follow_mockup_symlinks() {
+    let fixture = Fixture::new("h31-symlinks");
+    let env = fixture.env();
+    let id = pinned_reference(&fixture, &env);
+    for (case, arrange) in mockup_symlink_cases(&fixture) {
+        arrange();
+        let read = reader::read_project_history_at(&fixture.app_data(), &env, &id, MOCKUP_FOLDER)
+            .expect(case);
+        let mockup = design(&read).expect(case);
+        assert_eq!(mockup.status, ProjectDocumentStatus::Unreadable, "{case}");
+        assert_eq!(mockup.content, None, "{case}");
+        assert!(
+            mockup
+                .message
+                .as_deref()
+                .is_some_and(|message| message.contains("fuera")),
+            "{case}: {:?}",
+            mockup.message
+        );
+        let hu = &read.documents[0];
+        assert_eq!(hu.kind, ProjectDocumentKind::Hu, "{case}");
+        assert_eq!(hu.status, ProjectDocumentStatus::Ok, "{case}");
+    }
+}
+
+// H31-5 · La URL de abrir: `file://`, de vuelta a la misma ruta y sin tope de tamaño.
+#[test]
+fn projects_mockup_url_h31_points_to_the_validated_file() {
+    let fixture = Fixture::new("h31-url");
+    let env = fixture.env();
+    let id = pinned_reference(&fixture, &env);
+    fixture.write(MOCKUP_REL, "<!doctype html>");
+    let url =
+        reader::history_mockup_url(&fixture.app_data(), &env, &id, MOCKUP_FOLDER).expect("url");
+    assert_eq!(url.scheme(), "file");
+    assert_eq!(
+        url.to_file_path().expect("file path"),
+        fixture.path(MOCKUP_REL)
+    );
+
+    fixture.write(MOCKUP_REL, "a".repeat(reader::MOCKUP_LIMIT as usize + 1));
+    assert!(
+        reader::history_mockup_url(&fixture.app_data(), &env, &id, MOCKUP_FOLDER).is_ok(),
+        "no size limit to open"
+    );
+
+    // Un proyecto en una carpeta con espacio y `#`: la URL los codifica y vuelve a la misma ruta.
+    let root = "mi proyecto #1";
+    write_reference_project(&fixture, root);
+    let mockup_rel = format!("{root}/hu/{MOCKUP_FOLDER}/diseno/maqueta.html");
+    fixture.write(&mockup_rel, "<p>x</p>");
+    let spaced = pin_project_at(&fixture.app_data(), &env, &fixture.path(root))
+        .expect("pin")
+        .id;
+    let url =
+        reader::history_mockup_url(&fixture.app_data(), &env, &spaced, MOCKUP_FOLDER).expect("url");
+    assert_eq!(url.scheme(), "file");
+    assert!(url.as_str().contains("%20"), "{url}");
+    assert!(url.as_str().contains("%23"), "{url}");
+    assert!(!url.as_str().contains([' ', '#']), "{url}");
+    assert_eq!(url.fragment(), None);
+    assert_eq!(
+        url.to_file_path().expect("file path"),
+        fixture.path(&mockup_rel)
+    );
+}
+
+// H31-6 · La URL de abrir rechaza lo que la lectura no pintaría como maqueta propia.
+#[test]
+fn projects_mockup_url_h31_rejects_what_is_not_the_own_mockup() {
+    let fixture = Fixture::new("h31-url-reject");
+    let env = fixture.env();
+    let id = pinned_reference(&fixture, &env);
+
+    let missing = reader::history_mockup_url(&fixture.app_data(), &env, &id, MOCKUP_FOLDER)
+        .expect_err("missing");
+    assert_eq!(
+        missing.to_string(),
+        "Esta historia ya no tiene maqueta. Pulsa «Actualizar»."
+    );
+    let gone = reader::history_mockup_url(&fixture.app_data(), &env, &id, "HU-0099-nada")
+        .expect_err("missing history");
+    assert_eq!(
+        gone.to_string(),
+        "La historia ya no está en el proyecto. Pulsa «Actualizar»."
+    );
+
+    fs::create_dir_all(fixture.path(MOCKUP_REL)).expect("folder named maqueta.html");
+    let folder = reader::history_mockup_url(&fixture.app_data(), &env, &id, MOCKUP_FOLDER)
+        .expect_err("not a file");
+    assert_eq!(folder.to_string(), "La maqueta no es un archivo.");
+    fs::remove_dir_all(fixture.path(MOCKUP_REL)).expect("cleanup");
+
+    fixture.write(MOCKUP_REL, "<p>x</p>");
+    let mut cloud = fixture.env();
+    cloud.cloud = |_, _| true;
+    let error = reader::history_mockup_url(&fixture.app_data(), &cloud, &id, MOCKUP_FOLDER)
+        .expect_err("cloud");
+    assert!(error.to_string().contains("nube"), "{error}");
+
+    for folder in ["../x", "HU-0002/diseno", "HU-0002-registro/diseno", ""] {
+        let error =
+            reader::history_mockup_url(&fixture.app_data(), &env, &id, folder).expect_err(folder);
+        assert_eq!(error.kind(), AppErrorKind::InvalidInput, "{folder:?}");
+        assert_eq!(error.to_string(), "La historia no es válida.", "{folder:?}");
+    }
+
+    let not_pinned = reader::history_mockup_url(
+        &fixture.app_data(),
+        &env,
+        &Uuid::new_v4().to_string(),
+        MOCKUP_FOLDER,
+    )
+    .expect_err("not pinned");
+    assert_eq!(not_pinned.to_string(), NOT_PINNED);
+}
+
+// H31-7 · La URL de abrir no sigue ninguno de los cuatro symlinks.
+#[cfg(unix)]
+#[test]
+fn projects_mockup_url_h31_does_not_follow_symlinks() {
+    let fixture = Fixture::new("h31-url-symlinks");
+    let env = fixture.env();
+    let id = pinned_reference(&fixture, &env);
+    for (case, arrange) in mockup_symlink_cases(&fixture) {
+        arrange();
+        let error = reader::history_mockup_url(&fixture.app_data(), &env, &id, MOCKUP_FOLDER)
+            .expect_err(case);
+        assert_eq!(
+            error.to_string(),
+            "La maqueta apunta fuera de la carpeta de la historia y no se abre.",
+            "{case}"
+        );
+    }
+}
+
 // H25-5 · Enlaces externos: solo http/https completos, reserializados.
 #[test]
 fn projects_external_link_accepts_only_full_http_urls() {
@@ -1924,6 +2260,14 @@ fn projects_serializes_reader_and_gap_contract_names() {
     assert_eq!(
         serde_json::to_value(ProjectDocumentStatus::Unreadable).expect("json"),
         json!("unreadable")
+    );
+    assert_eq!(
+        serde_json::to_value(ProjectDocumentKind::Design).expect("json"),
+        json!("design")
+    );
+    assert_eq!(
+        serde_json::to_value(ProjectDocumentStatus::TooLarge).expect("json"),
+        json!("tooLarge")
     );
     let totals = serde_json::to_value(ProjectTotals::default()).expect("json");
     assert_eq!(totals["timedHistories"], json!(0));
